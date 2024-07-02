@@ -1,0 +1,11 @@
+npm test
+
+#prettier 포맷 검사
+npx prettier
+  --cache # 변하지 않은 파일에 대해선 캐시되어 있는 내용을 써서 재검사하지 않음 (검사 시간 단축)
+  --write # error 에 대해 자동 수정
+
+#eslint 문법 검사
+npx eslint 
+  --cache # 변하지 않은 파일에 대해선 캐시 사용(검사 시간 단축)
+  --fix # error 에 대해 자동 수정
