@@ -1,5 +1,5 @@
 const IndexComponent = () => {
-  return <div>회원</div>;
+  return <div>이벤트 관리 화면</div>;
 };
 
 export default IndexComponent;

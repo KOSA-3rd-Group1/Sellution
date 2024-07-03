@@ -39,7 +39,7 @@ const NavbarComponent = () => {
                 ></path>
               </svg>
             </button>
-            <Link to={'/'} className='text-xl font-bold flex items-center lg:ml-2.5'>
+            <Link to={'/home'} className='text-xl font-bold flex items-center lg:ml-2.5'>
               <span className='text-white whitespace-nowrap'>Sellution</span>
             </Link>
           </div>

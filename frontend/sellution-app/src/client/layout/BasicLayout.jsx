@@ -1,7 +1,8 @@
 import NavbarComponent from '@/client/layout/partials/NavbarComponent';
 import SidebarCompoent from '@/client/layout/partials/SidebarComponent';
+import { Outlet } from 'react-router-dom';
 
-const BasicLayout = ({ children }) => {
+const BasicLayout = () => {
   return (
     <div className='w-dvw h-dvh flex flex-col'>
       <div className='w-[100%] h-[64px]'>
@@ -11,7 +12,9 @@ const BasicLayout = ({ children }) => {
         <div className='w-0 lg:w-[250px] flex-shrink-0'>
           <SidebarCompoent />
         </div>
-        <main className='flex-auto bg-green-50'>{children}</main>
+        <main className='flex-auto bg-green-50'>
+          <Outlet />
+        </main>
       </div>
     </div>
   );

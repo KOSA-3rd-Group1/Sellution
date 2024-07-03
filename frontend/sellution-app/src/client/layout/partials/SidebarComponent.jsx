@@ -4,7 +4,7 @@ import {
   CustomerIcon,
   OrderIcon,
   ProductIcon,
-  ReleaseIcon,
+  //   ReleaseIcon,
   PaymentHistoryIcon,
   EventIcon,
   ShopManagementIcon,
@@ -22,18 +22,14 @@ const SidebarCompoent = (props) => {
           </button>
         </div>
         <div className='space-y-2 pt-2'>
-          <SidebarBtn Icon={HomeIcon} content={'홈'} selected={props.menu == 1 || true} />
-          <SidebarBtn Icon={CustomerIcon} content={'회원'} selected={props.menu == 2} />
-          <SidebarBtn Icon={OrderIcon} content={'주문'} selected={props.menu == 3} />
-          <SidebarBtn Icon={ProductIcon} content={'상품'} selected={props.menu == 4} />
-          <SidebarBtn Icon={ReleaseIcon} content={'출고'} selected={props.menu == 5} />
-          <SidebarBtn Icon={PaymentHistoryIcon} content={'결제 내역'} selected={props.menu == 6} />
-          <SidebarBtn Icon={EventIcon} content={'이벤트'} selected={props.menu == 7} />
-          <SidebarBtn
-            Icon={ShopManagementIcon}
-            content={'쇼핑몰 관리'}
-            selected={props.menu == 8}
-          />
+          <SidebarBtn to='/home' Icon={HomeIcon} content={'홈'} />
+          <SidebarBtn to='/customer' Icon={CustomerIcon} content={'회원'} />
+          <SidebarBtn to='/order' Icon={OrderIcon} content={'주문'} />
+          <SidebarBtn to='/product' Icon={ProductIcon} content={'상품'} />
+          {/* <SidebarBtn to='/' Icon={ReleaseIcon} content={'출고'} /> */}
+          <SidebarBtn to='/payment-history' Icon={PaymentHistoryIcon} content={'결제 내역'} />
+          <SidebarBtn to='/event' Icon={EventIcon} content={'이벤트'} />
+          <SidebarBtn to='/shop-management' Icon={ShopManagementIcon} content={'쇼핑몰 관리'} />
         </div>
       </div>
     </div>

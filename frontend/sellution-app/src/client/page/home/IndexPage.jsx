@@ -1,11 +1,7 @@
-import BasicLayout from '@/client/layout/BasicLayout';
+import IndexComponent from '@/client/component/home/IndexComponent';
 
 const IndexPage = () => {
-  return (
-    <BasicLayout>
-      <div>홈인가요?</div>
-    </BasicLayout>
-  );
+  return <IndexComponent />;
 };
 
 export default IndexPage;
