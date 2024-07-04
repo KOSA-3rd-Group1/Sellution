@@ -15,12 +15,14 @@ const shopManagementRouter = () => {
     {
       path: '',
       element: (
-        <MainHeaderComponent>
+        <MainHeaderComponent
+          breadcrumbs={[{ label: '홈', link: '/home' }, { label: '쇼핑몰 관리' }]}
+        >
           <MainHeaderNavLayout
-            nav={[
-              ['url-setting', 'URL 설정'],
-              ['display-setting', '화면 설정'],
-              ['sale-setting', '판매 설정'],
+            navMenus={[
+              { label: 'URL 설정', link: 'url-setting' },
+              { label: '화면 설정', link: 'display-setting' },
+              { label: '판매 설정', link: 'sale-setting' },
             ]}
           />
         </MainHeaderComponent>

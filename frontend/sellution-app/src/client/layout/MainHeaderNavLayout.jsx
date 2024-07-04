@@ -1,20 +1,20 @@
 import { NavLink, Outlet } from 'react-router-dom';
 
-const MainHeaderNavLayout = (props) => {
+const MainHeaderNavLayout = ({ navMenus }) => {
   return (
     <>
       <nav>
-        {props.nav.map(([path, label], index) => (
+        {navMenus.map((navMenu, index) => (
           <NavLink
             key={index}
-            to={`${path}`} // 절대 경로로 설정
+            to={`${navMenu.link}`} // 절대 경로로 설정
             className={({ isActive }) =>
               isActive
                 ? 'text-brandOrange bg-brandOrange-light'
                 : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'
             }
           >
-            {label}
+            {navMenu.label}
           </NavLink>
         ))}
       </nav>

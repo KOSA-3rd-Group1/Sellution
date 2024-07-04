@@ -17,7 +17,9 @@ const paymentHistoryRouter = () => {
     {
       path: 'list',
       element: (
-        <MainHeaderComponent>
+        <MainHeaderComponent
+          breadcrumbs={[{ label: '홈', link: '/home' }, { label: '결제 내역 관리' }]}
+        >
           <LazyComponent Component={ListPage} />
         </MainHeaderComponent>
       ),
@@ -25,7 +27,13 @@ const paymentHistoryRouter = () => {
     {
       path: 'detail',
       element: (
-        <MainHeaderComponent>
+        <MainHeaderComponent
+          breadcrumbs={[
+            { label: '홈', link: '/home' },
+            { label: '결제 내역 관리', link: '/payment-history' },
+            { label: '결제 내역 상세' },
+          ]}
+        >
           <LazyComponent Component={DetailPage} />
         </MainHeaderComponent>
       ),

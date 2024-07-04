@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 const ListComponent = () => {
   return (
-    <div>
+    <div className='bg-red-600 w-full h-full'>
       <div className='text-lg'>회원 목록 화면</div>
       <Link to='/customer/detail' className='w-fit h-5 bg-blue-400'>
         회원 상세 이동 테스트
