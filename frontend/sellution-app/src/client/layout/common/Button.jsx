@@ -11,3 +11,22 @@ export const SidebarBtn = ({ to, Icon, content }) => (
     <span className='ml-4'>{content}</span>
   </NavLink>
 );
+
+export const FooterBtn1 = (props) => (
+  <button
+    className={`h-12 w-[180px] row-center-position gap-3 text-lg text-brandOrange border border-brandOrange rounded-md `}
+    onClick={() => props.event()}
+  >
+    {props.Icon && <props.Icon className='object-contain h-6' />}
+    <div>{props.content}</div>
+  </button>
+);
+
+export const FooterBtn2 = (props) => (
+  <button
+    className={`h-12 w-[180px] row-center-position gap-3 text-lg text-white bg-brandOrange rounded-md `}
+    onClick={() => props.event()}
+  >
+    <div>{props.content}</div>
+  </button>
+);

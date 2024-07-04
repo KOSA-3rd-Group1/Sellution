@@ -23,7 +23,10 @@ const customerRouter = () => {
     {
       path: 'list',
       element: (
-        <MainHeaderComponent breadcrumbs={[{ label: '홈', link: '/home' }, { label: '회원 관리' }]}>
+        <MainHeaderComponent
+          breadcrumbs={[{ label: '홈', link: '/home' }, { label: '회원 관리' }]}
+          title={'회원 관리'}
+        >
           <LazyComponent Component={ListPage} />
         </MainHeaderComponent>
       ),
@@ -37,6 +40,7 @@ const customerRouter = () => {
             { label: '회원 관리', link: '/customer' },
             { label: '회원 등록' },
           ]}
+          title={'회원 등록'}
         >
           <LazyComponent Component={AddPage} />
         </MainHeaderComponent>
@@ -51,6 +55,7 @@ const customerRouter = () => {
             { label: '회원 관리', link: '/customer' },
             { label: '회원 상세' },
           ]}
+          title={'회원 상세 정보'}
         >
           <MainHeaderNavLayout
             navMenus={[

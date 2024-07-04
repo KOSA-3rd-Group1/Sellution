@@ -1,12 +1,24 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import FooterComponent from '@/client/layout/partials/FooterComponent';
 
 const AddComponent = () => {
+  const navigate = useNavigate();
+  const moveList = () => {
+    navigate({
+      pathname: '/customer/list',
+    });
+  };
+  const dummyEvent = () => {
+    alert('더미 이벤트 발생');
+  };
+
   return (
-    <div>
-      <div className='text-lg'>회원 등록 화면</div>
-      <Link to='/customer/list' className='w-fit h-5 bg-green-400'>
-        취소
-      </Link>
+    <div className='w-full h-full flex flex-col justify-between'>
+      <section className='flex-auto bg-green-200'></section>
+      <FooterComponent
+        btn1={{ label: '취소', event: moveList }}
+        btn2={{ label: '회원 등록', event: dummyEvent }}
+      />
     </div>
   );
 };
