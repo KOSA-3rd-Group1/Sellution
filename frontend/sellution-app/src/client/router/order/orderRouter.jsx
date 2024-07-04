@@ -17,7 +17,7 @@ const orderRouter = () => {
     {
       path: 'list',
       element: (
-        <MainHeaderComponent>
+        <MainHeaderComponent breadcrumbs={[{ label: '홈', link: '/home' }, { label: '주문 관리' }]}>
           <LazyComponent Component={ListPage} />
         </MainHeaderComponent>
       ),
@@ -25,7 +25,13 @@ const orderRouter = () => {
     {
       path: 'detail',
       element: (
-        <MainHeaderComponent>
+        <MainHeaderComponent
+          breadcrumbs={[
+            { label: '홈', link: '/home' },
+            { label: '주문 관리', link: '/order' },
+            { label: '주문 상세' },
+          ]}
+        >
           <LazyComponent Component={DetailPage} />
         </MainHeaderComponent>
       ),

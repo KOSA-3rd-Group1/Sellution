@@ -16,7 +16,9 @@ const eventRouter = () => {
     {
       path: 'list',
       element: (
-        <MainHeaderComponent>
+        <MainHeaderComponent
+          breadcrumbs={[{ label: '홈', link: '/home' }, { label: '이벤트 관리' }]}
+        >
           <LazyComponent Component={ListPage} />
         </MainHeaderComponent>
       ),

@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 
 const NavbarComponent = () => {
   return (
-    <nav className='w-full h-full bg-navbarBackground'>
-      <div className='px-3 py-3 lg:px-5'>
+    <nav className='w-full h-full bg-navbarBackground flex justify-between items-center'>
+      <div className='flex-1 px-3 py-3 lg:px-5'>
         <div className='flex justify-between items-center'>
           <div className='flex items-center justify-start'>
             <button
@@ -94,7 +94,7 @@ const NavbarComponent = () => {
                 </g>
               </svg>
             </button>
-            <button className='w-[150px] h-9 text-white bg-gray-500 hover:bg-gray-400 focus:ring-2 focus:ring-gray-200 rounded-lg text-xs items-center'>
+            <button className='w-[150px] h-9 text-xs mr-3 lg:mr-1 text-white bg-gray-500 hover:bg-gray-400 focus:ring-2 focus:ring-gray-200 rounded-lg'>
               테스트 관리자
             </button>
           </div>

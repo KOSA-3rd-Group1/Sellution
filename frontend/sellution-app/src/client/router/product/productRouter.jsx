@@ -23,11 +23,11 @@ const productRouter = () => {
     {
       path: '',
       element: (
-        <MainHeaderComponent>
+        <MainHeaderComponent breadcrumbs={[{ label: '홈', link: '/home' }, { label: '상품 관리' }]}>
           <MainHeaderNavLayout
-            nav={[
-              ['list', '상품 목록'],
-              ['category-list', '카테고리 목록'],
+            navMenus={[
+              { label: '상품 목록', link: 'list' },
+              { label: '카테고리 목록', link: 'category-list' },
             ]}
           />
         </MainHeaderComponent>
@@ -46,7 +46,13 @@ const productRouter = () => {
     {
       path: 'detail',
       element: (
-        <MainHeaderComponent>
+        <MainHeaderComponent
+          breadcrumbs={[
+            { label: '홈', link: '/home' },
+            { label: '상품 관리', link: '/product' },
+            { label: '상품 상세' },
+          ]}
+        >
           <LazyComponent Component={DetailPage} />
         </MainHeaderComponent>
       ),
@@ -54,7 +60,13 @@ const productRouter = () => {
     {
       path: 'add',
       element: (
-        <MainHeaderComponent>
+        <MainHeaderComponent
+          breadcrumbs={[
+            { label: '홈', link: '/home' },
+            { label: '상품 관리', link: '/product' },
+            { label: '상품 등록' },
+          ]}
+        >
           <LazyComponent Component={AddPage} />
         </MainHeaderComponent>
       ),
@@ -62,7 +74,13 @@ const productRouter = () => {
     {
       path: 'category-detail',
       element: (
-        <MainHeaderComponent>
+        <MainHeaderComponent
+          breadcrumbs={[
+            { label: '홈', link: '/home' },
+            { label: '상품 관리', link: '/product' },
+            { label: '카테고리 상세' },
+          ]}
+        >
           <LazyComponent Component={CategoryDetailPage} />
         </MainHeaderComponent>
       ),
@@ -70,7 +88,13 @@ const productRouter = () => {
     {
       path: 'category-add',
       element: (
-        <MainHeaderComponent>
+        <MainHeaderComponent
+          breadcrumbs={[
+            { label: '홈', link: '/home' },
+            { label: '상품 관리', link: '/product' },
+            { label: '카테고리 등록' },
+          ]}
+        >
           <LazyComponent Component={CategoryAddPage} />
         </MainHeaderComponent>
       ),
