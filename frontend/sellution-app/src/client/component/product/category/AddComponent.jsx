@@ -5,7 +5,7 @@ const AddComponent = () => {
   const navigate = useNavigate();
   const moveList = () => {
     navigate({
-      pathname: '/product/category-list',
+      pathname: '/product/category',
     });
   };
   const dummyEvent = () => {

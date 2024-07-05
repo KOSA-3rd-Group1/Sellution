@@ -12,19 +12,19 @@ const customerPaymentRouter = () => {
   return [
     {
       path: '',
-      element: <Navigate replace to='list' />,
-    },
-    {
-      path: 'list',
       element: <LazyComponent Component={ListPage} />,
-    },
-    {
-      path: 'detail',
-      element: <LazyComponent Component={DetailPage} />,
     },
     {
       path: 'add',
       element: <LazyComponent Component={AddPage} />,
+    },
+    {
+      path: ':paymentId',
+      element: <LazyComponent Component={DetailPage} />,
+    },
+    {
+      path: '*',
+      element: <Navigate replace to='' />,
     },
   ];
 };

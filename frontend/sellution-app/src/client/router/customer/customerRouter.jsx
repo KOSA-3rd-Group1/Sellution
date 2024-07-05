@@ -18,10 +18,6 @@ const customerRouter = () => {
   return [
     {
       path: '',
-      element: <Navigate replace to='list' />,
-    },
-    {
-      path: 'list',
       element: (
         <MainHeaderComponent
           breadcrumbs={[{ label: '홈', link: '/home' }, { label: '회원 관리' }]}
@@ -47,7 +43,7 @@ const customerRouter = () => {
       ),
     },
     {
-      path: 'detail',
+      path: ':customerId',
       element: (
         <MainHeaderComponent
           breadcrumbs={[
@@ -69,10 +65,6 @@ const customerRouter = () => {
       ),
       children: [
         {
-          path: '',
-          element: <Navigate replace to='default' />,
-        },
-        {
           path: 'default',
           element: <LazyComponent Component={DetailDefaultPage} />,
         },
@@ -88,7 +80,20 @@ const customerRouter = () => {
           path: 'order',
           children: customerOrderRouter(),
         },
+        {
+          path: '',
+          element: <Navigate replace to='default' />,
+        },
+        {
+          path: '*',
+          element: <Navigate replace to='default' />,
+        },
       ],
+    },
+
+    {
+      path: '*',
+      element: <Navigate replace to='/customer' />,
     },
   ];
 };

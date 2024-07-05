@@ -11,10 +11,6 @@ const eventRouter = () => {
   return [
     {
       path: '',
-      element: <Navigate replace to='list' />,
-    },
-    {
-      path: 'list',
       element: (
         <MainHeaderComponent
           breadcrumbs={[{ label: '홈', link: '/home' }, { label: '이벤트 관리' }]}
@@ -23,6 +19,10 @@ const eventRouter = () => {
           <LazyComponent Component={ListPage} />
         </MainHeaderComponent>
       ),
+    },
+    {
+      path: '*',
+      element: <Navigate replace to='' />,
     },
   ];
 };

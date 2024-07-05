@@ -18,10 +18,6 @@ const productRouter = () => {
   return [
     {
       path: '',
-      element: <Navigate replace to='list' />,
-    },
-    {
-      path: '',
       element: (
         <MainHeaderComponent
           breadcrumbs={[{ label: '홈', link: '/home' }, { label: '상품 관리' }]}
@@ -29,35 +25,59 @@ const productRouter = () => {
         >
           <MainHeaderNavLayout
             navMenus={[
-              { label: '상품 목록', link: 'list' },
-              { label: '카테고리 목록', link: 'category-list' },
+              { label: '상품 목록', link: '' },
+              { label: '카테고리 목록', link: 'category' },
             ]}
+            isEnd={true}
           />
         </MainHeaderComponent>
       ),
       children: [
         {
-          path: 'list',
+          path: 'category',
+          element: <LazyComponent Component={CategoryListPage} />,
+        },
+        {
+          path: 'category/*',
+          element: <Navigate replace to='category' />,
+        },
+        {
+          path: '',
           element: <LazyComponent Component={ListPage} />,
         },
         {
-          path: 'category-list',
-          element: <LazyComponent Component={CategoryListPage} />,
+          path: '*',
+          element: <Navigate replace to='' />,
         },
       ],
     },
     {
-      path: 'detail',
+      path: 'category/add',
       element: (
         <MainHeaderComponent
           breadcrumbs={[
             { label: '홈', link: '/home' },
-            { label: '상품 관리', link: '/product' },
-            { label: '상품 상세' },
+            { label: '상품 관리', link: '/product/category' },
+            { label: '카테고리 등록' },
           ]}
-          title={'상품 상세 정보'}
+          title={'카테고리 등록'}
         >
-          <LazyComponent Component={DetailPage} />
+          <LazyComponent Component={CategoryAddPage} />
+        </MainHeaderComponent>
+      ),
+    },
+    {
+      path: 'category/:categoryId',
+      element: (
+        <MainHeaderComponent
+          breadcrumbs={[
+            { label: '홈', link: '/home' },
+            { label: '상품 관리', link: '/product/category' },
+            { label: '카테고리 상세' },
+          ]}
+          title={'카테고리 상세 정보'}
+        >
+          <LazyComponent Component={CategoryDetailPage} />
         </MainHeaderComponent>
       ),
     },
@@ -77,32 +97,17 @@ const productRouter = () => {
       ),
     },
     {
-      path: 'category-detail',
+      path: ':productId',
       element: (
         <MainHeaderComponent
           breadcrumbs={[
             { label: '홈', link: '/home' },
             { label: '상품 관리', link: '/product' },
-            { label: '카테고리 상세' },
+            { label: '상품 상세' },
           ]}
-          title={'카테고리 상세 정보'}
+          title={'상품 상세 정보'}
         >
-          <LazyComponent Component={CategoryDetailPage} />
-        </MainHeaderComponent>
-      ),
-    },
-    {
-      path: 'category-add',
-      element: (
-        <MainHeaderComponent
-          breadcrumbs={[
-            { label: '홈', link: '/home' },
-            { label: '상품 관리', link: '/product' },
-            { label: '카테고리 등록' },
-          ]}
-          title={'카테고리 등록'}
-        >
-          <LazyComponent Component={CategoryAddPage} />
+          <LazyComponent Component={DetailPage} />
         </MainHeaderComponent>
       ),
     },
