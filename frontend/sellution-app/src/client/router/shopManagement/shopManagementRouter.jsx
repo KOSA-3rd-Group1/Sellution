@@ -17,6 +17,7 @@ const shopManagementRouter = () => {
       element: (
         <MainHeaderComponent
           breadcrumbs={[{ label: '홈', link: '/home' }, { label: '쇼핑몰 관리' }]}
+          title={'쇼핑몰 관리'}
         >
           <MainHeaderNavLayout
             navMenus={[

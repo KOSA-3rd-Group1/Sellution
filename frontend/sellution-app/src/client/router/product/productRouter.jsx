@@ -23,7 +23,10 @@ const productRouter = () => {
     {
       path: '',
       element: (
-        <MainHeaderComponent breadcrumbs={[{ label: '홈', link: '/home' }, { label: '상품 관리' }]}>
+        <MainHeaderComponent
+          breadcrumbs={[{ label: '홈', link: '/home' }, { label: '상품 관리' }]}
+          title={'상품 관리'}
+        >
           <MainHeaderNavLayout
             navMenus={[
               { label: '상품 목록', link: 'list' },
@@ -52,6 +55,7 @@ const productRouter = () => {
             { label: '상품 관리', link: '/product' },
             { label: '상품 상세' },
           ]}
+          title={'상품 상세 정보'}
         >
           <LazyComponent Component={DetailPage} />
         </MainHeaderComponent>
@@ -66,6 +70,7 @@ const productRouter = () => {
             { label: '상품 관리', link: '/product' },
             { label: '상품 등록' },
           ]}
+          title={'상품 등록'}
         >
           <LazyComponent Component={AddPage} />
         </MainHeaderComponent>
@@ -80,6 +85,7 @@ const productRouter = () => {
             { label: '상품 관리', link: '/product' },
             { label: '카테고리 상세' },
           ]}
+          title={'카테고리 상세 정보'}
         >
           <LazyComponent Component={CategoryDetailPage} />
         </MainHeaderComponent>
@@ -94,6 +100,7 @@ const productRouter = () => {
             { label: '상품 관리', link: '/product' },
             { label: '카테고리 등록' },
           ]}
+          title={'카테고리 등록'}
         >
           <LazyComponent Component={CategoryAddPage} />
         </MainHeaderComponent>

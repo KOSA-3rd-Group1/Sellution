@@ -13,13 +13,13 @@ import { SidebarBtn } from '@/client/layout/common/Button';
 
 const SidebarCompoent = (props) => {
   return (
-    <div className='w-full h-full flex flex-col flex-shrink-0 border-gray-200 border-r bg-white px-5'>
+    <div className='w-full h-full px-5 flex-1 flex flex-col flex-shrink-0 border-gray-200 border-r bg-white'>
       <div className='flex-1 flex flex-col divide-y'>
         <div className='space-y-2'>
-          <button className='w-full h-14 p-2 flex items-center text-base text-gray-900 font-normal rounded-lg'>
+          <div className='w-full h-14 p-2 flex items-center text-base text-gray-900 font-normal rounded-lg'>
             <CompanyIcon className='w-6 h-6' />
-            <span className='ml-3'>{props.companyName || '테스트 회사'}</span>
-          </button>
+            <span className='ml-3'>{props.companyName}</span>
+          </div>
         </div>
         <div className='space-y-2 pt-2'>
           <SidebarBtn to='/home' Icon={HomeIcon} content={'홈'} />
