@@ -12,10 +12,6 @@ const paymentHistoryRouter = () => {
   return [
     {
       path: '',
-      element: <Navigate replace to='list' />,
-    },
-    {
-      path: 'list',
       element: (
         <MainHeaderComponent
           breadcrumbs={[{ label: '홈', link: '/home' }, { label: '결제 내역 관리' }]}
@@ -26,7 +22,7 @@ const paymentHistoryRouter = () => {
       ),
     },
     {
-      path: 'detail',
+      path: ':paymentHistoryId',
       element: (
         <MainHeaderComponent
           breadcrumbs={[
@@ -39,6 +35,10 @@ const paymentHistoryRouter = () => {
           <LazyComponent Component={DetailPage} />
         </MainHeaderComponent>
       ),
+    },
+    {
+      path: '*',
+      element: <Navigate replace to='' />,
     },
   ];
 };

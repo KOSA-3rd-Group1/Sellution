@@ -1,11 +1,13 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 
 const AddComponent = () => {
+  const { customerId } = useParams();
+
   const navigate = useNavigate();
   const moveList = () => {
     navigate({
-      pathname: '/customer/detail/address/list',
+      pathname: `/customer/${customerId}/address`,
     });
   };
   const dummyEvent = () => {
@@ -16,6 +18,7 @@ const AddComponent = () => {
     <div className='w-full h-full flex flex-col justify-between'>
       <section className='flex-auto bg-green-200'>
         <div className='text-lg'>배송지 등록 화면</div>
+        <div>회원 ID : {customerId}</div>
       </section>
       <FooterComponent
         btn1={{ label: '취소', event: moveList }}

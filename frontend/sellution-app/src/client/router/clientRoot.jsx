@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import BasicLayout from '@/client/layout/BasicLayout';
 
@@ -10,11 +10,7 @@ import paymentHistoryRouter from '@/client/router/paymentHistory/paymentHistoryR
 import eventRouter from '@/client/router/event/eventRouter';
 import shopManagementRouter from '@/client/router/shopManagement/shopManagementRouter';
 
-const clientRoot = createBrowserRouter([
-  {
-    path: '',
-    element: <Navigate replace to='home' />,
-  },
+const clientRoot = () => [
   {
     path: '/',
     element: <BasicLayout />, //기본 레이아웃
@@ -47,8 +43,16 @@ const clientRoot = createBrowserRouter([
         path: 'shop-management',
         children: shopManagementRouter(),
       },
+      {
+        path: '',
+        element: <Navigate replace to='home' />,
+      },
+      {
+        path: '*',
+        element: <Navigate replace to='home' />,
+      },
     ],
   },
-]);
+];
 
 export default clientRoot;

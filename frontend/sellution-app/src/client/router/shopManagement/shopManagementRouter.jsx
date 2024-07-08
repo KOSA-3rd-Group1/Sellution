@@ -30,10 +30,6 @@ const shopManagementRouter = () => {
       ),
       children: [
         {
-          path: '',
-          element: <Navigate replace to='url-setting' />,
-        },
-        {
           path: 'url-setting',
           element: <LazyComponent Component={UrlSettingPage} />,
         },
@@ -44,6 +40,14 @@ const shopManagementRouter = () => {
         {
           path: 'sale-setting',
           element: <LazyComponent Component={SaleSettingPage} />,
+        },
+        {
+          path: '',
+          element: <Navigate replace to='url-setting' />,
+        },
+        {
+          path: '*',
+          element: <Navigate replace to='url-setting' />,
         },
       ],
     },

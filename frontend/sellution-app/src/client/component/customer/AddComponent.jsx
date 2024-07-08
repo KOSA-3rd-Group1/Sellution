@@ -5,7 +5,7 @@ const AddComponent = () => {
   const navigate = useNavigate();
   const moveList = () => {
     navigate({
-      pathname: '/customer/list',
+      pathname: '/customer',
     });
   };
   const dummyEvent = () => {

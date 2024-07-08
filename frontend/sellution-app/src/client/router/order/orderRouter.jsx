@@ -12,10 +12,6 @@ const orderRouter = () => {
   return [
     {
       path: '',
-      element: <Navigate replace to='list' />,
-    },
-    {
-      path: 'list',
       element: (
         <MainHeaderComponent
           breadcrumbs={[{ label: '홈', link: '/home' }, { label: '주문 관리' }]}
@@ -26,7 +22,7 @@ const orderRouter = () => {
       ),
     },
     {
-      path: 'detail',
+      path: ':orderId',
       element: (
         <MainHeaderComponent
           breadcrumbs={[
@@ -39,6 +35,10 @@ const orderRouter = () => {
           <LazyComponent Component={DetailPage} />
         </MainHeaderComponent>
       ),
+    },
+    {
+      path: '*',
+      element: <Navigate replace to='' />,
     },
   ];
 };

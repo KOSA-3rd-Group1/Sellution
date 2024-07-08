@@ -11,15 +11,15 @@ const customerOrderRouter = () => {
   return [
     {
       path: '',
-      element: <Navigate replace to='list' />,
-    },
-    {
-      path: 'list',
       element: <LazyComponent Component={ListPage} />,
     },
     {
-      path: 'detail',
+      path: ':orderId',
       element: <LazyComponent Component={DetailPage} />,
+    },
+    {
+      path: '*',
+      element: <Navigate replace to='' />,
     },
   ];
 };
