@@ -16,6 +16,7 @@ const AddComponent = () => {
     <div className='w-full h-full flex flex-col justify-between'>
       <section className='flex-auto bg-green-200'>
         <div className='text-lg'>상품 등록 화면</div>
+        <div></div>
       </section>
       <FooterComponent
         btn1={{ label: '취소', event: moveList }}
