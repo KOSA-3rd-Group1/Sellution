@@ -159,7 +159,7 @@
             <appender-ref ref="FILE-ORDER"/>
         </logger>
 
-        <logger name="shop.sellution.server.payment" level="INFO">
+        <logger name="shop.sellution.server.account" level="INFO">
             <appender-ref ref="FILE-PAYMENT"/>
         </logger>
     </springProfile>
