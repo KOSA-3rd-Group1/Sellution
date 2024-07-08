@@ -1,5 +1,11 @@
+import { RouterProvider } from 'react-router-dom';
+
+// import clientRoot from '@/client/router/clientRoot.jsx';
+// import customerRoot from '@/customer/router/customerRoot';
+import root from '@/router/root';
+
 function App() {
-  return <h1 className='text-3xl font-bold underline'>Hello world!</h1>;
+  return <RouterProvider router={root} />;
 }
 
 export default App;
