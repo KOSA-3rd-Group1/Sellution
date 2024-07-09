@@ -1,4 +1,4 @@
-package shop.sellution.server.account.domain;
+package shop.sellution.server.notification.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,33 +6,37 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import shop.sellution.server.account.domain.type.BankCode;
 import shop.sellution.server.customer.domain.Customer;
-
+import shop.sellution.server.company.domain.Company;
+import shop.sellution.server.notification.domain.type.MessageType;
 
 import java.time.LocalDateTime;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class Account {
+public class Message {
 
     @Id
-    @Column(name = "account_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "message_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @Column(nullable = false,length = 100,unique = true)
-    private String accountNumber;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private BankCode bankCode;
+    @Column(nullable = false)
+    private MessageType type;
+
+    @Column(nullable = false, length = 255)
+    private String content;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

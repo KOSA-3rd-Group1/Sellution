@@ -1,4 +1,5 @@
-package shop.sellution.server.account.domain;
+package shop.sellution.server.account.domain.type;
+
 
 public enum BankCode {
     KB("국민은행"),
@@ -13,7 +14,4 @@ public enum BankCode {
 
     private String bankName;
     BankCode(String bankName) {}
-    public String getBankName() {
-        return bankName;
-    }
 }
