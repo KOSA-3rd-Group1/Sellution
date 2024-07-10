@@ -9,10 +9,15 @@ public enum ExceptionCode {
 
 
     INVALID_REQUEST(1000, "올바르지 않은 요청입니다."),
+    INVALID_INPUT_VALUE(1001, "유효하지 않는 요청값입니다."),
 
     DUPLICATED_CONTRACT_COMPANY_BUSINESS_REGISTRATION_NUMBER(6001, "이미 등록된 사업자 등록 번호입니다."),
     DUPLICATED_CONTRACT_COMPANY_CONTRACT_AUTH_ID(6002, "이미 사용 중인 계약 사업체 인증 아이디입니다."),
     NOT_FOUNT_CONTRACT_AUTH_ID(6003, "요청한 ID에 해당하는 사업체를 찾을 수 없습니다."),
+
+    DUPLICATED_USERNAME(6004, "이미 사용 중인 사용자명입니다."),
+    DUPLICATED_PHONE_NUMBER(6005, "이미 등록된 전화번호입니다."),
+    NOT_FOUND_COMPANY_ID(6006, "해당 회사를 찾을 수 없습니다."),
 
     // ---------------------------- Account 5001 ~ 5500 ---------------------------------------
     NOT_FOUND_CUSTOMER_ID(5001,"요청한 ID에 해당하는 회원을 찾을 수 없습니다."),

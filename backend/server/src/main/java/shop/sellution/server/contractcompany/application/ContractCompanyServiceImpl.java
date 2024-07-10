@@ -69,7 +69,7 @@ public class ContractCompanyServiceImpl implements ContractCompanyService {
         }
     }
 
-    //사업체(설정) 객체 생성 및 저장
+    // 사업체(설정) 객체 생성 및 저장
     private Company createAndSaveCompany(String contractCompanyName) {
         Company company = Company.builder()
                 .displayName(contractCompanyName)
@@ -78,7 +78,7 @@ public class ContractCompanyServiceImpl implements ContractCompanyService {
         return companyRepository.save(company);
     }
 
-    //계약 사업체 객체 생성
+    // 계약 사업체 객체 생성
     private ContractCompany createContractCompany(SaveContractCompanyReq request, Long companyId) {
         int EXPIRATION_PERIOD_DAYS = 7; //만료 기간 (7일 후 만료)
         return ContractCompany.builder()
@@ -100,7 +100,7 @@ public class ContractCompanyServiceImpl implements ContractCompanyService {
         return name + "-" + randomNum;
     }
 
-    //비밀 번호 검증 로직
+    // 비밀 번호 검증 로직
     private void validatePassword(String reqPassword, String rawPassword) {
         if (!passwordEncoder.matches(rawPassword, rawPassword)) {
             throw new BadRequestException(ExceptionCode.INVALID_PASSWORD);
