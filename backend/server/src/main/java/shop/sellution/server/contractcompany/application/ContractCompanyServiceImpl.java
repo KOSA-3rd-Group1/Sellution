@@ -8,7 +8,9 @@ import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.CompanyRepository;
 import shop.sellution.server.contractcompany.domain.ContractCompany;
 import shop.sellution.server.contractcompany.domain.ContractCompanyRepository;
+import shop.sellution.server.contractcompany.dto.request.FindContractCompanyReq;
 import shop.sellution.server.contractcompany.dto.request.SaveContractCompanyReq;
+import shop.sellution.server.contractcompany.dto.response.FindContractCompanyRes;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
 
@@ -36,6 +38,21 @@ public class ContractCompanyServiceImpl implements ContractCompanyService {
         ContractCompany savedContractCompany = contractCompanyRepository.save(contractCompany);
 
         return savedContractCompany.getId();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public FindContractCompanyRes findContractCompany(FindContractCompanyReq request) {
+        ContractCompany contractCompany = contractCompanyRepository.findByContractAuthId(request.getContractAuthId())
+                .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUNT_CONTRACT_AUTH_ID));
+
+        validatePassword(request.getContractAuthPassword(), contractCompany.getContractAuthPassword());
+
+        return new FindContractCompanyRes(
+                contractCompany.getCompanyId(),
+                contractCompany.getContractCompanyName(),
+                contractCompany.getBusinessRegistrationNumber()
+        );
     }
 
     // 사업자 등록 번호 중복 여부 확인
@@ -81,5 +98,12 @@ public class ContractCompanyServiceImpl implements ContractCompanyService {
         Random random = new Random();
         int randomNum = RANDOM_NAME_SUFFIX_MIN + random.nextInt(RANDOM_NAME_SUFFIX_MAX - RANDOM_NAME_SUFFIX_MIN + 1);
         return name + "-" + randomNum;
+    }
+
+    //비밀 번호 검증 로직
+    private void validatePassword(String reqPassword, String rawPassword) {
+        if (!passwordEncoder.matches(rawPassword, rawPassword)) {
+            throw new BadRequestException(ExceptionCode.INVALID_PASSWORD);
+        }
     }
 }

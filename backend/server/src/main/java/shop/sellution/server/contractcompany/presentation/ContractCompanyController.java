@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.sellution.server.contractcompany.application.ContractCompanyService;
+import shop.sellution.server.contractcompany.dto.request.FindContractCompanyReq;
 import shop.sellution.server.contractcompany.dto.request.SaveContractCompanyReq;
+import shop.sellution.server.contractcompany.dto.response.FindContractCompanyRes;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/contract-company")
@@ -19,10 +23,14 @@ public class ContractCompanyController {
     private  final ContractCompanyService contractCompanyService;
 
     @PostMapping("/register")
-    public ResponseEntity<Long> saveContractCompany(@Valid @RequestBody SaveContractCompanyReq request) {
-        System.out.println(request.toString());
+    public ResponseEntity<Map<String, Long>> saveContractCompany(@Valid @RequestBody SaveContractCompanyReq request) {
         Long contractCompanyId = contractCompanyService.saveContractCompany(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(contractCompanyId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", contractCompanyId));
+    }
 
+    @PostMapping("/authenticate")
+    public ResponseEntity<FindContractCompanyRes> findContractCompany(@Valid @RequestBody FindContractCompanyReq request) {
+        FindContractCompanyRes findContractCompanyRes = contractCompanyService.findContractCompany(request);
+        return ResponseEntity.status(HttpStatus.OK).body(findContractCompanyRes);
     }
 }
