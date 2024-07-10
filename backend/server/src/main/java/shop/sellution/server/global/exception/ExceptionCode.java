@@ -10,8 +10,8 @@ public enum ExceptionCode {
 
     INVALID_REQUEST(1000, "올바르지 않은 요청입니다."),
 
-
-
+    DUPLICATED_CONTRACT_COMPANY_BUSINESS_REGISTRATION_NUMBER(6001, "이미 등록된 사업자 등록 번호입니다."),
+    DUPLICATED_CONTRACT_COMPANY_CONTRACT_AUTH_ID(6002, "이미 사용 중인 계약 사업체 인증 아이디입니다."),
 
 
 

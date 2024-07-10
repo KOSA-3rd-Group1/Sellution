@@ -47,6 +47,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false,length = 255)
     private String productInformation;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DisplayStatus isVisible = Y;
@@ -55,13 +56,16 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private DeliveryType deliveryType;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DisplayStatus isDiscount = N;
 
+    @Builder.Default
     @Column(nullable = false)
     private Integer discountRate = 0;
 
+    @Builder.Default
     @Column(nullable = false)
     private int discountedPrice = 0;
 
@@ -71,6 +75,7 @@ public class Product extends BaseEntity {
     @Column(nullable = true)
     private LocalDateTime discountEndDate;
 
+    @Builder.Default
     @Column(nullable = false)
     private int previousMonthSales = 0;
 }

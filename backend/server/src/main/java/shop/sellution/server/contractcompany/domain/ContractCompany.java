@@ -1,9 +1,8 @@
 package shop.sellution.server.contractcompany.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 public class ContractCompany {
 
     @Id
@@ -24,41 +23,33 @@ public class ContractCompany {
     @Column(name = "company_id", unique = true)
     private Long companyId;
 
-    @NotNull
-    @Column(name = "contract_company_name")
+    @Column(name = "contract_company_name", nullable = false)
     private String contractCompanyName;
 
-    @NotNull
-    @Column(name = "business_registration_number", unique = true)
+    @Column(name = "business_registration_number", unique = true, nullable = false)
     private String businessRegistrationNumber;
 
-    @NotNull
-    @Column(name = "contract_auth_id", unique = true)
+    @Column(name = "contract_auth_id", unique = true, nullable = false)
     private String contractAuthId;
 
-    @NotNull
-    @Column(name = "contract_auth_password")
+    @Column(name = "contract_auth_password", nullable = false)
     private String contractAuthPassword;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
-    @NotNull
-    @Column(name = "expires_at")
+    @Column(name = "expires_at", nullable = false)
     private LocalDateTime expiresAt;
 
     @Builder
-    public ContractCompany(String contractCompanyName, String businessRegistrationNumber, String contractAuthId, String contractAuthPassword, LocalDateTime expiresAt) {
+    public ContractCompany(Long companyId, String contractCompanyName, String businessRegistrationNumber, String contractAuthId, String contractAuthPassword, LocalDateTime expiresAt) {
+        this.companyId = companyId;
         this.contractCompanyName = contractCompanyName;
         this.businessRegistrationNumber = businessRegistrationNumber;
         this.contractAuthId = contractAuthId;
         this.contractAuthPassword = contractAuthPassword;
         this.expiresAt = expiresAt;
-    }
-
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
     }
 
     public boolean isValid() {
