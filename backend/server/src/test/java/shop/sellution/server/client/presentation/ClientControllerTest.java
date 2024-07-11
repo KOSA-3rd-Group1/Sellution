@@ -1,4 +1,4 @@
-package shop.sellution.server.client.present;
+package shop.sellution.server.client.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;

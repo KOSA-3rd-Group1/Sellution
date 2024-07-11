@@ -1,4 +1,4 @@
-package shop.sellution.server.client.present;
+package shop.sellution.server.client.presentation;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
