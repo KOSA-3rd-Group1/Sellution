@@ -25,40 +25,32 @@ public class Customer extends BaseEntity {
     @Column(name = "customer_id")
     private Long id;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-    @NotNull
-    @Column(name = "username", unique = true, length = 100)
+    @Column(name = "username", nullable = false, length = 100) //unique = true, 유니크 제약 제거
     private String username;
 
-    @NotNull
-    @Column(name = "password", length = 100)
+    @Column(name = "password", nullable = false, length = 100)
     private String password;
 
-    @NotNull
-    @Column(name = "name", length = 50)
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @NotNull
-    @Column(name = "phone_number", length = 50)
+    @Column(name = "phone_number", nullable = false, length = 50)
     private String phoneNumber;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "is_sms_agreement", length = 1)
+    @Column(name = "is_sms_agreement", nullable = false, length = 1)
     private DisplayStatus isSmsAgreement = DisplayStatus.Y;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "is_in_use", length = 1)
+    @Column(name = "is_in_use", nullable = false, length = 1)
     private DisplayStatus isInUse = DisplayStatus.N;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", length = 20)
+    @Column(name = "type", nullable = false, length = 20)
     private CustomerType type = CustomerType.NEW;
 
     @Column(name = "easy_pwd")

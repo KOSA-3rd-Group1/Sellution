@@ -2,6 +2,7 @@ lplugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.1'
 	id 'io.spring.dependency-management' version '1.1.5'
+	id 'org.asciidoctor.jvm.convert' version '3.3.2' // Asciidoctor 플러그인 추가
 }
 
 group = 'shop.sellution'
@@ -13,34 +14,94 @@ java {
 	}
 }
 
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+
+	asciidoctorExt
 }
 
 repositories {
 	mavenCentral()
 }
 
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// Spring Boot Starter Dependencies
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+	// Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// Database
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// Test Dependencies
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.mockito:mockito-junit-jupiter:3.6.28'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
-	implementation 'com.github.maricn:logback-slack-appender:1.6.1'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc' // rest docs
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor' // rest docs
+	implementation 'com.github.maricn:logback-slack-appender:1.6.1' // 슬랙 메시지 보내기
+	implementation 'org.springframework.boot:spring-boot-starter-webflux' // 외부 api 통신 [ webclient ]
+	testImplementation 'io.projectreactor:reactor-test' // webclient 테스트를 위한 reactor
+	testImplementation 'com.squareup.okhttp3:mockwebserver' // webclient 테스트를 쉽게하기 위한 mockwebserver
+	testImplementation 'org.springframework.restdocs:spring-restdocs-webtestclient'
 }
 
-tasks.named('test') {
+
+
+test {
+	outputs.dir snippetsDir
 	useJUnitPlatform()
 }
+
+asciidoctor {
+	forkOptions{
+		jvmArgs('--add-opens','java.base/sun.nio.ch=ALL-UNNAMED',
+				'--add-opens','java.base/java.io=ALL-UNNAMED')
+	}
+	configurations 'asciidoctorExt'
+	baseDirFollowsSourceFile()
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+tasks.register('copyDocument', Copy) {
+	dependsOn asciidoctor
+
+	from file("build/docs/asciidoc/")
+	into file("src/main/resources/static/docs")
+}
+
+
+
+
+build {
+	dependsOn copyDocument
+}
+

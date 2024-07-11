@@ -1,3 +1,4 @@
+src/test/resources/application*
 
 /logs
 src/main/resources/application-prod.yml

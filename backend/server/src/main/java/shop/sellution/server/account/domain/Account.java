@@ -2,6 +2,7 @@ package shop.sellution.server.account.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -27,14 +28,27 @@ public class Account {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column(nullable = false,length = 100,unique = true)
+    @Column(nullable = false, length = 100, unique = true)
     private String accountNumber;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private BankCode bankCode;
+    private String bankCode;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Builder
+    public Account(Customer customer, String accountNumber, String bankCode) {
+        this.customer = customer;
+        this.accountNumber = accountNumber;
+        this.bankCode = bankCode;
+    }
+
+    // 수정 메소드
+    public void update(String accountNumber, String bankCode) {
+        this.accountNumber = accountNumber;
+        this.bankCode = bankCode;
+    }
+
 }
