@@ -6,11 +6,11 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = IdValidator.class)
+@Constraint(validatedBy = PhoneNumberValidator.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidId {
-    String message() default "유효하지 않은 아이디 형식입니다.";
+public @interface ValidPhoneNumber {
+    String message() default "유효하지 않은 전화 번호 형식입니다.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

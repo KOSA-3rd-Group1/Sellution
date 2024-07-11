@@ -9,10 +9,30 @@ public enum ExceptionCode {
 
 
     INVALID_REQUEST(1000, "올바르지 않은 요청입니다."),
+    INVALID_INPUT_VALUE(1001, "유효하지 않는 요청값입니다."),
 
     DUPLICATED_CONTRACT_COMPANY_BUSINESS_REGISTRATION_NUMBER(6001, "이미 등록된 사업자 등록 번호입니다."),
     DUPLICATED_CONTRACT_COMPANY_CONTRACT_AUTH_ID(6002, "이미 사용 중인 계약 사업체 인증 아이디입니다."),
     NOT_FOUNT_CONTRACT_AUTH_ID(6003, "요청한 ID에 해당하는 사업체를 찾을 수 없습니다."),
+
+    DUPLICATED_USERNAME(6004, "이미 사용 중인 사용자명입니다."),
+    DUPLICATED_PHONE_NUMBER(6005, "이미 등록된 전화번호입니다."),
+    NOT_FOUND_COMPANY_ID(6006, "해당 회사를 찾을 수 없습니다."),
+
+    // auth
+    INVALID_USERNAME_FORMAT(7001, "유효하지 않은 로그인 형식입니다."),
+    INVALID_USER_ROLE(7002, "유효하지 않은 권한입니다."),
+    INVALID_COMPANY_ID_FORMAT(7003, "유효하지 않은 사업체 ID 형식입니다."),
+    NOT_FOUND_CLIENT(7004, "요청한 ID에 해당하는 고객을 찾을 수 없습니다."),
+    NOT_FOUND_CUSTOMER(7005, "요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
+
+    //JWT
+    EXPIRED_JWT_TOKEN(4000, "토큰이 만료되었습니다."),
+    UNSUPPORTED_JWT_TOKEN(4001, "지원하지 않는 JWT 형식입니다."),
+    INVALID_JWT_TOKEN(4002, "JWT 구조가 유효하지 않습니다."),
+    INVALID_JWT_SIGNATURE(4003, "JWT 서명이 유효하지 않습니다."),
+    EMPTY_JWT_CLAIMS(4004, "JWT claims 문자열이 비었습니다."),
+    NULL_REFRESH_TOKEN(4005, "Refresh Token이 존재하지 않습니다."),
 
     // ---------------------------- Account 5001 ~ 5500 ---------------------------------------
     NOT_FOUND_CUSTOMER_ID(5001,"요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
