@@ -1,28 +1,36 @@
 package shop.sellution.server.account.presentation;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import shop.sellution.server.account.application.AccountServiceImpl;
 import shop.sellution.server.account.domain.type.BankCode;
+import shop.sellution.server.account.dto.request.SaveAccountReq;
+import shop.sellution.server.account.dto.request.UpdateAccountReq;
 import shop.sellution.server.account.dto.response.FindAccountRes;
 import shop.sellution.server.common.BaseControllerTest;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AccountController.class)
 class AccountControllerTest extends BaseControllerTest {
@@ -106,4 +114,93 @@ class AccountControllerTest extends BaseControllerTest {
                         )
                 ));
     }
+
+    @DisplayName("계좌를 저장한다.")
+    @Test
+    void saveAccount_Success() throws Exception {
+        // given
+        Long customerId = 1L;
+        SaveAccountReq saveAccountReq = new SaveAccountReq();
+        saveAccountReq.setAccountNumber("42750204039102");
+        saveAccountReq.setBankCode("004");
+
+        String requestBody = new ObjectMapper().writeValueAsString(saveAccountReq);
+        // when
+        doNothing().when(accountService).saveAccount(anyLong(),any(SaveAccountReq.class));
+
+        // then
+        mockMvc.perform(post("/accounts/customers/{customerId}", customerId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(content().string("success"))
+                .andDo(document("Account/saveAccount",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("customerId").description("고객 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("accountNumber").description("계좌 번호"),
+                                fieldWithPath("bankCode").description("은행 코드")
+                        ),
+                        responseBody()
+                ));
+
+
+    }
+
+    @DisplayName("계좌를 수정한다.")
+    @Test
+    void updateAccount_Success() throws Exception {
+        // given
+        Long accountId = 1L;
+        UpdateAccountReq updateAccountReq = new UpdateAccountReq("1234567890", "004");
+
+        String requestBody = new ObjectMapper().writeValueAsString(updateAccountReq);
+
+        doNothing().when(accountService).updateAccount(anyLong(), any(UpdateAccountReq.class));
+
+        // when & then
+        mockMvc.perform(put("/accounts/{accountId}", accountId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(content().string("success"))
+                .andDo(document("Account/updateAccount",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("accountId").description("계좌 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("accountNumber").type(JsonFieldType.STRING).description("계좌 번호"),
+                                fieldWithPath("bankCode").type(JsonFieldType.STRING).description("은행 코드")
+                        )
+                ));
+    }
+
+    @DisplayName("계좌를 삭제한다.")
+    @Test
+    void deleteAccount_Success() throws Exception {
+        // given
+        Long accountId = 1L;
+
+        doNothing().when(accountService).deleteAccount(anyLong());
+
+        // when & then
+        mockMvc.perform(delete("/accounts/{accountId}", accountId))
+                .andExpect(status().isOk())
+                .andExpect(content().string("success"))
+                .andDo(document("Account/deleteAccount",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("accountId").description("계좌 ID")
+                        )
+                ));
+    }
+
+
+
 }

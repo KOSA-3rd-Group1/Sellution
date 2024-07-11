@@ -8,15 +8,17 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.account.dto.request.SaveAccountReq;
+import shop.sellution.server.account.dto.request.UpdateAccountReq;
 import shop.sellution.server.account.dto.response.FindAccountRes;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 
-import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_CUSTOMER_ID;
+import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_ACCOUNT;
+import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_CUSTOMER;
 
 
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -24,16 +26,16 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final CustomerRepository customerRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public Page<FindAccountRes> findAllAccountsByCustomerId(Long customerId, Pageable pageable) {
         return accountRepository.findAllByCustomerId(customerId, pageable).map(FindAccountRes::fromEntity);
     }
 
-    @Transactional
     @Override
     public void saveAccount(Long customerId,SaveAccountReq saveAccountReq) {
         Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER_ID));
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER));
 
         Account account = Account.builder()
                 .customer(customer)
@@ -43,4 +45,23 @@ public class AccountServiceImpl implements AccountService {
 
         accountRepository.save(account);
     }
+
+    @Override
+    public void updateAccount(Long accountId, UpdateAccountReq updateAccountReq) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACCOUNT));
+
+        account.update(updateAccountReq.getAccountNumber(), updateAccountReq.getBankCode());
+
+    }
+
+    @Override
+    public void deleteAccount(Long accountId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACCOUNT));
+
+        accountRepository.delete(account);
+    }
+
+
 }
