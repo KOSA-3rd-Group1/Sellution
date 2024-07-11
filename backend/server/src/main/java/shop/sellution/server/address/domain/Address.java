@@ -4,9 +4,7 @@ import jakarta.persistence.Entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.global.type.DisplayStatus;
@@ -16,6 +14,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "address")
 @Getter
+@Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Address {
 
@@ -31,7 +32,7 @@ public class Address {
 
     @NotNull
     @Column(length = 255)
-    private String address;
+    private String streetAddress;
 
     @NotNull
     @Column(length = 50)
