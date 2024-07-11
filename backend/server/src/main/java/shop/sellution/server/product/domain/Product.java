@@ -14,6 +14,7 @@ import static shop.sellution.server.global.type.DisplayStatus.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -78,4 +79,6 @@ public class Product extends BaseEntity {
     @Builder.Default
     @Column(nullable = false)
     private int previousMonthSales = 0;
+
+
 }
