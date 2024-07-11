@@ -68,6 +68,11 @@ dependencies {
 	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor' // rest docs
 	implementation 'com.github.maricn:logback-slack-appender:1.6.1' // 슬랙 메시지 보내기
 	implementation 'org.springframework.boot:spring-boot-starter-webflux' // 외부 api 통신 [ webclient ]
+
+	testImplementation 'org.mockito:mockito-core'
+	testImplementation 'org.mockito:mockito-junit-jupiter'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 
