@@ -39,9 +39,16 @@ public class Account {
     private LocalDateTime createdAt;
 
     @Builder
-    public Account(Customer customer, String accountNumber, BankCode bankCode) {
+    public Account(Customer customer, String accountNumber, String bankCode) {
         this.customer = customer;
         this.accountNumber = accountNumber;
-        this.bankCode = bankCode.getBackCode();
+        this.bankCode = bankCode;
     }
+
+    // 수정 메소드
+    public void update(String accountNumber, String bankCode) {
+        this.accountNumber = accountNumber;
+        this.bankCode = bankCode;
+    }
+
 }

@@ -15,8 +15,9 @@ public enum ExceptionCode {
 
 
     // ---------------------------- Account 5001 ~ 5500 ---------------------------------------
-    NOT_FOUND_CUSTOMER_ID(5001,"요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
+    NOT_FOUND_CUSTOMER(5001,"요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
     INVALID_ACCOUNT_INFO(5002,"유효하지않은 계좌정보입니다."),
+    NOT_FOUND_ACCOUNT(5001,"요청한 ID에 해당하는 계좌를 찾을 수 없습니다."),
 
 
 
