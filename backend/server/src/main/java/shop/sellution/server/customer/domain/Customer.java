@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "customer")
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class Customer extends BaseEntity {
