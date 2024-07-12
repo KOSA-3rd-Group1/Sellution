@@ -26,7 +26,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public List<FindAllAddressRes> getAddressesByCustomerId(Long customerId) {
-        return addressRepository.findByCustomerCustomerId(customerId).stream()
+        return addressRepository.findByCustomer_Id(customerId).stream()
                 .map(FindAllAddressRes::fromEntity)
                 .collect(Collectors.toList());
     }

@@ -69,14 +69,14 @@ class AddressServiceImplTest {
     @Test
     void getAddressesByCustomerId_Success() {
         // given
-        when(addressRepository.findByCustomerCustomerId(anyLong())).thenReturn(List.of(address));
+        when(addressRepository.findByCustomer_Id(anyLong())).thenReturn(List.of(address));
 
         // when
         List<FindAllAddressRes> addresses = addressService.getAddressesByCustomerId(1L);
 
         // then
         assertThat(addresses).isNotEmpty();
-        verify(addressRepository, times(1)).findByCustomerCustomerId(anyLong());
+        verify(addressRepository, times(1)).findByCustomer_Id(anyLong());
     }
 
     @DisplayName("주소 ID로 주소를 조회한다.")
