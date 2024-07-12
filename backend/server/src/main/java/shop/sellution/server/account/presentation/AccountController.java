@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.sellution.server.account.application.AccountService;
 import shop.sellution.server.account.dto.request.SaveAccountReq;
+import shop.sellution.server.account.dto.request.UpdateAccountReq;
 import shop.sellution.server.account.dto.response.FindAccountRes;
 
 
@@ -38,4 +39,23 @@ public class AccountController {
 
         return ResponseEntity.ok("success");
     }
+
+    @PutMapping("/{accountId}")
+    public ResponseEntity<String> updateAccount(
+            @PathVariable("accountId") @Positive(message = "양수만 가능합니다.") Long accountId,
+            @RequestBody @Valid UpdateAccountReq updateAccountReq
+    ) {
+        accountService.updateAccount(accountId, updateAccountReq);
+        return ResponseEntity.ok("success");
+    }
+
+    @DeleteMapping("/{accountId}")
+    public ResponseEntity<String> deleteAccount(
+            @PathVariable("accountId") @Positive(message = "양수만 가능합니다.") Long accountId
+    ) {
+        accountService.deleteAccount(accountId);
+        return ResponseEntity.ok("success");
+    }
+
+
 }

@@ -1,0 +1,72 @@
+= Product(상품)
+
+== 상품 목록 조회
+/products
+
+=== HTTP Request
+
+include::{snippets}/Product/findAllProducts/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/Product/findAllProducts/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Product/findAllProducts/response-fields.adoc[]
+
+== 상품 상세 조회
+/products/{productId}
+
+=== HTTP Request
+
+include::{snippets}/Product/findProductById/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/Product/findProductById/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Product/findProductById/response-fields.adoc[]
+
+== 상품 생성
+/products
+
+=== HTTP Request
+
+include::{snippets}/Product/createProduct/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/Product/createProduct/http-response.adoc[]
+
+==== Request Fields
+
+include::{snippets}/Product/createProduct/request-fields.adoc[]
+
+== 상품 수정
+/products/{productId}
+
+=== HTTP Request
+
+include::{snippets}/Product/updateProduct/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/Product/updateProduct/http-response.adoc[]
+
+==== Request Fields
+
+include::{snippets}/Product/updateProduct/request-fields.adoc[]
+
+== 상품 삭제
+/products/{productId}
+
+=== HTTP Request
+
+include::{snippets}/Product/deleteProduct/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/Product/deleteProduct/http-response.adoc[]

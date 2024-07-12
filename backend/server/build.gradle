@@ -69,8 +69,12 @@ dependencies {
 	implementation 'com.github.maricn:logback-slack-appender:1.6.1' // 슬랙 메시지 보내기
 	implementation 'org.springframework.boot:spring-boot-starter-webflux' // 외부 api 통신 [ webclient ]
 
-	testImplementation 'org.mockito:mockito-core:4.6.1'
-	testImplementation 'org.mockito:mockito-junit-jupiter:4.6.1'
+  testImplementation 'io.projectreactor:reactor-test' // webclient 테스트를 위한 reactor
+	testImplementation 'com.squareup.okhttp3:mockwebserver' // webclient 테스트를 쉽게하기 위한 mockwebserver
+	testImplementation 'org.springframework.restdocs:spring-restdocs-webtestclient'
+
+
+
 }
 
 

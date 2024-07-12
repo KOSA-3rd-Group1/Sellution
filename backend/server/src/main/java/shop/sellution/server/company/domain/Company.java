@@ -13,7 +13,7 @@ import static shop.sellution.server.global.type.DisplayStatus.*;
 @Entity
 @Getter
 @Setter
-@Builder
+//@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "company")
@@ -33,17 +33,14 @@ public class Company extends BaseEntity {
     @Column(name ="shop_url")
     private String shopUrl; //URL 설정 페이지
 
-    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name ="is_shop_visible")
     private DisplayStatus isShopVisible = N; //URL 설정 페이지
 
-    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "is_auto_approved")
     private DisplayStatus isAutoApproved = N;
 
-    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "is_new_member_event")
     private DisplayStatus isNewMemberEvent = N;
@@ -56,15 +53,12 @@ public class Company extends BaseEntity {
     @Column(name="subscription_type")
     private SubscriptionType subscriptionType;
 
-    @Builder.Default
     @Column(name="min_delivery_count")
     private int minDeliveryCount = 5;
 
-    @Builder.Default
     @Column(name="max_delivery_count")
     private int maxDeliveryCount = 30;
 
-    @Builder.Default
     @Column(name="theme_color")
     private String themeColor = "F37021";
 
@@ -75,13 +69,13 @@ public class Company extends BaseEntity {
     private String mainPromotion1Title = "임시 제목입니다. 수정해주세요.";
 
     @Column(name = "main_promotion1_content")
-    private String mainPromotion1Content = "임시 컨텐츠입니다. 수정해주새요. ";
+    private String mainPromotion1Content = "임시 컨텐츠입니다. 수정해주세요. ";
 
     @Column(name = "main_promotion2_title")
     private String mainPromotion2Title = "임시 제목입니다. 수정해주세요.";
 
     @Column(name = "main_promotion2_content")
-    private String mainPromotion2Content = "임시 컨텐츠입니다. 수정해주새요. ";
+    private String mainPromotion2Content = "임시 컨텐츠입니다. 수정해주세요. ";
 
     @Builder
     public Company(String displayName, String name) {
@@ -142,5 +136,4 @@ public class Company extends BaseEntity {
     public void updateSellType(SellType sellType) {
         this.sellType = sellType;
     }
-
 }
