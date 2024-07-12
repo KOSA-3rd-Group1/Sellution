@@ -4,11 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import shop.sellution.server.company.domain.type.SellType;
 import shop.sellution.server.company.domain.type.SubscriptionType;
-import shop.sellution.server.global.BaseEntity;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
-
-import static shop.sellution.server.global.type.DisplayStatus.*;
 
 @Entity
 @Getter
@@ -17,8 +14,7 @@ import static shop.sellution.server.global.type.DisplayStatus.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "company")
-public class Company extends BaseEntity {
-
+public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "company_id")
@@ -35,15 +31,15 @@ public class Company extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name ="is_shop_visible")
-    private DisplayStatus isShopVisible = N; //URL 설정 페이지
+    private DisplayStatus isShopVisible = DisplayStatus.N; //URL 설정 페이지
 
     @Enumerated(EnumType.STRING)
     @Column(name = "is_auto_approved")
-    private DisplayStatus isAutoApproved = N;
+    private DisplayStatus isAutoApproved = DisplayStatus.N;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "is_new_member_event")
-    private DisplayStatus isNewMemberEvent = N;
+    private DisplayStatus isNewMemberEvent = DisplayStatus.N;
 
     @Enumerated(EnumType.STRING)
     @Column(name="service_type")
@@ -76,6 +72,7 @@ public class Company extends BaseEntity {
 
     @Column(name = "main_promotion2_content")
     private String mainPromotion2Content = "임시 컨텐츠입니다. 수정해주세요. ";
+
 
     @Builder
     public Company(String displayName, String name) {
@@ -136,4 +133,5 @@ public class Company extends BaseEntity {
     public void updateSellType(SellType sellType) {
         this.sellType = sellType;
     }
+
 }
