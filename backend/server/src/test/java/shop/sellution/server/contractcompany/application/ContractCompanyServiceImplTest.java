@@ -22,7 +22,6 @@ import shop.sellution.server.contractcompany.dto.response.FindContractCompanyRes
 import shop.sellution.server.global.exception.BadRequestException;
 
 import jakarta.validation.ConstraintViolation;
-import shop.sellution.server.global.exception.ExceptionCode;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -86,7 +85,7 @@ class ContractCompanyServiceImplTest {
                 .displayName("Test Company")
                 .name("Test-Company-1234")
                 .build();
-        savedCompany.setCompanyId(1L);
+        ReflectionTestUtils.setField(savedCompany, "companyId", 1L);
 
         ContractCompany savedContractCompany = ContractCompany.builder()
                 .companyId(1L)

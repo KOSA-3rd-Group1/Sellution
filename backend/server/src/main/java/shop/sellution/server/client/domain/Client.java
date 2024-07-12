@@ -21,27 +21,32 @@ public class Client extends BaseEntity {
     @Column(name = "client_id")
     private Long id;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-    @NotNull
-    @Column(name = "username", unique = true, length = 100)
+    @Column(name = "username", unique = true, nullable = false, length = 100)
     private String username;
 
-    @NotNull
-    @Column(name = "password", length = 100)
+    @Column(name = "password", nullable = false, length = 100)
     private String password;
+
+    @Column(name = "name", nullable = false, length = 50)
+    private String name;
+
+    @Column(name = "phone_number", unique = true, nullable = false, length = 50)
+    private String phoneNumber;
 
     @Column(name = "permissions")
     private int permissions = 0;
 
     @Builder
-    public Client(Company company, String username, String password) {
+    public Client(Company company, String username, String password, String name, String phoneNumber) {
         this.company = company;
         this.username = username;
         this.password = password;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
     }
 
     public UserRole getUserRole() {

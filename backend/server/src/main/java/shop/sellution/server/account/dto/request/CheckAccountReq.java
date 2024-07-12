@@ -10,8 +10,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CheckAccountReq {
 
-    @NotBlank
+    @NotBlank (message = "은행코드는 필수 입니다.")
     private final String bankCode;
-    @NotBlank
-    private final String bankNum;
+    @NotBlank (message = "계좌번호는 필수 입니다.")
+    private final String accountNumber;
 }
