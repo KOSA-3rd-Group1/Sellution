@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long> {
-    List<Address> findByCustomerCustomerId(Long customerId);
+    List<Address> findByCustomer_Id(Long customerId);
 
     @Transactional
     @Modifying
