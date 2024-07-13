@@ -7,8 +7,8 @@ import org.springframework.security.core.GrantedAuthority;
 @Getter
 @RequiredArgsConstructor
 public enum UserRole implements GrantedAuthority {
-    ROLE_CLIENT("CLIENT"),
-    ROLE_CUSTOMER("CUSTOMER");
+    ROLE_CLIENT("ROLE_CLIENT"),
+    ROLE_CUSTOMER("ROLE_CUSTOMER");
 
     private final String roleName;
 

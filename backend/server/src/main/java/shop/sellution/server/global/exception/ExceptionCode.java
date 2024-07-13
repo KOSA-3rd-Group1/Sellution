@@ -34,6 +34,10 @@ public enum ExceptionCode {
     EMPTY_JWT_CLAIMS(4004, "JWT claims 문자열이 비었습니다."),
     NULL_REFRESH_TOKEN(4005, "Refresh Token이 존재하지 않습니다."),
 
+    //SMS
+    BLOCKED_SMS_AUTH(4006, "SMS 인증 대기 시간입니다."),
+    EXCEEDED_REQUEST_LIMIT(4007, "제한된 요청 횟수를 초과하였습니다."),
+
     // ---------------------------- Account 5001 ~ 5500 ---------------------------------------
     NOT_FOUND_CUSTOMER(5001,"요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
     INVALID_ACCOUNT_INFO(5002,"유효하지않은 계좌정보입니다."),
