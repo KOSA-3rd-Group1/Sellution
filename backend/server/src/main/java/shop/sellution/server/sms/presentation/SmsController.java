@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.sms.application.SmsAuthNumberService;
 import shop.sellution.server.sms.application.SmsService;
 import shop.sellution.server.sms.dto.request.SendSmsAuthNumberReq;
+import shop.sellution.server.sms.dto.request.VerifySmsAuthNumberReq;
 
 import java.util.Map;
 
@@ -40,10 +42,29 @@ public class SmsController {
     public ResponseEntity<Map<String, String>> sendSms(@Valid @RequestBody SendSmsAuthNumberReq request) {
         try {
             smsAuthNumberService.sendSmsAuthNumber(request);
-            return ResponseEntity.status(HttpStatus.OK).body(Map.of("success", "인증 번호가 성공적으로 발송되었습니다."));
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(Map.of("success", "인증 번호가 성공적으로 발송되었습니다."));
+        } catch (AuthException e) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            e.getMessage();
-            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(Map.of("error", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "서버 오류가 발생했습니다."));
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<Map<String, String>> verifySms(@Valid @RequestBody VerifySmsAuthNumberReq request) {
+        try {
+            smsAuthNumberService.verifySmsAuthNumber(request);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(Map.of("success", "인증이 완료되었습니다.."));
+        } catch (AuthException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "서버 오류가 발생했습니다."));
         }
     }
 }

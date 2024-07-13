@@ -37,6 +37,7 @@ public enum ExceptionCode {
     //SMS
     BLOCKED_SMS_AUTH(4006, "SMS 인증 대기 시간입니다."),
     EXCEEDED_REQUEST_LIMIT(4007, "제한된 요청 횟수를 초과하였습니다."),
+    INVALID_SMS_AUTH(4008, "유효하지 않은 인증번호 입니다."),
 
     // ---------------------------- Account 5001 ~ 5500 ---------------------------------------
     NOT_FOUND_CUSTOMER(5001,"요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
