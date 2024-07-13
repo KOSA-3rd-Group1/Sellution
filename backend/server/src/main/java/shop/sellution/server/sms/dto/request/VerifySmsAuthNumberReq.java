@@ -10,4 +10,9 @@ public class VerifySmsAuthNumberReq extends BaseSmsAuthNumberReq {
     protected VerifySmsAuthNumberReq(String role, Long companyId, Long userId) {
         super(role, companyId, userId);
     }
+
+    public VerifySmsAuthNumberReq(String role, Long companyId, Long userId, String authNumber) {
+        super(role, companyId, userId);
+        this.authNumber = authNumber;
+    }
 }

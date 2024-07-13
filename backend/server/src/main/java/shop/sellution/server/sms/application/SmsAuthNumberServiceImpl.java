@@ -33,7 +33,7 @@ public class SmsAuthNumberServiceImpl implements SmsAuthNumberService {
 
         // 받은 request를 통해 redis key 생성 - sms_auth_number:{role}:{company_id}:{id}
         String key = getRedisKey(request);
-        RedisSmsAuthNumberValue value = getRedisSmsAuthNumberValue(key);
+        RedisSmsAuthNumberValue value = getRedisSmsAuthNumberValue(key, "send");
 
         // redis에 저장된 값의 block 여부
         if (value.isBlocked()) {
@@ -70,8 +70,8 @@ public class SmsAuthNumberServiceImpl implements SmsAuthNumberService {
         // 받은 request를 통해 redis key 생성 - sms_auth_number:{role}:{company_id}:{id}
         String key = getRedisKey(request);
 
-        // 생성한 Redis key를 통해 value 값 가져오기
-        RedisSmsAuthNumberValue value = getRedisSmsAuthNumberValue(key);
+        // 생성한 Redis key를 통해 value 값 가져오기 - 여기 에러 처리 필요
+        RedisSmsAuthNumberValue value = getRedisSmsAuthNumberValue(key, "verify");
 
         if (value.isBlocked()) {
             throw new AuthException(BLOCKED_SMS_AUTH);  // 인증 대기 시간
@@ -89,9 +89,13 @@ public class SmsAuthNumberServiceImpl implements SmsAuthNumberService {
         return String.format(REDIS_KEY_FORMAT, request.getRole(), request.getCompanyId(), request.getUserId());
     }
 
-    private RedisSmsAuthNumberValue getRedisSmsAuthNumberValue(String key) {
+    private RedisSmsAuthNumberValue getRedisSmsAuthNumberValue(String key, String type) {
         String value = redisTemplate.opsForValue().get(key);
-        if (value == null) return new RedisSmsAuthNumberValue();
+        if (type.equals("send") && value == null) {
+            return new RedisSmsAuthNumberValue();
+        } else if (type.equals("verify") && value == null) {
+            throw new AuthException(INVALID_SMS_AUTH);
+        }
         return RedisSmsAuthNumberValue.fromString(value);
     }
 
