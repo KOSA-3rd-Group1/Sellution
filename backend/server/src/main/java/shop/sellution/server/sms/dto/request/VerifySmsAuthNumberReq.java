@@ -7,12 +7,13 @@ public class VerifySmsAuthNumberReq extends BaseSmsAuthNumberReq {
 
     private String authNumber;
 
-    protected VerifySmsAuthNumberReq(String role, Long companyId, Long userId) {
-        super(role, companyId, userId);
-    }
+//    protected VerifySmsAuthNumberReq(String authType, String role, Long companyId, Long userId) {
+//        super(authType, role, companyId, userId);
+//    }
 
-    public VerifySmsAuthNumberReq(String role, Long companyId, Long userId, String authNumber) {
-        super(role, companyId, userId);
+    public VerifySmsAuthNumberReq(String authType, String role, Long companyId, Long userId, String authNumber) {
+        super(authType, role, companyId, userId);
+
         this.authNumber = authNumber;
     }
 }

@@ -7,7 +7,7 @@ public class SendSmsAuthNumberReq extends BaseSmsAuthNumberReq{
 
     private String phoneNumber;
 
-    protected SendSmsAuthNumberReq(String role, Long companyId, Long userId) {
-        super(role, companyId, userId);
+    protected SendSmsAuthNumberReq(String authType, String role, Long companyId, Long userId) {
+        super(authType, role, companyId, userId);
     }
 }
