@@ -24,7 +24,7 @@ public enum ExceptionCode {
     INVALID_USER_ROLE(7002, "유효하지 않은 권한입니다."),
     INVALID_COMPANY_ID_FORMAT(7003, "유효하지 않은 사업체 ID 형식입니다."),
     NOT_FOUND_CLIENT(7004, "요청한 ID에 해당하는 고객을 찾을 수 없습니다."),
-    NOT_FOUND_CUSTOMER(7005, "요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
+//    NOT_FOUND_CUSTOMER(7005, "요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
 
     //JWT
     EXPIRED_JWT_TOKEN(4000, "토큰이 만료되었습니다."),
@@ -33,6 +33,10 @@ public enum ExceptionCode {
     INVALID_JWT_SIGNATURE(4003, "JWT 서명이 유효하지 않습니다."),
     EMPTY_JWT_CLAIMS(4004, "JWT claims 문자열이 비었습니다."),
     NULL_REFRESH_TOKEN(4005, "Refresh Token이 존재하지 않습니다."),
+
+    //SMS
+    BLOCKED_SMS_AUTH(4006, "SMS 인증 대기 시간입니다."),
+    EXCEEDED_REQUEST_LIMIT(4007, "제한된 요청 횟수를 초과하였습니다."),
 
     // ---------------------------- Account 5001 ~ 5500 ---------------------------------------
     NOT_FOUND_CUSTOMER(5001,"요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
