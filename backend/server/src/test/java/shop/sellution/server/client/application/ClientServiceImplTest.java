@@ -14,7 +14,7 @@ import shop.sellution.server.client.domain.ClientRepository;
 import shop.sellution.server.client.domain.type.PermissionType;
 import shop.sellution.server.client.dto.request.SaveClientReq;
 import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.CompanyRepository;
+import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 
 import java.util.Optional;

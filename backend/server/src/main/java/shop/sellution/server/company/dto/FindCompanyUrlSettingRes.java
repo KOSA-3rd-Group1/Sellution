@@ -18,7 +18,7 @@ public class FindCompanyUrlSettingRes {
         return FindCompanyUrlSettingRes.builder()
                 .companyId(company.getCompanyId())
                 .name(company.getName())
-                .shopUrl("https://www.sellution.com/" + company.getName())
+                .shopUrl("https://www.sellution.shop/shopping/" + company.getName())
                 .isShopVisible(company.getIsShopVisible().name())
                 .build();
     }

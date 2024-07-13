@@ -10,7 +10,7 @@ import shop.sellution.server.global.type.DisplayStatus;
 @Entity
 @Getter
 @Setter
-//@Builder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "company")

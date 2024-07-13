@@ -8,7 +8,7 @@ import shop.sellution.server.client.domain.Client;
 import shop.sellution.server.client.domain.ClientRepository;
 import shop.sellution.server.client.dto.request.SaveClientReq;
 import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.CompanyRepository;
+import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
 
