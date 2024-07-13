@@ -19,14 +19,16 @@ public class SmsServiceImpl implements SmsService {
 
         try {
             boolean result = smsProvider.sendSms(to, sendMessage);
-            if (!result) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error","메세지 전송이 실패했습니다."));
+            if (!result) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("error","메세지 전송이 실패했습니다."));
+            }
+            return ResponseEntity.ok(Map.of("success", "메시지 전송에 성공했습니다."));
 
         } catch (Exception exception) {
             exception.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "메세지 전송 중 예외가 발생했습니다."));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "메시지 전송 중 예외가 발생했습니다."));
         }
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", "메세지 전송에 성공했습니다."));
-
     }
 }

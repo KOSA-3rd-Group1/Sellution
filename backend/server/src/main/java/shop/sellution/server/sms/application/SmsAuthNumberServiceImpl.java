@@ -5,13 +5,14 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.sms.dto.RedisSmsAuthNumberValue;
+import shop.sellution.server.sms.dto.request.BaseSmsAuthNumberReq;
 import shop.sellution.server.sms.dto.request.SendSmsAuthNumberReq;
+import shop.sellution.server.sms.dto.request.VerifySmsAuthNumberReq;
 
 import java.security.SecureRandom;
 import java.time.Duration;
 
-import static shop.sellution.server.global.exception.ExceptionCode.BLOCKED_SMS_AUTH;
-import static shop.sellution.server.global.exception.ExceptionCode.EXCEEDED_REQUEST_LIMIT;
+import static shop.sellution.server.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +25,8 @@ public class SmsAuthNumberServiceImpl implements SmsAuthNumberService {
     private static final int AUTH_NUMBER_EXPIRATION_MINUTES = 5;
     private static final int MAX_REQUESTS = 3;
     private static final int REQUEST_BLOCK_MINUTES = 5;
+    private static final String REDIS_KEY_FORMAT = "sms_auth_number:%s:%d:%d";
+
 
     @Override
     public void sendSmsAuthNumber(SendSmsAuthNumberReq request) {
@@ -59,14 +62,31 @@ public class SmsAuthNumberServiceImpl implements SmsAuthNumberService {
          * 문자 한도 제한으로 인해 주석 처리 해두었습니다.
          * 실제 테스트 시에는 주석 제거하고 사용하고, 테스트가 끝나면 다시 주석처리 해주시길 바랍니다.
          */
-         //smsService.sendSms(request.getPhoneNumber(), sendMessage);
+//         smsService.sendSms(request.getPhoneNumber(), sendMessage);
     }
 
-    private String getRedisKey(SendSmsAuthNumberReq request) {
-        return "sms_auth_number:" +
-                request.getRole() + ":" +
-                request.getCompanyId() + ":" +
-                request.getUserId();
+    @Override
+    public void verifySmsAuthNumber(VerifySmsAuthNumberReq request) {
+        // 받은 request를 통해 redis key 생성 - sms_auth_number:{role}:{company_id}:{id}
+        String key = getRedisKey(request);
+
+        // 생성한 Redis key를 통해 value 값 가져오기
+        RedisSmsAuthNumberValue value = getRedisSmsAuthNumberValue(key);
+
+        if (value.isBlocked()) {
+            throw new AuthException(BLOCKED_SMS_AUTH);  // 인증 대기 시간
+        }
+
+        if (!value.getAuthNumber().equals(request.getAuthNumber())) {
+            throw new AuthException(INVALID_SMS_AUTH);
+        };
+
+        // 인증번호가 유효한 경우 redis에 저장된 정보 제거
+        redisTemplate.delete(key);
+    }
+
+    private String getRedisKey(BaseSmsAuthNumberReq request) {
+        return String.format(REDIS_KEY_FORMAT, request.getRole(), request.getCompanyId(), request.getUserId());
     }
 
     private RedisSmsAuthNumberValue getRedisSmsAuthNumberValue(String key) {

@@ -3,10 +3,11 @@ package shop.sellution.server.sms.dto.request;
 import lombok.Getter;
 
 @Getter
-public class SendSmsAuthNumberReq {
+public class SendSmsAuthNumberReq extends BaseSmsAuthNumberReq{
 
-    private String role;
-    private Long companyId;
-    private Long userId;
     private String phoneNumber;
+
+    protected SendSmsAuthNumberReq(String role, Long companyId, Long userId) {
+        super(role, companyId, userId);
+    }
 }
