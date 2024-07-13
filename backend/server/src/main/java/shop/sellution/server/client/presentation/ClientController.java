@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.sellution.server.client.application.ClientService;
-import shop.sellution.server.client.dto.request.ChangeClientPasswordReq;
-import shop.sellution.server.client.dto.request.FindClientIdReq;
-import shop.sellution.server.client.dto.request.FindClientPasswordReq;
-import shop.sellution.server.client.dto.request.SaveClientReq;
+import shop.sellution.server.client.dto.request.*;
 import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
 
@@ -46,9 +43,23 @@ public class ClientController {
         }
     }
 
+    @PostMapping("/find-id/send")
+    public ResponseEntity<Map<String, String>> findClientIdSmsAuthNumber(@Valid @RequestBody FindClientIdSmsAuthNumberReq request) {
+        try {
+            clientService.findClientIdSmsAuthNumber(request);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(Map.of("success", "인증 번호가 성공적으로 발송되었습니다."));
+        } catch (AuthException e) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "서버 오류가 발생했습니다."));
+        }
+    }
+
     @PostMapping("/find-password")
     public ResponseEntity<Map<String, String>> findClientPassword(@Valid @RequestBody FindClientPasswordReq request, HttpServletRequest httpRequest) {
-
         try {
             String token = clientService.findClientPassword(request, httpRequest);
             return ResponseEntity.status(HttpStatus.OK).body(Map.of("token", token));
@@ -56,6 +67,21 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
         }  catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "비밀번호 재설정 오청 중 오류가 발생햇습니다."));
+        }
+    }
+
+    @PostMapping("/find-password/send")
+    public ResponseEntity<Map<String, String>> findClientPasswordSmsAuthNumber(@Valid @RequestBody FindClientPasswordSmsAuthNumberReq request) {
+        try {
+            clientService.findClientPasswordSmsAuthNumber(request);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(Map.of("success", "인증 번호가 성공적으로 발송되었습니다."));
+        } catch (AuthException e) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "서버 오류가 발생했습니다."));
         }
     }
 

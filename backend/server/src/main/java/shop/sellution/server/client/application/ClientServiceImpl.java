@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.client.domain.Client;
 import shop.sellution.server.client.domain.ClientRepository;
-import shop.sellution.server.client.dto.request.ChangeClientPasswordReq;
-import shop.sellution.server.client.dto.request.FindClientIdReq;
-import shop.sellution.server.client.dto.request.FindClientPasswordReq;
-import shop.sellution.server.client.dto.request.SaveClientReq;
+import shop.sellution.server.client.dto.request.*;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.global.exception.AuthException;
@@ -20,6 +17,7 @@ import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.global.type.SmsAuthType;
 import shop.sellution.server.sms.application.SmsAuthNumberService;
 import shop.sellution.server.sms.dto.request.BaseSmsAuthNumberReq;
+import shop.sellution.server.sms.dto.request.SendSmsAuthNumberReq;
 import shop.sellution.server.sms.dto.request.VerifySmsAuthNumberReq;
 
 import java.time.Duration;
@@ -40,7 +38,7 @@ public class ClientServiceImpl implements ClientService {
     private final SmsAuthNumberService smsAuthNumberService;
     private final RedisTemplate<String, String> redisTemplate;
 
-    private static final String PASSWORD_RESET_PREFIX = "password_reset:%s:%s";
+    private static final String REDIS_KEY_FORMAT_PASSWORD_RESET = "password_reset:%s:%s";
     private static final int TOKEN_VALID_MINUTES = 5;
     private static final int MAX_PASSWORD_CHANGE_ATTEMPTS = 3;
 
@@ -79,6 +77,24 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public void findClientIdSmsAuthNumber(FindClientIdSmsAuthNumberReq request) {
+
+        // phoneNumber로 client 조회
+        Client client = clientRepository.findByPhoneNumber(request.getPhoneNumber())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_CLIENT));
+
+        // 이름 일치 여부 확인
+        if (!client.getName().equals(request.getName())) {
+            throw new BadRequestException(NOT_FOUND_CLIENT);
+        }
+
+        SendSmsAuthNumberReq sendRequest = createSendReq(ID.getName(), client);
+
+        // SMS 인증 번호 발송 요청
+        smsAuthNumberService.sendSmsAuthNumber(sendRequest);
+    }
+
+    @Override
     public String findClientPassword(FindClientPasswordReq request, HttpServletRequest httpRequest) {
 
         // username으로 client 조회
@@ -101,11 +117,34 @@ public class ClientServiceImpl implements ClientService {
         // token 생성
         String token = UUID.randomUUID().toString();
         String ip = getUserIp(httpRequest);
-        String redisKey = PASSWORD_RESET_PREFIX + token + ":" + ip;
+        String redisKey = getRedisKey(token, ip);
         String redisValue = client.getId() + ":0";  // clientId:attemptCount
         redisTemplate.opsForValue().set(redisKey, redisValue, Duration.ofMinutes(TOKEN_VALID_MINUTES));
 
         return token;
+    }
+
+    @Override
+    public void findClientPasswordSmsAuthNumber(FindClientPasswordSmsAuthNumberReq request) {
+
+        // client 아이디로 조회
+        Client client = clientRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_CLIENT));
+
+        // 전화번호 일치 여부 확인
+        if (!client.getPhoneNumber().equals(request.getPhoneNumber())) {
+            throw new BadRequestException(NOT_FOUND_CLIENT);
+        }
+
+        // client name 일치 여부 확인
+        if (!client.getName().equals(request.getName())) {
+            throw new BadRequestException(NOT_FOUND_CLIENT);
+        }
+
+        // SMS 인증 번호 발송 요청
+        SendSmsAuthNumberReq sendRequest = createSendReq(PASSWORD.getName(), client);
+        smsAuthNumberService.sendSmsAuthNumber(sendRequest);
+
     }
 
     @Override
@@ -173,10 +212,21 @@ public class ClientServiceImpl implements ClientService {
         return client;
     }
 
+    // SendSmsAuthNumberReq 생성
+    private SendSmsAuthNumberReq createSendReq(String authType, Client client) {
+        return new SendSmsAuthNumberReq(
+                authType,
+                client.getUserRole().getRoleName(),
+                client.getCompany().getCompanyId(),
+                client.getId(),
+                client.getPhoneNumber()
+        );
+    }
+
     // 인증 번호 유효성 검사
-    private void validateAuthNumber(String type, Client client, String authNumber) {
+    private void validateAuthNumber(String authType, Client client, String authNumber) {
         VerifySmsAuthNumberReq verifyRequest = new VerifySmsAuthNumberReq(
-                type,
+                authType,
                 client.getUserRole().getRoleName(),
                 client.getCompany().getCompanyId(),
                 client.getId(),
@@ -195,7 +245,7 @@ public class ClientServiceImpl implements ClientService {
 
     // redisKey 생성
     private String getRedisKey(String token, String ip) {
-        return String.format(PASSWORD_RESET_PREFIX , token , ip);
+        return String.format(REDIS_KEY_FORMAT_PASSWORD_RESET, token , ip);
     }
 
     // 시도 횟수 증가
