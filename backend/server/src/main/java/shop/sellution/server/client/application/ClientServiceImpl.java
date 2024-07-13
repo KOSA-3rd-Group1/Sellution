@@ -6,19 +6,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.client.domain.Client;
 import shop.sellution.server.client.domain.ClientRepository;
+import shop.sellution.server.client.dto.request.FindClientIdReq;
 import shop.sellution.server.client.dto.request.SaveClientReq;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
+import shop.sellution.server.sms.application.SmsAuthNumberService;
+import shop.sellution.server.sms.dto.request.VerifySmsAuthNumberReq;
+
+import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_CLIENT;
+import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_COMPANY_ID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final CompanyRepository companyRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SmsAuthNumberService smsAuthNumberService;
 
     @Override
     @Transactional
@@ -28,12 +36,30 @@ public class ClientServiceImpl implements ClientService {
         validatePhoneNumber(request.getPhoneNumber());
 
         Company company = companyRepository.findById(request.getCompanyId())
-                .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_COMPANY_ID));
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_COMPANY_ID));
 
         Client client = createClient(company, request);
         Client savedClient = clientRepository.save(client);
 
         return savedClient.getId();
+    }
+
+    @Override
+    public String findClientId(FindClientIdReq request) {
+
+        // 전화번호로 client 조회
+        Client client = clientRepository.findByPhoneNumber(request.getPhoneNumber())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_CLIENT));
+
+        // client name 일치 여부 확인
+        if (!client.getName().equals(request.getName())) {
+            throw new BadRequestException(NOT_FOUND_CLIENT);
+        }
+
+        // 인증 번호 일치 여부 확인
+        validateAuthNumber(client, request.getAuthNumber());
+
+        return client.getUsername();
     }
 
     // username 중복 확인
@@ -62,5 +88,16 @@ public class ClientServiceImpl implements ClientService {
 
         request.getPermissions().forEach((client::addPermission));
         return client;
+    }
+
+    // 인증 번호 유효성 검사
+    private void validateAuthNumber(Client client, String authNumber) {
+        VerifySmsAuthNumberReq verifyRequest = new VerifySmsAuthNumberReq(
+                client.getUserRole().getRoleName(),
+                client.getCompany().getCompanyId(),
+                client.getId(),
+                authNumber
+        );
+        smsAuthNumberService.verifySmsAuthNumber(verifyRequest);
     }
 }

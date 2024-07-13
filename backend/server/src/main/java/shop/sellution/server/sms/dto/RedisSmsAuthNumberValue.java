@@ -24,7 +24,7 @@ public class RedisSmsAuthNumberValue {
     }
 
     public RedisSmsAuthNumberValue() {
-        this.attemptCount = 1;
+        this.attemptCount = 0;
         this.blocked = false;
     }
 
