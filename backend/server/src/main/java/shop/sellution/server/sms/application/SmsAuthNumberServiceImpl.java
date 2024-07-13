@@ -25,7 +25,7 @@ public class SmsAuthNumberServiceImpl implements SmsAuthNumberService {
     private static final int AUTH_NUMBER_EXPIRATION_MINUTES = 5;
     private static final int MAX_REQUESTS = 3;
     private static final int REQUEST_BLOCK_MINUTES = 5;
-    private static final String REDIS_KEY_FORMAT = "sms_auth_number:%s:%s:%d:%d";
+    private static final String REDIS_KEY_FORMAT_SMS_AUTH_NUMBER = "sms_auth_number:%s:%s:%d:%d";
 
 
     @Override
@@ -87,7 +87,7 @@ public class SmsAuthNumberServiceImpl implements SmsAuthNumberService {
     }
 
     private String getRedisKey(BaseSmsAuthNumberReq request) {
-        return String.format(REDIS_KEY_FORMAT, request.getAuthType(), request.getRole(), request.getCompanyId(), request.getUserId());
+        return String.format(REDIS_KEY_FORMAT_SMS_AUTH_NUMBER, request.getAuthType(), request.getRole(), request.getCompanyId(), request.getUserId());
     }
 
     private RedisSmsAuthNumberValue getRedisSmsAuthNumberValue(String key, String type) {
