@@ -13,7 +13,6 @@ import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
-import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.sms.application.SmsAuthNumberService;
 import shop.sellution.server.sms.dto.request.SendSmsAuthNumberReq;
 import shop.sellution.server.sms.dto.request.VerifySmsAuthNumberReq;
@@ -144,13 +143,13 @@ public class ClientServiceImpl implements ClientService {
     // client_id로 고객 조회
     private Client findClientById(Long clientId) {
         return clientRepository.findById(clientId)
-                .orElseThrow(() -> new AuthException(ExceptionCode.NOT_FOUND_CLIENT));
+                .orElseThrow(() -> new AuthException(NOT_FOUND_CLIENT));
     }
 
     // username으로 고객 조회
     private Client findClientByUsername(String username) {
         return clientRepository.findByUsername(username)
-                .orElseThrow(() -> new AuthException(ExceptionCode.NOT_FOUND_CLIENT));
+                .orElseThrow(() -> new AuthException(NOT_FOUND_CLIENT));
     }
 
     // phone_number로 고객 조회
@@ -162,14 +161,14 @@ public class ClientServiceImpl implements ClientService {
     // username 중복 확인
     private void validateUniqueUsername(String username) {
         if (clientRepository.existsByUsername(username)) {
-            throw new BadRequestException(ExceptionCode.DUPLICATED_USERNAME);
+            throw new BadRequestException(DUPLICATED_USERNAME);
         }
     }
 
     // phoneNumber 중복 확인
     private void validateUniquePhoneNumber(String phoneNumber) {
         if (clientRepository.existsByPhoneNumber(phoneNumber)) {
-            throw new BadRequestException(ExceptionCode.DUPLICATED_PHONE_NUMBER);
+            throw new BadRequestException(DUPLICATED_PHONE_NUMBER);
         }
     }
 
@@ -218,7 +217,7 @@ public class ClientServiceImpl implements ClientService {
     private void validateNewPassword(Client client, String newPassword, String redisKey, Long userId, int attemptCount) {
         if (passwordEncoder.matches(newPassword, client.getPassword())) {
             incrementAttemptCount(redisKey, userId, attemptCount);
-            throw new AuthException(ExceptionCode.SAME_OLD_PASSWORD);
+            throw new AuthException(SAME_OLD_PASSWORD);
         }
     }
 
@@ -235,17 +234,6 @@ public class ClientServiceImpl implements ClientService {
         request.getPermissions().forEach((client::addPermission));
         return client;
     }
-
-    // SendSmsAuthNumberReq 생성
-//    private SendSmsAuthNumberReq createSendReq(String authType, Client client) {
-//        return new SendSmsAuthNumberReq(
-//                authType,
-//                client.getUserRole().getRoleName(),
-//                client.getCompany().getCompanyId(),
-//                client.getId(),
-//                client.getPhoneNumber()
-//        );
-//    }
 
     // SMS 발송 요청
     private void sendSmsAuthNumber(String authType, Client client) {
