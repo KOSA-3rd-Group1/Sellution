@@ -1,7 +1,6 @@
 package shop.sellution.server.client.application;
 
 import jakarta.servlet.http.HttpServletRequest;
-import shop.sellution.server.client.domain.Client;
 import shop.sellution.server.client.dto.request.*;
 
 public interface ClientService {

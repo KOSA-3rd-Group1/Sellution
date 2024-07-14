@@ -5,7 +5,6 @@ import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import shop.sellution.server.global.exception.AuthException;
-import shop.sellution.server.global.exception.ExceptionCode;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -14,12 +13,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static shop.sellution.server.global.exception.ExceptionCode.*;
+
 @Component
 public class JWTUtil {
 
     private final SecretKey SECRET_KEY;
     public static final Long ACCESS_TOKEN_EXPIRE = 1000L; //30 * 60 * 1000L; // 30분
-    public static final Long REFRESH_TOKEN_EXPIRE = 1000L; //14 * 24 * 60 * 60 * 1000L; // 14일
+    public static final Long REFRESH_TOKEN_EXPIRE = 14 * 24 * 60 * 60 * 1000L; // 14일
 
     public JWTUtil(@Value("${spring.jwt.secret}")String secret) {
         //JWT에서 더 이상 String key를 사용하지 않기 때문에 객체 키를 만들어서 사용
@@ -72,20 +73,15 @@ public class JWTUtil {
                     .parseSignedClaims(token)  //파싱 및 검증, 실패 시 에러
                     .getPayload();
         } catch (ExpiredJwtException e) {
-            // throw new JwtException("Expired JWT token", e);
-            throw new AuthException(ExceptionCode.EXPIRED_JWT_TOKEN);
+            throw new AuthException(EXPIRED_JWT_TOKEN);
         } catch (UnsupportedJwtException e) {
-            // throw new JwtException("Unsupported JWT token", e);
-            throw new AuthException(ExceptionCode.UNSUPPORTED_JWT_TOKEN);
+            throw new AuthException(UNSUPPORTED_JWT_TOKEN);
         } catch (MalformedJwtException e) {
-            // throw new JwtException("Invalid JWT token", e);
-            throw new AuthException(ExceptionCode.INVALID_JWT_TOKEN);
+            throw new AuthException(INVALID_JWT_TOKEN);
         } catch (SignatureException e) {
-            // throw new JwtException("Invalid JWT signature", e);
-            throw new AuthException(ExceptionCode.INVALID_JWT_SIGNATURE);
+            throw new AuthException(INVALID_JWT_SIGNATURE);
         } catch (IllegalArgumentException e) {
-            // throw new JwtException("JWT claims string is empty", e);
-            throw new AuthException(ExceptionCode.EMPTY_JWT_CLAIMS);
+            throw new AuthException(EMPTY_JWT_CLAIMS);
         }
     }
 }

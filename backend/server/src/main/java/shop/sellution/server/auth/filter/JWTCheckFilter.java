@@ -11,12 +11,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import shop.sellution.server.auth.dto.CustomUserDetails;
 import shop.sellution.server.global.exception.AuthException;
-import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.global.util.JWTUtil;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
+
+import static shop.sellution.server.global.exception.ExceptionCode.INVALID_ACCESS_TOKEN;
 
 @RequiredArgsConstructor
 public class JWTCheckFilter extends OncePerRequestFilter {
@@ -51,7 +51,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
             throw e;
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
-            throw new AuthException(ExceptionCode.INVALID_ACCESS_TOKEN);
+            throw new AuthException(INVALID_ACCESS_TOKEN);
         }
         filterChain.doFilter(request, response);
     }
@@ -66,7 +66,7 @@ public class JWTCheckFilter extends OncePerRequestFilter {
     //토큰이 access token 인지 확인
     private void validateAccessToken(Claims claims) {
         if (!"access".equals(claims.get("category"))) {
-            throw new AuthException(ExceptionCode.INVALID_ACCESS_TOKEN);
+            throw new AuthException(INVALID_ACCESS_TOKEN);
         }
     }
 

@@ -13,7 +13,6 @@ import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.customer.dto.request.*;
 import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
-import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.sms.application.SmsAuthNumberService;
 import shop.sellution.server.sms.dto.request.SendSmsAuthNumberReq;
 import shop.sellution.server.sms.dto.request.VerifySmsAuthNumberReq;
@@ -162,14 +161,14 @@ public class CustomerServiceImpl implements CustomerService{
     // company 별 username 중복 확인 (다른 company에서는 username 중복 가능)
     private void validateUniqueUsername(Long companyId, String username) {
         if (customerRepository.existsByCompany_CompanyIdAndUsername(companyId, username)) {
-            throw new BadRequestException(ExceptionCode.DUPLICATED_USERNAME);
+            throw new BadRequestException(DUPLICATED_USERNAME);
         }
     }
 
     // company 별 phoneNumber 중복 확인 (다른 company에서는 phoneNumber는 중복 가능)
     private void validateUniquePhoneNumber(Long companyId, String phoneNumber) {
         if (customerRepository.existsByCompany_CompanyIdAndPhoneNumber(companyId, phoneNumber)) {
-            throw new BadRequestException(ExceptionCode.DUPLICATED_PHONE_NUMBER);
+            throw new BadRequestException(DUPLICATED_PHONE_NUMBER);
         }
     }
 
@@ -218,7 +217,7 @@ public class CustomerServiceImpl implements CustomerService{
     private void validateNewPassword(Customer customer, String newPassword, String redisKey, Long userId, int attemptCount) {
         if (passwordEncoder.matches(newPassword, customer.getPassword())) {
             incrementAttemptCount(redisKey, userId, attemptCount);
-            throw new AuthException(ExceptionCode.SAME_OLD_PASSWORD);
+            throw new AuthException(SAME_OLD_PASSWORD);
         }
     }
 
