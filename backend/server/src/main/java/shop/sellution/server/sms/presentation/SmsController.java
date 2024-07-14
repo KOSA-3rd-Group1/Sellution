@@ -40,6 +40,7 @@ public class SmsController {
      */
     @PostMapping("/send")
     public ResponseEntity<Map<String, String>> sendSms(@Valid @RequestBody SendSmsAuthNumberReq request) {
+
         try {
             smsAuthNumberService.sendSmsAuthNumber(request);
             return ResponseEntity.status(HttpStatus.OK)
@@ -55,6 +56,7 @@ public class SmsController {
 
     @PostMapping
     public ResponseEntity<Map<String, String>> verifySms(@Valid @RequestBody VerifySmsAuthNumberReq request) {
+
         try {
             smsAuthNumberService.verifySmsAuthNumber(request);
             return ResponseEntity.status(HttpStatus.OK)
