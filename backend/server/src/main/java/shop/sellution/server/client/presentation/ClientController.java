@@ -30,6 +30,16 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", clientId));
     }
 
+    @PostMapping("/duplicate-check-id")
+    public ResponseEntity<Map<String, Boolean>> checkClientUsername(@Valid @RequestBody CheckClientUsernameReq request) {
+        try {
+            clientService.checkClientUsername(request);
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("available", true));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("available", false));
+        }
+    }
+
     @PostMapping("/find-id")
     public ResponseEntity<Map<String, String>> findClientId(@Valid @RequestBody FindClientIdReq request) {
 
