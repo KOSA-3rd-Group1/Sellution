@@ -55,6 +55,11 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public void checkClientUsername(CheckClientUsernameReq request) {
+        validateUniqueUsername(request.getUsername());
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public String findClientId(FindClientIdReq request) {
 

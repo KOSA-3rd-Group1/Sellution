@@ -9,6 +9,9 @@ public interface ClientService {
     // 고객 등록
     Long saveClient(SaveClientReq request);
 
+    // 고객 아이디 중복 확인
+    void checkClientUsername(CheckClientUsernameReq request);
+
     // 고객 아이디 찾기
     String findClientId(FindClientIdReq request);
 
