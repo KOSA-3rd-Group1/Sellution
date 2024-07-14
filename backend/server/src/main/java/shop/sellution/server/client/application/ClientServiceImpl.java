@@ -55,6 +55,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void checkClientUsername(CheckClientUsernameReq request) {
         validateUniqueUsername(request.getUsername());
     }
@@ -132,31 +133,6 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.save(client);
 
         redisTemplate.delete(redisKey);
-    }
-
-    // client 생성
-    private Client createClient(Company company, SaveClientReq request) {
-        Client client = Client.builder()
-                .company(company)
-                .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .name(request.getName())
-                .phoneNumber(request.getPhoneNumber())
-                .build();
-
-        request.getPermissions().forEach((client::addPermission));
-        return client;
-    }
-
-    // SendSmsAuthNumberReq 생성
-    private SendSmsAuthNumberReq createSendReq(String authType, Client client) {
-        return new SendSmsAuthNumberReq(
-                authType,
-                client.getUserRole().getRoleName(),
-                client.getCompany().getCompanyId(),
-                client.getId(),
-                client.getPhoneNumber()
-        );
     }
 
     // company_id로 사업체 조회
@@ -239,12 +215,37 @@ public class ClientServiceImpl implements ClientService {
     }
 
     // 기존 비밀 번호와 동일한지 여부
-    private void validateNewPassword(Client client, String newPassword, String redisKey, Long clientId, int attemptCount) {
+    private void validateNewPassword(Client client, String newPassword, String redisKey, Long userId, int attemptCount) {
         if (passwordEncoder.matches(newPassword, client.getPassword())) {
-            incrementAttemptCount(redisKey, clientId, attemptCount);
+            incrementAttemptCount(redisKey, userId, attemptCount);
             throw new AuthException(ExceptionCode.SAME_OLD_PASSWORD);
         }
     }
+
+    // client 생성
+    private Client createClient(Company company, SaveClientReq request) {
+        Client client = Client.builder()
+                .company(company)
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .name(request.getName())
+                .phoneNumber(request.getPhoneNumber())
+                .build();
+
+        request.getPermissions().forEach((client::addPermission));
+        return client;
+    }
+
+    // SendSmsAuthNumberReq 생성
+//    private SendSmsAuthNumberReq createSendReq(String authType, Client client) {
+//        return new SendSmsAuthNumberReq(
+//                authType,
+//                client.getUserRole().getRoleName(),
+//                client.getCompany().getCompanyId(),
+//                client.getId(),
+//                client.getPhoneNumber()
+//        );
+//    }
 
     // SMS 발송 요청
     private void sendSmsAuthNumber(String authType, Client client) {
@@ -273,7 +274,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     // 비밀번호 시도 횟수 증가
-    private void incrementAttemptCount(String redisKey, Long clientId, int attemptCount) {
-        redisTemplate.opsForValue().set(redisKey, clientId + ":" + (attemptCount + 1), Duration.ofMinutes(TOKEN_VALID_MINUTES));
+    private void incrementAttemptCount(String redisKey, Long userId, int attemptCount) {
+        redisTemplate.opsForValue().set(redisKey, userId + ":" + (attemptCount + 1), Duration.ofMinutes(TOKEN_VALID_MINUTES));
     }
 }
