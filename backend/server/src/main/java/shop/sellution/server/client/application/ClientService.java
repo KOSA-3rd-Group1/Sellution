@@ -6,7 +6,7 @@ import shop.sellution.server.client.dto.request.*;
 
 public interface ClientService {
 
-    // 고객 등록
+    // 고객 가입
     Long saveClient(SaveClientReq request);
 
     // 고객 아이디 중복 확인
