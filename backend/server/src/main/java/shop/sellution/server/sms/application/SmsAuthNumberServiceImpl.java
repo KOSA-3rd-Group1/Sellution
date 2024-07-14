@@ -67,6 +67,7 @@ public class SmsAuthNumberServiceImpl implements SmsAuthNumberService {
 
     @Override
     public void verifySmsAuthNumber(VerifySmsAuthNumberReq request) {
+
         // 받은 request를 통해 redis key 생성 - sms_auth_number:{authType}:{role}:{companyId}:{userId}
         String key = getRedisKey(request);
         System.out.println(key);
@@ -87,10 +88,12 @@ public class SmsAuthNumberServiceImpl implements SmsAuthNumberService {
     }
 
     private String getRedisKey(BaseSmsAuthNumberReq request) {
+
         return String.format(REDIS_KEY_FORMAT_SMS_AUTH_NUMBER, request.getAuthType(), request.getRole(), request.getCompanyId(), request.getUserId());
     }
 
     private RedisSmsAuthNumberValue getRedisSmsAuthNumberValue(String key, String type) {
+
         String value = redisTemplate.opsForValue().get(key);
         if (type.equals("send") && value == null) {
             return new RedisSmsAuthNumberValue();
@@ -101,11 +104,13 @@ public class SmsAuthNumberServiceImpl implements SmsAuthNumberService {
     }
 
     private String generateAuthNumber() {
+
         int authNumber = 100000 + secureRandom.nextInt(900000); // 100000 ~ 999999
         return String.valueOf(authNumber);
     }
 
     private void saveRedisSmsAuthNumber(String key, RedisSmsAuthNumberValue value, long expirationMinutes) {
+
         redisTemplate.opsForValue().set(key, value.toString(), Duration.ofMinutes(expirationMinutes));
     }
 }
