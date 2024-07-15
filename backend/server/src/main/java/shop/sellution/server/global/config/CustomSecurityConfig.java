@@ -11,11 +11,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import shop.sellution.server.auth.application.RefreshTokenService;
 import shop.sellution.server.auth.filter.CustomLoginFilter;
+import shop.sellution.server.auth.filter.CustomLogoutFilter;
 import shop.sellution.server.auth.filter.JWTCheckFilter;
 import shop.sellution.server.global.util.JWTUtil;
 
@@ -67,6 +69,7 @@ public class CustomSecurityConfig {
         //Filter 등록
         http.addFilterBefore(new JWTCheckFilter(jwtUtil), CustomLoginFilter.class);
         http.addFilterAt(new CustomLoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshTokenService), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenService), LogoutFilter.class);
 
         return http.build();
     }

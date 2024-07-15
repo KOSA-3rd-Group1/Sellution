@@ -17,4 +17,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     // 고객 전화 번호 중복 확인
     boolean existsByPhoneNumber(String phoneNumber);
+
+    // 고객 전화 번호로 고객 조회
+    Optional<Client> findByPhoneNumber(String phoneNumber);
 }
