@@ -85,6 +85,7 @@ public class Company {
         this.shopUrl = generateShopUrl(name);
     }
 
+
     private String generateShopUrl(String name) {
         return "https://www.sellution.shop/shopping/" + name;
     }
