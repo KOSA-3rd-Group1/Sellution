@@ -32,7 +32,7 @@ const BasicLayout = () => {
           ></div>
         )}
 
-        <main className='h-full p-5 flex-auto'>
+        <main className='relative h-full p-5 flex-auto'>
           <Outlet />
         </main>
       </div>

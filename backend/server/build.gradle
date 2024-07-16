@@ -48,6 +48,9 @@ dependencies {
 	// Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+	// Coolsms
+	implementation 'net.nurigo:sdk:4.3.0'
+
 	// Database
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
@@ -68,9 +71,13 @@ dependencies {
 	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor' // rest docs
 	implementation 'com.github.maricn:logback-slack-appender:1.6.1' // 슬랙 메시지 보내기
 	implementation 'org.springframework.boot:spring-boot-starter-webflux' // 외부 api 통신 [ webclient ]
-	testImplementation 'io.projectreactor:reactor-test' // webclient 테스트를 위한 reactor
+
+  testImplementation 'io.projectreactor:reactor-test' // webclient 테스트를 위한 reactor
 	testImplementation 'com.squareup.okhttp3:mockwebserver' // webclient 테스트를 쉽게하기 위한 mockwebserver
 	testImplementation 'org.springframework.restdocs:spring-restdocs-webtestclient'
+
+
+
 }
 
 

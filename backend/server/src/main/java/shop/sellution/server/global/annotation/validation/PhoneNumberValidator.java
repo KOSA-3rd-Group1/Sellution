@@ -6,7 +6,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.util.regex.Pattern;
 
 public class PhoneNumberValidator implements ConstraintValidator<ValidPhoneNumber, String> {
-    private static final Pattern PATTERN = Pattern.compile("^\\d{2,3}-\\d{3,4}-\\d{4}$");
+    private static final Pattern PATTERN = Pattern.compile("^(010\\d{8}|01[1-9]\\d{7,8})$");
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {

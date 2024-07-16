@@ -8,12 +8,11 @@ import shop.sellution.server.global.BaseEntity;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
 
-import java.time.LocalDateTime;
-
 import static shop.sellution.server.global.type.DisplayStatus.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -78,4 +77,6 @@ public class Product extends BaseEntity {
     @Builder.Default
     @Column(nullable = false)
     private int previousMonthSales = 0;
+
+
 }
