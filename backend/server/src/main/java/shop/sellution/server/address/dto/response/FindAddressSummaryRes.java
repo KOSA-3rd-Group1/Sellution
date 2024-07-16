@@ -1,4 +1,4 @@
-package shop.sellution.server.address.dto;
+package shop.sellution.server.address.dto.response;
 
 
 import lombok.Builder;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class FindAddressReq {
+public class FindAddressSummaryRes {
 
     private Long id;
 
@@ -30,8 +30,8 @@ public class FindAddressReq {
 
     private LocalDateTime createdAt;
 
-    FindAddressReq fromEntity(Address address){
-        return FindAddressReq.builder()
+    public static FindAddressSummaryRes fromEntity(Address address){
+        return FindAddressSummaryRes.builder()
                 .id(address.getId())
                 .address(address.getAddress())
                 .name(address.getName())

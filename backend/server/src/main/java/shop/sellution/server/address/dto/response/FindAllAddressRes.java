@@ -22,7 +22,7 @@ public class FindAllAddressRes { //배송지 상세보기 했을 때
     public static FindAllAddressRes fromEntity(Address address) {
         return FindAllAddressRes.builder()
                 .addressId(address.getId())
-                .streetAddress(address.getStreetAddress())
+                .streetAddress(address.getAddress())
                 .addressDetail(address.getAddressDetail())
                 .name(address.getName())
                 .phoneNumber(address.getPhoneNumber())

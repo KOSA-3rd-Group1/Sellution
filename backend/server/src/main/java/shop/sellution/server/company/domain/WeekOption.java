@@ -2,9 +2,11 @@ package shop.sellution.server.company.domain;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
 @Table(name = "week_option")
+@Getter
 public class WeekOption {
 
     @Id

@@ -10,7 +10,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("""
             select o from Order o
-            left join fetch o.company
             left join fetch o.customer
             left join fetch o.address
             left join fetch o.monthOption
@@ -18,4 +17,15 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             where o.customer.id = :customerId
             """)
     Page<Order> findAllOrderByCustomerId(@Param("customerId")Long customerId, Pageable pageable);
+
+    @Query("""
+            select o from Order o
+            left join fetch o.company
+            left join fetch o.customer
+            left join fetch o.address
+            left join fetch o.monthOption
+            left join fetch o.weekOption
+            where o.company.companyId = :companyId
+            """)
+    Page<Order> findAllOrderByCompanyId(@Param("companyId")Long companyId, Pageable pageable);
 }

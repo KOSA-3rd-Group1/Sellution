@@ -8,9 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.order.domain.*;
 import shop.sellution.server.order.dto.response.FindOrderRes;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -19,8 +16,6 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderedProductRepository orderedProductRepository;
-    private final SelectedDayRepository selectedDayRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -28,24 +23,26 @@ public class OrderServiceImpl implements OrderService {
 
         Page<Order> orders = orderRepository.findAllOrderByCustomerId(CustomerId, pageable);
 
-        List<Long> orderIds = orders.getContent().stream()
-                .map(Order::getId)
-                .toList();
+        return orders.map(order -> FindOrderRes.fromEntities(
+                order,
+                order.getOrderedProducts(),
+                order.getSelectedDays()
+        ));
 
-        List<OrderedProduct> orderProducts = orderedProductRepository.findByOrderIn(orderIds);
-        List<SelectedDay> selectedDays = selectedDayRepository.findByOrderId(orderIds);
+    }
 
-        Map<Long, List<OrderedProduct>> orderProductMap = orderProducts.stream()
-                .collect(Collectors.groupingBy((orderedProduct -> orderedProduct.getOrder().getId())));
+    @Override
+    @Transactional(readOnly = true)
+    public Page<FindOrderRes> findAllOrderByCompanyId(Long companyId,Pageable pageable) {
 
-        Map<Long, List<SelectedDay>> selectedDayMap = selectedDays.stream()
-                .collect(Collectors.groupingBy((selectedDay -> selectedDay.getOrder().getId())));
+        Page<Order> orders = orderRepository.findAllOrderByCompanyId(companyId, pageable);
 
         return orders.map(order -> FindOrderRes.fromEntities(
                 order,
-                orderProductMap.get(order.getId()),
-                selectedDayMap.get(order.getId())
+                order.getOrderedProducts(),
+                order.getSelectedDays()
         ));
+
     }
 
 

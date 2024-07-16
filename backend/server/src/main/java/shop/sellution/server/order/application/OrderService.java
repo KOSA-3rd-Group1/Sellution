@@ -6,5 +6,7 @@ import shop.sellution.server.order.dto.response.FindOrderRes;
 
 public interface OrderService {
 
-    public Page<FindOrderRes> findAllOrderByCustomerId(Long CustomerId,Pageable pageable);
+    Page<FindOrderRes> findAllOrderByCustomerId(Long CustomerId,Pageable pageable);
+
+    Page<FindOrderRes> findAllOrderByCompanyId(Long companyId,Pageable pageable);
 }

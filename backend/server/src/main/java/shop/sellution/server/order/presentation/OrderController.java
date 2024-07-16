@@ -23,8 +23,14 @@ public class OrderController {
     @GetMapping("/customers/{customerId}")
     public ResponseEntity<Page<FindOrderRes>> findAllOrderByCustomerId(@PathVariable Long customerId, Pageable pageable) {
 
-        log.info("customerId: {}", customerId);
         return ResponseEntity.ok(orderService.findAllOrderByCustomerId(customerId,pageable));
+
+    }
+
+    @GetMapping("/company/{companyId}")
+    public ResponseEntity<Page<FindOrderRes>> findAllOrderByCompanyId(@PathVariable Long companyId, Pageable pageable) {
+
+        return ResponseEntity.ok(orderService.findAllOrderByCompanyId(companyId,pageable));
 
     }
 

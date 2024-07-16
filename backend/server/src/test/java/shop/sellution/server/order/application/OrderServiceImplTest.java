@@ -1,6 +1,7 @@
 package shop.sellution.server.order.application;
 
-import org.junit.jupiter.api.BeforeEach;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,15 +11,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import shop.sellution.server.address.domain.Address;
+import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.order.domain.*;
 import shop.sellution.server.order.dto.response.FindOrderRes;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceImplTest {
@@ -26,40 +27,38 @@ class OrderServiceImplTest {
     @Mock
     private OrderRepository orderRepository;
 
-    @Mock
-    private OrderedProductRepository orderedProductRepository;
-
-    @Mock
-    private SelectedDayRepository selectedDayRepository;
-
     @InjectMocks
     private OrderServiceImpl orderService;
 
-    private Order testOrder;
-    private List<OrderedProduct> testOrderedProducts;
-    private List<SelectedDay> testSelectedDays;
-
-    @BeforeEach
-    void setUp() {
-        testOrder = Order.builder().build(); // Order 객체 생성 및 초기화
-        testOrderedProducts = List.of(new OrderedProduct()); // OrderedProduct 리스트 생성 및 초기화
-        testSelectedDays = List.of(new SelectedDay()); // SelectedDay 리스트 생성 및 초기화
-    }
-
     @Test
-    void findAllOrderByCustomerId_Success() {
+    @DisplayName("고객 ID로 주문 목록을 조회한다")
+    void findAllOrderByCustomerId() {
         // Given
+        Long customerId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
-        Page<Order> orderPage = new PageImpl<>(List.of(testOrder));
 
-        when(orderRepository.findAllOrderByCustomerId(eq(1L), any(Pageable.class))).thenReturn(orderPage);
-        when(orderedProductRepository.findByOrderId(any())).thenReturn(testOrderedProducts);
-        when(selectedDayRepository.findByOrderId(any())).thenReturn(testSelectedDays);
+        Customer mockCustomer = mock(Customer.class);
+        when(mockCustomer.getId()).thenReturn(customerId);
+
+        Address mockAddress = mock(Address.class);
+
+        Order mockOrder = mock(Order.class);
+        when(mockOrder.getCustomer()).thenReturn(mockCustomer);
+        when(mockOrder.getAddress()).thenReturn(mockAddress);
+        when(mockOrder.getOrderedProducts()).thenReturn(List.of());
+        when(mockOrder.getSelectedDays()).thenReturn(List.of());
+
+        List<Order> orderList = List.of(mockOrder);
+        Page<Order> orderPage = new PageImpl<>(orderList, pageable, orderList.size());
+
+        when(orderRepository.findAllOrderByCustomerId(customerId, pageable)).thenReturn(orderPage);
 
         // When
-        Page<FindOrderRes> result = orderService.findAllOrderByCustomerId(pageable);
+        Page<FindOrderRes> result = orderService.findAllOrderByCustomerId(customerId, pageable);
 
         // Then
-        assertEquals(1, result.getTotalElements());
+        assertThat(result).isNotNull();
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        verify(orderRepository).findAllOrderByCustomerId(customerId, pageable);
     }
 }

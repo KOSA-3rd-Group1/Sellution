@@ -1,9 +1,11 @@
 package shop.sellution.server.company.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 
 @Entity
+@Getter
 @Table(name = "month_option")
 public class MonthOption {
 

@@ -8,6 +8,8 @@ import shop.sellution.server.global.BaseEntity;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
 
+import java.time.LocalDateTime;
+
 import static shop.sellution.server.global.type.DisplayStatus.*;
 
 @Entity
