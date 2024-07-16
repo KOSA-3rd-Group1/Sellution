@@ -25,13 +25,13 @@ public class SmsAuthNumberServiceImpl implements SmsAuthNumberService {
     private static final int AUTH_NUMBER_EXPIRATION_MINUTES = 5;
     private static final int MAX_REQUESTS = 3;
     private static final int REQUEST_BLOCK_MINUTES = 5;
-    private static final String REDIS_KEY_FORMAT = "sms_auth_number:%s:%d:%d";
+    private static final String REDIS_KEY_FORMAT = "sms_auth_number:%s:%s:%d:%d";
 
 
     @Override
     public void sendSmsAuthNumber(SendSmsAuthNumberReq request) {
 
-        // 받은 request를 통해 redis key 생성 - sms_auth_number:{role}:{company_id}:{id}
+        // 받은 request를 통해 redis key 생성 - sms_auth_number:{authType}:{role}:{companyId}:{userId}
         String key = getRedisKey(request);
         RedisSmsAuthNumberValue value = getRedisSmsAuthNumberValue(key, "send");
 
@@ -67,8 +67,9 @@ public class SmsAuthNumberServiceImpl implements SmsAuthNumberService {
 
     @Override
     public void verifySmsAuthNumber(VerifySmsAuthNumberReq request) {
-        // 받은 request를 통해 redis key 생성 - sms_auth_number:{role}:{company_id}:{id}
+        // 받은 request를 통해 redis key 생성 - sms_auth_number:{authType}:{role}:{companyId}:{userId}
         String key = getRedisKey(request);
+        System.out.println(key);
 
         // 생성한 Redis key를 통해 value 값 가져오기 - 여기 에러 처리 필요
         RedisSmsAuthNumberValue value = getRedisSmsAuthNumberValue(key, "verify");
@@ -86,7 +87,7 @@ public class SmsAuthNumberServiceImpl implements SmsAuthNumberService {
     }
 
     private String getRedisKey(BaseSmsAuthNumberReq request) {
-        return String.format(REDIS_KEY_FORMAT, request.getRole(), request.getCompanyId(), request.getUserId());
+        return String.format(REDIS_KEY_FORMAT, request.getAuthType(), request.getRole(), request.getCompanyId(), request.getUserId());
     }
 
     private RedisSmsAuthNumberValue getRedisSmsAuthNumberValue(String key, String type) {
