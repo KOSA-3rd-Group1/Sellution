@@ -108,8 +108,8 @@ const DetailComponent = () => {
             <label className='block text-sm font-medium text-gray-700'>상품 수</label>
             <p className='mt-1 text-sm text-gray-500'>{category.productCount} 개</p>
           </div>
+          <hr />
         </div>
-        <hr />
       </section>
 
       <FooterComponent
