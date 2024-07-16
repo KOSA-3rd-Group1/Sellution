@@ -1,4 +1,4 @@
-package shop.sellution.server.account.dto.response;
+package pg.sellution.pgserver.account.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
