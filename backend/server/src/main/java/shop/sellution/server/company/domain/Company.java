@@ -73,6 +73,10 @@ public class Company {
     @Column(name = "main_promotion2_content")
     private String mainPromotion2Content = "임시 컨텐츠입니다. 수정해주세요. ";
 
+    @Column(name = "qr_code")
+    @Lob
+    private byte[] qrCode;
+
 
     @Builder
     public Company(String displayName, String name) {
