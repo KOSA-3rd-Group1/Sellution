@@ -4,17 +4,21 @@ import jakarta.persistence.*;
 import lombok.*;
 import shop.sellution.server.company.domain.type.SellType;
 import shop.sellution.server.company.domain.type.SubscriptionType;
+import shop.sellution.server.global.BaseEntity;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
+
+import static shop.sellution.server.global.type.DisplayStatus.*;
 
 @Entity
 @Getter
 @Setter
-@Builder
+//@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "company")
-public class Company {
+public class Company extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "company_id")
@@ -31,15 +35,15 @@ public class Company {
 
     @Enumerated(EnumType.STRING)
     @Column(name ="is_shop_visible")
-    private DisplayStatus isShopVisible = DisplayStatus.N; //URL 설정 페이지
+    private DisplayStatus isShopVisible = N; //URL 설정 페이지
 
     @Enumerated(EnumType.STRING)
     @Column(name = "is_auto_approved")
-    private DisplayStatus isAutoApproved = DisplayStatus.N;
+    private DisplayStatus isAutoApproved = N;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "is_new_member_event")
-    private DisplayStatus isNewMemberEvent = DisplayStatus.N;
+    private DisplayStatus isNewMemberEvent = N;
 
     @Enumerated(EnumType.STRING)
     @Column(name="service_type")
@@ -138,5 +142,4 @@ public class Company {
     public void updateSellType(SellType sellType) {
         this.sellType = sellType;
     }
-
 }

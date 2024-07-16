@@ -7,6 +7,7 @@ import shop.sellution.server.company.dto.FindCompanyUrlSettingRes;
 import shop.sellution.server.company.dto.SaveCompanyUrlSettingReq;
 import shop.sellution.server.global.util.QRCodeGenerator;
 
+
 @Service
 public class CompanyUrlSettingServiceImpl implements CompanyUrlSettingService {
     private final CompanyRepository companyRepository;
@@ -14,6 +15,7 @@ public class CompanyUrlSettingServiceImpl implements CompanyUrlSettingService {
 
     public CompanyUrlSettingServiceImpl(CompanyRepository companyRepository) {
         this.companyRepository = companyRepository;
+
     }
 
     @Override
@@ -36,6 +38,7 @@ public class CompanyUrlSettingServiceImpl implements CompanyUrlSettingService {
             throw new RuntimeException("QR Code generation failed", e);
         }
         companyRepository.save(company);
+
 
     }
 

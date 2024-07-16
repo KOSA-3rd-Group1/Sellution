@@ -6,6 +6,7 @@ import lombok.Setter;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.global.util.Base64Util;
 
+
 @Getter
 @Setter
 @Builder
@@ -23,8 +24,8 @@ public class FindCompanyUrlSettingRes {
                 .companyId(company.getCompanyId())
                 .name(company.getName())
                 .shopUrl("https://www.sellution.shop/shopping/" + company.getName())
-                .isShopVisible(company.getIsShopVisible().name())
                 .qrCodeBase64(Base64Util.encodeToString(company.getQrCode()))
+                .isShopVisible(company.getIsShopVisible().name())
                 .build();
     }
 }
