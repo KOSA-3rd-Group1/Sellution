@@ -2,6 +2,7 @@ package shop.sellution.server.company.application;
 
 import org.springframework.stereotype.Service;
 import shop.sellution.server.company.domain.Company;
+import shop.sellution.server.company.domain.repository.CompanyImageRepository;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.company.dto.FindCompanyUrlSettingRes;
 import shop.sellution.server.company.dto.SaveCompanyUrlSettingReq;
@@ -13,9 +14,8 @@ public class CompanyUrlSettingServiceImpl implements CompanyUrlSettingService {
     private final CompanyRepository companyRepository;
 
 
-    public CompanyUrlSettingServiceImpl(CompanyRepository companyRepository) {
+    public CompanyUrlSettingServiceImpl(CompanyRepository companyRepository, CompanyImageRepository companyImageRepository) {
         this.companyRepository = companyRepository;
-
     }
 
     @Override
