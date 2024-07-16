@@ -137,10 +137,10 @@
         <root level="info">
             <appender-ref ref="CONSOLE"/>
         </root>
-        <logger name="org.hibernate.SQL" level="DEBUG">
+        <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
             <appender-ref ref="CONSOLE"/>
         </logger>
-        <logger name="org.hibernate.type" level="TRACE">
+        <logger name="org.hibernate.type" level="TRACE" additivity="false">
             <appender-ref ref="CONSOLE"/>
         </logger>
     </springProfile>
@@ -159,7 +159,7 @@
             <appender-ref ref="FILE-ORDER"/>
         </logger>
 
-        <logger name="shop.sellution.server.payment" level="INFO">
+        <logger name="shop.sellution.server.account" level="INFO">
             <appender-ref ref="FILE-PAYMENT"/>
         </logger>
     </springProfile>
