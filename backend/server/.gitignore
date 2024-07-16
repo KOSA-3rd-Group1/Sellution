@@ -3,6 +3,9 @@ src/test/resources/application*
 
 /logs
 src/main/resources/application*
+.idea/**
+.gradle
+.gradle/**
 .idea
 
 # User-specific stuff
