@@ -1,18 +1,31 @@
 package shop.sellution.server.order.presentation;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import shop.sellution.server.order.application.OrderService;
+import shop.sellution.server.order.dto.response.FindOrderRes;
 
 @RestController
 @Slf4j
-@RequestMapping("/order")
+@RequestMapping("/orders")
+@RequiredArgsConstructor
 public class OrderController {
 
-    @GetMapping("/test")
-    public void test() {
-        log.error("주문 로그 테스트");
+    private final OrderService orderService;
+
+    @GetMapping("/customers/{customerId}")
+    public ResponseEntity<Page<FindOrderRes>> findAllOrderByCustomerId(@PathVariable Long customerId, Pageable pageable) {
+
+        log.info("customerId: {}", customerId);
+        return ResponseEntity.ok(orderService.findAllOrderByCustomerId(customerId,pageable));
+
     }
 
 }

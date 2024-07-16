@@ -17,13 +17,13 @@ public class DayOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "day_option_id")
-    private Long dayOptionId;
+    private Long id;
 
-    @Column(name= "value")
-    private DayValueType dayValue;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
+
+    @Enumerated(EnumType.STRING)
+    private DayValueType value;
 
 }
