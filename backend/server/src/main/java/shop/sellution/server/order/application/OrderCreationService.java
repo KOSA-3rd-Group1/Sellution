@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.sellution.server.account.domain.Account;
+import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.address.domain.Address;
 import shop.sellution.server.address.domain.AddressRepository;
 import shop.sellution.server.company.domain.*;
@@ -15,9 +17,7 @@ import shop.sellution.server.company.domain.repository.WeekOptionRepository;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.global.exception.BadRequestException;
-import shop.sellution.server.order.domain.Order;
-import shop.sellution.server.order.domain.OrderedProduct;
-import shop.sellution.server.order.domain.SelectedDay;
+import shop.sellution.server.order.domain.*;
 import shop.sellution.server.order.domain.repository.OrderRepository;
 import shop.sellution.server.order.domain.type.OrderStatus;
 import shop.sellution.server.order.domain.type.OrderType;
@@ -49,6 +49,7 @@ public class OrderCreationService {
     private final WeekOptionRepository weekOptionRepository;
     private final OrderRepository orderRepository;
     private final DayOptionRepository dayOptionRepository;
+    private final AccountRepository accountRepository;
 
     private static final int ONETIME = 1;
 
@@ -62,6 +63,9 @@ public class OrderCreationService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER));
         Address address = addressRepository.findById(saveOrderReq.getAddressId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ADDRESS));
+
+        Account account = accountRepository.findById(saveOrderReq.getAccountId())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACCOUNT));
 
         MonthOption monthOption = null;
         WeekOption weekOption = null;
@@ -94,6 +98,7 @@ public class OrderCreationService {
         Order order = Order.builder()
                 .company(company)
                 .customer(customer)
+                .account(account)
                 .address(address)
                 .monthOption(monthOption)
                 .weekOption(weekOption)
@@ -107,6 +112,8 @@ public class OrderCreationService {
                 .remainingDeliveryCount(deliveryInfo.getTotalDeliveryCount())
                 .build();
 
+        Order savedOrder = orderRepository.save(order);
+
         // OrderedProduct 엔티티 생성 및 연결
         List<OrderedProduct> orderedProducts = createOrderedProducts(order, products, saveOrderReq.getOrderedProducts());
         order.setOrderedProducts(orderedProducts);
@@ -115,8 +122,7 @@ public class OrderCreationService {
         List<SelectedDay> selectedDays = createSelectedDays(order, saveOrderReq.getDayOptionIds());
         order.setSelectedDays(selectedDays);
 
-        Order savedOrder = orderRepository.save(order);
-        log.info("생성된 주문 : {}", savedOrder);
+        log.info("생성된 주문 : {}", order.getId());
 
     }
 
@@ -124,10 +130,11 @@ public class OrderCreationService {
         List<DayOption> dayOptions = dayOptionRepository.findByIdIn(dayOptionIds);
         return dayOptions.stream()
                 .map(dayOption -> {
-                    SelectedDay selectedDay = new SelectedDay();
-                    selectedDay.setOrder(order);
-                    selectedDay.setDayOption(dayOption);
-                    return selectedDay;
+                    return SelectedDay.builder()
+                            .id(new SelectedDayId(order.getId(), dayOption.getId()))
+                            .dayOption(dayOption)
+                            .order(order)
+                            .build();
                 })
                 .collect(Collectors.toList());
     }
@@ -141,6 +148,7 @@ public class OrderCreationService {
                             .findFirst()
                             .orElseThrow(() -> new BadRequestException(NOT_FOUND_PRODUCT));
                     return OrderedProduct.builder()
+                            .id(new OrderedProductId(product.getProductId(), order.getId()))
                             .order(order)
                             .product(product)
                             .price(product.getCost())
@@ -192,10 +200,10 @@ public class OrderCreationService {
             throw new BadRequestException(INVALID_ORDER_TYPE);
         }
 
-        int weekly = weekOption.getValue(); // n 주 마다 배송
+        int weekly = weekOption.getWeekValue(); // n 주 마다 배송
         List<DayOption> dayOptions = dayOptionRepository.findByIdIn(dayOptionIds);
         List<DayOfWeek> deliveryDays = dayOptions.stream()
-                .map((dayOption -> dayOption.getValue().changeToDayOfWeek()))
+                .map((dayOption -> dayOption.getDayValue().changeToDayOfWeek()))
                 .sorted()
                 .toList();// 요일값
 
@@ -204,7 +212,7 @@ public class OrderCreationService {
             if (monthOption == null) {
                 throw new BadRequestException(INVALID_ORDER_TYPE);
             }
-            return calculateMonthSubscription(deliveryStartDate, monthOption.getValue(), weekly, deliveryDays);
+            return calculateMonthSubscription(deliveryStartDate, monthOption.getMonthValue(), weekly, deliveryDays);
         }
 
         if (orderType.isCountSubscription()) {

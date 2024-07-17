@@ -70,10 +70,10 @@ public class FindOrderRes {
                         .toList())
                 .createdAt(order.getCreatedAt())
                 .selectedDayList(selectedDays.stream()
-                        .map((sd) -> sd.getDayOption().getValue())
+                        .map((sd) -> sd.getDayOption().getDayValue())
                         .toList())
-                .selectedWeekOption(order.getWeekOption() == null ? null : order.getWeekOption().getValue())
-                .selectedMonthOption(order.getMonthOption() == null ? null : order.getMonthOption().getValue())
+                .selectedWeekOption(order.getWeekOption() == null ? null : order.getWeekOption().getWeekValue())
+                .selectedMonthOption(order.getMonthOption() == null ? null : order.getMonthOption().getMonthValue())
                 .build();
     }
 

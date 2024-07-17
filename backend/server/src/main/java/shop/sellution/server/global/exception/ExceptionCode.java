@@ -43,7 +43,7 @@ public enum ExceptionCode {
     SAME_OLD_PASSWORD(4011, "기존에 사용한 이력이 있는 비밀번호입니다."),
 
 
-    // ---------------------------- Account 5001 ~ 5500 ---------------------------------------
+    // ---------------------------- Account, order,pay 5001 ~ 5500 ---------------------------------------
     NOT_FOUND_CUSTOMER(5001,"요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
     INVALID_ACCOUNT_INFO(5002,"유효하지않은 계좌정보입니다."),
     NOT_FOUND_ACCOUNT(5001,"요청한 ID에 해당하는 계좌를 찾을 수 없습니다."),
@@ -53,6 +53,9 @@ public enum ExceptionCode {
     NOT_FOUND_DAY_OPTION(5005,"요청한 ID에 해당하는 요일 옵션을 찾을 수 없습니다." ),
     INVALID_ORDER_TYPE(5006,"유효하지않은 주문 입력값입니다."),
     NOT_FOUND_PRODUCT(5007, "요청한 ID에 해당하는 상품을 찾을 수 없습니다."),
+    NOT_FOUND_ORDER(5008, "요청한 ID에 해당하는 주문을 찾을 수 없습니다."),
+    FAIL_TO_PAY(5009, "결제에 실패하였습니다."),
+    FAIL_TO_GET_API_TOKEN(5010, "API 토큰반환을 실패하였습니다."),
 
     // ---------------------------- Client,Customer 8001 ~ 8999 ---------------------------------------
 

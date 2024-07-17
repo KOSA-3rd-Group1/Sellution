@@ -24,6 +24,7 @@ public class DayOption {
     private Company company;
 
     @Enumerated(EnumType.STRING)
-    private DayValueType value;
+    @Column(nullable = false,columnDefinition = "ENUM('MON','TUE','WED','THU','FRI')")
+    private DayValueType dayValue;
 
 }

@@ -11,9 +11,13 @@ import java.io.Serializable;
 @Embeddable
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode
 public class SelectedDayId implements Serializable {
     private Long orderId;
     private Long dayOptionId;
+
+    public SelectedDayId(Long orderId, Long dayOptionId) {
+        this.orderId = orderId;
+        this.dayOptionId = dayOptionId;
+    }
 }

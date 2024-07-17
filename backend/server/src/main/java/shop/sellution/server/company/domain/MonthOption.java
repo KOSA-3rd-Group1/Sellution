@@ -18,5 +18,5 @@ public class MonthOption {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    private Integer value;
+    private Integer monthValue;
 }

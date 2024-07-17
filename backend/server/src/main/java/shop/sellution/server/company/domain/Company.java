@@ -2,6 +2,7 @@ package shop.sellution.server.company.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import shop.sellution.server.company.domain.type.SellType;
 import shop.sellution.server.company.domain.type.SubscriptionType;
 import shop.sellution.server.global.BaseEntity;
@@ -24,58 +25,68 @@ public class Company{
     @Column(name = "company_id")
     private Long companyId;
 
-    @Column(name = "display_name")
+    @Column(name = "display_name",nullable = false)
     private String displayName;
 
-    @Column(nullable = false)
+    @Column(unique = true,nullable = false)
     private String name; //URL 설정 페이지
 
-    @Column(name ="shop_url")
+    @Column(name ="shop_url",nullable = false)
     private String shopUrl; //URL 설정 페이지
 
     @Enumerated(EnumType.STRING)
-    @Column(name ="is_shop_visible")
+    @Column(name ="is_shop_visible",length = 1,nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'N'" )
+    @Builder.Default
     private DisplayStatus isShopVisible = N; //URL 설정 페이지
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "is_auto_approved")
+    @Column(name = "is_auto_approved",length = 1,nullable = false,columnDefinition = "ENUM('N','Y') DEFAULT 'N'" )
+    @Builder.Default
     private DisplayStatus isAutoApproved = N;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "is_new_member_event")
+    @Column(name = "is_new_member_event",nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'N'" )
+    @Builder.Default
     private DisplayStatus isNewMemberEvent = N;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="service_type")
+    @Column(name="service_type",nullable = false)
     private DeliveryType serviceType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="subscription_type")
+    @Column(name="subscription_type",nullable = false)
     private SubscriptionType subscriptionType;
 
-    @Column(name="min_delivery_count")
+    @Column(name="min_delivery_count",nullable = false,columnDefinition = "int default 5")
+    @Builder.Default
     private int minDeliveryCount = 5;
 
-    @Column(name="max_delivery_count")
+    @Column(name="max_delivery_count",nullable = false,columnDefinition = "int default 30")
+    @Builder.Default
     private int maxDeliveryCount = 30;
 
-    @Column(name="theme_color")
+    @Column(name="theme_color",nullable = false, columnDefinition = "varchar(50) default 'F37021'")
+    @Builder.Default
     private String themeColor = "F37021";
 
-    @Column(name = "sell_type")
+    @Column(name = "sell_type",nullable = false)
     @Enumerated(EnumType.STRING)
     private SellType sellType;
 
-    @Column(name = "main_promotion1_title")
+    @Column(name = "main_promotion1_title",nullable = false, columnDefinition = "varchar(100) default '임시 제목입니다. 수정해주세요.'")
+    @Builder.Default
     private String mainPromotion1Title = "임시 제목입니다. 수정해주세요.";
 
-    @Column(name = "main_promotion1_content")
+    @Column(name = "main_promotion1_content",nullable = false, columnDefinition = "varchar(200) default '임시 컨텐츠입니다. 수정해주세요.'")
+    @Builder.Default
     private String mainPromotion1Content = "임시 컨텐츠입니다. 수정해주세요. ";
 
-    @Column(name = "main_promotion2_title")
+    @Column(name = "main_promotion2_title",nullable = false, columnDefinition = "varchar(100) default '임시 제목입니다. 수정해주세요.'")
+    @Builder.Default
     private String mainPromotion2Title = "임시 제목입니다. 수정해주세요.";
 
-    @Column(name = "main_promotion2_content")
+    @Column(name = "main_promotion2_content",nullable = false,columnDefinition = "varchar(200) default '임시 컨텐츠입니다. 수정해주세요.'")
+    @Builder.Default
     private String mainPromotion2Content = "임시 컨텐츠입니다. 수정해주세요. ";
 
     @Builder

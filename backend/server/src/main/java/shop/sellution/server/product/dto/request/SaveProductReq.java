@@ -55,6 +55,7 @@ public class SaveProductReq {
     private Integer stock;
 
     @NotNull
+    @Builder.Default
     private DisplayStatus isVisible = DisplayStatus.Y;
 
 

@@ -3,6 +3,7 @@ package shop.sellution.server.order.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.MonthOption;
 import shop.sellution.server.company.domain.WeekOption;
@@ -42,28 +43,32 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "month_option_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id",nullable = false)
+    private Account account;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "month_option_id",nullable = true)
     private MonthOption monthOption;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "week_option_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "week_option_id",nullable = true)
     private WeekOption weekOption;
 
     @Column(nullable = false, unique = true)
     private Long code;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "ENUM ('ONETIME','MONTH_SUBSCRIPTION','COUNT_SUBSCRIPTION')")
     private OrderType type;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false,columnDefinition = "ENUM('HOLD','APPROVED','CANCEL') DEFAULT 'HOLD'")
     @Builder.Default
     private OrderStatus status = OrderStatus.HOLD;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "ENUM('BEFORE_DELIVERY','IN_PROGRESS','COMPLETE') default 'BEFORE_DELIVERY'")
     @Builder.Default
     private DeliveryStatus deliveryStatus = DeliveryStatus.BEFORE_DELIVERY;
 
@@ -113,17 +118,8 @@ public class Order extends BaseEntity {
         selectedDay.setOrder(null);
     }
 
-
-    @PrePersist
-    public void prePersist() {
-        System.out.println("Order.prePersist 실행");
-        System.out.println(createdAt);
-        System.out.println(updatedAt);
-        if (this.createdAt == null) {
-            this.createdAt = LocalDateTime.now();
-        }
-        if (this.updatedAt == null) {
-            this.updatedAt = LocalDateTime.now();
-        }
+    public void approveOrder() {
+        this.status = OrderStatus.APPROVED;
     }
+
 }

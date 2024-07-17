@@ -1,13 +1,15 @@
 package shop.sellution.server.order.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import shop.sellution.server.company.domain.DayOption;
 
 @Entity
 @Table(name = "selected_day")
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SelectedDay {
 
     @EmbeddedId

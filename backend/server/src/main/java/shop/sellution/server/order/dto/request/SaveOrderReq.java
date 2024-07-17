@@ -18,6 +18,9 @@ public class SaveOrderReq {
     @NotNull
     private Long addressId;
 
+    @NotNull
+    private Long accountId;
+
     @Nullable
     private Long monthOptionId;
     @Nullable

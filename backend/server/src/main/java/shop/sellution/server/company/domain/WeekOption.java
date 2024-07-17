@@ -18,5 +18,5 @@ public class WeekOption {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    private Integer value;
+    private Integer weekValue;
 }
