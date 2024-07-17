@@ -32,7 +32,7 @@ public class Address {
 
     @NotNull
     @Column(length = 255)
-    private String streetAddress;
+    private String address;
 
     @NotNull
     @Column(length = 50)

@@ -29,7 +29,7 @@ public class FindAddressRes { //회원의 모든 배송지 목록을 보여줄�
                 .name(address.getName())
                 .phoneNumber(address.getPhoneNumber())
                 .zipcode(address.getZipcode())
-                .streetAddress(address.getStreetAddress())
+                .streetAddress(address.getAddress())
                 .addressDetail(address.getAddressDetail())
                 .isDefaultAddress(address.getIsDefaultAddress())
                 .build();

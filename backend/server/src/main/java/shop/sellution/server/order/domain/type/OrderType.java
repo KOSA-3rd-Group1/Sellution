@@ -7,4 +7,14 @@ public enum OrderType {
 
     OrderType(String s) {
     }
+
+    public boolean isMonthSubscription() {
+        return this == MONTH_SUBSCRIPTION;
+    }
+    public boolean isCountSubscription() {
+        return this == COUNT_SUBSCRIPTION;
+    }
+    public boolean isOnetime() {
+        return this == ONETIME;
+    }
 }

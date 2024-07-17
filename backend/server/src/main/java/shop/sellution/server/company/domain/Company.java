@@ -13,11 +13,11 @@ import static shop.sellution.server.global.type.DisplayStatus.*;
 @Entity
 @Getter
 @Setter
-//@Builder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "company")
-public class Company extends BaseEntity {
+public class Company{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,6 +63,7 @@ public class Company extends BaseEntity {
     private String themeColor = "F37021";
 
     @Column(name = "sell_type")
+    @Enumerated(EnumType.STRING)
     private SellType sellType;
 
     @Column(name = "main_promotion1_title")

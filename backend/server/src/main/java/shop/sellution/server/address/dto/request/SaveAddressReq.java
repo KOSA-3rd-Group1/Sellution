@@ -42,7 +42,7 @@ public class SaveAddressReq {
         return Address.builder()
                 .customer(customer)
                 .zipcode(zipcode)
-                .streetAddress(streetAddress)
+                .address(streetAddress)
                 .addressDetail(addressDetail)
                 .name(name)
                 .phoneNumber(phoneNumber)
@@ -54,7 +54,7 @@ public class SaveAddressReq {
 
     public void updateEntity(Address address) {
         address.setZipcode(zipcode);
-        address.setStreetAddress(streetAddress);
+        address.setAddress(streetAddress);
         address.setAddressDetail(addressDetail);
         address.setName(name);
         address.setPhoneNumber(phoneNumber);

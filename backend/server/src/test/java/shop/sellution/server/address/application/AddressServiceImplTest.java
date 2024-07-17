@@ -58,7 +58,7 @@ class AddressServiceImplTest {
                 .name("John Doe")
                 .phoneNumber("010-9999-9999")
                 .zipcode("12345")
-                .streetAddress("123 Street")
+                .address("123 Street")
                 .addressDetail("Apt 101")
                 .isDefaultAddress(DisplayStatus.Y)
                 .createdAt(LocalDateTime.now())
