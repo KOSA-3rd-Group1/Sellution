@@ -72,14 +72,21 @@ public class Order extends BaseEntity {
     @Builder.Default
     private DeliveryStatus deliveryStatus = DeliveryStatus.BEFORE_DELIVERY;
 
+    @Setter
     @Column(nullable = false)
     private int totalPrice;
+
+    @Column(nullable = false)
+    private int perPrice;
 
     @Column(nullable = false)
     private LocalDateTime deliveryStartDate;
 
     @Column(nullable = false)
     private LocalDateTime deliveryEndDate;
+
+    @Column(nullable = false)
+    private LocalDateTime nextDeliveryDate;
 
     @Column(nullable = false)
     private int totalDeliveryCount;
