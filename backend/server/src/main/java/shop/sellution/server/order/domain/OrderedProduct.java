@@ -8,6 +8,8 @@ import shop.sellution.server.product.domain.Product;
 @Table(name = "ordered_product")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class OrderedProduct {
 
     @EmbeddedId
@@ -32,15 +34,5 @@ public class OrderedProduct {
 
     @Column(nullable = false)
     private int price;
-
-    @Builder
-    public OrderedProduct(Product product, Order order, int count, int discountRate, int price) {
-        this.product = product;
-        this.order = order;
-        this.count = count;
-        this.discountRate = discountRate;
-        this.price = price;
-    }
-
 
 }

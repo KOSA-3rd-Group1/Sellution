@@ -13,4 +13,9 @@ import java.io.Serializable;
 public class OrderedProductId implements Serializable {
     private Long productId;
     private Long orderId;
+
+    public OrderedProductId(Long productId, Long orderId) {
+        this.productId = productId;
+        this.orderId = orderId;
+    }
 }

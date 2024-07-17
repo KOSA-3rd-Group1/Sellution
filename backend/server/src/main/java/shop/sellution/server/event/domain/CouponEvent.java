@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Event {
+@Table(name = "coupon_event")
+public class CouponEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,11 +30,8 @@ public class Event {
     @Column(nullable = false)
     private int couponDiscountRate;
 
-    @Column(nullable = false)
-    private int couponValidDate;
-
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(length = 20,nullable = false)
     private TargetCustomerType targetCustomerType;
 
     @Column(nullable = false)

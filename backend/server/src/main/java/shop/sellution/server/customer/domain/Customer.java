@@ -44,15 +44,18 @@ public class Customer extends BaseEntity {
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "is_sms_agreement", nullable = false, length = 1)
+    @Column(name = "is_sms_agreement", nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'Y'")
+    @Builder.Default
     private DisplayStatus isSmsAgreement = DisplayStatus.Y;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "is_in_use", nullable = false, length = 1)
+    @Column(name = "is_in_use", nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'N'")
+    @Builder.Default
     private DisplayStatus isInUse = DisplayStatus.N;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false, length = 20)
+    @Column(name = "type", nullable = false, columnDefinition = "ENUM( 'NEW', 'NORMAL', 'DORMANT') default 'NEW'")
+    @Builder.Default
     private CustomerType type = CustomerType.NEW;
 
     @Column(name = "easy_pwd")
