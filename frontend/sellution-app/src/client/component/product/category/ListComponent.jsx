@@ -177,8 +177,8 @@ const ListComponent = () => {
               ))}
             </tbody>
           </table>
+          <hr />
         </div>
-        <hr />
         <div className='mt-4'>{renderPageNumbers()}</div>
       </section>
     </div>
