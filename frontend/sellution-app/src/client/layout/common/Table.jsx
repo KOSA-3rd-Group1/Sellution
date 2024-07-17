@@ -1,11 +1,16 @@
-import React from 'react';
-import { TableSearchInput } from './Input';
-import { useTable } from '../../business/common/useTable';
-import { ListBtn } from './Button';
-import { BulkCustomerIcon } from '../../utility/assets/Icons';
-import { useNavigate } from 'react-router-dom';
+import { TableSearchInput } from '@/client/layout/common/Input';
+import { useTable } from '@/client/business/common/useTable';
 
-const Table = ({ HEADERS, ROW_HEIGHT, data, totalDataCount, tableState, setTableState }) => {
+const Table = ({
+  HEADERS,
+  ROW_HEIGHT,
+  data,
+  totalDataCount,
+  tableState,
+  setTableState,
+  Btns,
+  handleRowEvent,
+}) => {
   const {
     selectAll,
     selectedRows,
@@ -16,12 +21,6 @@ const Table = ({ HEADERS, ROW_HEIGHT, data, totalDataCount, tableState, setTable
     handleSort,
   } = useTable({ data, setTableState });
 
-  const navigate = useNavigate();
-  const moveList = () => {
-    navigate({
-      pathname: '/customer',
-    });
-  };
   return (
     <div className='w-full h-full overflow-x-auto shadow-md sm:rounded-lg'>
       {/* table 위에 */}
@@ -29,9 +28,7 @@ const Table = ({ HEADERS, ROW_HEIGHT, data, totalDataCount, tableState, setTable
         <div>
           총 {totalDataCount} 건 / 선택 {selectedCount} 건
         </div>
-        <div>
-          <ListBtn Icon={BulkCustomerIcon} content={'대량 회원 관리'} event={moveList} />
-        </div>
+        {Btns}
       </div>
       {/* table */}
       <div className='w-full h-[calc(100%-45px)] grow relative overflow-x-auto overflow-y-auto'>
@@ -56,7 +53,7 @@ const Table = ({ HEADERS, ROW_HEIGHT, data, totalDataCount, tableState, setTable
 
               {HEADERS.map((header, index) => (
                 <th key={index} className={`${header.width} h-full p-3 z-10`}>
-                  <div className='flex flex-col w-full h-full justify-between items-center gap-3'>
+                  <div className='flex flex-col w-full h-full justify-between items-center gap-3 text-gray-700'>
                     <div>{header.label}</div>
                     {header.type === 'search' && (
                       <TableSearchInput
@@ -95,14 +92,15 @@ const Table = ({ HEADERS, ROW_HEIGHT, data, totalDataCount, tableState, setTable
               <th className='w-full'></th>
             </tr>
           </thead>
-          <tbody className='absolute w-full text-sm bg-white border-y border-y-[#CCCDD3]'>
+          <tbody className='absolute w-full text-sm bg-white border-y border-y-[#CCCDD3] font-light'>
             {data.length > 0 ? (
               data.map((row) => (
                 <tr
                   key={row.id}
-                  className={`relative w-full ${ROW_HEIGHT} border-b border-b-[#F1F1F4]`}
+                  className={`relative w-full ${ROW_HEIGHT} border-b border-b-[#F1F1F4] group`}
+                  onClick={handleRowEvent ? () => handleRowEvent(row.id) : undefined}
                 >
-                  <td className='sticky min-w-14 w-14 max-w-14 p-3 z-10 left-[0px] bg-white'>
+                  <td className='sticky min-w-14 w-14 max-w-14 p-3 z-10 left-[0px] bg-white group-hover:bg-brandOrange-light'>
                     <div className='flex flex-col w-full justify-between items-center gap-3'>
                       <input
                         type='checkbox'
@@ -112,19 +110,22 @@ const Table = ({ HEADERS, ROW_HEIGHT, data, totalDataCount, tableState, setTable
                       />
                     </div>
                   </td>
-                  <td className='sticky min-w-20 w-20 max-w-20 p-3 z-10 left-[56px] bg-white'>
+                  <td className='sticky min-w-20 w-20 max-w-20 p-3 z-10 left-[56px] bg-white group-hover:bg-brandOrange-light'>
                     <div className='flex flex-col w-full justify-between items-center gap-3'>
                       {row.id}
                     </div>
                   </td>
                   {HEADERS.map((header) => (
-                    <td key={row.id + '_' + header.key} className={`${header.width} p-3 z-10`}>
+                    <td
+                      key={row.id + '_' + header.key}
+                      className={`${header.width} p-3 z-10 group-hover:bg-brandOrange-light`}
+                    >
                       <div className='flex flex-col w-full justify-between items-center gap-3 px-2'>
                         <div className='text-center w-full truncate'>{row[header.key]}</div>
                       </div>
                     </td>
                   ))}
-                  <td className='w-full'></td>
+                  <td className='w-full group-hover:bg-brandOrange-light'></td>
                 </tr>
               ))
             ) : (

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import useDebounce from '../common/useDebounce';
+import { useNavigate } from 'react-router-dom';
 
 // 더미 데이터 생성 함수
 const generateDummyData = (count) => {
@@ -50,18 +51,20 @@ export const useCustomerList = () => {
       label: '회원 유형',
       type: 'filter',
       options: ['신규', '일반', '휴면'],
-      width: 'min-w-36 w-36 max-w-36',
+      width: 'min-w-36 w-36 max-w-36 text-brandOrange',
     },
     {
       key: 'isInUse',
       label: '이용 여부',
       type: 'filter',
       options: ['이용중', '미이용중'],
-      width: 'min-w-36 w-36 max-w-36',
+      width: 'min-w-36 w-36 max-w-36 text-brandOrange',
     },
   ];
 
   const ROW_HEIGHT = 'min-h-14 h-14 max-h-14';
+
+  const navigate = useNavigate();
 
   // 테이블 데이터
   const [data, setData] = useState([]);
@@ -82,12 +85,61 @@ export const useCustomerList = () => {
   // 디바운스된 테이블 상태
   const debouncedTableState = useDebounce(tableState, 300);
 
+  // 날짜 범위 조회
+  const [dateRangeValue, setDateRangeValue] = useState({
+    startDate: null,
+    endDate: null,
+  });
+
   // api 요청으로 데이터 받아오기
   useEffect(() => {
     setData(DUMMY_DATA);
-    setTotalDataCount(10);
+    setTotalDataCount(100);
     console.log(tableState);
   }, [debouncedTableState]);
 
-  return { HEADERS, ROW_HEIGHT, data, totalDataCount, tableState, setTableState };
+  // 날짜 범위 조회 핸들러
+  const handleChangeDateRangeValue = (newDataRangeValue) => {
+    console.log('newValue:', newDataRangeValue);
+    setDateRangeValue(newDataRangeValue);
+  };
+
+  // 대량 회원 관리 버튼
+  const handleBulkCustomerManagementBtn = () => {
+    alert('대량 회원 관리 버튼');
+  };
+
+  // 쿠폰 발송 버튼
+  const handleSendCouponBtn = () => {
+    alert('쿠폰 발송 버튼 로직');
+  };
+
+  // 회원 등록 버튼
+  const handleAddCustomerBtn = () => {
+    navigate({
+      pathname: 'add',
+    });
+  };
+
+  // 테이블 row onClick 이벤트
+  const handleRowEvent = (e) => {
+    navigate({
+      pathname: `${e}`,
+    });
+  };
+
+  return {
+    HEADERS,
+    ROW_HEIGHT,
+    data,
+    totalDataCount,
+    tableState,
+    dateRangeValue,
+    setTableState,
+    handleChangeDateRangeValue,
+    handleBulkCustomerManagementBtn,
+    handleSendCouponBtn,
+    handleAddCustomerBtn,
+    handleRowEvent,
+  };
 };

@@ -33,10 +33,10 @@ export const FooterBtn2 = (props) => (
 
 export const ListBtn = (props) => (
   <button
-    className={`h-12 w-[180px] row-center-position gap-3 text-lg text-brandOrange border border-brandOrange rounded-md `}
+    className={`h-8 w-fit px-2 row-center-position gap-3 text-xs text-brandOrange border border-brandOrange rounded-md `}
     onClick={() => props.event()}
   >
-    {props.Icon && <props.Icon className='object-contain h-6' />}
+    {props.Icon && <props.Icon className='object-contain h-5' />}
     <div>{props.content}</div>
   </button>
 );
