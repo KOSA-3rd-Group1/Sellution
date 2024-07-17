@@ -44,7 +44,7 @@ class ClientControllerTest extends BaseControllerTest {
                 "testuser",
                 "password123!",
                 "Test User",
-                "010-1234-5678",
+                "01012345678",
                 Set.of(PermissionType.CUSTOMER_MANAGEMENT, PermissionType.ORDER_MANAGEMENT)
         );
 
@@ -120,7 +120,7 @@ class ClientControllerTest extends BaseControllerTest {
                 "existinguser",
                 "password123!",
                 "Test User",
-                "010-1234-5678",
+                "01012345678",
                 Set.of(PermissionType.CUSTOMER_MANAGEMENT, PermissionType.ORDER_MANAGEMENT)
         );
 

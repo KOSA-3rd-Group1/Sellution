@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import shop.sellution.server.address.domain.Address;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.order.domain.*;
+import shop.sellution.server.order.domain.repository.OrderRepository;
 import shop.sellution.server.order.dto.response.FindOrderRes;
 
 import java.util.List;

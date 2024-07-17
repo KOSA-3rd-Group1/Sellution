@@ -19,6 +19,7 @@ public class SelectedDay {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @Setter
     @MapsId("dayOptionId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "day_option_id")

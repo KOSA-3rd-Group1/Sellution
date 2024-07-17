@@ -2,6 +2,7 @@ package shop.sellution.server.order.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.MonthOption;
 import shop.sellution.server.company.domain.WeekOption;
@@ -20,6 +21,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Builder
 public class Order extends BaseEntity {
 
@@ -80,9 +82,11 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private int remainingDeliveryCount;
 
+    @Setter
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<OrderedProduct> orderedProducts;
 
+    @Setter
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<SelectedDay> selectedDays;
 
@@ -107,5 +111,19 @@ public class Order extends BaseEntity {
     public void removeSelectedDay(SelectedDay selectedDay) {
         selectedDays.remove(selectedDay);
         selectedDay.setOrder(null);
+    }
+
+
+    @PrePersist
+    public void prePersist() {
+        System.out.println("Order.prePersist 실행");
+        System.out.println(createdAt);
+        System.out.println(updatedAt);
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+        if (this.updatedAt == null) {
+            this.updatedAt = LocalDateTime.now();
+        }
     }
 }

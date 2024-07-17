@@ -6,8 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.order.domain.*;
+import shop.sellution.server.order.domain.repository.OrderRepository;
+import shop.sellution.server.order.dto.OrderSearchCondition;
 import shop.sellution.server.order.dto.response.FindOrderRes;
-
 
 
 @Service
@@ -19,7 +20,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<FindOrderRes> findAllOrderByCustomerId(Long CustomerId,Pageable pageable) {
+    public Page<FindOrderRes> findAllOrderByCustomerId(Long CustomerId, Pageable pageable) {
 
         Page<Order> orders = orderRepository.findAllOrderByCustomerId(CustomerId, pageable);
 
@@ -33,9 +34,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<FindOrderRes> findAllOrderByCompanyId(Long companyId,Pageable pageable) {
+    public Page<FindOrderRes> findAllOrderByCompanyId(Long companyId, OrderSearchCondition condition, Pageable pageable) {
 
-        Page<Order> orders = orderRepository.findAllOrderByCompanyId(companyId, pageable);
+        Page<Order> orders = orderRepository.findOrderByCompanyIdAndCondition(companyId, condition, pageable);
 
         return orders.map(order -> FindOrderRes.fromEntities(
                 order,
@@ -44,12 +45,6 @@ public class OrderServiceImpl implements OrderService {
         ));
 
     }
-
-
-
-
-
-
 
 
 }

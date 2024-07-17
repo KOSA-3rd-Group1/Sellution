@@ -1,13 +1,15 @@
 package shop.sellution.server.order.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 import shop.sellution.server.product.domain.Product;
 
 @Entity
 @Table(name = "ordered_product")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderedProduct {
+
     @EmbeddedId
     private OrderedProductId id;
 
@@ -19,6 +21,7 @@ public class OrderedProduct {
     @MapsId("orderId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
+    @Setter
     private Order order;
 
     @Column(nullable = false)
@@ -30,7 +33,14 @@ public class OrderedProduct {
     @Column(nullable = false)
     private int price;
 
-    public void setOrder(Order order) {
+    @Builder
+    public OrderedProduct(Product product, Order order, int count, int discountRate, int price) {
+        this.product = product;
         this.order = order;
+        this.count = count;
+        this.discountRate = discountRate;
+        this.price = price;
     }
+
+
 }
