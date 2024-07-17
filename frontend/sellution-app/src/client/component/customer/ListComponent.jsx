@@ -60,12 +60,6 @@ const ListComponent = () => {
           <Pagination totalDataCount={totalDataCount} />
         </div>
       </section>
-      {/* <Link to='/customer/customerId12345' className='w-fit h-5 bg-blue-400'>
-		회원 상세 이동 테스트
-	  </Link>
-	  <Link to='/customer/add' className='w-fit h-5 bg-red-400'>
-		회원 등록 테스트
-	  </Link> */}
     </div>
   );
 };

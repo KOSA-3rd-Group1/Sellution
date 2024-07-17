@@ -53,7 +53,7 @@ export const TableSearchInput = (props) => {
       </div>
       <input
         type='text'
-        value={props.value}
+        value={props.value || ''}
         onChange={props.onChange}
         className=' bg-white border border-gray-300 text-gray-600 text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 w-full pl-10 pr-2 p-1 font-normal'
         placeholder='Search'
@@ -61,3 +61,15 @@ export const TableSearchInput = (props) => {
     </div>
   );
 };
+
+export const InfoInput = (props) => (
+  <input
+    // type={props.type || 'text'}
+    // value={props.value || ''}
+    // onChange={props.onChange}
+    className={`w-full h-10 border-2 border-[#DADADA] rounded-lg px-4 placeholder:text-slate-400
+				read-only:bg-gray-100 read-only:text-slate-600 read-only:outline-none
+				disabled:bg-white disabled:outline-none disabled:border-transparent ${props.textDefault ? 'disabled:text-gray-600' : 'disabled:text-brandOrange'}`}
+    {...props}
+  />
+);

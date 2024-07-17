@@ -4,7 +4,7 @@ import { ListIcon } from '../../utility/assets/Icons';
 const FooterComponent = (props) => {
   return (
     <div
-      className={`w-full h-12 mt-2.5 flex ${props.back?.label ? 'justify-between' : 'justify-end'} align-bottom`}
+      className={`absolute bottom-0 w-full h-12 mt-2.5 flex ${props.back?.label ? 'justify-between' : 'justify-end'} align-bottom`}
     >
       {props.back?.label && (
         <FooterBtn1 Icon={ListIcon} content={props.back.label} event={props.back.event} />

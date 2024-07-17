@@ -1,24 +1,55 @@
 import { Link, useNavigate } from 'react-router-dom';
 import FooterComponent from '@/client/layout/partials/FooterComponent';
+import Table from '@/client/layout/common/Table';
+import { ListBtn } from '@/client/layout/common/Button';
+import Pagination from '@/client/layout/common/Pagination';
+import { useCustomerPaymentList } from '../../../../business/customer/detail/payment/useCustomerPaymentList';
 
 const ListComponent = () => {
-  const navigate = useNavigate();
-  const moveList = () => {
-    navigate({
-      pathname: '/customer',
-    });
-  };
+  //   const navigate = useNavigate();
+  //   const moveList = () => {
+  //     navigate({
+  //       pathname: '/customer',
+  //     });
+  //   };
+
+  const {
+    HEADERS,
+    ROW_HEIGHT,
+    data,
+    totalDataCount,
+    tableState,
+    setTableState,
+    handleAddPaymentBtn,
+    handleRowEvent,
+    moveList,
+  } = useCustomerPaymentList();
 
   return (
-    <div className='w-full h-full flex flex-col justify-between'>
-      <section className='flex-auto bg-green-200'>
-        <div className='text-lg'>결제 수단 목록 화면</div>
-        <Link to='paymentId12345' className='w-fit h-5 bg-blue-400'>
-          결제 수단 상세 이동 테스트 버튼
-        </Link>
-        <Link to='add' className='w-fit h-5 bg-red-400'>
-          결제 수단 등록 테스트 버튼
-        </Link>
+    <div className='relative w-full h-full justify-between'>
+      <section className='absolute w-full h-[calc(100%-58px)] p-2 flex flex-col overflow-y-auto '>
+        <div className='w-full h-20 text-lg font-semibold flex items-center'>
+          <div>결제 수단 목록</div>
+        </div>
+        <div className='h-3/5 overflow-hidden'>
+          <Table
+            HEADERS={HEADERS}
+            ROW_HEIGHT={ROW_HEIGHT}
+            data={data}
+            totalDataCount={totalDataCount}
+            tableState={tableState}
+            setTableState={setTableState}
+            handleRowEvent={handleRowEvent}
+            Btns={
+              <div className='flex justify-center items-center gap-4'>
+                <ListBtn content={'결제 수단 등록'} event={handleAddPaymentBtn} />
+              </div>
+            }
+          />
+        </div>
+        <div className='h-12 flex-none flex justify-end items-end '>
+          <Pagination totalDataCount={totalDataCount} />
+        </div>
       </section>
       <FooterComponent back={{ label: '목록으로', event: moveList }} />
     </div>

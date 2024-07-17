@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import useDebounce from '../common/useDebounce';
+import useDebounce from '@/client/business/common/useDebounce';
 import { useNavigate } from 'react-router-dom';
 
 // 더미 데이터 생성 함수
