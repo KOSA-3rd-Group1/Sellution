@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import shop.sellution.server.category.application.CategoryServiceImpl;
 import shop.sellution.server.category.dto.request.SaveCategoryReq;
 import shop.sellution.server.category.dto.response.FindCategoryRes;
+import shop.sellution.server.global.type.DeliveryType;
+import shop.sellution.server.global.type.DisplayStatus;
 
 @RestController
 @RequestMapping("/categories")
@@ -18,10 +20,12 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-
+    //회원단에 쓰기 위해, 쿼리 파라미터 추
     @GetMapping
-    public ResponseEntity<Page<FindCategoryRes>> getAllCategories(Pageable pageable) {
-        return ResponseEntity.ok(categoryService.getAllCategories(pageable));
+    public ResponseEntity<Page<FindCategoryRes>> getAllCategories(  @RequestParam(value="isVisible", required = false) DisplayStatus isVisible,
+                                                                    @RequestParam(value="delivery_type", required = false) DeliveryType deliveryType,
+                                                                    Pageable pageable) {
+        return ResponseEntity.ok(categoryService.getAllCategories(isVisible, deliveryType, pageable));
     }
 
     @GetMapping("/{categoryId}")

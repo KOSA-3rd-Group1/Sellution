@@ -11,4 +11,8 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     //name 존재 여부 확인 - name 중복 검사용
     boolean existsByName(String name);
+
+    //shopUrl로 companyId 조회
+    Optional<Company> findCompanyIdByShopUrl(String shopUrl);
+
 }
