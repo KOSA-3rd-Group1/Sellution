@@ -1,6 +1,6 @@
-import addressRouter from './address/addressRouter';
-import paymentRouter from './payment/paymentRouter';
-import authRouter from './auth/authRouter';
+import authRouter from '@/shopping/router/ordersheet/auth/authRouter';
+import addressRouter from '@/shopping/router/ordersheet/setting/address/addressRouter';
+import paymentRouter from '@/shopping/router/ordersheet/setting/payment/paymentRouter';
 
 const ordersheetRouter = () => {
   return [

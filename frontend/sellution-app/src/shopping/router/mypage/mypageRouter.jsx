@@ -1,12 +1,13 @@
 import { Navigate } from 'react-router-dom';
 
 import IndexPage from '@/shopping/page/mypage/IndexPage';
-import addressRouter from './address/addressRouter';
-import couponRouter from './coupon/couponRouter';
-import orderRouter from './order/orderRouter';
-import editCustomerInfoRouter from './editCustomerInfo/editCustomerInfoRouter';
-import editSimplePasswordRouter from './editSimplePassword/editSimplePasswordRouter';
-import paymentRouter from './payment/paymentRouter';
+
+import addressRouter from '@/shopping/router/mypage/address/addressRouter';
+import couponRouter from '@/shopping/router/mypage/coupon/couponRouter';
+import orderRouter from '@/shopping/router/mypage/order/orderRouter';
+import editCustomerInfoRouter from '@/shopping/router/mypage/editCustomerInfo/editCustomerInfoRouter';
+import editSimplePasswordRouter from '@/shopping/router/mypage/editSimplePassword/editSimplePasswordRouter';
+import paymentRouter from '@/shopping/router/mypage/payment/paymentRouter';
 
 const mypageRouter = () => {
   return [

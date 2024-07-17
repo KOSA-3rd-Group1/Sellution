@@ -1,15 +1,14 @@
-import homeRouter from './home/homeRouter';
-import loginRouter from './login/loginRouter';
-import mypageRouter from './mypage/mypageRouter';
-import onetimeDeliveryRouter from './onetimeDelivery/onetimeDeliveryRouter';
-import ordersheetRouter from './ordersheet/ordersheetRouter';
-import signUpRouter from './signUp/signUpRouter';
-import subscriptionDeliveryRouter from './subscriptionDelivery/subscriptionDeliveryRouter';
+import homeRouter from '@/shopping/router/home/homeRouter';
+import loginRouter from '@/shopping/router/login/loginRouter';
+import mypageRouter from '@/shopping/router/mypage/mypageRouter';
+import onetimeDeliveryRouter from '@/shopping/router/onetimeDelivery/onetimeDeliveryRouter';
+import ordersheetRouter from '@/shopping/router/ordersheet/ordersheetRouter';
+import signUpRouter from '@/shopping/router/signUp/signUpRouter';
+import subscriptionDeliveryRouter from '@/shopping/router/subscriptionDelivery/subscriptionDeliveryRouter';
 
 const shoppingRoot = () => [
   {
     path: ':clientName',
-    element: <div>고객에 따른 쇼핑몰 페이지</div>,
     children: [
       {
         path: 'home',
@@ -20,7 +19,7 @@ const shoppingRoot = () => [
         children: loginRouter(),
       },
       {
-        path: 'signUp',
+        path: 'signup',
         children: signUpRouter(),
       },
       {
