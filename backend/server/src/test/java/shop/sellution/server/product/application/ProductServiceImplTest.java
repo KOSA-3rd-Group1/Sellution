@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import shop.sellution.server.category.domain.Category;
 import shop.sellution.server.category.domain.CategoryRepository;
 import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.CompanyRepository;
+import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.product.domain.*;
@@ -94,7 +94,7 @@ class ProductServiceImplTest {
                 .build();
     }
 
-    @DisplayName("모든 상품을 페이징 처리하여 조회한다.")
+    @DisplayName("모든 상품을 페이징 처리하여 조회")
     @Test
     void getAllProducts_Success() {
         Pageable pageable = PageRequest.of(0, 10);

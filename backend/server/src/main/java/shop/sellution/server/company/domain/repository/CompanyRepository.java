@@ -1,13 +1,14 @@
-package shop.sellution.server.company.domain;
+package shop.sellution.server.company.domain.repository;
+
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import shop.sellution.server.company.domain.Company;
 
 import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
-
     //company Id로 조회
     Optional<Company> findById(Long id);
 

@@ -69,7 +69,7 @@ public class Company{
     @Builder.Default
     private String themeColor = "F37021";
 
-    @Column(name = "sell_type",nullable = false)
+    @Column(name = "sell_type",nullable = false,columnDefinition = "ENUM('ALL','CATEGORY','EACH')")
     @Enumerated(EnumType.STRING)
     private SellType sellType;
 
@@ -88,6 +88,11 @@ public class Company{
     @Column(name = "main_promotion2_content",nullable = false,columnDefinition = "varchar(200) default '임시 컨텐츠입니다. 수정해주세요.'")
     @Builder.Default
     private String mainPromotion2Content = "임시 컨텐츠입니다. 수정해주세요. ";
+
+    @Column(name = "qr_code")
+    @Lob
+    private byte[] qrCode;
+
 
     @Builder
     public Company(String displayName, String name) {

@@ -1,7 +1,11 @@
 src/test/resources/application*
+.gradle/8.8/fileHashes/fileHashes.lock
 
 /logs
 src/main/resources/application*
+.idea/**
+.gradle
+.gradle/**
 .idea
 
 # User-specific stuff
