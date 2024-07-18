@@ -27,35 +27,36 @@ public class Address {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id",nullable = false)
     private Customer customer;
 
     @NotNull
-    @Column(length = 255)
-    private String streetAddress;
+    @Column(length = 255 ,nullable = false)
+    private String address;
 
     @NotNull
-    @Column(length = 50)
+    @Column(length = 50,nullable = false)
     private String name;
 
     @NotNull
-    @Column(length = 50)
+    @Column(length = 50,nullable = false)
     private String zipcode;
 
     @NotNull
-    @Column(length = 255)
+    @Column(length = 255,nullable = false)
     private String addressDetail;
 
     @NotNull
-    @Column(length = 50)
+    @Column(length = 50,nullable = false)
     private String phoneNumber;
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(length = 1,nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'N'")
     private DisplayStatus isDefaultAddress;
 
     @NotNull
-    @Column(length = 255)
+    @Column(length = 255,nullable = false)
     private String addressName;
 
     @CreatedDate

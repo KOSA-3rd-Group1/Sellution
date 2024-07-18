@@ -1,5 +1,30 @@
-iamport:
-  base-url: https://api.iamport.kr
-  api-key: 5320831484058457
-  api-secret-key: g0kj48bckRGdgRAn0XqJcyAmj8HCyGf16M5azYtgJaEYzD8qpeQ3LQzIixuHFRlMsqz4ldIInu5VQ7je
 
+sellutionPg:
+  client-name: sellution
+  base-url: http://localhost:8081/pg
+  api-key: ak_YWQzZWJhZWQtNzkyNC00MZ2IKPEzGU0WXEnIuoj5TAk
+
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  #      database: 1
+  jwt:
+    secret: 7A4FE3949A72B433B5EEE377D521CAF4C2C7CE1F32A934AE3CDAA666C2
+
+cool:
+  sms:
+    api-key: NCS9CAKRG2Z9NEZE
+    api-secret-key: E8Q6UVGTXCGRKRLAPLSMJET4Z66PHBEU
+    domain: https://api.coolsms.co.kr
+    from-number: '01071471433'
