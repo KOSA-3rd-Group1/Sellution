@@ -81,4 +81,7 @@ public class Product extends BaseEntity {
     private int previousMonthSales = 0;
 
 
+    public void decreaseStock(int count) {
+        this.stock -= count;
+    }
 }

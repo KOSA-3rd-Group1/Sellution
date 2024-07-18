@@ -44,15 +44,15 @@ public class Order extends BaseEntity {
     private Address address;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id",nullable = false)
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "month_option_id",nullable = true)
+    @JoinColumn(name = "month_option_id", nullable = true)
     private MonthOption monthOption;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "week_option_id",nullable = true)
+    @JoinColumn(name = "week_option_id", nullable = true)
     private WeekOption weekOption;
 
     @Column(nullable = false, unique = true)
@@ -63,7 +63,7 @@ public class Order extends BaseEntity {
     private OrderType type;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false,columnDefinition = "ENUM('HOLD','APPROVED','CANCEL') DEFAULT 'HOLD'")
+    @Column(nullable = false, columnDefinition = "ENUM('HOLD','APPROVED','CANCEL') DEFAULT 'HOLD'")
     @Builder.Default
     private OrderStatus status = OrderStatus.HOLD;
 
@@ -95,11 +95,11 @@ public class Order extends BaseEntity {
     private int remainingDeliveryCount;
 
     @Setter
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderedProduct> orderedProducts;
 
     @Setter
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SelectedDay> selectedDays;
 
 
@@ -125,8 +125,39 @@ public class Order extends BaseEntity {
         selectedDay.setOrder(null);
     }
 
+    // 주문 승인
     public void approveOrder() {
         this.status = OrderStatus.APPROVED;
     }
 
+    // 주문 취소
+    public void cancelOrder() {
+        this.status = OrderStatus.CANCEL;
+    }
+
+    // 배송 완료
+    public void completeDelivery() {
+        this.deliveryStatus = DeliveryStatus.COMPLETE;
+    }
+
+    // 다음 배송일 갱신
+    public void updateNextDeliveryDate(LocalDateTime nextDeliveryDate) {
+        this.nextDeliveryDate = nextDeliveryDate;
+    }
+
+    // 남은 배송횟수 감소
+    public void decreaseRemainingDeliveryCount() {
+        this.remainingDeliveryCount--;
+    }
+
+    // 주문의 상품재고 감소
+    public void decreaseProductStock() {
+        orderedProducts
+                .forEach(
+                        orderedProduct ->
+                                orderedProduct
+                                        .getProduct()
+                                        .decreaseStock(orderedProduct.getCount())
+                );
+    }
 }

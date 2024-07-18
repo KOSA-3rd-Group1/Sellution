@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.order.domain.Order;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.order.domain.type.OrderType;

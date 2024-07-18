@@ -202,11 +202,12 @@ public class OrderCreationService {
         }
 
         int weekly = weekOption.getWeekValue(); // n 주 마다 배송
+        // 선택된 요일값 [월,화,수 ... ]
         List<DayOption> dayOptions = dayOptionRepository.findByIdIn(dayOptionIds);
         List<DayOfWeek> deliveryDays = dayOptions.stream()
                 .map((dayOption -> dayOption.getDayValue().changeToDayOfWeek()))
                 .sorted()
-                .toList();// 요일값
+                .toList();
 
 
         if (orderType.isMonthSubscription()) {
@@ -226,27 +227,27 @@ public class OrderCreationService {
     }
 
     private DeliveryInfo calculateMonthSubscription(
-            LocalDateTime startDate,
+            LocalDateTime deliveryStartDate,
             int months,
             int weekly,
             List<DayOfWeek> deliveryDays
     ) {
-        LocalDateTime endDate = startDate.plusMonths(months); // 구독 기간 [ 정기 배송 기간 ]
+        LocalDateTime subscriptionEndDate = deliveryStartDate.plusMonths(months); // 구독 기간 [ 정기 배송 기간 ]
         int totalDeliveries = 0;
-        LocalDateTime currentDate = startDate;
-        LocalDateTime lastDeliveryDate = null;
+        LocalDateTime currentDate = deliveryStartDate; // 날짜 이동용 변수는 배송 시작일로 초기화 시켜놓고 시작
+        LocalDateTime DeliveryEndDate = null;
         LocalDateTime nextDeliveryDate = null;
         boolean isFirst = false;
 
         // 구독 기간 동안 반복
-        while (currentDate.isBefore(endDate)) {
+        while (currentDate.isBefore(subscriptionEndDate) || currentDate.isEqual(subscriptionEndDate)) {
             // 선택된 배송 요일마다 처리
             for (DayOfWeek day : deliveryDays) {
                 // 현재 currentDate 이후에 내가 선택한 요일이 나오는 날짜 찾기  [다음 배송 날짜 계산]
                 LocalDateTime deliveryDate = currentDate.with(TemporalAdjusters.nextOrSame(day));
-                if (deliveryDate.isBefore(endDate)) { // 그 날짜가 구독기간 내에 있으면
+                if (deliveryDate.isBefore(subscriptionEndDate)) { // 그 날짜가 구독기간 내에 있으면
                     totalDeliveries++; // 총 배송 횟수 증가
-                    lastDeliveryDate = deliveryDate; // 마지막 배송 날짜 갱신
+                    DeliveryEndDate = deliveryDate; // 마지막 배송 날짜 갱신
                     if(!isFirst)
                     {
                         nextDeliveryDate =deliveryDate; // 첫번째 배송일 처리
@@ -257,18 +258,18 @@ public class OrderCreationService {
             currentDate = currentDate.plusWeeks(weekly); // n주 뒤로 이동 [ n 주 마다 배송 이니까 ]
         }
 
-        return new DeliveryInfo(totalDeliveries, lastDeliveryDate,nextDeliveryDate);
+        return new DeliveryInfo(totalDeliveries, DeliveryEndDate,nextDeliveryDate);
     }
 
     private DeliveryInfo calculateCountSubscription(
-            LocalDateTime startDate,
+            LocalDateTime deliveryStartDate,
             int totalDeliveryCount,
             int weekly,
             List<DayOfWeek> deliveryDays
     ) {
         int deliveries = 0;
-        LocalDateTime currentDate = startDate;
-        LocalDateTime lastDeliveryDate = null;
+        LocalDateTime currentDate = deliveryStartDate; // 날짜 이동용 변수는 배송 시작일로 초기화 시켜놓고 시작
+        LocalDateTime DeliveryEndDate = null;
         LocalDateTime nextDeliveryDate = null;
         boolean isFirst = false;
 
@@ -279,7 +280,7 @@ public class OrderCreationService {
                 if (deliveries >= totalDeliveryCount) break; // 지정된 배송 횟수에 도달하면 종료
                 LocalDateTime deliveryDate = currentDate.with(TemporalAdjusters.nextOrSame(day)); // 다음 배송 날짜 계산
                 deliveries++; // 총 배송 횟수 증가
-                lastDeliveryDate = deliveryDate; // 마지막 배송 날짜 갱신
+                DeliveryEndDate = deliveryDate; // 마지막 배송 날짜 갱신
                 if(!isFirst)
                 {
                     nextDeliveryDate = deliveryDate; // 첫번째 배송일 처리
@@ -289,7 +290,7 @@ public class OrderCreationService {
             currentDate = currentDate.plusWeeks(weekly); // n주 뒤로 이동 [ n 주 마다 배송 이니까 ]
         }
 
-        return new DeliveryInfo(totalDeliveryCount, lastDeliveryDate,nextDeliveryDate);
+        return new DeliveryInfo(totalDeliveryCount, DeliveryEndDate,nextDeliveryDate);
     }
 
     @Getter

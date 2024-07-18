@@ -106,4 +106,9 @@ public class Customer extends BaseEntity {
     public void changePassword(String newPassword) {
         this.password = newPassword;
     }
+
+    // 회원 유형 변경 신규,휴면 -> 일반
+    public void changeToNormalCustomer() {
+        this.type = CustomerType.NORMAL;
+    }
 }
