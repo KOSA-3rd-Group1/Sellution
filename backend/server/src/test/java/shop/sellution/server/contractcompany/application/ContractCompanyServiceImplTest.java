@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.CompanyRepository;
+import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.contractcompany.domain.ContractCompany;
 import shop.sellution.server.contractcompany.domain.ContractCompanyRepository;
 import shop.sellution.server.contractcompany.dto.request.FindContractCompanyReq;
