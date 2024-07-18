@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.CompanyRepository;
+import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.company.domain.type.SellType;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.product.domain.*;
@@ -31,11 +31,8 @@ public class CustomerProductServiceImpl implements CustomerProductService {
     //2.1 카테고리 필터링
     @Transactional(readOnly = true)
     @Override
-    public Page<FindCustomerProductRes> findAllProducts(String name, DeliveryType deliveryType, Long categoryId, Pageable pageable) {
-        // companyId 찾기
-        Company company = companyRepository.findByName(name).orElseThrow(() -> new IllegalArgumentException("Company not found for name: " + name));
-        Long companyId = company.getCompanyId();
-        SellType sellType = company.getSellType();
+    public Page<FindCustomerProductRes> findAllProducts(Long companyId, DeliveryType deliveryType, Long categoryId, Pageable pageable) {
+        SellType sellType = companyRepository.findSellTypeByCompanyId(companyId);
 
         // sellType에 따른 조건별 조회 로직 구현
         List<Product> products;

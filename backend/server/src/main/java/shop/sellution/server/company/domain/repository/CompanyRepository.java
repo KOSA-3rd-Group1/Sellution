@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import shop.sellution.server.company.domain.Company;
+import shop.sellution.server.company.domain.type.SellType;
 
 import java.util.Optional;
 
@@ -17,6 +18,10 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     //name으로 companyId 조회
     Optional<Company> findByName(String name);
+
+    //companyId로 sellType 조회
+    @Query("select c.sellType from Company c where c.companyId = :companyId")
+    SellType findSellTypeByCompanyId(@Param("companyId") Long companyId);
 
     @Query("select c.isAutoApproved from Company c where c.companyId = :companyId")
     String findIsAutoApprovedByCompanyId(Long companyId);
