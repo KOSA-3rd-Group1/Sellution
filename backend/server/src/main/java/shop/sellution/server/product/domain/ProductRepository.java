@@ -14,4 +14,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategoryCategoryId(Long categoryId);
     long countByCategoryName(@Param("categoryName") String categoryName);
 
+    List<Product> findByProductIdIn(List<Long> productIds);
 }

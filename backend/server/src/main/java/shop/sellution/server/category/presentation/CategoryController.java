@@ -20,12 +20,9 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    //회원단에 쓰기 위해, 쿼리 파라미터 추
     @GetMapping
-    public ResponseEntity<Page<FindCategoryRes>> getAllCategories(  @RequestParam(value="isVisible", required = false) DisplayStatus isVisible,
-                                                                    @RequestParam(value="delivery_type", required = false) DeliveryType deliveryType,
-                                                                    Pageable pageable) {
-        return ResponseEntity.ok(categoryService.getAllCategories(isVisible, deliveryType, pageable));
+    public ResponseEntity<Page<FindCategoryRes>> getAllCategories(Pageable pageable) {
+        return ResponseEntity.ok(categoryService.getAllCategories(pageable));
     }
 
     @GetMapping("/{categoryId}")

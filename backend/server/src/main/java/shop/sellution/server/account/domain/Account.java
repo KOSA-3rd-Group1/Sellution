@@ -24,13 +24,13 @@ public class Account {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id",nullable = false)
     private Customer customer;
 
     @Column(nullable = false, length = 100, unique = true)
     private String accountNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String bankCode;
 
     @CreatedDate

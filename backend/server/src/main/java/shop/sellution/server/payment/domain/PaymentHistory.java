@@ -2,12 +2,11 @@ package shop.sellution.server.payment.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.order.domain.Order;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.payment.domain.type.PaymentStatus;
@@ -35,10 +34,10 @@ public class PaymentHistory {
     private Account account;
 
     @Column(name = "is_success", nullable = false, length = 1)
-    private char isSuccess;
+    private DisplayStatus isSuccess;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, columnDefinition = "ENUM('COMPLETE','CANCEL_REFUND','FAIL_MONEY')")
     private PaymentStatus status;
 
     @Column(nullable = false)

@@ -1,5 +1,8 @@
 package shop.sellution.server.company.domain.type;
 
+import lombok.Getter;
+
+@Getter
 public enum SellType {
     ALL("전체상품"),
     CATEGORY("카테고리"),
@@ -11,7 +14,4 @@ public enum SellType {
         this.description = description;
     }
 
-    public String getDescription(){
-        return description;
-    }
 }

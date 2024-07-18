@@ -55,7 +55,7 @@ class CategoryServiceImplTest {
         when(categoryRepository.findAll(pageable)).thenReturn(categoryPage);
         when(productRepository.countByCategoryCategoryId(any(Long.class))).thenReturn(5L);
 
-        Page<FindCategoryRes> result = categoryService.getAllCategories(null, null,pageable);
+        Page<FindCategoryRes> result = categoryService.getAllCategories(pageable);
 
         assertThat(result.getContent()).hasSize(1);
         verify(categoryRepository, times(1)).findAll(pageable);

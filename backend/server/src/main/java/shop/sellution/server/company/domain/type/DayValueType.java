@@ -1,28 +1,17 @@
 package shop.sellution.server.company.domain.type;
 
+import java.time.DayOfWeek;
+
 public enum DayValueType {
-    ONE(1),
-    TWO(2),
-    THREE(3),
-    FOUR(4),
-    FIVE(5);
+    MON,TUE,WED,THU,FRI;
 
-    private final int value;
-
-    DayValueType(int value) {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public static DayValueType fromValue(int value) {
-        for (DayValueType dayValueType : DayValueType.values()) {
-            if (dayValueType.value == value) {
-                return dayValueType;
-            }
-        }
-        throw new IllegalArgumentException("Invalid value: " + value);
+    public DayOfWeek changeToDayOfWeek() {
+        return switch (this) {
+            case MON -> DayOfWeek.MONDAY;
+            case TUE -> DayOfWeek.TUESDAY;
+            case WED -> DayOfWeek.WEDNESDAY;
+            case THU -> DayOfWeek.THURSDAY;
+            case FRI -> DayOfWeek.FRIDAY;
+        };
     }
 }

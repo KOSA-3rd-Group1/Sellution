@@ -50,24 +50,24 @@ public class Product extends BaseEntity {
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'Y'" )
     private DisplayStatus isVisible = Y;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "ENUM('ONETIME','SUBSCRIPTION','BOTH')" )
     private DeliveryType deliveryType;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'N'" )
     private DisplayStatus isDiscount = N;
 
     @Builder.Default
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "int default 0")
     private Integer discountRate = 0;
 
     @Builder.Default
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "int default 0")
     private int discountedPrice = 0;
 
     @Column(nullable = true)
@@ -77,7 +77,7 @@ public class Product extends BaseEntity {
     private LocalDateTime discountEndDate;
 
     @Builder.Default
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "int default 0")
     private int previousMonthSales = 0;
 
 
