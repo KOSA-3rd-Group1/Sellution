@@ -69,7 +69,7 @@ public class Company{
     @Builder.Default
     private String themeColor = "F37021";
 
-    @Column(name = "sell_type",nullable = false)
+    @Column(name = "sell_type",nullable = false,columnDefinition = "ENUM('ALL','CATEGORY','EACH')")
     @Enumerated(EnumType.STRING)
     private SellType sellType;
 
