@@ -1,10 +1,11 @@
-
 sellutionPg:
-  client-name: sellution
-  base-url: http://localhost:8081/pg
-  api-key: ak_YWQzZWJhZWQtNzkyNC00MZ2IKPEzGU0WXEnIuoj5TAk
-
+    client-name: sellution
+    base-url: http://localhost:8081/pg
+    api-key: ak_YWQzZWJhZWQtNzkyNC00MZ2IKPEzGU0WXEnIuoj5TAk
 spring:
+  sql:
+    init:
+      mode: never
   jpa:
     show-sql: true
     hibernate:
@@ -12,8 +13,6 @@ spring:
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
-
-
   data:
     redis:
       host: localhost
@@ -21,7 +20,6 @@ spring:
   #      database: 1
   jwt:
     secret: 7A4FE3949A72B433B5EEE377D521CAF4C2C7CE1F32A934AE3CDAA666C2
-
 cool:
   sms:
     api-key: NCS9CAKRG2Z9NEZE
