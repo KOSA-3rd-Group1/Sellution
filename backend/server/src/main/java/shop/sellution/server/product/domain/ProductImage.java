@@ -18,14 +18,14 @@ public class ProductImage {
     private Long productImageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id",nullable = false)
     private Product product;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url", length = 255,nullable = false)
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "purpose_of_use", nullable = false)
+    @Column(name = "purpose_of_use", length = 20,nullable = false)
     private ProductImageType purposeOfUse;
 
 }

@@ -1,27 +1,21 @@
 package shop.sellution.server.company.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import shop.sellution.server.global.type.WeekType;
 
 @Entity
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "week_option")
+@Getter
 public class WeekOption {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "week_option_id")
-    private Long weekOptionId;
+    private Long id;
 
-    @Column(name = "value", nullable = false)
-    private WeekType weekValue;
-
-    @ManyToOne
-    @JoinColumn(name = "company_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
     private Company company;
+
+    private Integer weekValue;
 }

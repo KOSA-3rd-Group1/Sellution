@@ -18,4 +18,5 @@ public interface DayOptionRepository extends JpaRepository<DayOption, Long> {
     @Query("DELETE FROM DayOption d WHERE d.company = :company")
     void deleteByCompany(Company company);
 
+    List<DayOption> findByIdIn(List<Long> dayOptionIds);
 }
