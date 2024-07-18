@@ -1,25 +1,27 @@
-import { TableSearchInput } from '@/client/layout/common/Input';
+import { EventBtn } from '@/client/layout/common/Button';
 import { useTable } from '@/client/business/common/useTable';
+import { SimpleOrderIcon } from '@/client/utility/assets/Icons';
 
 const Table = ({
   HEADERS,
   ROW_HEIGHT,
   data,
   totalDataCount,
-  tableState,
-  setTableState,
-  Btns,
+  handleApproveSimpleOrderBtn,
   handleRowEvent,
+  Btns,
 }) => {
   const {
     selectAll,
     selectedRows,
     selectedCount,
+    visibleButtons,
     handleSelectAll,
     handleSelectRow,
-    handleTableStateChange,
-    handleSort,
-  } = useTable({ data, setTableState });
+    handleVisibleButtons,
+  } = useTable({
+    data,
+  });
 
   return (
     <div className='w-full h-full flex flex-col'>
@@ -33,10 +35,10 @@ const Table = ({
       {/* table */}
       <div className='w-full relative overflow-x-auto overflow-y-auto'>
         <table className='relative w-full h-full text-sm text-left text-gray-500 table-fixed '>
-          <thead className='sticky top-0 z-30 w-full h-[82px] text-xs text-gray-700 uppercase bg-gray-50 '>
+          <thead className='sticky top-0 z-30 w-full h-16 text-xs text-gray-700 uppercase bg-gray-50 '>
             <tr className='relative'>
               <th className='sticky min-w-14 w-14 max-w-14 h-full p-3 z-20 left-[0px] bg-gray-50'>
-                <div className='flex flex-col w-full h-full justify-between items-center gap-1'>
+                <div className='flex flex-col w-full h-full justify-center items-center gap-1'>
                   <input
                     type='checkbox'
                     checked={selectAll}
@@ -45,47 +47,11 @@ const Table = ({
                   />
                 </div>
               </th>
-              <th className='sticky min-w-20 w-20 max-w-20 h-full p-3 z-20 left-[56px] bg-gray-50'>
-                <div className='flex flex-col w-full h-full justify-between items-center gap-3'>
-                  <div>No.</div>
-                </div>
-              </th>
 
               {HEADERS.map((header, index) => (
                 <th key={index} className={`${header.width} h-full p-3 z-10`}>
-                  <div className='flex flex-col w-full h-full justify-between items-center gap-3 text-gray-700'>
+                  <div className='flex flex-col w-full h-full justify-center items-center gap-3 text-gray-700'>
                     <div>{header.label}</div>
-                    {header.type === 'search' && (
-                      <TableSearchInput
-                        value={tableState[header.key] || ''}
-                        onChange={(e) => handleTableStateChange(header.key, e.target.value)}
-                      />
-                    )}
-                    {header.type === 'filter' && (
-                      <div className='w-full px-1'>
-                        <select
-                          value={tableState[header.key]}
-                          onChange={(e) => handleTableStateChange(header.key, e.target.value)}
-                          className='w-full p-1 text-sm border rounded-lg pl-2 text-gray-600'
-                        >
-                          <option value='All'>선택</option>
-                          {header.options.map((option) => (
-                            <option key={header.key + '_' + option} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    )}
-                    {header.type === 'sort' && (
-                      <button
-                        value={tableState[header.key] || ''}
-                        onClick={() => handleSort(header.key)}
-                        className='w-full p-1 text-sm border rounded-lg bg-white hover:bg-gray-200'
-                      >
-                        정렬 {tableState[header.key] === 'asc' ? '↑' : '↓'}
-                      </button>
-                    )}
                   </div>
                 </th>
               ))}
@@ -113,18 +79,27 @@ const Table = ({
                       />
                     </div>
                   </td>
-                  <td className='sticky min-w-20 w-20 max-w-20 p-3 z-10 left-[56px] bg-white group-hover:bg-brandOrange-light'>
-                    <div className='flex flex-col w-full justify-between items-center gap-3'>
-                      {row.id}
-                    </div>
-                  </td>
                   {HEADERS.map((header) => (
                     <td
                       key={row.id + '_' + header.key}
                       className={`${header.width} p-3 z-10 group-hover:bg-brandOrange-light`}
+                      onClick={
+                        header.key === 'status' ? (e) => handleVisibleButtons(e, row.id) : undefined
+                      }
                     >
                       <div className='flex flex-col w-full justify-between items-center gap-3 px-2'>
                         <div className='text-center w-full truncate'>{row[header.key]}</div>
+                        {header.key === 'status' && row.status === '승인 대기' && (
+                          <div className={`${visibleButtons[row.id] ? 'block' : 'hidden'}`}>
+                            <div className='flex justify-center items-center gap-4'>
+                              <EventBtn
+                                Icon={SimpleOrderIcon}
+                                label={'간편 주문 승인'}
+                                onClick={() => handleApproveSimpleOrderBtn(row.id)}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </td>
                   ))}
@@ -133,8 +108,8 @@ const Table = ({
               ))
             ) : (
               <tr>
-                <td colSpan={HEADERS.length + 3} className='px-6 py-4 text-center text-gray-500'>
-                  데이터가 존재하지 않습니다.
+                <td colSpan={HEADERS.length + 3} className='px-6 py-4 text-left text-gray-500'>
+                  주문 내역이 없습니다.
                 </td>
               </tr>
             )}

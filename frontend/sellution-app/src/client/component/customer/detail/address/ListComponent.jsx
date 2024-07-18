@@ -1,24 +1,52 @@
-import { Link, useNavigate } from 'react-router-dom';
 import FooterComponent from '@/client/layout/partials/FooterComponent';
+import TableAddress from '@/client/layout/common/TableAddress';
+import { EventBtn } from '@/client/layout/common/Button';
+import { useCustomerAddressList } from '@/client/business/customer/detail/address/useCustomerAddressList';
 
 const ListComponent = () => {
-  const navigate = useNavigate();
-  const moveList = () => {
-    navigate({
-      pathname: '/customer',
-    });
-  };
+  const {
+    HEADERS,
+    ROW_HEIGHT,
+    data,
+    totalDataCount,
+    defaultAddressObject,
+    handleAddBtn,
+    handleRowEvent,
+    moveList,
+  } = useCustomerAddressList();
 
   return (
-    <div className='w-full h-full flex flex-col justify-between'>
-      <section className='flex-auto bg-green-200'>
-        <div className='text-lg'>배송지 목록 화면</div>
-        <Link to='addressId12345' className='w-fit h-5 bg-blue-400'>
-          배송지 상세 이동 테스트 버튼
-        </Link>
-        <Link to='add' className='w-fit h-5 bg-red-400'>
-          배송지 등록 테스트 버튼
-        </Link>
+    <div className='relative w-full h-full justify-between'>
+      <section className='absolute w-full h-[calc(100%-58px)] p-2 flex flex-col overflow-y-auto '>
+        <div className='w-full'>
+          <div className='relative mx-16 my-8 h-20 bg-[#F2F2F2] flex items-center px-10'>
+            <div className='w-full truncate'>
+              <span className='font-bold pr-4'>기본 배송지 |</span>
+              <span>
+                {defaultAddressObject
+                  ? `[${defaultAddressObject.zipcode}] ${defaultAddressObject.address}`
+                  : '기본 배송지로 설정된 주소가 없습니다.'}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className='w-full min-h-14 h-14 max-h-14 text-lg font-semibold flex items-center'>
+          <div>배송지 목록</div>
+        </div>
+        <div className='h-3/5 overflow-hidden'>
+          <TableAddress
+            HEADERS={HEADERS}
+            ROW_HEIGHT={ROW_HEIGHT}
+            data={data}
+            totalDataCount={totalDataCount}
+            handleRowEvent={handleRowEvent}
+            Btns={
+              <div className='flex justify-center items-center gap-4'>
+                <EventBtn label={'배송지 등록'} onClick={handleAddBtn} />
+              </div>
+            }
+          />
+        </div>
       </section>
       <FooterComponent back={{ label: '목록으로', event: moveList }} />
     </div>

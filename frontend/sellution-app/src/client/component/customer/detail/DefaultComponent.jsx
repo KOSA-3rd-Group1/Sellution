@@ -10,7 +10,7 @@ const DefaultComponent = () => {
     <div className='relative w-full h-full justify-between'>
       <section className='absolute w-full h-[calc(100%-58px)] p-2 flex flex-col overflow-y-auto'>
         <div className='w-1/2'>
-          <div className='w-full h-20 text-lg font-semibold flex items-center'>
+          <div className='w-full min-h-20 h-20 max-h-20 text-lg font-semibold flex items-center'>
             <div>기본정보</div>
           </div>
           <ul className='w-full min-w-fit min-h-fit h-full flex flex-col text-sm border-t-2'>

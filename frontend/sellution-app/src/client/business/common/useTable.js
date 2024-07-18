@@ -44,13 +44,24 @@ export const useTable = ({ data, setTableState }) => {
     }));
   };
 
+  // 숨김 버튼 활성 (컬럼 하나만 가능)
+  const [visibleButtons, setVisibleButtons] = useState({});
+
+  // 숨김 버튼 토글
+  const handleVisibleButtons = (e, rowId) => {
+    e.stopPropagation();
+    setVisibleButtons((prev) => ({ ...prev, [rowId]: !prev[rowId] }));
+  };
+
   return {
     selectAll,
     selectedRows,
     selectedCount,
+    visibleButtons,
     handleSelectAll,
     handleSelectRow,
     handleTableStateChange,
     handleSort,
+    handleVisibleButtons,
   };
 };

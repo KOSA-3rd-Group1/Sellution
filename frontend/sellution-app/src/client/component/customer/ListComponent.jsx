@@ -1,5 +1,5 @@
 import { useCustomerList } from '@/client/business/customer/useCustomerList';
-import { ListBtn } from '@/client/layout/common/Button';
+import { EventBtn } from '@/client/layout/common/Button';
 import { AddCustomerIcon, BulkCustomerIcon, SendIcon } from '@/client/utility/assets/Icons';
 import Table from '@/client/layout/common/Table';
 import Pagination from '@/client/layout/common/Pagination';
@@ -41,16 +41,16 @@ const ListComponent = () => {
             handleRowEvent={handleRowEvent}
             Btns={
               <div className='flex justify-center items-center gap-4'>
-                <ListBtn
+                <EventBtn
                   Icon={BulkCustomerIcon}
-                  content={'대량 회원 관리'}
-                  event={handleBulkCustomerManagementBtn}
+                  label={'대량 회원 관리'}
+                  onClick={handleBulkCustomerManagementBtn}
                 />
-                <ListBtn Icon={SendIcon} content={'쿠폰 발송'} event={handleSendCouponBtn} />
-                <ListBtn
+                <EventBtn Icon={SendIcon} label={'쿠폰 발송'} onClick={handleSendCouponBtn} />
+                <EventBtn
                   Icon={AddCustomerIcon}
-                  content={'회원 등록'}
-                  event={handleAddCustomerBtn}
+                  label={'회원 등록'}
+                  onClick={handleAddCustomerBtn}
                 />
               </div>
             }

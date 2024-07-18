@@ -5,43 +5,44 @@ import { useNavigate } from 'react-router-dom';
 const generateDummyData = (count) => {
   return Array.from({ length: count }, (_, index) => ({
     id: index + 1,
-    paymentMethod: `CMS`,
-    name: `신한 은행`,
-    accountNumber: `${Math.floor(100000 + Math.random() * 900000)}-01-${Math.floor(100000 + Math.random() * 900000)}`,
-    createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
-      .toISOString()
-      .split('T')[0],
+    name: `홍길동`,
+    addressName: `회사`,
+    address: '서울특별시 서초구 바우뫼로37길 30 (양재동), 1004동 1004호',
+    zipcode: `${Math.floor(10000 + Math.random() * 90000)}`,
+    phoneNumber: `010-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`,
+    isDefaultAddress: ['Y', 'N', 'N', 'N', 'N'][Math.floor(Math.random() * 5)],
   }));
 };
 
 //더미 데이터
 const DUMMY_DATA = generateDummyData(5);
 
-export const useCustomerPaymentList = () => {
+export const useCustomerAddressList = () => {
   const HEADERS = [
     {
-      key: 'paymentMethod',
-      label: '결제 수단',
-      type: 'search',
-      width: 'min-w-48 w-48 max-w-48',
-    },
-    {
       key: 'name',
-      label: '결제사',
-      type: 'search',
-      width: 'min-w-48 w-48 max-w-48',
+      label: '수령인',
+      width: 'min-w-44 w-44 max-w-44',
     },
     {
-      key: 'accountNumber',
-      label: '계좌번호',
-      type: 'search',
-      width: 'min-w-56 w-56 max-w-56',
+      key: 'addressName',
+      label: '배송지명',
+      width: 'min-w-44 w-44 max-w-44',
     },
     {
-      key: 'createdAt',
-      label: '등록일',
-      type: 'sort',
-      width: 'min-w-48 w-48 max-w-48',
+      key: 'address',
+      label: '주소',
+      width: 'min-w-[500px] w-[500px] max-w-[500px]',
+    },
+    {
+      key: 'zipcode',
+      label: '우편번호',
+      width: 'min-w-36 w-36 max-w-36',
+    },
+    {
+      key: 'phoneNumber',
+      label: '휴대폰 번호',
+      width: 'min-w-52 w-52 max-w-52',
     },
   ];
 
@@ -51,6 +52,8 @@ export const useCustomerPaymentList = () => {
 
   // 테이블 데이터
   const [data, setData] = useState([]);
+
+  const defaultAddressObject = data.find((item) => item.isDefaultAddress === 'Y');
 
   // 데이터 총 개수
   const [totalDataCount, setTotalDataCount] = useState(0);
@@ -86,6 +89,7 @@ export const useCustomerPaymentList = () => {
     ROW_HEIGHT,
     data,
     totalDataCount,
+    defaultAddressObject,
     handleAddBtn,
     handleRowEvent,
     moveList,
