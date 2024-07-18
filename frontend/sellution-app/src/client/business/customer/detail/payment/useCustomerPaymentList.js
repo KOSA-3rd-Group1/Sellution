@@ -6,7 +6,7 @@ const generateDummyData = (count) => {
   return Array.from({ length: count }, (_, index) => ({
     id: index + 1,
     paymentMethod: `CMS`,
-    name: `신한 은행`,
+    bank: `신한 은행`,
     accountNumber: `${Math.floor(100000 + Math.random() * 900000)}-01-${Math.floor(100000 + Math.random() * 900000)}`,
     createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
       .toISOString()
@@ -26,7 +26,7 @@ export const useCustomerPaymentList = () => {
       width: 'min-w-48 w-48 max-w-48',
     },
     {
-      key: 'name',
+      key: 'bank',
       label: '결제사',
       type: 'search',
       width: 'min-w-48 w-48 max-w-48',

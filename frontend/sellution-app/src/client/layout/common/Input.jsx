@@ -62,14 +62,12 @@ export const TableSearchInput = (props) => {
   );
 };
 
-export const InfoInput = (props) => (
+export const InfoInput = ({ textDefault, ...props }) => (
   <input
-    // type={props.type || 'text'}
-    // value={props.value || ''}
-    // onChange={props.onChange}
-    className={`w-full h-10 border-2 border-[#DADADA] rounded-lg px-4 placeholder:text-slate-400
-				read-only:bg-gray-100 read-only:text-slate-600 read-only:outline-none
-				disabled:bg-white disabled:outline-none disabled:border-transparent ${props.textDefault ? 'disabled:text-gray-600' : 'disabled:text-brandOrange'}`}
+    className={`w-full h-10 border-2 border-[#DADADA] rounded-lg px-6 placeholder:text-slate-400
+				outline-none focus:ring-2 ring-brandOrange focus:ring-offset-2 
+				read-only:bg-gray-100 read-only:text-slate-600 read-only:ring-transparent
+				disabled:bg-white disabled:border-transparent ${textDefault ? 'disabled:text-gray-600' : 'disabled:text-brandOrange'}`}
     {...props}
   />
 );

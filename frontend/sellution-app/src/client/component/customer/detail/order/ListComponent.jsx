@@ -29,8 +29,8 @@ const ListComponent = () => {
 
   return (
     <div className='relative w-full h-full justify-between'>
-      <section className='absolute w-full h-[calc(100%-58px)] p-2 flex flex-col overflow-y-auto '>
-        <div className='w-full min-h-14 h-14 max-h-14 text-lg font-semibold flex items-center'>
+      <section className='absolute w-full h-[calc(100%-58px)] py-2 px-4 flex flex-col overflow-y-auto '>
+        <div className='w-full min-h-16 h-16 max-h-16 text-lg font-semibold flex items-center'>
           <div>정기 배송 주문 정보</div>
         </div>
         <div className='h-3/5 overflow-hidden'>
@@ -52,8 +52,8 @@ const ListComponent = () => {
             }
           />
         </div>
-        <div className='h-10'></div>
-        <div className='w-full  min-h-14 h-14 max-h-14 text-lg font-semibold flex items-center'>
+        <div className='h-6'></div>
+        <div className='w-full  min-h-16 h-16 max-h-16 text-lg font-semibold flex items-center'>
           <div>단건 배송 주문 정보</div>
         </div>
         <div className='h-3/5 overflow-hidden'>

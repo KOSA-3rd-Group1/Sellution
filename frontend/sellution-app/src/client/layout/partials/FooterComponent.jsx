@@ -1,5 +1,5 @@
-import { FooterBtn1, FooterBtn2 } from '../common/Button';
-import { ListIcon } from '../../utility/assets/Icons';
+import { FooterBtn1, FooterBtn2 } from '@/client/layout/common/Button';
+import { ListIcon } from '@/client/utility/assets/Icons';
 
 const FooterComponent = (props) => {
   return (
@@ -9,12 +9,10 @@ const FooterComponent = (props) => {
       {props.back?.label && (
         <FooterBtn1 Icon={ListIcon} content={props.back.label} event={props.back.event} />
       )}
-      {props.btn1?.label && props.btn2?.label && (
-        <div className='row-center-position gap-5'>
-          <FooterBtn1 content={props.btn1.label} event={props.btn1.event} />
-          <FooterBtn2 content={props.btn2.label} event={props.btn2.event} />
-        </div>
-      )}
+      <div className='row-center-position gap-5'>
+        {props.btn1?.label && <FooterBtn1 content={props.btn1.label} event={props.btn1.event} />}
+        {props.btn2?.label && <FooterBtn2 content={props.btn2.label} event={props.btn2.event} />}
+      </div>
     </div>
   );
 };
