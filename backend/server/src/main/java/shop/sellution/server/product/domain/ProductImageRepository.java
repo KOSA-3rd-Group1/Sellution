@@ -8,6 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface ProductImageRepository extends JpaRepository<ProductImage, Long> {
+    List<ProductImage> findByProductProductId(Long productId);
     Optional<ProductImage> findByProductAndPurposeOfUse(Product product, ProductImageType purposeOfUse);
     List<ProductImage> findByProductProductIdAndPurposeOfUse(Long productId, ProductImageType purposeOfUse);
+    List<ProductImage> findAllByProductAndPurposeOfUse(Product product, ProductImageType purposeOfUse);
 }

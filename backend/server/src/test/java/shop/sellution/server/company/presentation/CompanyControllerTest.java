@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.web.multipart.MultipartFile;
 import shop.sellution.server.common.BaseControllerTest;
 import shop.sellution.server.company.application.CompanyDisplaySettingServiceImpl;
 import shop.sellution.server.company.application.CompanySaleSettingServiceImpl;
@@ -16,6 +19,9 @@ import shop.sellution.server.company.domain.type.SellType;
 import shop.sellution.server.company.domain.type.SubscriptionType;
 import shop.sellution.server.company.dto.*;
 import shop.sellution.server.global.type.DeliveryType;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 
 import java.util.List;
 
@@ -27,8 +33,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -148,11 +153,9 @@ class CompanyControllerTest extends BaseControllerTest {
     @DisplayName("회사의 디스플레이 설정을 업데이트한다")
     @Test
     void updateCompanyDisplaySetting_Success() throws Exception {
-        SaveCompanyDisplaySettingReq request = SaveCompanyDisplaySettingReq.builder()
+        SaveCompanyDisplaySettingReq requestDTO = SaveCompanyDisplaySettingReq.builder()
                 .companyId(1L)
                 .displayName("UpdatedDisplay")
-                .logoImageUrl("new_logo.jpg")
-                .promotionImageUrls(List.of("new_promo1.jpg", "new_promo2.jpg"))
                 .themeColor("000000")
                 .mainPromotion1Title("New Promo1")
                 .mainPromotion1Content("New Content1")
@@ -160,31 +163,40 @@ class CompanyControllerTest extends BaseControllerTest {
                 .mainPromotion2Content("New Content2")
                 .build();
 
-        doNothing().when(companyDisplaySettingService).updateCompanyDisplaySetting(any(SaveCompanyDisplaySettingReq.class));
+        MockMultipartFile requestPart = new MockMultipartFile("request", "", "application/json", objectMapper.writeValueAsBytes(requestDTO));
+        MockMultipartFile logoFile = new MockMultipartFile("logoFile", "logo.jpg", "image/jpeg", "logo content".getBytes());
+        MockMultipartFile promoFile1 = new MockMultipartFile("promotionFiles", "promo1.jpg", "image/jpeg", "promo1 content".getBytes());
+        MockMultipartFile promoFile2 = new MockMultipartFile("promotionFiles", "promo2.jpg", "image/jpeg", "promo2 content".getBytes());
 
-        mockMvc.perform(put("/display-setting")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        doNothing().when(companyDisplaySettingService).updateCompanyDisplaySetting(any(SaveCompanyDisplaySettingReq.class), any(MultipartFile.class), any(List.class));
+
+        mockMvc.perform(multipart("/display-setting")
+                        .file(requestPart)
+                        .file(logoFile)
+                        .file(promoFile1)
+                        .file(promoFile2)
+                        .with(request -> {
+                            request.setMethod("PUT");
+                            return request;
+                        })
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk())
                 .andDo(document("Company/updateCompanyDisplaySetting",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("companyId").description("회사 ID"),
-                                fieldWithPath("displayName").description("디스플레이 이름"),
-                                fieldWithPath("logoImageUrl").description("로고 이미지 URL"),
-                                fieldWithPath("promotionImageUrls").description("프로모션 이미지 URL 목록"),
-                                fieldWithPath("themeColor").description("테마 색상"),
-                                fieldWithPath("mainPromotion1Title").description("주요 프로모션 1 제목"),
-                                fieldWithPath("mainPromotion1Content").description("주요 프로모션 1 내용"),
-                                fieldWithPath("mainPromotion2Title").description("주요 프로모션 2 제목"),
-                                fieldWithPath("mainPromotion2Content").description("주요 프로모션 2 내용")
+                        requestParts(
+                                partWithName("request").description("회사 디스플레이 설정 정보"),
+                                partWithName("logoFile").description("로고 이미지 파일").optional(),
+                                partWithName("promotionFiles").description("프로모션 이미지 파일들").optional()
                         )
                 ));
     }
 
+
+
     @DisplayName("회사의 판매 설정을 조회한다")
     @Test
+
     void getCompanySaleSetting_Success() throws Exception {
         FindCompanySaleSettingRes response = FindCompanySaleSettingRes.builder()
                 .companyId(1L)
