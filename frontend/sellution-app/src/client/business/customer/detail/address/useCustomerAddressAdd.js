@@ -30,17 +30,10 @@ export const useCustomerAddressAdd = () => {
     alert('변경사항 적용');
   };
 
-  // 배송지 삭제
-  const handleDeleteData = () => {
-    alert('배송지 삭제');
-    moveList();
-  };
-
   return {
     data,
     handleChangeInputValue,
     moveList,
     handleSaveData,
-    handleDeleteData,
   };
 };

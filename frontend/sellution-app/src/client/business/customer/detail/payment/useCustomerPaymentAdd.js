@@ -5,7 +5,7 @@ export const useCustomerPaymentAdd = () => {
   const { customerId } = useParams();
   const navigate = useNavigate();
 
-  const [data, setData] = useState({});
+  const [data, setData] = useState({ paymentMethod: 'CMS' });
 
   // 서버에 데이터 요청
   useEffect(() => {

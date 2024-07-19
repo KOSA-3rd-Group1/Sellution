@@ -31,7 +31,7 @@ const Table = ({
         {Btns}
       </div>
       {/* table */}
-      <div className='w-full relative overflow-x-auto overflow-y-auto'>
+      <div className='w-full relative overflow-x-auto overflow-y-auto '>
         <table className='relative w-full h-full text-sm text-left text-gray-500 table-fixed '>
           <thead className='sticky top-0 z-30 w-full h-[82px] text-xs text-gray-700 uppercase bg-gray-50 '>
             <tr className='relative'>
