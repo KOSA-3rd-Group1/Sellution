@@ -18,7 +18,7 @@ const MainHeaderComponent = ({ breadcrumbs, title, children }) => {
             </li>
           ))}
         </ul>
-        <div className='text-2xl'>{title}</div>
+        <div className='text-2xl font-bold'>{title}</div>
       </header>
       <div className='w-full flex-auto'>{children}</div>
     </div>

@@ -62,6 +62,12 @@ public enum ExceptionCode {
     ALREADY_REGISTERED_EASY_PWD(5014,"이미 간편비밀번호가 등록 되어있습니다."),
 
 
+    // ---------------------------- Address 6501 ~ 7000 ---------------------------------------
+
+    NOT_FOUND_CUSTOMER_FOR_ADDRESS(6501, "주소와 연관된 고객을 찾을 수 없습니다."),
+    FAILED_TO_RESET_DEFAULT_ADDRESS(6502, "기본 주소 재설정에 실패했습니다."),
+    INVALID_ADDRESS_DATA(6503, "유효하지 않은 주소 데이터입니다."),
+
     // ---------------------------- Client,Customer 8001 ~ 8999 ---------------------------------------
 
     INVALID_USER_NAME(8001, "존재하지 않는 사용자입니다."),

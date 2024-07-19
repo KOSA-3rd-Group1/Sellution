@@ -1,16 +1,21 @@
 src/test/resources/application*
+.gradle/8.8/fileHashes/fileHashes.lock
 
 /logs
 src/main/resources/application*
+.idea/**
+.gradle
+.gradle/**
 .idea
 .gradle/8.8/excutionHistory/excutionHistory.lock
 .gradle/8.8/fileHashes/fileHashes.lock
 .gradle/buildOutputCleanup/buildOutputCleanup.lock
 ./.gradle
 ./.idea
-
+.gradle/buildOutputCleanup
 .gradle/
 *.lock
+.idea/dbnavigator.xml
 
 # User-specific stuff
 .idea/**/workspace.xml

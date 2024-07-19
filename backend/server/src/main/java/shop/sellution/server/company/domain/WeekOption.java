@@ -1,6 +1,5 @@
 package shop.sellution.server.company.domain;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 

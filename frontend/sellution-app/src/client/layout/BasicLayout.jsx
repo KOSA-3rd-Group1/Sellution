@@ -10,7 +10,7 @@ const BasicLayout = () => {
 
   return (
     <div className='w-dvw h-dvh flex flex-col overflow-auto'>
-      <div className='w-full h-16 z-30'>
+      <div className='w-full h-16 z-50'>
         <NavbarComponent
           isSidebarOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}
@@ -19,7 +19,7 @@ const BasicLayout = () => {
       </div>
       <div className='w-full flex-auto flex'>
         <div
-          className={`w-[250px] h-[calc(100%-64px)] lg:h-full absolute lg:relative ${isSidebarOpen ? 'block' : 'hidden'} lg:block flex-shrink-0 z-30`}
+          className={`w-[250px] h-[calc(100%-64px)] lg:h-full absolute lg:relative ${isSidebarOpen ? 'block' : 'hidden'} lg:block flex-shrink-0 z-50`}
         >
           <SidebarCompoent companyName={companyName} />
         </div>
@@ -27,7 +27,7 @@ const BasicLayout = () => {
         {/* Overlay */}
         {isSidebarOpen && (
           <div
-            className='fixed inset-0 bg-black bg-opacity-50 lg:hidden z-20'
+            className='fixed inset-0 bg-black bg-opacity-50 lg:hidden z-[49]'
             onClick={toggleSidebar}
           ></div>
         )}
