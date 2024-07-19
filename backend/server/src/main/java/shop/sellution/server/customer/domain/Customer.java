@@ -48,10 +48,10 @@ public class Customer extends BaseEntity {
     @Builder.Default
     private DisplayStatus isSmsAgreement = DisplayStatus.Y;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "is_in_use", nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'N'")
-    @Builder.Default
-    private DisplayStatus isInUse = DisplayStatus.N;
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "is_in_use", nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'N'")
+//    @Builder.Default
+//    private DisplayStatus isInUse = DisplayStatus.N;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, columnDefinition = "ENUM( 'NEW', 'NORMAL', 'DORMANT') default 'NEW'")
@@ -61,6 +61,8 @@ public class Customer extends BaseEntity {
     @Column(name = "easy_pwd")
     private String easyPwd;
 
+    @Column(name = "lastest_delivery_date")
+    private LocalDateTime lastestDeliveryDate; //최신 배송일자 필드 추가
 
     @Builder
     public Customer(Company company, String username, String password, String name, String phoneNumber) {
@@ -76,15 +78,15 @@ public class Customer extends BaseEntity {
     }
 
     //회원의 상품 주문 시
-    public void activate() {
-        this.isInUse = DisplayStatus.fromBoolean(true);
-        this.type = CustomerType.NORMAL;
-    }
-
-    //회원의 상품 주문 종료 시
-    public void deactivate() {
-        this.isInUse = DisplayStatus.fromBoolean(false);
-    }
+//    public void activate() {
+//        this.isInUse = DisplayStatus.fromBoolean(true);
+//        this.type = CustomerType.NORMAL;
+//    }
+//
+//    //회원의 상품 주문 종료 시
+//    public void deactivate() {
+//        this.isInUse = DisplayStatus.fromBoolean(false);
+//    }
 
     public void changeToNormal() {
         this.type = CustomerType.NORMAL;
