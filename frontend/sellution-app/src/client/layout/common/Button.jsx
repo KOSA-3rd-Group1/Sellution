@@ -30,3 +30,23 @@ export const FooterBtn2 = (props) => (
     <div>{props.content}</div>
   </button>
 );
+
+export const ListBtn = (props) => (
+  <button
+    className={`h-8 w-fit px-2 row-center-position gap-3 text-xs text-brandOrange border border-brandOrange rounded-md bg-white `}
+    onClick={() => props.event()}
+  >
+    {props.Icon && <props.Icon className='object-contain h-5' />}
+    <div>{props.content}</div>
+  </button>
+);
+
+export const EventBtn = ({ Icon, label, ...attr }) => (
+  <button
+    className={`h-8 w-fit px-2 row-center-position gap-3 text-xs text-brandOrange border border-brandOrange rounded-md bg-white `}
+    {...attr}
+  >
+    {Icon && <Icon className='object-contain h-5' />}
+    <div>{label}</div>
+  </button>
+);

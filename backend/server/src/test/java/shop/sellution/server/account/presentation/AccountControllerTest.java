@@ -2,10 +2,12 @@ package shop.sellution.server.account.presentation;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -15,6 +17,8 @@ import shop.sellution.server.account.dto.request.SaveAccountReq;
 import shop.sellution.server.account.dto.request.UpdateAccountReq;
 import shop.sellution.server.account.dto.response.FindAccountRes;
 import shop.sellution.server.common.BaseControllerTest;
+import shop.sellution.server.common.config.QueryDslConfig;
+
 import java.time.LocalDateTime;
 import java.util.List;
 

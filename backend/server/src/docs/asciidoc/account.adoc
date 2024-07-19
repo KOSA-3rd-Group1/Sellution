@@ -18,24 +18,6 @@ include::{snippets}/Account/findAllByCustomerId/http-response.adoc[]
 include::{snippets}/Account/findAllByCustomerId/response-fields.adoc[]
 
 
-=== 계좌 인증
-/accounts/auth/check-account
-
-1. 입력한 계좌가 실제 계좌인지 검증한다.
-2. 입력한 계좌의 실제 주인인지 확인한다. 맞다면 이름 계좌 주인 이름 반환
-
-==== HTTP Request
-
-include::{snippets}/Account/checkAccount/http-request.adoc[]
-
-==== HTTP Response
-
-include::{snippets}/Account/checkAccount/http-response.adoc[]
-
-==== Response Fields
-
-include::{snippets}/Account/checkAccount/response-fields.adoc[]
-
 === 계좌 생성
 /accounts/customers/{customerId}
 

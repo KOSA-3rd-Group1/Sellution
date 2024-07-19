@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.CompanyRepository;
+import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.contractcompany.domain.ContractCompany;
 import shop.sellution.server.contractcompany.domain.ContractCompanyRepository;
 import shop.sellution.server.contractcompany.dto.request.FindContractCompanyReq;
@@ -63,12 +63,13 @@ class ContractCompanyServiceImplTest {
                 .contractAuthPassword("ValidPass1!")
                 .build();
 
+        Company company = Company.builder().companyId(1L).build();
         findValidRequest = new FindContractCompanyReq();
         ReflectionTestUtils.setField(findValidRequest, "contractAuthId", "testuser123");
         ReflectionTestUtils.setField(findValidRequest, "contractAuthPassword", "ValidPass1!");
 
         validContractCompany = ContractCompany.builder()
-                .companyId(1L)
+                .company(company)
                 .contractCompanyName("Test Company")
                 .businessRegistrationNumber("123-45-67890")
                 .contractAuthId("testuser123")
@@ -88,7 +89,7 @@ class ContractCompanyServiceImplTest {
         ReflectionTestUtils.setField(savedCompany, "companyId", 1L);
 
         ContractCompany savedContractCompany = ContractCompany.builder()
-                .companyId(1L)
+                .company(savedCompany)
                 .contractCompanyName("Test Company")
                 .businessRegistrationNumber("123-45-67890")
                 .contractAuthId("testuser123")
@@ -209,7 +210,7 @@ class ContractCompanyServiceImplTest {
 
         // then
         assertNotNull(result);
-        assertEquals(validContractCompany.getCompanyId(), result.getCompanyId());
+        assertEquals(validContractCompany.getCompany().getCompanyId(), result.getCompanyId());
         assertEquals(validContractCompany.getContractCompanyName(), result.getContractCompanyName());
         assertEquals(validContractCompany.getBusinessRegistrationNumber(), result.getBusinessRegistrationNumber());
     }

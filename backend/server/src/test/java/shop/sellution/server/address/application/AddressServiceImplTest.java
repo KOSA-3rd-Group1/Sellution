@@ -14,6 +14,8 @@ import shop.sellution.server.address.dto.response.FindAddressRes;
 import shop.sellution.server.address.dto.response.FindAllAddressRes;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
+import shop.sellution.server.global.exception.BadRequestException;
+import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.global.type.DisplayStatus;
 
 import java.time.LocalDateTime;
@@ -40,6 +42,7 @@ class AddressServiceImplTest {
 
     private Address address;
     private Customer customer;
+    private SaveAddressReq saveAddressReq;
 
     @BeforeEach
     void setUp() {
@@ -52,8 +55,18 @@ class AddressServiceImplTest {
                 .build();
 
         address = Address.builder()
-                .id(1L)
                 .customer(customer)
+                .addressName("Home")
+                .name("John Doe")
+                .phoneNumber("010-9999-9999")
+                .zipcode("12345")
+                .address("123 Street")
+                .addressDetail("Apt 101")
+                .isDefaultAddress(DisplayStatus.Y)
+                .build();
+
+        saveAddressReq = SaveAddressReq.builder()
+                .customerId(1L)
                 .addressName("Home")
                 .name("John Doe")
                 .phoneNumber("010-9999-9999")
@@ -61,147 +74,123 @@ class AddressServiceImplTest {
                 .streetAddress("123 Street")
                 .addressDetail("Apt 101")
                 .isDefaultAddress(DisplayStatus.Y)
-                .createdAt(LocalDateTime.now())
                 .build();
     }
 
     @DisplayName("고객 ID로 주소 목록을 조회한다.")
     @Test
     void getAddressesByCustomerId_Success() {
-        // given
+        when(customerRepository.existsById(anyLong())).thenReturn(true);
         when(addressRepository.findByCustomer_Id(anyLong())).thenReturn(List.of(address));
 
-        // when
         List<FindAllAddressRes> addresses = addressService.getAddressesByCustomerId(1L);
 
-        // then
         assertThat(addresses).isNotEmpty();
+        verify(customerRepository, times(1)).existsById(anyLong());
         verify(addressRepository, times(1)).findByCustomer_Id(anyLong());
+    }
+
+    @DisplayName("존재하지 않는 고객 ID로 주소 목록을 조회하면 예외가 발생한다.")
+    @Test
+    void getAddressesByCustomerId_CustomerNotFound_ThrowsException() {
+        when(customerRepository.existsById(anyLong())).thenReturn(false);
+
+        assertThrows(BadRequestException.class, () -> addressService.getAddressesByCustomerId(1L));
+        verify(customerRepository, times(1)).existsById(anyLong());
     }
 
     @DisplayName("주소 ID로 주소를 조회한다.")
     @Test
     void getAddressById_Success() {
-        // given
         when(addressRepository.findById(anyLong())).thenReturn(Optional.of(address));
 
-        // when
         FindAddressRes addressRes = addressService.getAddressById(1L);
 
-        // then
         assertThat(addressRes).isNotNull();
         verify(addressRepository, times(1)).findById(anyLong());
     }
 
     @DisplayName("주소 ID로 주소를 조회할 때 주소가 없으면 예외를 발생시킨다.")
     @Test
-    void getAddressById_NotFound_Fail() {
-        // given
+    void getAddressById_NotFound_ThrowsException() {
         when(addressRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // when & then
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> addressService.getAddressById(1L));
-        assertThat(exception.getMessage()).isEqualTo("Address not found");
+        assertThrows(BadRequestException.class, () -> addressService.getAddressById(1L));
     }
 
     @DisplayName("주소를 생성한다.")
     @Test
     void createAddress_Success() {
-        // given
-        SaveAddressReq request = SaveAddressReq.builder()
-                .customerId(1L)
-                .addressName("Home")
-                .name("John Doe")
-                .phoneNumber("010-9999-9999")
-                .zipcode("12345")
-                .streetAddress("123 Street")
-                .addressDetail("Apt 101")
-                .isDefaultAddress(DisplayStatus.Y)
-                .build();
         when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer));
         when(addressRepository.save(any(Address.class))).thenReturn(address);
 
-        // when
-        addressService.createAddress(request);
+        addressService.createAddress(saveAddressReq);
 
-        // then
         verify(customerRepository, times(1)).findById(anyLong());
         verify(addressRepository, times(1)).save(any(Address.class));
     }
 
     @DisplayName("주소를 생성할 때 고객이 없으면 예외를 발생시킨다.")
     @Test
-    void createAddress_CustomerNotFound_Fail() {
-        // given
-        SaveAddressReq request = SaveAddressReq.builder()
-                .customerId(1L)
-                .addressName("Home")
-                .name("John Doe")
-                .phoneNumber("010-9999-9999")
-                .zipcode("12345")
-                .streetAddress("123 Street")
-                .addressDetail("Apt 101")
-                .isDefaultAddress(DisplayStatus.Y)
-                .build();
+    void createAddress_CustomerNotFound_ThrowsException() {
         when(customerRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // when & then
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> addressService.createAddress(request));
-        assertThat(exception.getMessage()).isEqualTo("Customer not found");
+        assertThrows(BadRequestException.class, () -> addressService.createAddress(saveAddressReq));
     }
 
     @DisplayName("주소를 수정한다.")
     @Test
     void updateAddress_Success() {
-        // given
-        SaveAddressReq request = SaveAddressReq.builder()
-                .customerId(1L)
-                .addressName("Home")
-                .name("John Doe")
-                .phoneNumber("010-9999-9999")
-                .zipcode("12345")
-                .streetAddress("123 Street")
-                .addressDetail("Apt 101")
-                .isDefaultAddress(DisplayStatus.Y)
-                .build();
         when(addressRepository.findById(anyLong())).thenReturn(Optional.of(address));
 
-        // when
-        addressService.updateAddress(1L, request);
+        addressService.updateAddress(1L, saveAddressReq);
 
-        // then
         verify(addressRepository, times(1)).findById(anyLong());
         verify(addressRepository, times(1)).save(any(Address.class));
     }
 
     @DisplayName("주소를 수정할 때 주소가 없으면 예외를 발생시킨다.")
     @Test
-    void updateAddress_NotFound_Fail() {
-        // given
-        SaveAddressReq request = SaveAddressReq.builder()
-                .customerId(1L)
-                .addressName("Home")
-                .name("John Doe")
-                .phoneNumber("010-9999-9999")
-                .zipcode("12345")
-                .streetAddress("123 Street")
-                .addressDetail("Apt 101")
-                .isDefaultAddress(DisplayStatus.Y)
-                .build();
+    void updateAddress_NotFound_ThrowsException() {
         when(addressRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // when & then
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> addressService.updateAddress(1L, request));
-        assertThat(exception.getMessage()).isEqualTo("Address not found");
+        assertThrows(BadRequestException.class, () -> addressService.updateAddress(1L, saveAddressReq));
     }
 
     @DisplayName("주소를 삭제한다.")
     @Test
     void deleteAddress_Success() {
-        // when
+        when(addressRepository.findById(anyLong())).thenReturn(Optional.of(address));
+
         addressService.deleteAddress(1L);
 
-        // then
-        verify(addressRepository, times(1)).deleteById(anyLong());
+        verify(addressRepository, times(1)).findById(anyLong());
+        verify(addressRepository, times(1)).delete(any(Address.class));
+    }
+
+    @DisplayName("주소를 삭제할 때 주소가 없으면 예외를 발생시킨다.")
+    @Test
+    void deleteAddress_NotFound_ThrowsException() {
+        when(addressRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(BadRequestException.class, () -> addressService.deleteAddress(1L));
+    }
+
+    @DisplayName("기본 주소를 재설정한다.")
+    @Test
+    void resetDefaultAddress_Success() {
+        doNothing().when(addressRepository).resetDefaultAddress(anyLong());
+
+        addressService.resetDefaultAddress(1L);
+
+        verify(addressRepository, times(1)).resetDefaultAddress(anyLong());
+    }
+
+    @DisplayName("기본 주소 재설정 실패 시 예외를 발생시킨다.")
+    @Test
+    void resetDefaultAddress_Fail_ThrowsException() {
+        doThrow(new RuntimeException()).when(addressRepository).resetDefaultAddress(anyLong());
+
+        assertThrows(BadRequestException.class, () -> addressService.resetDefaultAddress(1L));
     }
 }

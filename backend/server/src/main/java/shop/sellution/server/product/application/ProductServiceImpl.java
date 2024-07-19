@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import shop.sellution.server.category.domain.Category;
 import shop.sellution.server.category.domain.CategoryRepository;
 import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.CompanyRepository;
+import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.product.domain.Product;
 import shop.sellution.server.product.domain.ProductImage;
 import shop.sellution.server.product.domain.ProductImageRepository;

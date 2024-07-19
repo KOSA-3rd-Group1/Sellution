@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import shop.sellution.server.company.domain.Company;
 
 import java.time.LocalDateTime;
 
@@ -20,19 +21,20 @@ public class ContractCompany {
     @Column(name = "contract_company_id")
     private Long id;
 
-    @Column(name = "company_id", unique = true)
-    private Long companyId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
-    @Column(name = "contract_company_name", nullable = false)
+    @Column(name = "contract_company_name", length = 100,nullable = false)
     private String contractCompanyName;
 
-    @Column(name = "business_registration_number", unique = true, nullable = false)
+    @Column(name = "business_registration_number", length = 50, unique = true, nullable = false)
     private String businessRegistrationNumber;
 
-    @Column(name = "contract_auth_id", unique = true, nullable = false)
+    @Column(name = "contract_auth_id", unique = true,length = 100, nullable = false)
     private String contractAuthId;
 
-    @Column(name = "contract_auth_password", nullable = false)
+    @Column(name = "contract_auth_password", length = 100,nullable = false)
     private String contractAuthPassword;
 
     @CreationTimestamp
@@ -43,8 +45,8 @@ public class ContractCompany {
     private LocalDateTime expiresAt;
 
     @Builder
-    public ContractCompany(Long companyId, String contractCompanyName, String businessRegistrationNumber, String contractAuthId, String contractAuthPassword, LocalDateTime expiresAt) {
-        this.companyId = companyId;
+    public ContractCompany(Company company, String contractCompanyName, String businessRegistrationNumber, String contractAuthId, String contractAuthPassword, LocalDateTime expiresAt) {
+        this.company = company;
         this.contractCompanyName = contractCompanyName;
         this.businessRegistrationNumber = businessRegistrationNumber;
         this.contractAuthId = contractAuthId;

@@ -16,21 +16,22 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class SaveAddressReq {
     //private Long addressId;
+
     @NotNull
     private Long customerId;
 
-    @NotBlank
+    @NotBlank(message = "배송지명은 필수 입니다.")
     private String addressName;
-    @NotBlank
+    @NotBlank(message = "수령인은 필수 입니다.")
     private String name;
-    @NotBlank
+    @NotBlank(message = "휴대폰번호는 필수 입니다.")
     private String phoneNumber;
 
-    @NotBlank
+    @NotBlank(message = "우편번호는 필수 입니다.")
     private String zipcode;
-    @NotBlank
+    @NotBlank(message = "주소는 필수 입니다.")
     private String streetAddress;
-    @NotBlank
+    @NotBlank(message = "상세주소는 필수 입니다.")
     private String addressDetail;
 
     @NotNull
@@ -38,29 +39,29 @@ public class SaveAddressReq {
 
 
     //DTO를 entity로 변환
-    public Address toEntity(Customer customer) {
-        return Address.builder()
-                .customer(customer)
-                .zipcode(zipcode)
-                .streetAddress(streetAddress)
-                .addressDetail(addressDetail)
-                .name(name)
-                .phoneNumber(phoneNumber)
-                .isDefaultAddress(isDefaultAddress)
-                .addressName(addressName)
-                .createdAt(LocalDateTime.now())
-                .build();
-    }
+//    public Address toEntity(Customer customer) {
+//        return Address.builder()
+//                .customer(customer)
+//                .zipcode(zipcode)
+//                .address(streetAddress)
+//                .addressDetail(addressDetail)
+//                .name(name)
+//                .phoneNumber(phoneNumber)
+//                .isDefaultAddress(isDefaultAddress)
+//                .addressName(addressName)
+//                .createdAt(LocalDateTime.now())
+//                .build();
+//    }
 
-    public void updateEntity(Address address) {
-        address.setZipcode(zipcode);
-        address.setStreetAddress(streetAddress);
-        address.setAddressDetail(addressDetail);
-        address.setName(name);
-        address.setPhoneNumber(phoneNumber);
-        address.setIsDefaultAddress(isDefaultAddress);
-        address.setAddressName(addressName);
-    }
+//    public void updateEntity(Address address) {
+//        address.setZipcode(zipcode);
+//        address.setAddress(streetAddress);
+//        address.setAddressDetail(addressDetail);
+//        address.setName(name);
+//        address.setPhoneNumber(phoneNumber);
+//        address.setIsDefaultAddress(isDefaultAddress);
+//        address.setAddressName(addressName);
+//    }
 
 
 }

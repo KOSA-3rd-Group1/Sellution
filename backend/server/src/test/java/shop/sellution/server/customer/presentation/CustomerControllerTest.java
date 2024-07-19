@@ -33,7 +33,7 @@ class CustomerControllerTest extends BaseControllerTest {
     @Test
     void signupCustomer_Success() throws Exception {
         // given
-        SaveCustomerReq request = new SaveCustomerReq(1L, "testuser", "password123!", "Test User", "010-1234-5678");
+        SaveCustomerReq request = new SaveCustomerReq(1L, "testuser", "password123!", "Test User", "01012345678");
         when(customerService.saveCustomer(any(SaveCustomerReq.class))).thenReturn(1L);
 
         // when & then

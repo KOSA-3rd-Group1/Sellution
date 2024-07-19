@@ -32,7 +32,7 @@ public class Message {
     private Company company;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false,columnDefinition = "ENUM('ORDER_COMPLETE','ORDER_CANCEL','PAYMENT_COMPLETE','PAYMENT_CANCEL')")
     private MessageType type;
 
     @Column(nullable = false, length = 255)

@@ -19,15 +19,15 @@ public class Category {
     @Column(name = "category_id")
     private Long categoryId;
 
-    @Column(nullable = false)
+    @Column(length = 50,nullable = false )
     private String name;
 
-    @Column(name = "product_count", nullable = false)
+    @Column(name = "product_count", nullable = false, columnDefinition = "int default 0")
     @Builder.Default
     private int productCount = 0 ;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "is_visible", nullable = false)
+    @Column(name = "is_visible",length = 1, nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'N'")
     @Builder.Default
     private DisplayStatus isVisible = DisplayStatus.Y;
 

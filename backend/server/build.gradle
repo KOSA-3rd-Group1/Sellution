@@ -59,6 +59,12 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
+	// queryDSL
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
 	// Test Dependencies
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
@@ -72,9 +78,17 @@ dependencies {
 	implementation 'com.github.maricn:logback-slack-appender:1.6.1' // 슬랙 메시지 보내기
 	implementation 'org.springframework.boot:spring-boot-starter-webflux' // 외부 api 통신 [ webclient ]
 
-  testImplementation 'io.projectreactor:reactor-test' // webclient 테스트를 위한 reactor
+  	testImplementation 'io.projectreactor:reactor-test' // webclient 테스트를 위한 reactor
 	testImplementation 'com.squareup.okhttp3:mockwebserver' // webclient 테스트를 쉽게하기 위한 mockwebserver
 	testImplementation 'org.springframework.restdocs:spring-restdocs-webtestclient'
+
+	// queryDSL
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+	testImplementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	testImplementation 'com.querydsl:querydsl-apt:5.0.0:jakarta'
 
 
 

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import shop.sellution.server.category.application.CategoryServiceImpl;
 import shop.sellution.server.category.dto.request.SaveCategoryReq;
 import shop.sellution.server.category.dto.response.FindCategoryRes;
+import shop.sellution.server.global.type.DeliveryType;
+import shop.sellution.server.global.type.DisplayStatus;
 
 @RestController
 @RequestMapping("/categories")
@@ -17,7 +19,6 @@ public class CategoryController {
     public CategoryController(CategoryServiceImpl categoryService) {
         this.categoryService = categoryService;
     }
-
 
     @GetMapping
     public ResponseEntity<Page<FindCategoryRes>> getAllCategories(Pageable pageable) {

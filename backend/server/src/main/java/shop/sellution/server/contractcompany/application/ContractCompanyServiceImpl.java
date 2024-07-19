@@ -5,7 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.CompanyRepository;
+import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.contractcompany.domain.ContractCompany;
 import shop.sellution.server.contractcompany.domain.ContractCompanyRepository;
 import shop.sellution.server.contractcompany.dto.request.FindContractCompanyReq;
@@ -34,7 +34,7 @@ public class ContractCompanyServiceImpl implements ContractCompanyService {
 
         Company company = createAndSaveCompany(request.getContractCompanyName());
 
-        ContractCompany contractCompany = createContractCompany(request, company.getCompanyId());
+        ContractCompany contractCompany = createContractCompany(request, company);
         ContractCompany savedContractCompany = contractCompanyRepository.save(contractCompany);
 
         return savedContractCompany.getId();
@@ -49,7 +49,7 @@ public class ContractCompanyServiceImpl implements ContractCompanyService {
         validatePassword(request.getContractAuthPassword(), contractCompany.getContractAuthPassword());
 
         return new FindContractCompanyRes(
-                contractCompany.getCompanyId(),
+                contractCompany.getCompany().getCompanyId(),
                 contractCompany.getContractCompanyName(),
                 contractCompany.getBusinessRegistrationNumber()
         );
@@ -79,10 +79,10 @@ public class ContractCompanyServiceImpl implements ContractCompanyService {
     }
 
     // 계약 사업체 객체 생성
-    private ContractCompany createContractCompany(SaveContractCompanyReq request, Long companyId) {
+    private ContractCompany createContractCompany(SaveContractCompanyReq request, Company company) {
         int EXPIRATION_PERIOD_DAYS = 7; //만료 기간 (7일 후 만료)
         return ContractCompany.builder()
-                .companyId(companyId)
+                .company(company)
                 .contractCompanyName(request.getContractCompanyName())
                 .businessRegistrationNumber(request.getBusinessRegistrationNumber())
                 .contractAuthId(request.getContractAuthId())
