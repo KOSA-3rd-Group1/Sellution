@@ -1,5 +1,6 @@
 package shop.sellution.server.company.application;
 
+import org.springframework.mock.web.MockMultipartFile;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.CompanyImage;
 import shop.sellution.server.company.domain.repository.CompanyImageRepository;
@@ -7,14 +8,15 @@ import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.company.domain.type.ImagePurposeType;
 import shop.sellution.server.company.dto.FindCompanyDisplaySettingRes;
 import shop.sellution.server.company.dto.SaveCompanyDisplaySettingReq;
-import shop.sellution.server.company.application.CompanyDisplaySettingServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import shop.sellution.server.product.S3Service;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +31,9 @@ class CompanyDisplaySettingServiceImplTest {
 
     @Mock
     private CompanyImageRepository companyImageRepository;
+
+    @Mock
+    private S3Service s3Service;
 
     @InjectMocks
     private CompanyDisplaySettingServiceImpl service;
@@ -76,7 +81,7 @@ class CompanyDisplaySettingServiceImplTest {
 
     @DisplayName("회사 디스플레이 설정을 업데이트한다.")
     @Test
-    void updateCompanyDisplaySetting_Success() {
+    void updateCompanyDisplaySetting_Success() throws IOException {
         // given
         Long companyId = 1L;
         Company company = new Company();
@@ -85,26 +90,29 @@ class CompanyDisplaySettingServiceImplTest {
         SaveCompanyDisplaySettingReq requestDTO = new SaveCompanyDisplaySettingReq();
         requestDTO.setCompanyId(companyId);
         requestDTO.setDisplayName("Updated Company");
-        requestDTO.setLogoImageUrl("new_logo.jpg");
-        requestDTO.setPromotionImageUrls(Arrays.asList("new_promo1.jpg", "new_promo2.jpg"));
 
-        CompanyImage logoImage = new CompanyImage();
-        CompanyImage promoImage1 = new CompanyImage();
-        CompanyImage promoImage2 = new CompanyImage();
+        MockMultipartFile logoFile = new MockMultipartFile("logoFile", "logo.jpg", "image/jpeg", "logo content".getBytes());
+        MockMultipartFile promotionFile1 = new MockMultipartFile("promotionFiles", "promo1.jpg", "image/jpeg", "promo1 content".getBytes());
+        MockMultipartFile promotionFile2 = new MockMultipartFile("promotionFiles", "promo2.jpg", "image/jpeg", "promo2 content".getBytes());
 
         when(companyRepository.findById(companyId)).thenReturn(Optional.of(company));
-        when(companyImageRepository.findByCompanyAndPurposeOfUse(company, ImagePurposeType.LOGO)).thenReturn(Optional.of(logoImage));
-        when(companyImageRepository.findAllByCompanyAndPurposeOfUse(company, ImagePurposeType.PROMOTION)).thenReturn(Arrays.asList(promoImage1, promoImage2));
+        when(s3Service.uploadFile(logoFile, companyId, "setting")).thenReturn("uploaded_logo_url");
+        when(s3Service.uploadFile(promotionFile1, companyId, "setting")).thenReturn("uploaded_promo1_url");
+        when(s3Service.uploadFile(promotionFile2, companyId, "setting")).thenReturn("uploaded_promo2_url");
+        when(companyImageRepository.findByCompanyAndPurposeOfUse(any(Company.class), eq(ImagePurposeType.LOGO))).thenReturn(Optional.empty());
+        when(companyImageRepository.findAllByCompanyAndPurposeOfUse(any(Company.class), eq(ImagePurposeType.PROMOTION))).thenReturn(List.of());
 
         // when
-        service.updateCompanyDisplaySetting(requestDTO);
+        service.updateCompanyDisplaySetting(requestDTO, logoFile, Arrays.asList(promotionFile1, promotionFile2));
 
         // then
         verify(companyRepository).save(any(Company.class));
-        verify(companyImageRepository).save(any(CompanyImage.class));
-        verify(companyImageRepository).deleteAll(anyList()); // 이 부분 추가
-        verify(companyImageRepository).saveAll(anyList());
+        verify(companyImageRepository, times(1)).save(any(CompanyImage.class)); // logo image
+        verify(companyImageRepository).deleteAll(anyList()); // deleting existing promotion images
+        verify(companyImageRepository, times(1)).saveAll(anyList()); // saving new promotion images
     }
+
+
 
 
     @DisplayName("로고 이미지를 저장한다.")
@@ -133,9 +141,10 @@ class CompanyDisplaySettingServiceImplTest {
 
         when(companyImageRepository.findByCompanyAndPurposeOfUse(company, ImagePurposeType.LOGO)).thenReturn(Optional.of(existingLogoImage));
 
-        // when & then
-        service.updateLogoImage(company, newLogoImage);
+        // when
+        service.updateLogoImage(company, "new_logo.jpg");
 
+        // then
         verify(companyImageRepository).save(existingLogoImage);
         assertEquals("new_logo.jpg", existingLogoImage.getImageUrl());
     }
@@ -157,15 +166,16 @@ class CompanyDisplaySettingServiceImplTest {
     void updatePromotionImages_Success() {
         // given
         Company company = new Company();
-        List<CompanyImage> newPromotionImages = Arrays.asList(new CompanyImage(), new CompanyImage());
+        List<String> newPromotionImageUrls = Arrays.asList("new_promo1.jpg", "new_promo2.jpg");
         List<CompanyImage> existingPromotionImages = Arrays.asList(new CompanyImage(), new CompanyImage());
 
         when(companyImageRepository.findAllByCompanyAndPurposeOfUse(company, ImagePurposeType.PROMOTION)).thenReturn(existingPromotionImages);
 
-        // when & then
-        service.updatePromotionImages(company, newPromotionImages);
+        // when
+        service.updatePromotionImages(company, newPromotionImageUrls);
 
+        // then
         verify(companyImageRepository).deleteAll(existingPromotionImages);
-        verify(companyImageRepository).saveAll(newPromotionImages);
+        verify(companyImageRepository).saveAll(anyList());
     }
 }

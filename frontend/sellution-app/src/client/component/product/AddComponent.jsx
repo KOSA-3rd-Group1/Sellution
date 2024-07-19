@@ -26,6 +26,9 @@ const AddComponent = () => {
   const detailImageInputRef = useRef(null);
   // const productImageInputRef = useRef(null);
 
+  const [categories, setCategories] = useState([]);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+
   // // DisplayStatus 열거형 정의
   const DisplayStatus = {
     VISIBLE: 'Y',
@@ -89,6 +92,32 @@ const AddComponent = () => {
       ...prev,
       [name]: parsedValue,
     }));
+  };
+  useEffect(() => {
+    // 카테고리 목록 가져오기
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/categories?size=100`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && Array.isArray(data.content)) {
+          setCategories(data.content);
+        } else {
+          console.error('Unexpected response format for categories');
+          setCategories([]);
+        }
+      })
+      .catch((error) => {
+        console.error('There was an error fetching the categories!', error);
+        setCategories([]);
+      });
+  }, []);
+
+  const handleCategorySelect = (categoryName, categoryId) => {
+    setProductInfo((prev) => ({
+      ...prev,
+      categoryName,
+      categoryId,
+    }));
+    setIsCategoryDropdownOpen(false);
   };
 
   // 상품 상세 설명 이미지(여러 개)
@@ -183,12 +212,14 @@ const AddComponent = () => {
 
   // 상품 등록
   const registerProduct = () => {
-    const productData = {
-      companyId: 1, // 임의 값
+    const formData = new FormData();
+
+    // JSON 데이터 추가
+    const jsonData = {
+      companyId: 1,
       name: productInfo.name,
       categoryName: productInfo.categoryName,
       productInformation: productInfo.productInformation,
-      detailImages: productDetailImages,
       cost: productInfo.cost,
       isDiscount: productInfo.isDiscount,
       discountStartDate: productInfo.discountStartDate
@@ -198,28 +229,37 @@ const AddComponent = () => {
         ? `${productInfo.discountEndDate}T23:59:59`
         : null,
       discountRate: productInfo.discountRate,
-      thumbnailImage: selectedThumbnailImage,
-      listImages: productImages.filter((img) => img !== null),
       deliveryType: productInfo.deliveryType,
       stock: productInfo.stock,
       isVisible: productInfo.isVisible,
     };
 
+    formData.append('product', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
+
+    // 이미지 파일 추가
+    if (selectedThumbnailImage) {
+      formData.append('thumbnailImage', dataURItoBlob(selectedThumbnailImage), 'thumbnail.jpg');
+    }
+
+    productImages.forEach((image, index) => {
+      if (image) {
+        formData.append('listImages', dataURItoBlob(image), `list_${index}.jpg`);
+      }
+    });
+
+    productDetailImages.forEach((image, index) => {
+      formData.append('detailImages', dataURItoBlob(image), `detail_${index}.jpg`);
+    });
+
     fetch(`${import.meta.env.VITE_BACKEND_URL}/products`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(productData),
+      body: formData,
     })
       .then((response) => {
         if (response.ok) {
-          console.log('Sending product data:', productData);
           console.log('Product registered successfully');
-
           moveList();
         } else {
-          console.log('Sending product data:', productData);
           console.error('Failed to register product');
         }
       })
@@ -227,6 +267,18 @@ const AddComponent = () => {
         console.error('Error:', error);
       });
   };
+
+  // Data URI를 Blob으로 변환하는 함수
+  function dataURItoBlob(dataURI) {
+    const byteString = atob(dataURI.split(',')[1]);
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+  }
 
   return (
     <div className='w-full h-full flex flex-col justify-between'>
@@ -252,17 +304,31 @@ const AddComponent = () => {
               <hr className='border-gray-200' />
               <div className='flex items-center'>
                 <label className='w-1/4 text-sm font-medium'>카테고리</label>
-                <div className='flex-1 flex space-x-2 ml-32'>
-                  <input
-                    type='text'
-                    name='categoryName'
-                    onChange={handleInputChange}
-                    className='flex-grow border p-2 rounded-md'
-                    placeholder='카테고리를 입력해주세요'
-                  />
-                  <button className='border border-orange-500 text-orange-500 px-4 py-2 rounded-md'>
-                    선택
-                  </button>
+                <div className='flex-1 ml-32 relative'>
+                  <div
+                    className='w-full border p-2 rounded-md flex justify-between items-center cursor-pointer'
+                    onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                  >
+                    <span>{productInfo.categoryName || '카테고리 선택'}</span>
+                    <EditIcon className='h-5 w-5 text-gray-400' />
+                  </div>
+                  {isCategoryDropdownOpen && (
+                    <div className='absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto'>
+                      {categories.length > 0 ? (
+                        categories.map((category) => (
+                          <div
+                            key={category.categoryId}
+                            className='p-2 hover:bg-gray-100 cursor-pointer'
+                            onClick={() => handleCategorySelect(category.name, category.categoryId)}
+                          >
+                            {category.name}
+                          </div>
+                        ))
+                      ) : (
+                        <div className='p-2 text-gray-500'>카테고리가 없습니다.</div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
               <hr className='border-gray-200' />
