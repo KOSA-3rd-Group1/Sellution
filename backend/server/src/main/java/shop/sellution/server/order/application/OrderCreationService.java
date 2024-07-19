@@ -11,6 +11,7 @@ import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.address.domain.Address;
 import shop.sellution.server.address.domain.AddressRepository;
 import shop.sellution.server.company.domain.*;
+import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.company.domain.repository.DayOptionRepository;
 import shop.sellution.server.company.domain.repository.MonthOptionRepository;
 import shop.sellution.server.company.domain.repository.WeekOptionRepository;

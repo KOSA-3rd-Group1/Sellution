@@ -18,6 +18,8 @@ import shop.sellution.server.company.domain.type.DayValueType;
 import shop.sellution.server.company.domain.type.SubscriptionType;
 import shop.sellution.server.company.dto.FindCompanySaleSettingRes;
 import shop.sellution.server.company.dto.SaveCompanySaleSettingReq;
+import shop.sellution.server.global.exception.BadRequestException;
+import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.global.type.WeekType;
 import shop.sellution.server.product.domain.Product;
@@ -48,13 +50,13 @@ public class CompanySaleSettingServiceImpl implements CompanySaleSettingService 
 
     @Override
     public FindCompanySaleSettingRes getCompanySaleSetting(Long companyId) {
-        Company company = companyRepository.findById(companyId).orElseThrow(() -> new RuntimeException("Company not found"));
+        Company company = companyRepository.findById(companyId).orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_COMPANY));
         List<MonthOption> monthOptions = monthOptionRepository.findByCompany(company);
         List<WeekOption> weekOptions = weekOptionRepository.findByCompany(company);
         List<DayOption> dayOptions = dayOptionRepository.findByCompany(company);
 
         List<Integer> monthValues = monthOptions.stream().map(MonthOption::getMonthValue).collect(Collectors.toList());
-        List<String> weekValues = weekOptions.stream().map(weekOption -> weekOption.getWeekValue().name()).collect(Collectors.toList());
+        List<Integer> weekValues = weekOptions.stream().map(WeekOption::getWeekValue).collect(Collectors.toList());
         List<String> dayValues = dayOptions.stream().map(dayOption -> dayOption.getDayValue().name()).collect(Collectors.toList());
 
         return FindCompanySaleSettingRes.fromEntity(company, monthValues, weekValues, dayValues);
@@ -64,7 +66,7 @@ public class CompanySaleSettingServiceImpl implements CompanySaleSettingService 
     @Transactional
     public void createCompanySaleSetting(SaveCompanySaleSettingReq saveCompanySaleSettingReq) {
         Company company = companyRepository.findById(saveCompanySaleSettingReq.getCompanyId())
-                .orElseThrow(() -> new RuntimeException("Company not found"));
+                .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_COMPANY));
         saveCompanySaleSettingReq.toEntity(company);
         companyRepository.save(company);
 
@@ -76,7 +78,7 @@ public class CompanySaleSettingServiceImpl implements CompanySaleSettingService 
     @Transactional
     public void updateCompanySaleSetting(SaveCompanySaleSettingReq requestDTO) {
         Company existingCompany = companyRepository.findById(requestDTO.getCompanyId())
-                .orElseThrow(() -> new RuntimeException("Company not found"));
+                .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_COMPANY));
 
         Company updatedCompany = requestDTO.toEntity(existingCompany);
         companyRepository.save(updatedCompany);
@@ -90,20 +92,20 @@ public class CompanySaleSettingServiceImpl implements CompanySaleSettingService 
             if (requestDTO.getSubscriptionType().equals(SubscriptionType.MONTH)) {
                 logger.info("Saving month options: {}", requestDTO.getMonthOptions());
                 List<MonthOption> monthOptions = requestDTO.getMonthOptions().stream()
-                        .map(value -> new MonthOption(null, value, company))
+                        .map(value -> new MonthOption(null,company, value))
                         .collect(Collectors.toList());
                 monthOptionRepository.saveAll(monthOptions);
             }
 
             logger.info("Saving week options: {}", requestDTO.getWeekOptions());
             List<WeekOption> weekOptions = requestDTO.getWeekOptions().stream()
-                    .map(value -> new WeekOption(null, WeekType.valueOf(value), company))
+                    .map(value -> new WeekOption(null, company, value))
                     .collect(Collectors.toList());
             weekOptionRepository.saveAll(weekOptions);
 
             logger.info("Saving day options: {}", requestDTO.getDayOptions());
             List<DayOption> dayOptions = requestDTO.getDayOptions().stream()
-                    .map(value -> new DayOption(null, DayValueType.valueOf(value), company))
+                    .map(value -> new DayOption(null, company, DayValueType.valueOf(value)))
                     .collect(Collectors.toList());
             dayOptionRepository.saveAll(dayOptions);
         }
@@ -115,7 +117,7 @@ public class CompanySaleSettingServiceImpl implements CompanySaleSettingService 
                 logger.info("Updating month options: {}", requestDTO.getMonthOptions());
                 monthOptionRepository.deleteByCompany(company);
                 List<MonthOption> monthOptions = requestDTO.getMonthOptions().stream()
-                        .map(value -> new MonthOption(null, value, company))
+                        .map(value -> new MonthOption(null,company, value))
                         .collect(Collectors.toList());
                 monthOptionRepository.saveAll(monthOptions);
             }
@@ -123,14 +125,14 @@ public class CompanySaleSettingServiceImpl implements CompanySaleSettingService 
             logger.info("Updating week options: {}", requestDTO.getWeekOptions());
             weekOptionRepository.deleteByCompany(company);
             List<WeekOption> weekOptions = requestDTO.getWeekOptions().stream()
-                    .map(value -> new WeekOption(null, WeekType.valueOf(value), company))
+                    .map(value -> new WeekOption(null, company, value))
                     .collect(Collectors.toList());
             weekOptionRepository.saveAll(weekOptions);
 
             logger.info("Updating day options: {}", requestDTO.getDayOptions());
             dayOptionRepository.deleteByCompany(company);
             List<DayOption> dayOptions = requestDTO.getDayOptions().stream()
-                    .map(value -> new DayOption(null, DayValueType.valueOf(value), company))
+                    .map(value -> new DayOption(null,company, DayValueType.valueOf(value)))
                     .collect(Collectors.toList());
             dayOptionRepository.saveAll(dayOptions);
         }
@@ -172,7 +174,7 @@ public class CompanySaleSettingServiceImpl implements CompanySaleSettingService 
                 productRepository.saveAll(selectedProducts);
 
                 selectedProducts.forEach(product -> {
-                    Category category = categoryRepository.findById(product.getCategory().getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found"));
+                    Category category = categoryRepository.findById(product.getCategory().getCategoryId()).orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_CATEGORY));
                     category.setIsVisible(DisplayStatus.Y);
                     categoryRepository.save(category);
                 });
