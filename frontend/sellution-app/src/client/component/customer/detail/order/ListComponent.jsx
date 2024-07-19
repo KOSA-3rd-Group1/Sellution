@@ -1,21 +1,80 @@
-import { Link, useNavigate } from 'react-router-dom';
 import FooterComponent from '@/client/layout/partials/FooterComponent';
+import TableOrder from '@/client/layout/common/TableOrder';
+import { EventBtn } from '@/client/layout/common/Button';
+import { useCustomerOrderList } from '@/client/business/customer/detail/order/useCustomerOrderList';
+import { useCustomerOnetimeOrderList } from '@/client/business/customer/detail/order/useCustomerOnetimeOrderList';
+import { SimpleOrderIcon } from '@/client/utility/assets/Icons';
 
 const ListComponent = () => {
-  const navigate = useNavigate();
-  const moveList = () => {
-    navigate({
-      pathname: '/customer',
-    });
-  };
+  const {
+    HEADERS: SUBSCRIPTION_HEADERS,
+    ROW_HEIGHT: SUBSCRIPTION_ROW_HEIGHT,
+    data: SUBSCRIPTION_data,
+    totalDataCount: SUBSCRIPTION_totalDataCount,
+    handleApproveAllSimpleOrderBtn: SUBSCRIPTION_handleApproveAllSimpleOrderBtn,
+    handleApproveSimpleOrderBtn: SUBSCRIPTION_handleApproveSimpleOrderBtn,
+    handleRowEvent: SUBSCRIPTION_handleRowEvent,
+    moveList,
+  } = useCustomerOrderList();
+
+  const {
+    HEADERS: ONETIME_HEADERS,
+    ROW_HEIGHT: ONETIME_ROW_HEIGHT,
+    data: ONETIME_data,
+    totalDataCount: ONETIME_totalDataCount,
+    handleApproveAllSimpleOrderBtn: ONETIME_handleApproveAllSimpleOrderBtn,
+    handleApproveSimpleOrderBtn: ONETIME_handleApproveSimpleOrderBtn,
+    handleRowEvent: ONETIME_handleRowEvent,
+  } = useCustomerOnetimeOrderList();
 
   return (
-    <div className='w-full h-full flex flex-col justify-between'>
-      <section className='flex-auto bg-green-200'>
-        <div className='text-lg'>주문 목록 화면</div>
-        <Link to='orderId12345' className='w-fit h-5 bg-blue-400'>
-          주문 상세 이동 테스트 버튼
-        </Link>
+    <div className='relative w-full h-full justify-between'>
+      <section className='absolute w-full h-[calc(100%-58px)] py-2 px-4 flex flex-col overflow-y-auto '>
+        <div className='w-full min-h-16 h-16 max-h-16 text-lg font-semibold flex items-center'>
+          <div>정기 배송 주문 정보</div>
+        </div>
+        <div className='h-3/5 overflow-hidden'>
+          <TableOrder
+            HEADERS={SUBSCRIPTION_HEADERS}
+            ROW_HEIGHT={SUBSCRIPTION_ROW_HEIGHT}
+            data={SUBSCRIPTION_data}
+            totalDataCount={SUBSCRIPTION_totalDataCount}
+            handleApproveSimpleOrderBtn={SUBSCRIPTION_handleApproveAllSimpleOrderBtn}
+            handleRowEvent={SUBSCRIPTION_handleRowEvent}
+            Btns={
+              <div className='flex justify-center items-center gap-4'>
+                <EventBtn
+                  Icon={SimpleOrderIcon}
+                  label={'간편 주문 승인'}
+                  onClick={SUBSCRIPTION_handleApproveSimpleOrderBtn}
+                />
+              </div>
+            }
+          />
+        </div>
+        <div className='h-6'></div>
+        <div className='w-full  min-h-16 h-16 max-h-16 text-lg font-semibold flex items-center'>
+          <div>단건 배송 주문 정보</div>
+        </div>
+        <div className='h-3/5 overflow-hidden'>
+          <TableOrder
+            HEADERS={ONETIME_HEADERS}
+            ROW_HEIGHT={ONETIME_ROW_HEIGHT}
+            data={ONETIME_data}
+            totalDataCount={ONETIME_totalDataCount}
+            handleApproveSimpleOrderBtn={ONETIME_handleApproveAllSimpleOrderBtn}
+            handleRowEvent={ONETIME_handleRowEvent}
+            Btns={
+              <div className='flex justify-center items-center gap-4'>
+                <EventBtn
+                  Icon={SimpleOrderIcon}
+                  label={'간편 주문 승인'}
+                  onClick={ONETIME_handleApproveSimpleOrderBtn}
+                />
+              </div>
+            }
+          />
+        </div>
       </section>
       <FooterComponent back={{ label: '목록으로', event: moveList }} />
     </div>
