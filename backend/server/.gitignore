@@ -7,6 +7,7 @@ src/main/resources/application*
 .gradle/8.8/fileHashes/fileHashes.lock
 .gradle/buildOutputCleanup/buildOutputCleanup.lock
 ./.gradle
+./.idea
 
 .gradle/
 *.lock

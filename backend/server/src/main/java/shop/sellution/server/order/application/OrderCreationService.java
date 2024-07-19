@@ -108,6 +108,7 @@ public class OrderCreationService {
                 .perPrice(totalPrice(saveOrderReq.getOrderedProducts()))
                 .deliveryStartDate(saveOrderReq.getDeliveryStartDate())
                 .deliveryEndDate(deliveryInfo.getDeliveryEndDate())
+                .nextDeliveryDate(deliveryInfo.getNextDeliveryDate())
                 .totalDeliveryCount(deliveryInfo.getTotalDeliveryCount())
                 .remainingDeliveryCount(deliveryInfo.getTotalDeliveryCount())
                 .build();

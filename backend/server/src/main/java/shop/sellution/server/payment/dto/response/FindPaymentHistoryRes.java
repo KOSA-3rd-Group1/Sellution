@@ -17,4 +17,5 @@ public class FindPaymentHistoryRes {
     private int totalCountForPayment; // 총 결제해야하는 횟수
     private LocalDateTime paymentDate;
     private PaymentStatus status;
+
 }

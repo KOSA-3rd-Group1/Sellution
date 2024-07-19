@@ -111,4 +111,16 @@ public class Customer extends BaseEntity {
     public void changeToNormalCustomer() {
         this.type = CustomerType.NORMAL;
     }
+
+    // 간편 비밀번호 갱신
+    public void changeEasyPwd(String newEasyPwd) {
+        this.easyPwd = newEasyPwd;
+    }
+
+    // 비밀번호 검증
+    public void verifyEasyPwd(String password) {
+        if (!this.easyPwd.equals(password)) {
+            throw new IllegalArgumentException("간편비밀번호가 일치하지 않습니다.");
+        }
+    }
 }

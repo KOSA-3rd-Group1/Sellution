@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import shop.sellution.server.order.domain.Order;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends
@@ -38,4 +39,12 @@ public interface OrderRepository extends
             and o.deliveryStatus in (shop.sellution.server.order.domain.type.DeliveryStatus.BEFORE_DELIVERY,shop.sellution.server.order.domain.type.DeliveryStatus.IN_PROGRESS)
             """)
     List<Order> findOrdersForRegularPayment();
+
+
+    @Query("""
+                select o from Order o
+                join fetch o.customer
+                where o.id = :orderId
+            """)
+    Optional<Order> findByOrderId(Long orderId);
 }

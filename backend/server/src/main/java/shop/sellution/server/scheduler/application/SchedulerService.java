@@ -41,11 +41,12 @@ public class SchedulerService {
         // 승인된 주문이고, 배송상태가 배송전,배송중 인 주문들만 가져온다.
         orderRepository.findOrdersForRegularPayment()
                 .forEach(order -> {
-                    log.info("스케줄러 - 정기 결제 시작");
+
                     // 다음 배송일 계산
                     LocalDateTime nextDeliveryDate = calculateNextDeliveryDate(order);
                     // 다음 배송일이 있고, 다음 배송일이 오늘 기준 하루전, 2일전인 주문에 대해 정기결제 로직 수행
                     if (nextDeliveryDate != null && now.isBefore(nextDeliveryDate)) {
+                        log.info("스케줄러 - 정기 결제 시작 - 주문 아이디 {}",order.getId());
                         paymentService.pay(
                                 PaymentReq.builder()
                                         .accountId(order.getAccount().getId())
@@ -53,10 +54,9 @@ public class SchedulerService {
                                         .customerId(order.getAccount().getId())
                                         .build()
                         );
+                        log.info("스케줄러 - 정기 결제 성공 - 주문 아이디 {}",order.getId());
                     }
-                    log.info("스케줄러 - 정기 결제 종료");
                     // ----------------------------------------
-                    log.info("스케줄러 - 정기 배송 시작");
 
                     // 오늘이 배송일인 주문에 대해 배송처리
                     if (nextDeliveryDate != null && now.isEqual(nextDeliveryDate)) {
@@ -64,6 +64,8 @@ public class SchedulerService {
                         PaymentHistory paymentHistory = paymentHistoryRepository.findFirstByOrderIdOrderByCreatedAtDesc(order.getId());
                         if(paymentHistory.getStatus() == PaymentStatus.COMPLETE)
                         {
+                            log.info("스케줄러 - 정기 배송 시작 - 주문 아이디 {}",order.getId());
+
                             // 남은 배송횟수 감소
                             order.decreaseRemainingDeliveryCount();
                             // 남은 배송횟수가 0이면 배송완료처리
@@ -72,9 +74,10 @@ public class SchedulerService {
                             }
                             // 주문의 상품재고 감소
                             order.decreaseProductStock();
+                            log.info("스케줄러 - 정기 배송 성공 - 주문 아이디 {}",order.getId());
+
                         }
                     }
-                    log.info("스케줄러 - 정기 배송 종료");
                 });
         log.info("스케줄러 종료");
     }

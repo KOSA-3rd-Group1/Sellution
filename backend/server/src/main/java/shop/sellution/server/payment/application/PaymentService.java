@@ -46,7 +46,7 @@ public class PaymentService {
 
         Account account = accountRepository.findById(paymentReq.getAccountId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACCOUNT));
-        Order order = orderRepository.findById(paymentReq.getOrderId())
+        Order order = orderRepository.findByOrderId(paymentReq.getOrderId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ORDER));
 
         pgTokenClient.getApiAccessToken(order.getPerPrice(), TokenType.PAYMENT)

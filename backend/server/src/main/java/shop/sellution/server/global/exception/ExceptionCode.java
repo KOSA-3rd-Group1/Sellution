@@ -43,7 +43,7 @@ public enum ExceptionCode {
     SAME_OLD_PASSWORD(4011, "기존에 사용한 이력이 있는 비밀번호입니다."),
 
 
-    // ---------------------------- Account, Order, Pay 5001 ~ 5500 ---------------------------------------
+    // ---------------------------- Account, Order, Pay , EasyPwd 5001 ~ 5500 ---------------------------------------
     NOT_FOUND_CUSTOMER(5001,"요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
     INVALID_ACCOUNT_INFO(5002,"유효하지않은 계좌정보입니다."),
     NOT_FOUND_ACCOUNT(5001,"요청한 ID에 해당하는 계좌를 찾을 수 없습니다."),
@@ -59,6 +59,7 @@ public enum ExceptionCode {
     ALREADY_APPROVED_ORDER(5011,"이미 승인된 주문입니다."),
     ALREADY_CANCEL_ORDER(5012,"이미 취소된 주문입니다."),
     ALREADY_DELIVERED(5013,"이미 배송이 됬습니다." ),
+    ALREADY_REGISTERED_EASY_PWD(5014,"이미 간편비밀번호가 등록 되어있습니다."),
 
 
     // ---------------------------- Client,Customer 8001 ~ 8999 ---------------------------------------
