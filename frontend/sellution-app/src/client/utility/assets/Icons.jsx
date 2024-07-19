@@ -478,6 +478,58 @@ export const ChevronDownIcon = (props) => (
   </svg>
 );
 
+//왼쪽 꺽쇠 아이콘
+export const ChevronLeftIcon = (props) => (
+  <svg
+    fill='currentColor'
+    className={props.className}
+    {...props}
+    viewBox='0 0 16 16'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+    <g id='SVGRepo_tracerCarrier' strokeLinecap='round' strokeLinejoin='round'></g>
+    <g id='SVGRepo_iconCarrier'>
+      <path d='m5.82 8 5.66-5.56-.87-.89L4.9 7.09a1.18 1.18 0 0 0-.39.91 1.13 1.13 0 0 0 .39.85l5.7 5.7.89-.88z'></path>
+    </g>
+  </svg>
+);
+
+//오른쪽 꺽쇠 아이콘
+export const ChevronRightIcon = (props) => (
+  <svg
+    fill='currentColor'
+    className={props.className}
+    {...props}
+    viewBox='0 0 16 16'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+    <g id='SVGRepo_tracerCarrier' strokeLinecap='round' strokeLinejoin='round'></g>
+    <g id='SVGRepo_iconCarrier'>
+      <path d='m10.18 8.05-5.66 5.56.87.89 5.71-5.59a1.18 1.18 0 0 0 .39-.86 1.13 1.13 0 0 0-.39-.85L5.4 1.5l-.89.88z'></path>
+    </g>
+  </svg>
+);
+
+//... 아이콘
+export const MoreHorizontalIcon = (props) => (
+  <svg
+    fill='currentColor'
+    className={props.className}
+    {...props}
+    viewBox='0 0 16 16'
+    xmlns='http://www.w3.org/2000/svg'
+    transform='rotate(90)'
+  >
+    <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+    <g id='SVGRepo_tracerCarrier' strokeLinecap='round' strokeLinejoin='round'></g>
+    <g id='SVGRepo_iconCarrier'>
+      <path d='M8 2.5a1.22 1.22 0 0 1 1.25 1.17A1.21 1.21 0 0 1 8 4.84a1.21 1.21 0 0 1-1.25-1.17A1.22 1.22 0 0 1 8 2.5zm0 8.66a1.17 1.17 0 1 1-1.25 1.17A1.21 1.21 0 0 1 8 11.16zm0-4.33a1.17 1.17 0 1 1 0 2.34 1.17 1.17 0 1 1 0-2.34z'></path>
+    </g>
+  </svg>
+);
+
 //수정 아이콘
 export const EditIcon = (props) => (
   <svg
