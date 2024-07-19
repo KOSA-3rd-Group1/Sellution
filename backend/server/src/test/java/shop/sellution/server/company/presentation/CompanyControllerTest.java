@@ -53,8 +53,9 @@ class CompanyControllerTest extends BaseControllerTest {
         FindCompanyUrlSettingRes response = FindCompanyUrlSettingRes.builder()
                 .companyId(1L)
                 .name("TestCompany")
-                .shopUrl("https://www.sellution.com/TestCompany")
+                .shopUrl("https://www.sellution.com/shopping/TestCompany")
                 .isShopVisible("Y")
+                .qrCodeBase64("dummyQrCodeBase64String")
                 .build();
 
         when(companyUrlSettingService.getCompanyUrlSetting(anyLong())).thenReturn(response);
@@ -72,7 +73,8 @@ class CompanyControllerTest extends BaseControllerTest {
                                 fieldWithPath("companyId").description("회사 ID"),
                                 fieldWithPath("name").description("회사 이름"),
                                 fieldWithPath("shopUrl").description("쇼핑몰 URL"),
-                                fieldWithPath("isShopVisible").description("쇼핑몰 공개 여부")
+                                fieldWithPath("isShopVisible").description("쇼핑몰 공개 여부"),
+                                fieldWithPath("qrCodeBase64").description("QR 코드 (Base64 인코딩)")
                         )
                 ));
     }
@@ -192,8 +194,8 @@ class CompanyControllerTest extends BaseControllerTest {
                 .minDeliveryCount(5)
                 .maxDeliveryCount(10)
                 .monthValues(List.of(1, 2, 3))
-                .weekValues(List.of("MON", "WED"))
-                .dayValues(List.of("1", "15"))
+                .weekValues(List.of(1,2,4))
+                .dayValues(List.of("MON", "TUE"))
                 .categoryIds(List.of(1L, 2L))
                 .productIds(List.of(3L, 4L))
                 .build();
@@ -236,7 +238,7 @@ class CompanyControllerTest extends BaseControllerTest {
                 .minDeliveryCount(5)
                 .maxDeliveryCount(10)
                 .monthOptions(List.of(1, 2, 3))
-                .weekOptions(List.of("MON", "WED"))
+                .weekOptions(List.of(1,2,3))
                 .dayOptions(List.of("1", "15"))
                 .categories(List.of(1L, 2L))
                 .products(List.of(3L, 4L))
