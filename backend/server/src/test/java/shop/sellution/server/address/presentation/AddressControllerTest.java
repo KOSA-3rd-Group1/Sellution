@@ -17,14 +17,14 @@ import shop.sellution.server.global.type.DisplayStatus;
 
 import java.util.List;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 @WebMvcTest(AddressController.class)
 class AddressControllerTest extends BaseControllerTest {
@@ -66,6 +66,7 @@ class AddressControllerTest extends BaseControllerTest {
         // when & then
         mockMvc.perform(get("/addresses/customer/{customerId}", customerId))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].addressName").value("집"))
                 .andExpect(jsonPath("$[1].addressName").value("회사"))
@@ -109,6 +110,7 @@ class AddressControllerTest extends BaseControllerTest {
         // when & then
         mockMvc.perform(get("/addresses/{addressId}", addressId))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.addressName").value("집"))
                 .andDo(document("Address/findAddressById",
                         preprocessRequest(prettyPrint()),
@@ -143,6 +145,8 @@ class AddressControllerTest extends BaseControllerTest {
                 .addressDetail("123-456")
                 .isDefaultAddress(DisplayStatus.N)
                 .build();
+
+        doNothing().when(addressService).createAddress(any(SaveAddressReq.class));
 
         // when & then
         mockMvc.perform(post("/addresses")
@@ -181,6 +185,8 @@ class AddressControllerTest extends BaseControllerTest {
                 .isDefaultAddress(DisplayStatus.Y)
                 .build();
 
+        doNothing().when(addressService).updateAddress(eq(addressId), any(SaveAddressReq.class));
+
         // when & then
         mockMvc.perform(put("/addresses/{addressId}", addressId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -210,6 +216,8 @@ class AddressControllerTest extends BaseControllerTest {
     void deleteAddress_Success() throws Exception {
         // given
         Long addressId = 1L;
+
+        doNothing().when(addressService).deleteAddress(addressId);
 
         // when & then
         mockMvc.perform(delete("/addresses/{addressId}", addressId))

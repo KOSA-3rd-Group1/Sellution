@@ -37,7 +37,7 @@ public class Client extends BaseEntity {
     @Column(name = "phone_number", unique = true, nullable = false, length = 50)
     private String phoneNumber;
 
-    @Column(name = "permissions")
+    @Column(name = "permissions",nullable = false,columnDefinition = "int default 0")
     private int permissions = 0;
 
     @Builder

@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
-    @Value("${iamport.base-url}")
+    @Value("${sellutionPg.base-url}")
     private String baseUrl;
 
     @Bean
