@@ -7,12 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.CompanyRepository;
+import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.company.domain.type.SellType;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.product.domain.*;
 import shop.sellution.server.product.dto.response.FindCustomerProductRes;
-import shop.sellution.server.product.dto.response.FindProductRes;
 
 import java.util.List;
 

@@ -9,6 +9,8 @@ import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.company.domain.type.ImagePurposeType;
 import shop.sellution.server.company.dto.FindCompanyDisplaySettingRes;
 import shop.sellution.server.company.dto.SaveCompanyDisplaySettingReq;
+import shop.sellution.server.global.exception.BadRequestException;
+import shop.sellution.server.global.exception.ExceptionCode;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +28,7 @@ public class CompanyDisplaySettingServiceImpl implements CompanyDisplaySettingSe
 
     @Override
     public FindCompanyDisplaySettingRes getCompanyDisplaySetting(Long companyId) {
-        Company company = companyRepository.findById(companyId).orElseThrow(() -> new RuntimeException("Company not found"));
+        Company company = companyRepository.findById(companyId).orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_COMPANY));
         List<CompanyImage> companyImages = companyImageRepository.findAllByCompany(company);
         return FindCompanyDisplaySettingRes.fromEntity(company, companyImages);
     }
@@ -34,7 +36,7 @@ public class CompanyDisplaySettingServiceImpl implements CompanyDisplaySettingSe
     @Override
     public void updateCompanyDisplaySetting(SaveCompanyDisplaySettingReq saveCompanyDisplaySettingReq) {
         Company company = companyRepository.findById(saveCompanyDisplaySettingReq.getCompanyId())
-                .orElseThrow(() -> new RuntimeException("Company not found"));
+                .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_COMPANY));
         companyRepository.save(saveCompanyDisplaySettingReq.toEntity(company));
 
         // Logo Image 처리

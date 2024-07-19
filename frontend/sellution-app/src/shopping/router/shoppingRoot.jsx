@@ -5,10 +5,12 @@ import onetimeDeliveryRouter from '@/shopping/router/onetimeDelivery/onetimeDeli
 import ordersheetRouter from '@/shopping/router/ordersheet/ordersheetRouter';
 import signUpRouter from '@/shopping/router/signUp/signUpRouter';
 import subscriptionDeliveryRouter from '@/shopping/router/subscriptionDelivery/subscriptionDeliveryRouter';
+import BasicLayout from '@/shopping/layout/BasicLayout';
 
 const shoppingRoot = () => [
   {
     path: ':clientName',
+    element: <BasicLayout />, //쇼핑몰 기본 레이아웃
     children: [
       {
         path: 'home',
