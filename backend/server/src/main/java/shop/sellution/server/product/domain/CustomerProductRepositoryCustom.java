@@ -1,6 +1,7 @@
 package shop.sellution.server.product.domain;
 
 import org.springframework.data.domain.Pageable;
+import shop.sellution.server.company.domain.type.SellType;
 import shop.sellution.server.global.type.DeliveryType;
 
 import java.util.List;
@@ -13,4 +14,5 @@ public interface CustomerProductRepositoryCustom {
     List<Product> findByAllOrEach(Long companyId, DeliveryType deliveryType, Long categoryId, Pageable pageable);
 
     long countByAllOrEach(Long companyId, DeliveryType deliveryType, Long categoryId);
+
 }

@@ -17,6 +17,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     boolean existsByName(String name);
 
     //name으로 companyId 조회
+    @Query("select c from Company c where c.name =:name")
     Optional<Company> findByName(String name);
 
     //companyId로 sellType 조회

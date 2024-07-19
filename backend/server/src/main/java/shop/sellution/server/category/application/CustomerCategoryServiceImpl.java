@@ -7,9 +7,13 @@ import shop.sellution.server.category.domain.Category;
 import shop.sellution.server.category.domain.CustomerCategoryRepositoryCustom;
 import shop.sellution.server.category.dto.response.FindCustomerCategoryRes;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
+import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.type.DisplayStatus;
 
 import java.util.List;
+
+import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_COMPANY_ID;
+import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_COMPANY_NAME;
 
 @Service
 @Transactional
@@ -20,10 +24,13 @@ public class CustomerCategoryServiceImpl implements CustomerCategoryService{
 
     @Transactional(readOnly = true)
     @Override
-    public List<FindCustomerCategoryRes> findAllCategories(String name) {
-        Long companyId = companyRepository.findByName(name).orElseThrow().getCompanyId();
-        List<Category> categories = customerCategoryRepositoryCustom.findAllCategories(companyId, DisplayStatus.Y);
-        return categories.stream()
+    public List<FindCustomerCategoryRes> findAllCategories(Long companyId) {
+        //companyId가 유효하지 않을 때 예외처리
+        if(!companyRepository.existsById(companyId)){
+            throw new BadRequestException(NOT_FOUND_COMPANY_ID);
+        }
+        return customerCategoryRepositoryCustom.findAllCategories(companyId, DisplayStatus.Y)
+                .stream()
                 .map(FindCustomerCategoryRes::fromEntity)
                 .toList();
     }

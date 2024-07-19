@@ -33,7 +33,7 @@ VALUES
 INSERT INTO category (name, is_visible)
 VALUES
     ('신선 식품', 'Y'),
-    ('가공 식품', 'Y'),
+    ('가공 식품', 'N'),
     ('유기농 식품', 'Y');
 
 -- Product 데이터 수정 (category_id 추가)

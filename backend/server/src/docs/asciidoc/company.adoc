@@ -94,3 +94,17 @@ include::{snippets}/Company/updateCompanySaleSetting/http-request.adoc[]
 ==== HTTP Response
 
 include::{snippets}/Company/updateCompanySaleSetting/http-response.adoc[]
+
+=== 회사 이름으로 회사 ID 조회
+/company/{name}
+
+사업체 영어이름으로 사업체 ID를 찾는다
+
+==== HTTP Request
+
+include::{snippets}/Company/findCompanyIdByName/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Company/findCompanyIdByName/http-response.adoc[]
+

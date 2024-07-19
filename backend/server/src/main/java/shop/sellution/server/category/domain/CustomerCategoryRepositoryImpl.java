@@ -26,4 +26,16 @@ public class CustomerCategoryRepositoryImpl implements CustomerCategoryRepositor
                 .fetch();
 
     }
+
+    @Override
+    public boolean isValidCategoryId(Long companyId) {
+        return queryFactory.selectFrom(category)
+                .join(product).on(product.category.eq(category))
+                .where(
+                        product.company.companyId.eq(companyId),
+                        category.isVisible.eq(DisplayStatus.Y)
+                )
+                .fetchFirst() != null;
+    }
+
 }

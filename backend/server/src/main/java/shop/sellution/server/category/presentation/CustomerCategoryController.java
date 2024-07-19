@@ -14,12 +14,12 @@ import shop.sellution.server.product.application.CustomerProductService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/categories/company/{name}")
+@RequestMapping("/categories/company/{companyId}")
 @RequiredArgsConstructor
 public class CustomerCategoryController {
     private final CustomerCategoryService customerCategoryService;
     @GetMapping
-    public ResponseEntity<List<FindCustomerCategoryRes>> findALlCategories(@PathVariable String name){
-        return ResponseEntity.ok(customerCategoryService.findAllCategories(name));
+    public ResponseEntity<List<FindCustomerCategoryRes>> findAllCategories(@PathVariable Long companyId){
+        return ResponseEntity.ok(customerCategoryService.findAllCategories(companyId));
     }
 }

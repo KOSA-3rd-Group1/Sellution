@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import shop.sellution.server.company.domain.type.SellType;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
 
@@ -41,7 +42,7 @@ public class CustomerProductRepositoryImpl implements CustomerProductRepositoryC
                 .where(
                         product.company.companyId.eq(companyId),
                         category.isVisible.eq(DisplayStatus.Y),
-//                        product.isVisible.eq(DisplayStatus.Y),
+//                        product.isVisible.eq(DisplayStatus.Y), //sellType이 category면 product의 isVisible은 무조건 Y
                         categoryId != null ? product.category.categoryId.eq(categoryId) : null,
                         deliveryType != null ? product.deliveryType.eq(deliveryType).or(product.deliveryType.eq(DeliveryType.BOTH)) : null
                 )
@@ -73,4 +74,5 @@ public class CustomerProductRepositoryImpl implements CustomerProductRepositoryC
                 )
                 .fetchCount(); //쿼리 실행 후 결과의 개수 반환
     }
+
 }

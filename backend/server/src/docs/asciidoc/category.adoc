@@ -1,0 +1,18 @@
+== Category(카테고리)
+
+=== 회사 이름으로 회사 ID 조회
+/categories/company/{companyId}
+
+사업체 Id로 isVisble이 Y인 카테고리를 조회한다
+
+==== HTTP Request
+
+include::{snippets}/Category/findAllCategories/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Category/findAllCategories/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Category/findAllCategories/response-fields.adoc[]
