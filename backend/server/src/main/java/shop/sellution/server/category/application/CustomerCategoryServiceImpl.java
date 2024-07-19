@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.category.domain.Category;
 import shop.sellution.server.category.domain.CustomerCategoryRepositoryCustom;
 import shop.sellution.server.category.dto.response.FindCustomerCategoryRes;
-import shop.sellution.server.company.domain.CompanyRepository;
+import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.global.type.DisplayStatus;
 
 import java.util.List;
