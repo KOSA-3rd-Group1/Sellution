@@ -23,7 +23,6 @@ import shop.sellution.server.company.dto.FindCompanySaleSettingRes;
 import shop.sellution.server.company.dto.SaveCompanySaleSettingReq;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
-import shop.sellution.server.global.type.WeekType;
 import shop.sellution.server.product.domain.Product;
 import shop.sellution.server.product.domain.ProductRepository;
 
@@ -39,19 +38,14 @@ class CompanySaleSettingServiceImplTest {
 
     @Mock
     private CompanyRepository companyRepository;
-
     @Mock
     private CategoryRepository categoryRepository;
-
     @Mock
     private ProductRepository productRepository;
-
     @Mock
     private DayOptionRepository dayOptionRepository;
-
     @Mock
     private WeekOptionRepository weekOptionRepository;
-
     @Mock
     private MonthOptionRepository monthOptionRepository;
 
@@ -71,9 +65,9 @@ class CompanySaleSettingServiceImplTest {
     @Test
     void testGetCompanySaleSetting() {
         // given
-        List<MonthOption> monthOptions = List.of(new MonthOption(1L, 1, company));
-        List<WeekOption> weekOptions = List.of(new WeekOption(1L, WeekType.MON, company));
-        List<DayOption> dayOptions = List.of(new DayOption(1L, DayValueType.ONE, company));
+        List<MonthOption> monthOptions = List.of(new MonthOption(null, company, 1));
+        List<WeekOption> weekOptions = List.of(new WeekOption(null, company, 1));
+        List<DayOption> dayOptions = List.of(new DayOption(null, company, DayValueType.MON));
 
         when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));
         when(monthOptionRepository.findByCompany(any(Company.class))).thenReturn(monthOptions);
@@ -86,8 +80,8 @@ class CompanySaleSettingServiceImplTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getMonthValues()).containsExactly(1);
-        assertThat(result.getWeekValues()).containsExactly(WeekType.MON.name());
-        assertThat(result.getDayValues()).containsExactly(DayValueType.ONE.name());
+        assertThat(result.getWeekValues()).containsExactly(1);
+        assertThat(result.getDayValues()).containsExactly("MON");
         verify(companyRepository, times(1)).findById(1L);
     }
 
@@ -103,8 +97,8 @@ class CompanySaleSettingServiceImplTest {
                 .minDeliveryCount(5)
                 .maxDeliveryCount(10)
                 .monthOptions(List.of(1, 2, 3))
-                .weekOptions(List.of("MON", "THU"))
-                .dayOptions(List.of("ONE", "TWO"))
+                .weekOptions(List.of(1, 2, 3))
+                .dayOptions(List.of("MON", "THU"))
                 .build();
 
         when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));
@@ -132,8 +126,8 @@ class CompanySaleSettingServiceImplTest {
                 .minDeliveryCount(5)
                 .maxDeliveryCount(10)
                 .monthOptions(List.of(1, 2, 3))
-                .weekOptions(List.of("MON", "TUE"))
-                .dayOptions(List.of("ONE", "TWO"))
+                .weekOptions(List.of(1, 2, 3))
+                .dayOptions(List.of("MON", "THU"))
                 .build();
 
         when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));

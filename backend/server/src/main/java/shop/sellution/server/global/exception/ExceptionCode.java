@@ -63,6 +63,11 @@ public enum ExceptionCode {
     FAILED_TO_RESET_DEFAULT_ADDRESS(6502, "기본 주소 재설정에 실패했습니다."),
     INVALID_ADDRESS_DATA(6503, "유효하지 않은 주소 데이터입니다."),
 
+    NOT_FOUND_COMPANY(6601, "요청한 ID에 해당하는 회사를 찾을 수 없습니다."),
+    FAIL_TO_GENERATE_QR_CODE(6602, "QR 코드 생성에 실패했습니다."),
+
+    NOT_FOUND_CATEGORY(6701, "요청한 ID에 해당하는 카테고리를 찾을 수 없습니다."),
+
     // ---------------------------- Client,Customer 8001 ~ 8999 ---------------------------------------
 
     INVALID_USER_NAME(8001, "존재하지 않는 사용자입니다."),

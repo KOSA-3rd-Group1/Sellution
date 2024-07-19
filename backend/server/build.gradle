@@ -90,7 +90,12 @@ dependencies {
 	testImplementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	testImplementation 'com.querydsl:querydsl-apt:5.0.0:jakarta'
 
+	//QR
+	implementation 'com.google.zxing:core:3.4.1'
+	implementation 'com.google.zxing:javase:3.4.1'
 
+	//S3
+	//implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
 }
 
