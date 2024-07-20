@@ -64,7 +64,6 @@ public class OrderCreationService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER));
         Address address = addressRepository.findById(saveOrderReq.getAddressId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ADDRESS));
-
         Account account = accountRepository.findById(saveOrderReq.getAccountId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACCOUNT));
 

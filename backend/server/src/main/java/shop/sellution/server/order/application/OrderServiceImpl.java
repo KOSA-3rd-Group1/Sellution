@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.CompanyRepository;
+import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.order.domain.*;
 import shop.sellution.server.order.domain.repository.OrderRepository;
@@ -97,9 +97,16 @@ public class OrderServiceImpl implements OrderService {
     public void cancelOrder(Long orderId, CancelOrderReq cancelOrderReq) {
         log.info("주문 취소 시작");
 
+        // 해당 주문아이디가 유효한지 확인
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_COMPANY_ID));
 
+        // 주문할때 사용했던 계좌인지 확인
+        if(order.getAccount().getId() != cancelOrderReq.getAccountId()) {
+            throw new BadRequestException(NOT_MATCH_ACCOUNT_ID);
+        }
+
+        // 이미 취소된 주문인지 확인
         if (order.getStatus() == OrderStatus.CANCEL) {
             throw new BadRequestException(ALREADY_CANCEL_ORDER);
         }
@@ -107,6 +114,7 @@ public class OrderServiceImpl implements OrderService {
         order.cancelOrder();
 
         /*
+        결제를 진행해서 결제내역이 남아있고, 그 결제내역의 내용을 살펴봤을때
         남은 결제횟수가 남은 배송 횟수보다 1작다면 곧 있을 배송을 위해 결제가 된 주문인것이다.
         그런 주문에는 주문 취소 이후 결제 취소가 이어진다.
          */

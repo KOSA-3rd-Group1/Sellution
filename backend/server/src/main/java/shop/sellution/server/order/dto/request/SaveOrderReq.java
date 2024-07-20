@@ -12,13 +12,13 @@ import java.util.List;
 @Getter
 public class SaveOrderReq {
 
-    @NotNull
+    @NotNull(message = "회사 아이디는 필수입니다.")
     private Long companyId;
 
-    @NotNull
+    @NotNull(message = "주소 아이디는 필수입니다.")
     private Long addressId;
 
-    @NotNull
+    @NotNull(message = "주문자 아이디는 필수입니다.")
     private Long accountId;
 
     @Nullable
@@ -26,7 +26,7 @@ public class SaveOrderReq {
     @Nullable
     private Long weekOptionId;
 
-    @NotNull
+    @NotNull(message = "주문 타입은 필수입니다.")
     private OrderType orderType;
 
     @Nullable

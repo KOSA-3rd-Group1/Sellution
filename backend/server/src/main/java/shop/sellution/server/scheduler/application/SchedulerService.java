@@ -32,7 +32,7 @@ public class SchedulerService {
 
 
     // 정기 결제 및 정기 배송 - 임시로 1분 마다 진행
-    @Scheduled(cron = "0 0/1 * * * *")
+//    @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void regularProcess() {
         log.info("스케줄러 시작");
