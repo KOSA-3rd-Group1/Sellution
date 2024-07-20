@@ -7,28 +7,87 @@ const ListComponent = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const [totalElements, setTotalElements] = useState(0);
-  const itemsPerPage = 5;
+  const itemsPerPage = 5; // 카테고리는 페이지당 5개
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+
+  const handleRowClick = (id) => {
+    navigate(`/product/category/${id}`);
+  };
 
   useEffect(() => {
-    fetchCategories();
-  }, [currentPage]);
-
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`, {
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/categories`, {
         params: {
           page: currentPage - 1,
           size: itemsPerPage,
         },
+      })
+      .then((response) => {
+        console.log('API Response:', response.data);
+        setCategories(response.data.content);
+        setTotalPages(response.data.totalPages);
+        setTotalElements(response.data.totalElements);
+      })
+      .catch((error) => {
+        console.error('There was an error fetching the categories!', error);
       });
-      setCategories(response.data.content);
-      setTotalElements(response.data.totalElements);
-    } catch (error) {
-      console.error('카테고리를 불러오는데 실패했습니다.', error);
+  }, [currentPage]);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentPage]);
+
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
     }
+  };
+
+  const renderPageNumbers = () => {
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+
+    if (endPage - startPage < 4) {
+      startPage = Math.max(1, endPage - 4);
+    }
+
+    return (
+      <div className='flex justify-end'>
+        <button
+          onClick={() => paginate(currentPage - 1)}
+          className='mx-1 px-3 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
+          disabled={currentPage === 1}
+        >
+          <FaChevronLeft />
+        </button>
+        {Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((number) => (
+          <button
+            key={number}
+            onClick={() => paginate(number)}
+            className={`mx-1 px-3 py-1 rounded border ${
+              currentPage === number
+                ? 'bg-brandOrange text-white'
+                : 'border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
+            }`}
+          >
+            {number}
+          </button>
+        ))}
+        <button
+          onClick={() => paginate(currentPage + 1)}
+          className='mx-1 px-3 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
+          disabled={currentPage === totalPages}
+        >
+          <FaChevronRight />
+        </button>
+      </div>
+    );
   };
 
   const handleSelectAll = () => {
@@ -41,57 +100,11 @@ const ListComponent = () => {
   };
 
   const handleSelectItem = (id) => {
-    setSelectedItems((prevSelected) =>
-      prevSelected.includes(id)
-        ? prevSelected.filter((item) => item !== id)
-        : [...prevSelected, id],
-    );
-  };
-
-  const handleRowClick = (id) => {
-    navigate(`/categories/${id}`);
-  };
-
-  const renderPageNumbers = () => {
-    const totalPages = Math.ceil(totalElements / itemsPerPage);
-    let startPage = Math.max(1, currentPage - 2);
-    let endPage = Math.min(totalPages, startPage + 4);
-
-    if (endPage - startPage < 4) {
-      startPage = Math.max(1, endPage - 4);
+    if (selectedItems.includes(id)) {
+      setSelectedItems(selectedItems.filter((item) => item !== id));
+    } else {
+      setSelectedItems([...selectedItems, id]);
     }
-
-    return (
-      <div className='flex justify-end items-center'>
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-          className='mx-1 px-3 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
-          disabled={currentPage === 1}
-        >
-          <FaChevronLeft />
-        </button>
-        {Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((number) => (
-          <button
-            key={number}
-            onClick={() => setCurrentPage(number)}
-            className={`mx-1 px-3 py-1 rounded border ${
-              currentPage === number
-                ? 'bg-brandOrange text-white'
-                : 'border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
-            }`}
-          >
-            {number}
-          </button>
-        ))}
-        <button
-          onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-          className='mx-1 px-3 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
-          disabled={currentPage === totalPages}
-        >
-          <FaChevronRight />
-        </button>
-      </div>
-    );
   };
 
   return (
@@ -154,9 +167,7 @@ const ListComponent = () => {
                       onClick={(e) => e.stopPropagation()}
                     />
                   </td>
-                  <td className='p-2 text-center'>
-                    {(currentPage - 1) * itemsPerPage + index + 1}
-                  </td>
+                  <td className='p-2 text-center'>{indexOfFirstItem + index + 1}</td>
                   <td className='p-2 text-center'>{category.name}</td>
                   <td className='p-2 text-center'>{category.productCount}</td>
                   <td className='p-2 text-center text-brandOrange'>
@@ -166,8 +177,8 @@ const ListComponent = () => {
               ))}
             </tbody>
           </table>
+          <hr />
         </div>
-        <hr />
         <div className='mt-4'>{renderPageNumbers()}</div>
       </section>
     </div>

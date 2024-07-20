@@ -1,12 +1,16 @@
 package shop.sellution.server.company.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 @Entity
 @Getter
 @Table(name = "month_option")
+@NoArgsConstructor
+@AllArgsConstructor
 public class MonthOption {
 
     @Id

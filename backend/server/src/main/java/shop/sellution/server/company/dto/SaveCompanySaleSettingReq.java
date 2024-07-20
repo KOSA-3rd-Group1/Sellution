@@ -19,16 +19,16 @@ import java.util.List;
 public class SaveCompanySaleSettingReq {
     private Long companyId;
 
-    @NotBlank
+    @NotBlank(message = "배송 유형 선택은 필수입니다.")
     private DeliveryType serviceType; //단건, 정기, 둘다
 
-    @NotBlank
+    @NotBlank(message = "게시할 상품 선택은 필수입니다.")
     private SellType sellType; //전체 상품, 카테고리, 개별 상품
 
     private List<Long> categories; // sellType 카테고리일때 받아와야함
     private List<Long> products;
 
-    private SubscriptionType subscriptionType; //월단위, 횟수단위, null 가능
+    private SubscriptionType subscriptionType; //월단위, 횟수단위, null(단건) 가능
 
     @Min(5)
     @Max(30)
@@ -39,7 +39,7 @@ public class SaveCompanySaleSettingReq {
     private int maxDeliveryCount;
 
     private List<String> dayOptions;
-    private List<String> weekOptions;
+    private List<Integer> weekOptions;
     private List<Integer> monthOptions; //subscriptionType이 MONTH일 경우에만 받아옴
 
     public Company toEntity(Company company) {
@@ -50,4 +50,6 @@ public class SaveCompanySaleSettingReq {
         company.setMaxDeliveryCount(this.maxDeliveryCount);
         return company;
     }
+
+
 }

@@ -1,6 +1,10 @@
 src/test/resources/application*
 .gradle/8.8/fileHashes/fileHashes.lock
 
+.gradle/8.8/checksums/checksums.lock
+.gradle/8.8/fileHashes/fileHashes.lock
+.idea/dbnavigator.xml
+
 /logs
 src/main/resources/application*
 .idea/**

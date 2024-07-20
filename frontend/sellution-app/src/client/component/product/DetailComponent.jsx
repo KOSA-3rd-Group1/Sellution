@@ -7,6 +7,8 @@ import FooterComponent from '@/client/layout/partials/FooterComponent';
 const DetailComponent = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
 
   // 상품 설명 이미지(detailImages)
   const [productDetailImages, setProductDetailImages] = useState([]);
@@ -85,15 +87,33 @@ const DetailComponent = () => {
       .catch((error) => {
         console.error('There was an error fetching the product details!', error);
       });
+
+    //카테고리 목록 가져오기
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/categories`)
+      .then((response) => {
+        if (response.data && Array.isArray(response.data.content)) {
+          setCategories(response.data.content);
+        } else {
+          console.error('Unexpected response format for categories');
+          setCategories([]);
+        }
+      })
+      .catch((error) => {
+        console.error('There was an error fetching the categories!', error);
+        setCategories([]);
+      });
   }, [productId]);
 
   const updateProduct = () => {
-    const updatedProductData = {
+    const formData = new FormData();
+
+    // JSON 데이터 추가
+    const jsonData = {
       companyId: 1,
       name: productInfo.name,
       categoryName: productInfo.categoryName,
       productInformation: productInfo.productInformation,
-      detailImages: productDetailImages,
       cost: productInfo.cost,
       isDiscount: productInfo.isDiscount,
       discountStartDate: productInfo.discountStartDate
@@ -103,19 +123,33 @@ const DetailComponent = () => {
         ? `${productInfo.discountEndDate}T23:59:59`
         : null,
       discountRate: productInfo.discountRate,
-      thumbnailImage: selectedThumbnailImage,
-      listImages: productImages.filter((img) => img !== null),
       deliveryType: productInfo.deliveryType,
       stock: productInfo.stock,
       isVisible: productInfo.isVisible,
     };
 
+    formData.append('product', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
+
+    // 이미지 파일 추가
+    if (selectedThumbnailImage && isValidDataURI(selectedThumbnailImage)) {
+      formData.append('thumbnailImage', dataURItoBlob(selectedThumbnailImage), 'thumbnail.jpg');
+    }
+
+    productImages.forEach((image, index) => {
+      if (image && isValidDataURI(image)) {
+        formData.append('listImages', dataURItoBlob(image), `list_${index}.jpg`);
+      }
+    });
+
+    productDetailImages.forEach((image, index) => {
+      if (isValidDataURI(image)) {
+        formData.append('detailImages', dataURItoBlob(image), `detail_${index}.jpg`);
+      }
+    });
+
     fetch(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}`, {
-      method: 'PUT', // PUT 메서드를 사용하여 데이터를 업데이트합니다.
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedProductData),
+      method: 'PUT',
+      body: formData,
     })
       .then((response) => {
         if (response.ok) {
@@ -129,6 +163,28 @@ const DetailComponent = () => {
         console.error('Error:', error);
       });
   };
+
+  function isValidDataURI(dataURI) {
+    const regex =
+      /^\s*data:([a-zA-Z0-9]+\/[a-zA-Z0-9\-\+\.]+)?(;[a-zA-Z\-]+\=[a-zA-Z0-9\-]+)*(;base64)?,([a-zA-Z0-9\/\+\=]+)?\s*$/;
+    return regex.test(dataURI);
+  }
+
+  function dataURItoBlob(dataURI) {
+    if (!isValidDataURI(dataURI)) {
+      console.error('Invalid Data URI:', dataURI);
+      return new Blob(); // Return an empty Blob if the data URI is invalid
+    }
+
+    const byteString = atob(dataURI.split(',')[1]);
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -162,6 +218,16 @@ const DetailComponent = () => {
       ...prev,
       [name]: parsedValue,
     }));
+  };
+
+  // 카테고리 드롭다운 클릭 이벤트 핸들러 추가
+  const handleCategorySelect = (categoryName, categoryId) => {
+    setProductInfo((prev) => ({
+      ...prev,
+      categoryName,
+      categoryId,
+    }));
+    setIsCategoryDropdownOpen(false);
   };
 
   const handleDetailImageChange = (e) => {
@@ -270,18 +336,31 @@ const DetailComponent = () => {
               <hr className='border-gray-200' />
               <div className='flex items-center'>
                 <label className='w-1/4 text-sm font-medium'>카테고리</label>
-                <div className='flex-1 flex space-x-2 ml-32'>
-                  <input
-                    type='text'
-                    name='categoryName'
-                    value={productInfo.categoryName}
-                    onChange={handleInputChange}
-                    className='flex-grow border p-2 rounded-md'
-                    placeholder='카테고리를 입력해주세요'
-                  />
-                  <button className='border border-orange-500 text-orange-500 px-4 py-2 rounded-md'>
-                    선택
-                  </button>
+                <div className='flex-1 ml-32 relative'>
+                  <div
+                    className='w-full border p-2 rounded-md flex justify-between items-center cursor-pointer'
+                    onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                  >
+                    <span>{productInfo.categoryName || '카테고리 선택'}</span>
+                    <EditIcon className='h-5 w-5 text-gray-400' />
+                  </div>
+                  {isCategoryDropdownOpen && (
+                    <div className='absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto'>
+                      {categories.length > 0 ? (
+                        categories.map((category) => (
+                          <div
+                            key={category.categoryId}
+                            className='p-2 hover:bg-gray-100 cursor-pointer'
+                            onClick={() => handleCategorySelect(category.name)}
+                          >
+                            {category.name}
+                          </div>
+                        ))
+                      ) : (
+                        <div className='p-2 text-gray-500'>카테고리가 없습니다.</div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
               <hr className='border-gray-200' />

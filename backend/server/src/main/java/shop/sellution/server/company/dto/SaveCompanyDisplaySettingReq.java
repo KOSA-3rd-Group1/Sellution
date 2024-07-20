@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 public class SaveCompanyDisplaySettingReq {
     private Long companyId;
 
-    @NotBlank
+    @NotBlank(message = "회사명은 필수 입니다.")
     private String displayName;
     private String logoImageUrl; //null이면 displayName 넣어줌
 
-    @NotBlank
+    @NotBlank(message = "프로모션이미지는 필수 입니다.")
     private List<String> promotionImageUrls;
 
     private String themeColor; //deflaut값 있음
@@ -40,8 +40,8 @@ public class SaveCompanyDisplaySettingReq {
         return company;
     }
 
-    public CompanyImage toLogoImageEntity(Company company) {
-        return CompanyImage.builder()
+        public CompanyImage toLogoImageEntity(Company company) {
+            return CompanyImage.builder()
                 .company(company)
                 .imageUrl(this.logoImageUrl)
                 .purposeOfUse(ImagePurposeType.LOGO)
@@ -57,4 +57,5 @@ public class SaveCompanyDisplaySettingReq {
                         .build())
                 .collect(Collectors.toList());
     }
+
 }
