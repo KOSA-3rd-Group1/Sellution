@@ -19,7 +19,6 @@ import shop.sellution.server.company.domain.type.SubscriptionType;
 import shop.sellution.server.company.dto.FindCompanySaleSettingRes;
 import shop.sellution.server.company.dto.SaveCompanySaleSettingReq;
 import shop.sellution.server.global.type.DisplayStatus;
-import shop.sellution.server.global.type.WeekType;
 import shop.sellution.server.product.domain.Product;
 import shop.sellution.server.product.domain.ProductRepository;
 
@@ -54,7 +53,7 @@ public class CompanySaleSettingServiceImpl implements CompanySaleSettingService 
         List<DayOption> dayOptions = dayOptionRepository.findByCompany(company);
 
         List<Integer> monthValues = monthOptions.stream().map(MonthOption::getMonthValue).collect(Collectors.toList());
-        List<String> weekValues = weekOptions.stream().map(weekOption -> weekOption.getWeekValue().name()).collect(Collectors.toList());
+        List<String> weekValues = weekOptions.stream().map(weekOption -> weekOption.getWeekValue().toString()).collect(Collectors.toList());
         List<String> dayValues = dayOptions.stream().map(dayOption -> dayOption.getDayValue().name()).collect(Collectors.toList());
 
         return FindCompanySaleSettingRes.fromEntity(company, monthValues, weekValues, dayValues);

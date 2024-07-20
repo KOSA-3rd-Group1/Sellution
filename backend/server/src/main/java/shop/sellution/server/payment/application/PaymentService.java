@@ -9,7 +9,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.account.domain.AccountRepository;
-import shop.sellution.server.company.domain.CompanyRepository;
 import shop.sellution.server.customer.domain.type.CustomerType;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExternalApiException;
