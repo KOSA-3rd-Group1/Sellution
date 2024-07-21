@@ -6,28 +6,28 @@ export const AddCustomerIcon = (props) => (
     xmlns='http://www.w3.org/2000/svg'
     className={props.className}
   >
-    <g id='SVGRepo_bgCarrier' stroke-width='0'></g>
-    <g id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'></g>
+    <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+    <g id='SVGRepo_tracerCarrier' strokeLinecap='round' strokeLinejoin='round'></g>
     <g id='SVGRepo_iconCarrier'>
-      <circle cx='9' cy='9' r='2' stroke='#1C274C' stroke-width='1.5'></circle>
+      <circle cx='9' cy='9' r='2' stroke='#1C274C' strokeWidth='1.5'></circle>
       <path
         d='M13 15C13 16.1046 13 17 9 17C5 17 5 16.1046 5 15C5 13.8954 6.79086 13 9 13C11.2091 13 13 13.8954 13 15Z'
         stroke='#1C274C'
-        stroke-width='1.5'
+        strokeWidth='1.5'
       ></path>
       <path
         opacity='0.5'
         d='M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z'
         stroke='#1C274C'
-        stroke-width='1.5'
+        strokeWidth='1.5'
       ></path>
-      <path d='M19 12H15' stroke='#1C274C' stroke-width='1.5' stroke-linecap='round'></path>
-      <path d='M19 9H14' stroke='#1C274C' stroke-width='1.5' stroke-linecap='round'></path>
+      <path d='M19 12H15' stroke='#1C274C' strokeWidth='1.5' strokeLinecap='round'></path>
+      <path d='M19 9H14' stroke='#1C274C' strokeWidth='1.5' strokeLinecap='round'></path>
       <path
         d='M19 15H16'
         stroke='#1C274C'
-        stroke-width='1.5'
-        stroke-linecap='round'
+        strokeWidth='1.5'
+        strokeLinecap='round'
         opacity='0.9'
       ></path>
     </g>
@@ -43,8 +43,8 @@ export const DeliveryAddressIcon = (props) => (
     fill='#000000'
     className={props.className}
   >
-    <g id='SVGRepo_bgCarrier' stroke-width='0'></g>
-    <g id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'></g>
+    <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+    <g id='SVGRepo_tracerCarrier' strokeLinecap='round' strokeLinejoin='round'></g>
     <g id='SVGRepo_iconCarrier'>
       <path
         d='M309.2 584.776h105.5l-49 153.2H225.8c-7.3 0-13.3-6-13.3-13.3 0-2.6 0.8-5.1 2.2-7.3l83.4-126.7c2.5-3.6 6.7-5.9 11.1-5.9z'
@@ -97,13 +97,13 @@ export const PaymentIcon = (props) => (
     fill='#000000'
     className={props.className}
   >
-    <g id='SVGRepo_bgCarrier' stroke-width='0'></g>
-    <g id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'></g>
+    <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+    <g id='SVGRepo_tracerCarrier' strokeLinecap='round' strokeLinejoin='round'></g>
     <g id='SVGRepo_iconCarrier'>
       <title>ic_fluent_payment_24_regular</title>
       <desc>Created with Sketch.</desc>
-      <g id='🔍-Product-Icons' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'>
-        <g id='ic_fluent_payment_24_regular' fill='#212121' fill-rule='nonzero'>
+      <g id='🔍-Product-Icons' stroke='none' strokeWidth='1' fill='none' fillRule='evenodd'>
+        <g id='ic_fluent_payment_24_regular' fill='#212121' fillRule='nonzero'>
           <path
             d='M19.2388849,5.0207074 C20.7014167,5.0207074 21.8972891,6.162412 21.9838661,7.60318507 L21.9888849,7.7707074 L21.9888849,16.275793 C21.9888849,17.7383249 20.8471803,18.9341973 19.4064072,19.0207742 L19.2388849,19.025793 L4.76104885,19.025793 C3.29851702,19.025793 2.10264457,17.8840884 2.01606765,16.4433154 L2.01104885,16.275793 L2.01104885,7.7707074 C2.01104885,6.30817556 3.15275345,5.11230312 4.59352652,5.02572619 L4.76104885,5.0207074 L19.2388849,5.0207074 Z M20.4880489,10.9947074 L3.51004885,10.9947074 L3.51104885,16.275793 C3.51104885,16.9230017 4.00292352,17.4553269 4.63324361,17.5193394 L4.76104885,17.525793 L19.2388849,17.525793 C19.8860935,17.525793 20.4184188,17.0339184 20.4824312,16.4035983 L20.4888849,16.275793 L20.4880489,10.9947074 Z M18.2529045,14.5 C18.6671181,14.5 19.0029045,14.8357864 19.0029045,15.25 C19.0029045,15.6296958 18.7207506,15.943491 18.3546751,15.9931534 L18.2529045,16 L15.7529045,16 C15.3386909,16 15.0029045,15.6642136 15.0029045,15.25 C15.0029045,14.8703042 15.2850584,14.556509 15.6511339,14.5068466 L15.7529045,14.5 L18.2529045,14.5 Z M19.2388849,6.5207074 L4.76104885,6.5207074 C4.11384016,6.5207074 3.58151495,7.01258206 3.51750246,7.64290216 L3.51104885,7.7707074 L3.51004885,9.4947074 L20.4880489,9.4947074 L20.4888849,7.7707074 C20.4888849,7.12349871 19.9970102,6.5911735 19.3666901,6.52716101 L19.2388849,6.5207074 Z'
             id='🎨-Color'
@@ -125,11 +125,11 @@ export const CouponIcon = (props) => (
     xmlns='http://www.w3.org/2000/svg'
     xmlns:xlink='http://www.w3.org/1999/xlink'
     viewBox='0 0 512 512'
-    xml:space='preserve'
+    xmlSpace='preserve'
     className={props.className}
   >
-    <g id='SVGRepo_bgCarrier' stroke-width='0'></g>
-    <g id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'></g>
+    <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+    <g id='SVGRepo_tracerCarrier' strokeLinecap='round' strokeLinejoin='round'></g>
     <g id='SVGRepo_iconCarrier'>
       <g>
         <g>
@@ -209,31 +209,31 @@ export const OrderDetailIcon = (props) => (
     xmlns='http://www.w3.org/2000/svg'
     className={props.className}
   >
-    <g id='SVGRepo_bgCarrier' stroke-width='0'></g>
-    <g id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'></g>
+    <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+    <g id='SVGRepo_tracerCarrier' strokeLinecap='round' strokeLinejoin='round'></g>
     <g id='SVGRepo_iconCarrier'>
       <path
         d='M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z'
         stroke='#1C274C'
-        stroke-width='1.5'
+        strokeWidth='1.5'
       ></path>
       <path
         d='M16.5 18.0001C17.3284 18.0001 18 18.6716 18 19.5001C18 20.3285 17.3284 21.0001 16.5 21.0001C15.6716 21.0001 15 20.3285 15 19.5001C15 18.6716 15.6716 18.0001 16.5 18.0001Z'
         stroke='#1C274C'
-        stroke-width='1.5'
+        strokeWidth='1.5'
       ></path>
       <path
         d='M11 10.8L12.1429 12L15 9'
         stroke='#1C274C'
-        stroke-width='1.5'
-        stroke-linecap='round'
-        stroke-linejoin='round'
+        strokeWidth='1.5'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       ></path>
       <path
         d='M2 3L2.26121 3.09184C3.5628 3.54945 4.2136 3.77826 4.58584 4.32298C4.95808 4.86771 4.95808 5.59126 4.95808 7.03836V9.76C4.95808 12.7016 5.02132 13.6723 5.88772 14.5862C6.75412 15.5 8.14857 15.5 10.9375 15.5H12M16.2404 15.5C17.8014 15.5 18.5819 15.5 19.1336 15.0504C19.6853 14.6008 19.8429 13.8364 20.158 12.3075L20.6578 9.88275C21.0049 8.14369 21.1784 7.27417 20.7345 6.69708C20.2906 6.12 18.7738 6.12 17.0888 6.12H11.0235M4.95808 6.12H7'
         stroke='#1C274C'
-        stroke-width='1.5'
-        stroke-linecap='round'
+        strokeWidth='1.5'
+        strokeLinecap='round'
       ></path>
     </g>
   </svg>
@@ -247,15 +247,15 @@ export const ProfileIcon = (props) => (
     xmlns='http://www.w3.org/2000/svg'
     className={props.className}
   >
-    <g id='SVGRepo_bgCarrier' stroke-width='0'></g>
-    <g id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'></g>
+    <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+    <g id='SVGRepo_tracerCarrier' strokeLinecap='round' strokeLinejoin='round'></g>
     <g id='SVGRepo_iconCarrier'>
       <path
         d='M4 21C4 17.134 7.13401 14 11 14C11.3395 14 11.6734 14.0242 12 14.0709M15 7C15 9.20914 13.2091 11 11 11C8.79086 11 7 9.20914 7 7C7 4.79086 8.79086 3 11 3C13.2091 3 15 4.79086 15 7ZM12.5898 21L14.6148 20.595C14.7914 20.5597 14.8797 20.542 14.962 20.5097C15.0351 20.4811 15.1045 20.4439 15.1689 20.399C15.2414 20.3484 15.3051 20.2848 15.4324 20.1574L19.5898 16C20.1421 15.4477 20.1421 14.5523 19.5898 14C19.0376 13.4477 18.1421 13.4477 17.5898 14L13.4324 18.1574C13.3051 18.2848 13.2414 18.3484 13.1908 18.421C13.1459 18.4853 13.1088 18.5548 13.0801 18.6279C13.0478 18.7102 13.0302 18.7985 12.9948 18.975L12.5898 21Z'
         stroke='#000000'
-        stroke-width='2'
-        stroke-linecap='round'
-        stroke-linejoin='round'
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       ></path>
     </g>
   </svg>
@@ -269,15 +269,15 @@ export const SimplePasswordIcon = (props) => (
     xmlns='http://www.w3.org/2000/svg'
     className={props.className}
   >
-    <g id='SVGRepo_bgCarrier' stroke-width='0'></g>
-    <g id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'></g>
+    <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+    <g id='SVGRepo_tracerCarrier' strokeLinecap='round' strokeLinejoin='round'></g>
     <g id='SVGRepo_iconCarrier'>
       <path
         d='M21 8.5V6C21 4.89543 20.1046 4 19 4H5C3.89543 4 3 4.89543 3 6V11C3 12.1046 3.89543 13 5 13H10.875M19 14V12C19 10.8954 18.1046 10 17 10C15.8954 10 15 10.8954 15 12V14M14 20H20C20.5523 20 21 19.5523 21 19V15C21 14.4477 20.5523 14 20 14H14C13.4477 14 13 14.4477 13 15V19C13 19.5523 13.4477 20 14 20Z'
         stroke='#000000'
-        stroke-width='2'
-        stroke-linecap='round'
-        stroke-linejoin='round'
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       ></path>
       <circle cx='7.5' cy='8.5' r='1.5' fill='#000000'></circle>
       <circle cx='12' cy='8.5' r='1.5' fill='#000000'></circle>
@@ -324,3 +324,4 @@ export const CartIcon = (props) => (
     <path d='M912 1013.6H115.2c-32 0-62.4-14.4-83.2-39.2-20.8-24.8-28.8-57.6-22.4-88.8v-0.8L128 389.6C139.2 340 183.2 304 233.6 304h560c50.4 0 94.4 36 104.8 85.6l118.4 496.8c6.4 32-1.6 64-22.4 88.8-20 24.8-49.6 38.4-82.4 38.4zM56.8 895.2c-3.2 17.6 0.8 35.2 12 48.8 11.2 13.6 28 21.6 45.6 21.6H912c17.6 0 34.4-8 45.6-21.6 11.2-13.6 16-31.2 12-48.8l-118.4-496c-5.6-27.2-29.6-47.2-57.6-47.2h-560c-28 0-52.8 20-57.6 47.2v0.8L56.8 895.2z' />
   </svg>
 );
+
