@@ -3,6 +3,7 @@ package shop.sellution.server.order.dto.request;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 import shop.sellution.server.order.domain.type.OrderType;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@Builder
 public class SaveOrderReq {
 
     @NotNull(message = "회사 아이디는 필수입니다.")
