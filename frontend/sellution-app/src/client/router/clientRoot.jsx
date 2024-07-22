@@ -9,8 +9,13 @@ import productRouter from './product/productRouter';
 import paymentHistoryRouter from '@/client/router/paymentHistory/paymentHistoryRouter';
 import eventRouter from '@/client/router/event/eventRouter';
 import shopManagementRouter from '@/client/router/shopManagement/shopManagementRouter';
+import loginRouter from '@/client/router/login/loginRouter';
 
 const clientRoot = () => [
+  {
+    path: 'login',
+    children: loginRouter(),
+  },
   {
     path: '/',
     element: <BasicLayout />, //기본 레이아웃
