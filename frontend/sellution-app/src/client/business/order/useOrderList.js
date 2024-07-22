@@ -7,7 +7,6 @@ const generateDummyData = (count) => {
   return Array.from({ length: count }, (_, index) => ({
     id: index + 1,
     orderId: `${Math.floor(1000 + Math.random() * 9000)}`,
-    companyId: 1,
     customerId: `${Math.floor(1000 + Math.random() * 9000)}`,
     code: `${Math.floor(10000000000000 + Math.random() * 90000000000000)}`,
     username: `User ${index + 1}`,
@@ -23,7 +22,6 @@ const generateDummyData = (count) => {
 };
 
 //orderId
-//companyId
 //customerId
 // 아래는 테이블에 들어갈 것
 //No

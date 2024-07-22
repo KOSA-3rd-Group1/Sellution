@@ -71,3 +71,13 @@ export const InfoInput = ({ textDefault, ...props }) => (
     {...props}
   />
 );
+
+export const InfoInputRight = ({ textDefault, ...props }) => (
+  <input
+    className={`w-full h-10 border-2 border-[#DADADA] rounded-lg px-6 placeholder:text-slate-400 text-right
+				outline-none focus:ring-2 ring-brandOrange focus:ring-offset-2 
+				read-only:bg-gray-100 read-only:text-slate-600 read-only:ring-transparent
+				disabled:bg-white disabled:border-transparent ${textDefault ? 'disabled:text-gray-600' : 'disabled:text-brandOrange'}`}
+    {...props}
+  />
+);

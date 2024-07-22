@@ -19,7 +19,6 @@ const SaleSettingComponent = () => {
     handleChangeSelectedCategoryOptions,
     handleChangeSelectedEachProductOptions,
     handleDeleteSelectedEachProductOption,
-    moveList,
     handleSaveData,
   } = useShopManagementSaleSetting();
   console.log(data);
