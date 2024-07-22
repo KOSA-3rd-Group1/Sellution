@@ -11,8 +11,10 @@ import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.customer.dto.request.*;
+import shop.sellution.server.customer.dto.resonse.FindCustomerInfoRes;
 import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
+import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.sms.application.SmsAuthNumberService;
 import shop.sellution.server.sms.dto.request.SendSmsAuthNumberReq;
 import shop.sellution.server.sms.dto.request.VerifySmsAuthNumberReq;
@@ -261,5 +263,16 @@ public class CustomerServiceImpl implements CustomerService{
     // 비밀번호 시도 횟수 증가
     private void incrementAttemptCount(String redisKey, Long userId, int attemptCount) {
         redisTemplate.opsForValue().set(redisKey, userId + ":" + (attemptCount + 1), Duration.ofMinutes(TOKEN_VALID_MINUTES));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public FindCustomerInfoRes getCustomerInfo(Long customerId) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_CUSTOMER));
+        return FindCustomerInfoRes.builder()
+                .name(customer.getName())
+                .customerType(customer.getType())
+                .build();
     }
 }
