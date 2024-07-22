@@ -154,4 +154,16 @@ public class Company{
     public void updateSellType(SellType sellType) {
         this.sellType = sellType;
     }
+
+    // 주문 자동 승인 토글
+    public void toggleAutoApproval() {
+        if(this.getIsAutoApproved().getValue())
+        {
+            this.isAutoApproved = N;
+        }
+        else
+        {
+            this.isAutoApproved = Y;
+        }
+    }
 }

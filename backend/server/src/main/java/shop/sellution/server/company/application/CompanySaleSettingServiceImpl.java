@@ -21,7 +21,6 @@ import shop.sellution.server.company.dto.SaveCompanySaleSettingReq;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.global.type.DisplayStatus;
-import shop.sellution.server.global.type.WeekType;
 import shop.sellution.server.product.domain.Product;
 import shop.sellution.server.product.domain.ProductRepository;
 
@@ -56,6 +55,7 @@ public class CompanySaleSettingServiceImpl implements CompanySaleSettingService 
         List<DayOption> dayOptions = dayOptionRepository.findByCompany(company);
 
         List<Integer> monthValues = monthOptions.stream().map(MonthOption::getMonthValue).collect(Collectors.toList());
+
         List<Integer> weekValues = weekOptions.stream().map(WeekOption::getWeekValue).collect(Collectors.toList());
         List<String> dayValues = dayOptions.stream().map(dayOption -> dayOption.getDayValue().name()).collect(Collectors.toList());
 

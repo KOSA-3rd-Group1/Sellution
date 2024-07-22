@@ -1,3 +1,4 @@
+
 -- Company 데이터
 INSERT INTO company (display_name, name, shop_url, is_shop_visible, is_auto_approved, is_new_member_event, service_type, subscription_type, min_delivery_count, max_delivery_count, theme_color, main_promotion1_title, main_promotion1_content, main_promotion2_title, main_promotion2_content, sell_type)
 VALUES
@@ -48,16 +49,7 @@ VALUES
     (1, 20240101000007, '달걀 20구', 200, 5000, '신선한 유정란', 'Y', 'BOTH', 1, NOW(), NOW()),
     (3, 20240101000008, '즉석 볶음밥', 180, 7000, '10분 만에 완성되는 볶음밥', 'Y', 'BOTH', 2, NOW(), NOW());
 -- Product 데이터
-# INSERT INTO product (company_id, code, name, stock, cost, product_information, is_visible, delivery_type, created_at, updated_at)
-# VALUES
-#     (1, 20240101000001, '신선 채소 박스', 100, 15000, '각종 신선한 채소 모음', 'Y', 'BOTH', NOW(), NOW()),
-# (1, 20240101000002, '제철 과일 세트', 50, 25000, '제철 과일 모음', 'Y', 'BOTH', NOW(), NOW()),
-# (2, 20240101000003, '즉석 파스타', 200, 8000, '15분 만에 완성되는 파스타', 'Y', 'BOTH', NOW(), NOW()),
-# (2, 20240101000004, '샐러드 도시락', 150, 6000, '신선한 채소로 만든 샐러드', 'Y', 'BOTH', NOW(), NOW()),
-# (3, 20240101000005, '유기농 채소 박스', 80, 20000, '인증 받은 유기농 채소 모음', 'Y', 'BOTH', NOW(), NOW()),
-# (3, 20240101000006, '유기농 과일 세트', 60, 30000, '제철 유기농 과일 모음', 'Y', 'BOTH', NOW(), NOW()),
-# (1, 20240101000007, '달걀 20구', 200, 5000, '신선한 유정란', 'Y', 'BOTH', NOW(), NOW()),
-# (2, 20240101000008, '즉석 볶음밥', 180, 7000, '10분 만에 완성되는 볶음밥', 'Y', 'BOTH', NOW(), NOW());
+
 
 -- DayOption 데이터
 INSERT INTO day_option (company_id, day_value)
