@@ -7,11 +7,14 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.customer.domain.type.CustomerType;
+import shop.sellution.server.event.domain.CouponBox;
 import shop.sellution.server.global.BaseEntity;
 import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.global.type.UserRole;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "customer")
@@ -61,6 +64,12 @@ public class Customer extends BaseEntity {
     @Column(name = "easy_pwd")
     private String easyPwd;
 
+    @Column(name = "lastest_delivery_date")
+    private LocalDateTime lastestDeliveryDate; //최신 배송일자 필드 추가
+    
+    //FetchType.LAZY가 디폴트; 해당 엔티티가 실제로 조회될 때만 관련 데이터 로드
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CouponBox> couponBoxes = new ArrayList<>();
 
     @Builder
     public Customer(Company company, String username, String password, String name, String phoneNumber) {
@@ -74,6 +83,7 @@ public class Customer extends BaseEntity {
     public UserRole getUserRole() {
         return UserRole.ROLE_CUSTOMER;
     }
+
 
     public void changeToNormal() {
         this.type = CustomerType.NORMAL;
