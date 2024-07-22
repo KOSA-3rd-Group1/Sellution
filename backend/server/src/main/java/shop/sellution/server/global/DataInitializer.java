@@ -10,6 +10,7 @@ import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.address.domain.Address;
 import shop.sellution.server.address.domain.AddressRepository;
 import shop.sellution.server.category.domain.Category;
+import shop.sellution.server.category.domain.CategoryRepository;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.DayOption;
 import shop.sellution.server.company.domain.MonthOption;
@@ -48,6 +49,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class DataInitializer implements ApplicationListener<ContextRefreshedEvent> {
 
+    private final CategoryRepository categoryRepository;
     private boolean alreadySetup = false;
     private final Random random = new Random();
     private final CompanyRepository companyRepository;
@@ -139,6 +141,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         포켓샐러드 = Company.builder()
                 .displayName("Pocket Salad")
                 .name("PocketSalad")
+                .shopUrl("https://sellution/shopping/pocketsalad")
                 .isShopVisible(DisplayStatus.Y)
                 .isAutoApproved(DisplayStatus.N)
                 .isNewMemberEvent(DisplayStatus.N)
@@ -148,7 +151,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .maxDeliveryCount(30)
                 .themeColor("F37021")
                 .sellType(SellType.ALL)
-                .mainPromotion1Title("한끼, 건강하고 간단하게 \uD83E\uDD57")
+                .mainPromotion1Title("한끼, 건강하고 간단하게")
                 .mainPromotion1Content("최고의 퀄리티를 위해\n아끼지 않고 가득 담았습니다.")
                 .mainPromotion2Title("식단 관리 할 사람!")
                 .mainPromotion2Content("너랑!  나랑!")
@@ -180,6 +183,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         테이스티샐러드 = Category.builder()
                 .name("테이스티샐러드")
                 .build();
+
+        categoryRepository.save(데일리샐러드);
+        categoryRepository.save(테이스티샐러드);
     }
 
 
@@ -430,8 +436,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         테스트용공용계좌2 = Account.builder()
                 .customer(휴면회원)
-                .accountNumber("42750204039102")
-                .bankCode("004")
+                .accountNumber("110555920510")
+                .bankCode("088")
                 .build();
 
         accountRepository.save(테스트용공용계좌2);
@@ -446,6 +452,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .addressDetail("포스코타워 3층")
                 .zipcode("06164")
                 .phoneNumber("010-7598-5112")
+                .isDefaultAddress(DisplayStatus.Y)
                 .build();
 
         addressRepository.save(공용주소);
@@ -458,6 +465,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .addressDetail("포스코타워 3층")
                 .zipcode("06164")
                 .phoneNumber("010-7598-5112")
+                .isDefaultAddress(DisplayStatus.Y)
                 .build();
 
         addressRepository.save(공용주소2);

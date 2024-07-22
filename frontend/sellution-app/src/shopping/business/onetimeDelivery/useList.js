@@ -6,16 +6,14 @@ const useList = () => {
   const [isLoading, setIsloading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(()=> {
+  useEffect(() => {
     const fetchProducts = async () => {
-      try{
+      try {
         const response = await axios.get('/');
         setOnetimeProductList(response.date);
-      }
-      catch(err){
+      } catch (err) {
         setError(err);
-      }
-      finally{
+      } finally {
         setIsloading(false);
       }
     };
