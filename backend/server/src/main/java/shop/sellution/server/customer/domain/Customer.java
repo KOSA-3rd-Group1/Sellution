@@ -7,11 +7,14 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.customer.domain.type.CustomerType;
+import shop.sellution.server.event.domain.CouponBox;
 import shop.sellution.server.global.BaseEntity;
 import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.global.type.UserRole;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "customer")
@@ -48,10 +51,10 @@ public class Customer extends BaseEntity {
     @Builder.Default
     private DisplayStatus isSmsAgreement = DisplayStatus.Y;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "is_in_use", nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'N'")
-    @Builder.Default
-    private DisplayStatus isInUse = DisplayStatus.N;
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "is_in_use", nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'N'")
+//    @Builder.Default
+//    private DisplayStatus isInUse = DisplayStatus.N;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, columnDefinition = "ENUM( 'NEW', 'NORMAL', 'DORMANT') default 'NEW'")
@@ -61,6 +64,12 @@ public class Customer extends BaseEntity {
     @Column(name = "easy_pwd")
     private String easyPwd;
 
+    @Column(name = "lastest_delivery_date")
+    private LocalDateTime lastestDeliveryDate; //최신 배송일자 필드 추가
+    
+    //FetchType.LAZY가 디폴트; 해당 엔티티가 실제로 조회될 때만 관련 데이터 로드
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CouponBox> couponBoxes = new ArrayList<>();
 
     @Builder
     public Customer(Company company, String username, String password, String name, String phoneNumber) {
@@ -75,16 +84,6 @@ public class Customer extends BaseEntity {
         return UserRole.ROLE_CUSTOMER;
     }
 
-    //회원의 상품 주문 시
-    public void activate() {
-        this.isInUse = DisplayStatus.fromBoolean(true);
-        this.type = CustomerType.NORMAL;
-    }
-
-    //회원의 상품 주문 종료 시
-    public void deactivate() {
-        this.isInUse = DisplayStatus.fromBoolean(false);
-    }
 
     public void changeToNormal() {
         this.type = CustomerType.NORMAL;
@@ -105,5 +104,22 @@ public class Customer extends BaseEntity {
 
     public void changePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    // 회원 유형 변경 신규,휴면 -> 일반
+    public void changeToNormalCustomer() {
+        this.type = CustomerType.NORMAL;
+    }
+
+    // 간편 비밀번호 갱신
+    public void changeEasyPwd(String newEasyPwd) {
+        this.easyPwd = newEasyPwd;
+    }
+
+    // 비밀번호 검증
+    public void verifyEasyPwd(String password) {
+        if (!this.easyPwd.equals(password)) {
+            throw new IllegalArgumentException("간편비밀번호가 일치하지 않습니다.");
+        }
     }
 }

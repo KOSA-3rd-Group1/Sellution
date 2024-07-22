@@ -2,6 +2,7 @@ package shop.sellution.server.company.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,11 @@ public class MonthOption {
     private Company company;
 
     private Integer monthValue;
+
+
+    @Builder
+    public MonthOption(Company company, Integer monthValue) {
+        this.company = company;
+        this.monthValue = monthValue;
+    }
 }

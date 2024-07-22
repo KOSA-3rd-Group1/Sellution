@@ -1,3 +1,4 @@
+
 -- Company 데이터
 INSERT INTO company (display_name, name, shop_url, is_shop_visible, is_auto_approved, is_new_member_event, service_type, subscription_type, min_delivery_count, max_delivery_count, theme_color, main_promotion1_title, main_promotion1_content, main_promotion2_title, main_promotion2_content, sell_type)
 VALUES
@@ -6,15 +7,15 @@ VALUES
 ('오가닉박스', 'OrganicBox', 'http://organicbox.com', 'Y', 'Y', 'Y', 'SUBSCRIPTION','MONTH', 4, 24, '4CAF50', '유기농 식품', '엄선된 유기농 식품 정기배송', '첫 구독 할인', '첫 구독 시 20% 할인', 'ALL');
 
 -- Customer 데이터
-INSERT INTO customer (company_id, username, password, name, phone_number, is_sms_agreement, is_in_use, type, created_at, updated_at)
+INSERT INTO customer (company_id, username, password, name, phone_number, is_sms_agreement, type, created_at, updated_at)
 VALUES
-    (1, 'user1', 'password123', '김철수', '01012345678', 'Y', 'N', 'NEW', NOW(), NOW()),
-(1, 'user2', 'password456', '이영희', '01087654321', 'Y', 'Y', 'NORMAL', NOW(), NOW()),
-(2, 'user3', 'password789', '박지민', '01011112222', 'N', 'N', 'NEW', NOW(), NOW()),
-(3, 'user4', 'password321', '정수연', '01033334444', 'Y', 'Y', 'NORMAL', NOW(), NOW()),
-(1, 'user5', 'password654', '최재우', '01055556666', 'Y', 'N', 'NEW', NOW(), NOW()),
-(2, 'user6', 'password987', '강민서', '01077778888', 'N', 'Y', 'NORMAL', NOW(), NOW()),
-(3, 'user7', 'passwordabc', '윤서연', '01099990000', 'Y', 'Y', 'NORMAL', NOW(), NOW());
+    (1, 'user1', 'password123', '김철수', '01012345678', 'Y', 'NEW', NOW(), NOW()),
+    (1, 'user2', 'password456', '이영희', '01087654321', 'Y', 'NORMAL', NOW(), NOW()),
+    (2, 'user3', 'password789', '박지민', '01011112222', 'N', 'NEW', NOW(), NOW()),
+    (3, 'user4', 'password321', '정수연', '01033334444', 'Y', 'NORMAL', NOW(), NOW()),
+    (1, 'user5', 'password654', '최재우', '01055556666', 'Y', 'NEW', NOW(), NOW()),
+    (2, 'user6', 'password987', '강민서', '01077778888', 'N', 'NORMAL', NOW(), NOW()),
+    (3, 'user7', 'passwordabc', '윤서연', '01099990000', 'Y', 'NORMAL', NOW(), NOW());
 
 -- Address 데이터
 INSERT INTO address (customer_id, address, name, zipcode, address_detail, phone_number, is_default_address, address_name, created_at)
@@ -48,16 +49,7 @@ VALUES
     (1, 20240101000007, '달걀 20구', 200, 5000, '신선한 유정란', 'Y', 'BOTH', 1, NOW(), NOW()),
     (3, 20240101000008, '즉석 볶음밥', 180, 7000, '10분 만에 완성되는 볶음밥', 'Y', 'BOTH', 2, NOW(), NOW());
 -- Product 데이터
-# INSERT INTO product (company_id, code, name, stock, cost, product_information, is_visible, delivery_type, created_at, updated_at)
-# VALUES
-#     (1, 20240101000001, '신선 채소 박스', 100, 15000, '각종 신선한 채소 모음', 'Y', 'BOTH', NOW(), NOW()),
-# (1, 20240101000002, '제철 과일 세트', 50, 25000, '제철 과일 모음', 'Y', 'BOTH', NOW(), NOW()),
-# (2, 20240101000003, '즉석 파스타', 200, 8000, '15분 만에 완성되는 파스타', 'Y', 'BOTH', NOW(), NOW()),
-# (2, 20240101000004, '샐러드 도시락', 150, 6000, '신선한 채소로 만든 샐러드', 'Y', 'BOTH', NOW(), NOW()),
-# (3, 20240101000005, '유기농 채소 박스', 80, 20000, '인증 받은 유기농 채소 모음', 'Y', 'BOTH', NOW(), NOW()),
-# (3, 20240101000006, '유기농 과일 세트', 60, 30000, '제철 유기농 과일 모음', 'Y', 'BOTH', NOW(), NOW()),
-# (1, 20240101000007, '달걀 20구', 200, 5000, '신선한 유정란', 'Y', 'BOTH', NOW(), NOW()),
-# (2, 20240101000008, '즉석 볶음밥', 180, 7000, '10분 만에 완성되는 볶음밥', 'Y', 'BOTH', NOW(), NOW());
+
 
 -- DayOption 데이터
 INSERT INTO day_option (company_id, day_value)
@@ -148,3 +140,70 @@ VALUES
 (10, 4); -- 열 번째 주문의 화요일 선택
 
 -- 주의: ONETIME 주문(3, 6, 9번)은 selected_day에 데이터가 없습니다.
+
+-- CouponEvent 데이터
+INSERT INTO coupon_event (company_id, coupon_name, coupon_discount_rate, target_customer_type, event_start_date, event_end_date, state, is_deleted)
+VALUES
+    (1, '신규 회원 10% 할인 이벤트', 10, 'NEW', '2024-07-20', '2024-07-30', 'UPCOMING', false),
+    (1, '일반 회원 15% 할인 이벤트', 15, 'NORMAL', '2024-08-01', '2024-08-15', 'UPCOMING', false),
+    (1, '휴면 회원 20% 할인 이벤트', 20, 'DORMANT', '2024-08-05', '2024-08-20', 'UPCOMING', false),
+    (1, '신규 회원 5% 할인 이벤트', 5, 'NEW', '2024-09-01', '2024-09-10', 'UPCOMING', false),
+    (1, '일반 회원 25% 할인 이벤트', 25, 'NORMAL', '2024-07-25', '2024-08-05', 'UPCOMING', false),
+    (1, '전 회원 30% 할인 이벤트', 30, 'ALL', '2024-07-20', '2024-08-20', 'UPCOMING', false),
+    (3, '전 회원 12% 할인 이벤트', 12, 'ALL', '2024-08-15', '2024-08-25', 'UPCOMING', false),
+    (1, '전 회원 18% 할인 이벤트', 18, 'ALL', '2024-07-30', '2024-08-15', 'UPCOMING', false);
+
+-- CouponBox 데이터
+INSERT INTO coupon_box (event_id, customer_id, is_used)
+VALUES
+    -- 신규 회원 10% 할인 이벤트 (타겟: NEW)
+    (1, 1, 'N'), -- 김철수 (NEW)
+    (1, 5, 'N'), -- 최재우 (NEW)
+    (1, 3, 'N'), -- 박지민 (NEW)
+
+    -- 일반 회원 15% 할인 이벤트 (타겟: NORMAL)
+    (2, 2, 'N'), -- 이영희 (NORMAL)
+    (2, 4, 'N'), -- 정수연 (NORMAL)
+    (2, 6, 'N'), -- 강민서 (NORMAL)
+    (2, 7, 'N'), -- 윤서연 (NORMAL),
+
+    -- 휴면 회원 20% 할인 이벤트 (타겟: DORMANT) - 현재 휴면 회원이 없으므로 생략
+
+    -- 신규 회원 5% 할인 이벤트 (타겟: NEW)
+    (4, 1, 'N'), -- 김철수 (NEW)
+    (4, 5, 'N'), -- 최재우 (NEW)
+    (4, 3, 'N'), -- 박지민 (NEW)
+
+    -- 일반 회원 25% 할인 이벤트 (타겟: NORMAL)
+    (5, 2, 'N'), -- 이영희 (NORMAL)
+    (5, 4, 'N'), -- 정수연 (NORMAL)
+    (5, 6, 'N'), -- 강민서 (NORMAL)
+    (5, 7, 'N'), -- 윤서연 (NORMAL),
+
+    -- 전 회원 30% 할인 이벤트 (타겟: ALL)
+    (6, 1, 'N'), -- 김철수 (NEW)
+    (6, 2, 'N'), -- 이영희 (NORMAL)
+    (6, 3, 'N'), -- 박지민 (NEW)
+    (6, 4, 'N'), -- 정수연 (NORMAL)
+    (6, 5, 'N'), -- 최재우 (NEW)
+    (6, 6, 'N'), -- 강민서 (NORMAL)
+    (6, 7, 'N'), -- 윤서연 (NORMAL),
+
+    -- 전 회원 12% 할인 이벤트 (타겟: ALL)
+    (7, 1, 'N'), -- 김철수 (NEW)
+    (7, 2, 'N'), -- 이영희 (NORMAL)
+    (7, 3, 'N'), -- 박지민 (NEW)
+    (7, 4, 'N'), -- 정수연 (NORMAL)
+    (7, 5, 'N'), -- 최재우 (NEW)
+    (7, 6, 'N'), -- 강민서 (NORMAL)
+    (7, 7, 'N'), -- 윤서연 (NORMAL),
+
+    -- 전 회원 18% 할인 이벤트 (타겟: ALL)
+    (8, 1, 'N'), -- 김철수 (NEW)
+    (8, 2, 'N'), -- 이영희 (NORMAL)
+    (8, 3, 'N'), -- 박지민 (NEW)
+    (8, 4, 'N'), -- 정수연 (NORMAL)
+    (8, 5, 'N'), -- 최재우 (NEW)
+    (8, 6, 'N'), -- 강민서 (NORMAL)
+    (8, 7, 'N'); -- 윤서연 (NORMAL)
+
