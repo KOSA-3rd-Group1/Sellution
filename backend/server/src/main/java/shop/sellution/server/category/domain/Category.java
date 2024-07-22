@@ -27,7 +27,7 @@ public class Category {
     private int productCount = 0 ;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "is_visible",length = 1, nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'N'")
+    @Column(name = "is_visible",length = 1, nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'Y'")
     @Builder.Default
     private DisplayStatus isVisible = DisplayStatus.Y;
 

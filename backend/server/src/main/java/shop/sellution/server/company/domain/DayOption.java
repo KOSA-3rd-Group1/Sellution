@@ -3,6 +3,7 @@ package shop.sellution.server.company.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.sellution.server.company.domain.type.DayValueType;
@@ -27,4 +28,9 @@ public class DayOption {
     @Column(nullable = false,columnDefinition = "ENUM('MON','TUE','WED','THU','FRI')")
     private DayValueType dayValue;
 
+    @Builder
+    public DayOption(Company company, DayValueType dayValue) {
+        this.company = company;
+        this.dayValue = dayValue;
+    }
 }

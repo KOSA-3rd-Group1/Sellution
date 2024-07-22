@@ -1,5 +1,6 @@
 package shop.sellution.server.order.domain.repository;
 
+import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,7 +38,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                         customerPhoneNumberLike(condition.getCustomerPhoneNumber()),
                         statusEq(condition.getStatus()),
                         deliveryStatusEq(condition.getDeliveryStatus()),
-                        betweenDates(condition.getStartDate(), condition.getEndDate())
+                        betweenDates(order.createdAt,condition.getStartDate(), condition.getEndDate())
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -54,7 +55,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                         customerPhoneNumberLike(condition.getCustomerPhoneNumber()),
                         statusEq(condition.getStatus()),
                         deliveryStatusEq(condition.getDeliveryStatus()),
-                        betweenDates(condition.getStartDate(), condition.getEndDate())
+                        betweenDates(order.createdAt,condition.getStartDate(), condition.getEndDate())
                 )
                 .fetchOne();
 
@@ -85,13 +86,9 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         return deliveryStatus != null ? order.deliveryStatus.eq(deliveryStatus) : null;
     }
 
-    private BooleanExpression betweenDates(LocalDateTime startDate, LocalDateTime endDate) {
+    private BooleanExpression betweenDates(DateTimePath<LocalDateTime> datePath, LocalDateTime startDate, LocalDateTime endDate) {
         if (startDate != null && endDate != null) {
-            return order.createdAt.between(startDate, endDate);
-        } else if (startDate != null) {
-            return order.createdAt.goe(startDate);
-        } else if (endDate != null) {
-            return order.createdAt.loe(endDate);
+            return datePath.between(startDate, endDate);
         }
         return null;
     }

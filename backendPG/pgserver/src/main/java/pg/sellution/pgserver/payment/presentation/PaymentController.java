@@ -17,7 +17,7 @@ import static pg.sellution.pgserver.global.exception.ExceptionCode.INVALID_AUTH_
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/pg")
+@RequestMapping("/pg/pay")
 public class PaymentController {
 
     private final AccessTokenService accessTokenService;
@@ -25,18 +25,31 @@ public class PaymentController {
     private static final String AUTH_HEADER = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
 
-    @PostMapping("/pay")
+    @PostMapping("")
     public ResponseEntity<String> pay(@RequestBody PaymentReq paymentReq, HttpServletRequest request) {
-        accountAuthService.checkAccount(new CheckAccountReq(paymentReq.getBankCode(), paymentReq.getAccountNumber()));
-
         String authHeader = request.getHeader(AUTH_HEADER);
         if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
             throw new AuthException(INVALID_AUTH_HEADER);
         }
-
         String token = authHeader.substring(TOKEN_PREFIX.length());
         accessTokenService.validateToken(token,"payment", paymentReq.getPrice(), request.getRemoteAddr());
         accessTokenService.invalidateToken(token);
+
+        accountAuthService.checkAccount(new CheckAccountReq(paymentReq.getBankCode(), paymentReq.getAccountNumber()));
+        return ResponseEntity.ok().body("success");
+    }
+
+    @PostMapping("/cancel")
+    public ResponseEntity<String> cancelPayment(@RequestBody PaymentReq paymentReq, HttpServletRequest request) {
+        String authHeader = request.getHeader(AUTH_HEADER);
+        if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
+            throw new AuthException(INVALID_AUTH_HEADER);
+        }
+        String token = authHeader.substring(TOKEN_PREFIX.length());
+        accessTokenService.validateToken(token,"payment-cancel", paymentReq.getPrice(), request.getRemoteAddr());
+        accessTokenService.invalidateToken(token);
+
+        accountAuthService.checkAccount(new CheckAccountReq(paymentReq.getBankCode(), paymentReq.getAccountNumber()));
         return ResponseEntity.ok().body("success");
     }
 }
