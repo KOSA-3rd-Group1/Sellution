@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import shop.sellution.server.global.exception.ExternalApiException;
+import shop.sellution.server.payment.domain.type.TokenType;
 
 import java.time.Duration;
 import java.util.Map;
@@ -31,15 +32,15 @@ public class PgTokenClient {
     private final WebClient webClient;
     private final Duration TIMEOUT = Duration.ofSeconds(10);
 
-    // 일회용 결제 토큰 발급
-    public Mono<String> getApiAccessToken(int price) {
+    // 일회용 결제 관련 토큰 발급
+    public Mono<String> getApiAccessToken(int price, TokenType tokenType) {
 
         Map<String, String> body = Map.of(
                 "name", clientName,
                 "apiKey", apiKey,
-                "permission", "payment",
                 "price",Integer.toString(price)
         );
+        body.put("permission",tokenType.getPermission());
 
         log.info(" API access Token 발급 시작");
         return webClient.post()
