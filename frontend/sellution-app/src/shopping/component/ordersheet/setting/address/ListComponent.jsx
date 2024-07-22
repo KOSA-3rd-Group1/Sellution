@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 const ListComponent = () => {
   const [addresses, setAddresses] = useState([]);
+  const { customerId } = useParams();
+
   useEffect(() => {
     fetchAddresses();
   }, []);
@@ -15,7 +17,9 @@ const ListComponent = () => {
 
   const fetchAddresses = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/addresses/customer/1`);
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/addresses/customer/${customerId}`,
+      );
       // 기본 배송지를 맨 위로 정렬
       const sortedAddresses = response.data.sort((a, b) =>
         b.isDefaultAddress.localeCompare(a.isDefaultAddress),

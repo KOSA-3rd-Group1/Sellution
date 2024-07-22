@@ -304,7 +304,7 @@ const DetailComponent = () => {
   };
 
   const moveList = () => {
-    navigate('/products');
+    navigate('/product');
   };
 
   const dummyEvent = () => {
