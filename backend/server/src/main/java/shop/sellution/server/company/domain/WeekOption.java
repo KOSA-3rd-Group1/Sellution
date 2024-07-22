@@ -2,6 +2,7 @@ package shop.sellution.server.company.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,9 @@ public class WeekOption {
 
     private Integer weekValue;
 
+    @Builder
+    public WeekOption(Company company, Integer weekValue) {
+        this.company = company;
+        this.weekValue = weekValue;
+    }
 }

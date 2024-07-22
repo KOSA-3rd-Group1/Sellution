@@ -48,10 +48,10 @@ public class Customer extends BaseEntity {
     @Builder.Default
     private DisplayStatus isSmsAgreement = DisplayStatus.Y;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "is_in_use", nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'N'")
-    @Builder.Default
-    private DisplayStatus isInUse = DisplayStatus.N;
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "is_in_use", nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'N'")
+//    @Builder.Default
+//    private DisplayStatus isInUse = DisplayStatus.N;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, columnDefinition = "ENUM( 'NEW', 'NORMAL', 'DORMANT') default 'NEW'")
@@ -75,17 +75,6 @@ public class Customer extends BaseEntity {
         return UserRole.ROLE_CUSTOMER;
     }
 
-    //회원의 상품 주문 시
-    public void activate() {
-        this.isInUse = DisplayStatus.fromBoolean(true);
-        this.type = CustomerType.NORMAL;
-    }
-
-    //회원의 상품 주문 종료 시
-    public void deactivate() {
-        this.isInUse = DisplayStatus.fromBoolean(false);
-    }
-
     public void changeToNormal() {
         this.type = CustomerType.NORMAL;
     }
@@ -105,5 +94,22 @@ public class Customer extends BaseEntity {
 
     public void changePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    // 회원 유형 변경 신규,휴면 -> 일반
+    public void changeToNormalCustomer() {
+        this.type = CustomerType.NORMAL;
+    }
+
+    // 간편 비밀번호 갱신
+    public void changeEasyPwd(String newEasyPwd) {
+        this.easyPwd = newEasyPwd;
+    }
+
+    // 비밀번호 검증
+    public void verifyEasyPwd(String password) {
+        if (!this.easyPwd.equals(password)) {
+            throw new IllegalArgumentException("간편비밀번호가 일치하지 않습니다.");
+        }
     }
 }

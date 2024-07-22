@@ -25,6 +25,6 @@ public class CompanyImage {
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "purpose_of_use")
+    @Column(name = "purpose_of_use", nullable = false, columnDefinition = "ENUM('PROMOTION','LOGO')")
     private ImagePurposeType purposeOfUse;
 }
