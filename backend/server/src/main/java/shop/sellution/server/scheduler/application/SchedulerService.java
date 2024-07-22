@@ -2,8 +2,10 @@ package shop.sellution.server.scheduler.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.order.domain.Order;
 import shop.sellution.server.order.domain.repository.OrderRepository;
@@ -16,12 +18,12 @@ import shop.sellution.server.payment.domain.type.PaymentStatus;
 import shop.sellution.server.payment.dto.request.PaymentReq;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
-import static shop.sellution.server.global.exception.ExceptionCode.INTERNAL_SEVER_ERROR;
-import static shop.sellution.server.global.exception.ExceptionCode.NOT_ENOUGH_STOCK;
+import static shop.sellution.server.global.exception.ExceptionCode.*;
 
 @Slf4j
 @Service
@@ -31,32 +33,47 @@ public class SchedulerService {
     private final OrderRepository orderRepository;
     private final PaymentHistoryRepository paymentHistoryRepository;
     private final PaymentService paymentService;
+    private final CustomerRepository customerRepository;
+
+    // 정기결제가 진행된 주문건수
+    private static int paymentCount;
+    // 정기배송이 진행된 주문건수
+    private static int deliveryCount;
 
 
     // 정기 결제 및 정기 배송 - 임시로 1분 마다 진행
-//    @Scheduled(cron = "0 0/1 * * * *")
+    @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
     public void regularProcess() {
-        log.info("스케줄러 시작");
+        log.info("*************** 스케줄러 시작 *************** ");
+        paymentCount = 0;
+        deliveryCount = 0;
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDate now = LocalDate.now();
         // 승인된 주문이고, 배송상태가 배송전,배송중 인 주문들만 가져온다.
         orderRepository.findOrdersForRegularPayment()
                 .forEach(order -> {
-
                     // 다음 배송일 계산
-                    LocalDateTime nextDeliveryDate = calculateNextDeliveryDate(order);
-                    // 다음 배송일이 있고, 다음 배송일이 오늘 기준 하루전, 2일전인 주문에 대해 정기결제 로직 수행
-                    if (nextDeliveryDate != null && now.isBefore(nextDeliveryDate)) {
-                        log.info("스케줄러 - 정기 결제 시작 - 주문 아이디 {}",order.getId());
-                        paymentService.pay(
-                                PaymentReq.builder()
-                                        .accountId(order.getAccount().getId())
-                                        .orderId(order.getId())
-                                        .customerId(order.getAccount().getId())
-                                        .build()
-                        );
-                        log.info("스케줄러 - 정기 결제 성공 - 주문 아이디 {}",order.getId());
+                    LocalDate nextDeliveryDate = calculateNextDeliveryDate(order, false);
+                    // 다음 배송일이 있고, 다음 배송일기준으로 오늘이 다음배송일 하루전, 2일전인 주문에 대해 정기결제 로직 수행
+                    if (nextDeliveryDate != null && (now.isEqual(nextDeliveryDate.minusDays(1)) || now.isEqual(nextDeliveryDate.minusDays(2)))) {
+                        // 해당 배송주기에 대해 이미 결제한 내역이 없는 주문만 정기결제 [ 다음배송일 하루전 또는 2일전에 결제성공한 기록이 없으면 결제시작 ]
+                        PaymentHistory paymentHistory = paymentHistoryRepository.findAlreadyHasPaymentHistory(order.getId(), nextDeliveryDate.minusDays(2).atStartOfDay());
+                        if (paymentHistory == null) {
+                            log.info("-------------------스케줄러 정기 결제 시작 --------------------");
+                            log.info("정기결제 대상 주문 정보 - 주문 아이디 {}, 주문 상태 {}, 주문 배송상태 {} ", order.getId(), order.getStatus(), order.getDeliveryStatus());
+                            paymentService.pay(
+                                    PaymentReq.builder()
+                                            .accountId(order.getAccount().getId())
+                                            .orderId(order.getId())
+                                            .customerId(order.getAccount().getId())
+                                            .build()
+                            );
+
+                            // 결제된 건수 증가
+                            paymentCount++;
+                            log.info("-------------------스케줄러 정기 결제 성공 --------------------");
+                        }
                     }
                     // ----------------- 위에는 정기결제 아래는 정기배송 로직  -----------------------
 
@@ -65,46 +82,69 @@ public class SchedulerService {
                         // 해당 주문이 현재 배송에 대해 결제가 되어있는지 확인한다. [ 해당 주문의 가장 최근 결제내역을 확인해서 결제완료된 상태인지 확인한다. ]
                         // 해당 주문이 승인상태인지 확인한다.
                         PaymentHistory paymentHistory = paymentHistoryRepository.findFirstByOrderIdOrderByCreatedAtDesc(order.getId());
-                        if(paymentHistory.getStatus() == PaymentStatus.COMPLETE && order.getStatus() == OrderStatus.APPROVED)
-                        {
-
+                        if (paymentHistory != null && paymentHistory.getStatus() == PaymentStatus.COMPLETE && order.getStatus() == OrderStatus.APPROVED) {
                             // 재고가 남아있는지 확인
                             order.getOrderedProducts().forEach(orderedProduct -> {
-                                if(orderedProduct.getProduct().getStock() < orderedProduct.getCount()) {
+                                log.info("재고남았는지 확인 -> 상품 아이디 : {}, 상품 재고 : {}, 주문 수량 : {}", orderedProduct.getProduct().getProductId(), orderedProduct.getProduct().getStock(), orderedProduct.getCount());
+                                if (orderedProduct.getProduct().getStock() < orderedProduct.getCount()) {
                                     throw new BadRequestException(NOT_ENOUGH_STOCK);
                                 }
                             });
 
-                            log.info("스케줄러 - 정기 배송 시작 - 주문 아이디 {}",order.getId());
+                            log.info("-------------------스케줄러 정기 배송 시작 --------------------");
+                            log.info("정기배송 대상 주문 정보 - 주문 아이디 {}, 주문 상태 {}, 주문 배송상태 {}\n오늘 날짜 {} , 정기 배송날짜 {}\n남은 배송횟수 {}, 전체 배송횟수 {}", order.getId(), order.getStatus(), order.getDeliveryStatus(), LocalDate.now(), order.getNextDeliveryDate(), order.getRemainingDeliveryCount(), order.getTotalDeliveryCount());
 
                             // 남은 배송횟수 감소
                             order.decreaseRemainingDeliveryCount();
+                            log.info("남은 배송횟수 감소 후 : {}", order.getRemainingDeliveryCount());
 
                             // 배송 상태를 배송중으로 변경
                             order.changeDeliveryStatus(DeliveryStatus.IN_PROGRESS);
 
                             // 남은 배송횟수가 0이면 배송완료처리
-                            if(order.getRemainingDeliveryCount() == 0) {
+                            if (order.getRemainingDeliveryCount() == 0) {
                                 order.completeDelivery();
                             }
+                            log.info("배송 후 배송 상태 : {}", order.getDeliveryStatus());
+
                             // 주문의 상품재고 감소
                             order.decreaseProductStock();
-                            log.info("스케줄러 - 정기 배송 성공 - 주문 아이디 {}",order.getId());
+                            log.info("회원의 최신 배송일자 갱신전 : {}", order.getCustomer().getLatestDeliveryDate());
+                            // 회원의 최신 배송일자 갱신
+                            order.getCustomer().updateLatestDeliveryDate(LocalDateTime.now());
+                            log.info("회원의 최신 배송일자 갱신후 : {}", order.getCustomer().getLatestDeliveryDate());
+
+                            // 배송된 건수 증가
+                            deliveryCount++;
+
+                            log.info("다음 배송일 갱신 전 : {}", order.getNextDeliveryDate());
+                            // 그 다음 배송일로 갱신
+                            calculateNextDeliveryDate(order, true);
+                            log.info("다음 배송일 갱신 후 : {}", order.getNextDeliveryDate());
+
+                            log.info("-------------------스케줄러 정기 배송 성공 --------------------");
 
                         }
                     }
                 });
-        log.info("스케줄러 종료");
+
+        // 최신 배송일자가 오늘보다 60일 이상 차이나는 회원은 휴면회원으로 변경
+        int updatedCount = customerRepository.updateDormantCustomerType(LocalDateTime.now().minusDays(60));
+
+        log.info("-------------------스케줄러 요약 --------------------");
+        log.info("휴면회원 처리된 회원수 : {}", updatedCount);
+        log.info("결제된 건수 : {}", paymentCount);
+        log.info("배송된 건수 : {}", deliveryCount);
+
+        log.info("*************** 스케줄러 종료 *************** ");
     }
 
 
-
-
     // 가장 가까운 배송일자 계산
-    public LocalDateTime calculateNextDeliveryDate(Order order) {
+    public LocalDate calculateNextDeliveryDate(Order order, boolean isNextDeliveryDateAfterNow) {
         // 단건주문인 경우
         if (order.getType().isOnetime()) {
-            return order.getDeliveryEndDate();
+            return LocalDate.from(order.getDeliveryEndDate());
         }
 
         // 선택된 요일값 [월,화,수 ... ]
@@ -113,28 +153,25 @@ public class SchedulerService {
                 .sorted()
                 .toList();
 
-        // 선택된 n 주차 마다
-        int selectedWeekly = order.getWeekOption().getWeekValue();
         // 선택된 배송 시작일
-        LocalDateTime startDate = order.getDeliveryStartDate();
-        // 마지막 배송일
-        LocalDateTime endDate = order.getDeliveryEndDate();
+        LocalDate startDate = LocalDate.from(order.getDeliveryStartDate());
         // 가장 가까운 배송일
-        LocalDateTime nextDeliveryDate = null;
+        LocalDate nextDeliveryDate = null;
 
 
         // 정기주문 [ 월 단위 ] 인 경우
         if (order.getType().isMonthSubscription()) {
             // 선택된 n 개월 동안
             int selectedMonth = order.getMonthOption().getMonthValue();
-            LocalDateTime subscriptionEndDate = startDate.plusMonths(selectedMonth); // 구독 기간 [ 정기 배송 기간 ]
+            LocalDate subscriptionEndDate = startDate.plusMonths(selectedMonth); // 구독 기간 [ 정기 배송 기간 ]
 
             // 선택된 배송 요일에 대해 반복문을 돌아서 가장 가까운 배송일을 찾는다.
             for (DayOfWeek day : deliveryDays) {
                 nextDeliveryDate = startDate.with(TemporalAdjusters.nextOrSame(day));
                 if (nextDeliveryDate.isBefore(subscriptionEndDate) || nextDeliveryDate.isEqual(subscriptionEndDate)) { // 그 날짜가 구독기간 내에 있으면
                     // 다음 배송일 갱신
-                    order.updateNextDeliveryDate(nextDeliveryDate);
+                    if (isNextDeliveryDateAfterNow) continue; // 두번째로 가까운 배송일을 찾는다. -> 정기배송 후 다음 배송일을 찾기위해
+                    order.updateNextDeliveryDate(nextDeliveryDate.atStartOfDay());
                     return nextDeliveryDate;
                 }
             }
@@ -149,7 +186,8 @@ public class SchedulerService {
             for (DayOfWeek day : deliveryDays) {
                 nextDeliveryDate = startDate.with(TemporalAdjusters.nextOrSame(day));
                 // 다음 배송일 갱신
-                order.updateNextDeliveryDate(nextDeliveryDate);
+                if (isNextDeliveryDateAfterNow) continue; // 두번째로 가까운 배송일을 찾는다. -> 정기배송 후 다음 배송일을 찾기위해
+                order.updateNextDeliveryDate(nextDeliveryDate.atStartOfDay());
                 return nextDeliveryDate;
             }
 
@@ -157,4 +195,6 @@ public class SchedulerService {
 
         throw new BadRequestException(INTERNAL_SEVER_ERROR);
     }
+
+
 }

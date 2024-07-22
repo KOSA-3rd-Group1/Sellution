@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import shop.sellution.server.order.domain.type.OrderType;
 
 import java.time.LocalDateTime;

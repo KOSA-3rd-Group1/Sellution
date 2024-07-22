@@ -17,8 +17,8 @@ public class AccountAuthController {
     private final AccountAuthService accountAuthService;
 
     @PostMapping("/check-account")
-    public Mono<ResponseEntity<CheckAccountRes>> checkAccount(@RequestBody CheckAccountReq req) {
-        return accountAuthService.checkAccount(req) // 비동기로 계좌를 확인합니다.
-                .map(ResponseEntity::ok); // 결과를 ResponseEntity로 래핑합니다.
+    public ResponseEntity<CheckAccountRes> checkAccount(@RequestBody CheckAccountReq req) {
+        return ResponseEntity.ok(accountAuthService.checkAccount(req));
+
     }
 }

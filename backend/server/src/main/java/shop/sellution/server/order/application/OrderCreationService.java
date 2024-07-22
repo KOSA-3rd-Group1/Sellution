@@ -58,6 +58,27 @@ public class OrderCreationService {
     @Transactional
     public void createOrder(Long customerId, SaveOrderReq saveOrderReq) {
         log.info("주문 생성 시작");
+
+        // 단건주문 생성시 예외처리
+        if (saveOrderReq.getOrderType().isOnetime()) {
+            if (saveOrderReq.getMonthOptionId() != null || saveOrderReq.getWeekOptionId() != null) {
+                throw new BadRequestException(INVALID_ORDER_INFO_FOR_ONETIME);
+            }
+        }
+        // 정기주문[월] 생성시 예외처리
+        if (saveOrderReq.getOrderType().isMonthSubscription()) {
+            if (saveOrderReq.getMonthOptionId() == null || saveOrderReq.getWeekOptionId() == null) {
+                throw new BadRequestException(INVALID_ORDER_INFO_FOR_SUB);
+            }
+        }
+        // 정기주문[횟수] 생성시 예외처리
+        if (saveOrderReq.getOrderType().isCountSubscription()) {
+            if (saveOrderReq.getWeekOptionId() == null || saveOrderReq.getTotalDeliveryCount() == null) {
+                throw new BadRequestException(INVALID_ORDER_INFO_FOR_SUB);
+            }
+        }
+
+
         Company company = companyRepository.findById(saveOrderReq.getCompanyId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_COMPANY_ID));
         Customer customer = customerRepository.findById(customerId)
@@ -104,7 +125,7 @@ public class OrderCreationService {
                 .weekOption(weekOption)
                 .code(orderCodeMaker())
                 .type(saveOrderReq.getOrderType())
-                .status(company.getIsAutoApproved().equals("Y") ? OrderStatus.APPROVED : OrderStatus.HOLD)
+                .status(company.getIsAutoApproved().name().equals("Y")? OrderStatus.APPROVED : OrderStatus.HOLD)
                 .perPrice(totalPrice(saveOrderReq.getOrderedProducts()))
                 .deliveryStartDate(saveOrderReq.getDeliveryStartDate())
                 .deliveryEndDate(deliveryInfo.getDeliveryEndDate())
@@ -113,7 +134,7 @@ public class OrderCreationService {
                 .remainingDeliveryCount(deliveryInfo.getTotalDeliveryCount())
                 .build();
         order.setTotalPrice(order.getPerPrice()*order.getTotalDeliveryCount());
-
+        log.info("생성된 주문 배송시작일: {}", order.getDeliveryStartDate());
         Order savedOrder = orderRepository.save(order);
 
         // OrderedProduct 엔티티 생성 및 연결
@@ -124,7 +145,7 @@ public class OrderCreationService {
         List<SelectedDay> selectedDays = createSelectedDays(order, saveOrderReq.getDayOptionIds());
         order.setSelectedDays(selectedDays);
 
-        log.info("생성된 주문 : {}", order.getId());
+        log.info("생성된 주문번호 : {}", order.getId());
 
     }
 
@@ -141,8 +162,12 @@ public class OrderCreationService {
                 .collect(Collectors.toList());
     }
 
-    private List<OrderedProduct> createOrderedProducts(Order
-                                                               order, List<Product> products, List<FindOrderedProductSimpleReq> orderedProducts) {
+    private List<OrderedProduct> createOrderedProducts(
+            Order order,
+            List<Product> products,
+            List<FindOrderedProductSimpleReq> orderedProducts
+    ) {
+
         return orderedProducts.stream()
                 .map(orderedProduct -> {
                     Product product = products.stream()
@@ -155,6 +180,7 @@ public class OrderCreationService {
                             .product(product)
                             .price(product.getCost())
                             .discountRate(product.getDiscountRate())
+                            .count(orderedProduct.getCount())
                             .build();
                 })
                 .collect(Collectors.toList());

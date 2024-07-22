@@ -2,7 +2,10 @@ package shop.sellution.server.payment.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -38,13 +41,13 @@ public class PaymentCancelService {
     private final AccountRepository accountRepository;
     private final PgTokenClient pgTokenClient;
     private final WebClient webClient;
-    private final Duration TIMEOUT = Duration.ofSeconds(10);
+    private final Duration TIMEOUT = Duration.ofSeconds(2);
 
 
     public void cancelPayment(PaymentReq paymentReq) {
         log.info("결제 취소 시작");
 
-        // 외부 pg사 에 결제 요청  [ pg사 에서는 입력받은 실계좌 인증 후 결제취소가 진행된다. ]
+        // 외부 pg사 에 결제 취소 요청  [ pg사 에서는 입력받은 실계좌 인증 후 결제취소가 진행된다. ]
 
         Account account = accountRepository.findById(paymentReq.getAccountId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACCOUNT));
@@ -56,40 +59,70 @@ public class PaymentCancelService {
             throw new BadRequestException(ALREADY_DELIVERED);
         }
 
+        String token = pgTokenClient.getApiAccessToken(order.getPerPrice(), TokenType.PAYMENT_CANCEL);
 
-        pgTokenClient.getApiAccessToken(order.getPerPrice(), TokenType.PAYMENT_CANCEL)
-                .flatMap(apiAccessToken -> {
-                    Map<String, String> body = Map.of(
-                            "bankCode", account.getBankCode(),
-                            "accountNumber", account.getAccountNumber(),
-                            "price", Integer.toString(order.getPerPrice())
-                    );
-                    return webClient.post()
-                            .uri(uriBuilder -> uriBuilder
-                                    .path("/pay/cancel")
-                                    .build()
-                            )
-                            .header("Authorization", apiAccessToken)
-                            .bodyValue(body)
-                            .retrieve()
-                            .onStatus(HttpStatusCode::is4xxClientError, response -> { // 4xx 에러에 대한 처리
-                                log.error("4xx error 발생: {}", response.statusCode());
-                                return Mono.error(new BadRequestException(FAIL_TO_GET_API_TOKEN));
-                            })
-                            .onStatus(HttpStatusCode::is5xxServerError, response -> { // 5xx 에러에 대한 처리
-                                log.error("5xx error 발생: {}", response.statusCode());
-                                return Mono.error(new ExternalApiException(EXTERNAL_SEVER_ERROR));
-                            })
-                            .toBodilessEntity()
-                            .timeout(TIMEOUT);
+        ResponseEntity<Void> response = webClient.post()
+                .uri("/pay/cancel")
+                .header("Authorization", token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(Map.of(
+                        "bankCode", account.getBankCode(),
+                        "accountNumber", account.getAccountNumber(),
+                        "price", Integer.toString(order.getPerPrice())
+                ))
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, error -> {
+                    log.error("4xx error 발생 : {}",error.statusCode());
+                    throw new BadRequestException(FAIL_TO_PAY_CANCEL);
                 })
-                .doOnSuccess(result -> {
-                    createRefundPaymentHistory(order, account);
-                    log.info("결제 취소 성공");
+                .onStatus(HttpStatusCode::is5xxServerError, error -> {
+                    log.error("5xx error 발생 : {} ",error.statusCode());
+                    throw new ExternalApiException(EXTERNAL_SEVER_ERROR);
                 })
-                .doOnError(error -> {
-                    log.error("결제 취소 실패", error);
-                });
+                .toBodilessEntity()
+                .block(TIMEOUT);
+
+        if(response != null && response.getStatusCode() == HttpStatus.OK) {
+            createRefundPaymentHistory(order, account);
+            log.info("결제 취소 성공");
+        } else {
+            log.error("결제 취소 실패");
+        }
+
+
+//        pgTokenClient.getApiAccessToken(order.getPerPrice(), TokenType.PAYMENT_CANCEL)
+//                .flatMap(apiAccessToken -> {
+//                    Map<String, String> body = Map.of(
+//                            "bankCode", account.getBankCode(),
+//                            "accountNumber", account.getAccountNumber(),
+//                            "price", Integer.toString(order.getPerPrice())
+//                    );
+//                    return webClient.post()
+//                            .uri(uriBuilder -> uriBuilder
+//                                    .path("/pay/cancel")
+//                                    .build()
+//                            )
+//                            .header("Authorization", apiAccessToken)
+//                            .bodyValue(body)
+//                            .retrieve()
+//                            .onStatus(HttpStatusCode::is4xxClientError, response -> { // 4xx 에러에 대한 처리
+//                                log.error("4xx error 발생: {}", response.statusCode());
+//                                return Mono.error(new BadRequestException(FAIL_TO_GET_API_TOKEN));
+//                            })
+//                            .onStatus(HttpStatusCode::is5xxServerError, response -> { // 5xx 에러에 대한 처리
+//                                log.error("5xx error 발생: {}", response.statusCode());
+//                                return Mono.error(new ExternalApiException(EXTERNAL_SEVER_ERROR));
+//                            })
+//                            .toBodilessEntity()
+//                            .timeout(TIMEOUT);
+//                })
+//                .doOnSuccess(result -> {
+//                    createRefundPaymentHistory(order, account);
+//                    log.info("결제 취소 성공");
+//                })
+//                .doOnError(error -> {
+//                    log.error("결제 취소 실패", error);
+//                });
     }
 
 

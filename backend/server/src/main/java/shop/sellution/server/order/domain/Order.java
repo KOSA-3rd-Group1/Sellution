@@ -13,6 +13,7 @@ import shop.sellution.server.global.BaseEntity;
 import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.order.domain.type.OrderStatus;
 import shop.sellution.server.order.domain.type.DeliveryStatus;
+import shop.sellution.server.product.domain.Product;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -158,12 +159,12 @@ public class Order extends BaseEntity {
 
     // 주문의 상품재고 감소
     public void decreaseProductStock() {
-        orderedProducts
-                .forEach(
-                        orderedProduct ->
-                                orderedProduct
-                                        .getProduct()
-                                        .decreaseStock(orderedProduct.getCount())
-                );
+        orderedProducts.forEach(orderedProduct -> {
+            Product product = orderedProduct.getProduct();
+            product.decreaseStock(orderedProduct.getCount());
+        });
     }
+
+
+
 }
