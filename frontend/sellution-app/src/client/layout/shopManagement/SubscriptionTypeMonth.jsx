@@ -100,7 +100,7 @@ const SubscriptionTypeMonth = () => {
             classNamePrefix='select'
             onChange={handleChangeSelectedMonthOptions}
             options={selectMonthOptions}
-            placeholder='카테고리 선택'
+            placeholder='개월 선택'
             value={selectedMonthOptions}
             theme={(theme) => ({
               ...theme,

@@ -77,7 +77,7 @@ const SaleSettingComponent = () => {
         <div className='flex flex-col gap-10 px-4'>
           <div className='w-2/3'>
             <div className='w-full min-h-20 h-20 max-h-20 text-base font-semibold flex items-center'>
-              <div>판매 설정 관리</div>
+              <div>쇼핑몰 판매 설정</div>
             </div>
             <ul className=' w-full min-w-fit flex flex-col text-sm border-t-2'>
               <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
@@ -113,10 +113,14 @@ const SaleSettingComponent = () => {
         </div>
       </section>
       <FooterComponent
+        btn1={{ label: '취소', event: handleSaveData }}
+        btn2={{ label: '변경사항 적용', event: handleSaveData }}
+      />
+      {/* <FooterComponent
         // btn1={{ label: '결제 수단 삭제', event: handleDeleteData }}
         btn2={{ label: '결제 수단 삭제', event: handleSaveData }}
         back={{ label: '목록으로', event: moveList }}
-      />
+      /> */}
     </div>
   );
 };
