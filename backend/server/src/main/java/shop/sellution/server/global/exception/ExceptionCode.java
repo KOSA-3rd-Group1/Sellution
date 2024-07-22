@@ -61,6 +61,7 @@ public enum ExceptionCode {
     ALREADY_DELIVERED(5013,"이미 배송이 됬습니다." ),
     ALREADY_REGISTERED_EASY_PWD(5014,"이미 간편비밀번호가 등록 되어있습니다."),
     NOT_MATCH_ACCOUNT_ID(5015,"해당 주문에 사용되지않은 계좌입니다." ),
+    NOT_ENOUGH_STOCK(5016,"재고가 부족합니다." ),
 
 
     // ---------------------------- Address 6501 ~ 7000 ---------------------------------------

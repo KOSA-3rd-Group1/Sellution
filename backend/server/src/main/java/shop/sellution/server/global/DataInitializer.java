@@ -10,6 +10,7 @@ import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.address.domain.Address;
 import shop.sellution.server.address.domain.AddressRepository;
 import shop.sellution.server.category.domain.Category;
+import shop.sellution.server.category.domain.CategoryRepository;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.DayOption;
 import shop.sellution.server.company.domain.MonthOption;
@@ -48,6 +49,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class DataInitializer implements ApplicationListener<ContextRefreshedEvent> {
 
+    private final CategoryRepository categoryRepository;
     private boolean alreadySetup = false;
     private final Random random = new Random();
     private final CompanyRepository companyRepository;
@@ -139,6 +141,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         포켓샐러드 = Company.builder()
                 .displayName("Pocket Salad")
                 .name("PocketSalad")
+                .shopUrl("https://sellution/shopping/pocketsalad")
                 .isShopVisible(DisplayStatus.Y)
                 .isAutoApproved(DisplayStatus.N)
                 .isNewMemberEvent(DisplayStatus.N)
@@ -180,6 +183,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         테이스티샐러드 = Category.builder()
                 .name("테이스티샐러드")
                 .build();
+
+        categoryRepository.save(데일리샐러드);
+        categoryRepository.save(테이스티샐러드);
     }
 
 
@@ -430,8 +436,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         테스트용공용계좌2 = Account.builder()
                 .customer(휴면회원)
-                .accountNumber("42750204039102")
-                .bankCode("004")
+                .accountNumber("110555920510")
+                .bankCode("088")
                 .build();
 
         accountRepository.save(테스트용공용계좌2);
@@ -446,6 +452,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .addressDetail("포스코타워 3층")
                 .zipcode("06164")
                 .phoneNumber("010-7598-5112")
+                .isDefaultAddress(DisplayStatus.Y)
                 .build();
 
         addressRepository.save(공용주소);
@@ -458,6 +465,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .addressDetail("포스코타워 3층")
                 .zipcode("06164")
                 .phoneNumber("010-7598-5112")
+                .isDefaultAddress(DisplayStatus.Y)
                 .build();
 
         addressRepository.save(공용주소2);

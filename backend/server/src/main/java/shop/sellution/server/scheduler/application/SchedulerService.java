@@ -2,12 +2,13 @@ package shop.sellution.server.scheduler.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.order.domain.Order;
 import shop.sellution.server.order.domain.repository.OrderRepository;
+import shop.sellution.server.order.domain.type.DeliveryStatus;
+import shop.sellution.server.order.domain.type.OrderStatus;
 import shop.sellution.server.payment.application.PaymentService;
 import shop.sellution.server.payment.domain.PaymentHistory;
 import shop.sellution.server.payment.domain.repository.PaymentHistoryRepository;
@@ -20,6 +21,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 import static shop.sellution.server.global.exception.ExceptionCode.INTERNAL_SEVER_ERROR;
+import static shop.sellution.server.global.exception.ExceptionCode.NOT_ENOUGH_STOCK;
 
 @Slf4j
 @Service
@@ -56,18 +58,31 @@ public class SchedulerService {
                         );
                         log.info("스케줄러 - 정기 결제 성공 - 주문 아이디 {}",order.getId());
                     }
-                    // ----------------------------------------
+                    // ----------------- 위에는 정기결제 아래는 정기배송 로직  -----------------------
 
                     // 오늘이 배송일인 주문에 대해 배송처리
                     if (nextDeliveryDate != null && now.isEqual(nextDeliveryDate)) {
                         // 해당 주문이 현재 배송에 대해 결제가 되어있는지 확인한다. [ 해당 주문의 가장 최근 결제내역을 확인해서 결제완료된 상태인지 확인한다. ]
+                        // 해당 주문이 승인상태인지 확인한다.
                         PaymentHistory paymentHistory = paymentHistoryRepository.findFirstByOrderIdOrderByCreatedAtDesc(order.getId());
-                        if(paymentHistory.getStatus() == PaymentStatus.COMPLETE)
+                        if(paymentHistory.getStatus() == PaymentStatus.COMPLETE && order.getStatus() == OrderStatus.APPROVED)
                         {
+
+                            // 재고가 남아있는지 확인
+                            order.getOrderedProducts().forEach(orderedProduct -> {
+                                if(orderedProduct.getProduct().getStock() < orderedProduct.getCount()) {
+                                    throw new BadRequestException(NOT_ENOUGH_STOCK);
+                                }
+                            });
+
                             log.info("스케줄러 - 정기 배송 시작 - 주문 아이디 {}",order.getId());
 
                             // 남은 배송횟수 감소
                             order.decreaseRemainingDeliveryCount();
+
+                            // 배송 상태를 배송중으로 변경
+                            order.changeDeliveryStatus(DeliveryStatus.IN_PROGRESS);
+
                             // 남은 배송횟수가 0이면 배송완료처리
                             if(order.getRemainingDeliveryCount() == 0) {
                                 order.completeDelivery();

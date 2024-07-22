@@ -77,7 +77,7 @@ public class PaymentService {
                 .doOnSuccess(result -> {
                     createSuccessPaymentHistory(order,account);
                     if(order.getCustomer().getType() == CustomerType.DORMANT || order.getCustomer().getType() == CustomerType.NEW){
-                        order.getCustomer().changeToNormalCustomer();
+                        order.getCustomer().changeToNormalCustomer(); // 결제 성공시 일반회원으로 변경
                     }
                     log.info("결제 성공");
                 })

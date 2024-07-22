@@ -145,6 +145,12 @@ public class Order extends BaseEntity {
         this.nextDeliveryDate = nextDeliveryDate;
     }
 
+    // 배송상태 변경
+    public void changeDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+    }
+
+
     // 남은 배송횟수 감소
     public void decreaseRemainingDeliveryCount() {
         this.remainingDeliveryCount--;
