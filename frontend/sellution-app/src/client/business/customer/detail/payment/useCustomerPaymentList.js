@@ -22,25 +22,25 @@ export const useCustomerPaymentList = () => {
     {
       key: 'paymentMethod',
       label: '결제 수단',
-      type: 'search',
+      //   type: 'search',
       width: 'min-w-48 w-48 max-w-48',
     },
     {
       key: 'bank',
       label: '결제사',
-      type: 'search',
+      //   type: 'search',
       width: 'min-w-48 w-48 max-w-48',
     },
     {
       key: 'accountNumber',
       label: '계좌번호',
-      type: 'search',
+      //   type: 'search',
       width: 'min-w-56 w-56 max-w-56',
     },
     {
       key: 'createdAt',
       label: '등록일',
-      type: 'sort',
+      //   type: 'sort',
       width: 'min-w-48 w-48 max-w-48',
     },
   ];
