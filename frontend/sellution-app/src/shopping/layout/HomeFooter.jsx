@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import useLogoHeaderNav from './../business/layout/useLogoHeaderNav';
+import useClientName from '../business/layout/useClientName';
 import {
   HomeIcon,
   SubscriptionDeliveryIcon,
@@ -9,7 +9,7 @@ import {
 } from '../utility/assets/Icons';
 
 const HomeFooter = () => {
-  const { clientName } = useLogoHeaderNav();
+  const { clientName } = useClientName();
   return (
     <nav className='fixed bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-lg h-16 bg-white flex shadow-footer p-1.5'>
       <Link

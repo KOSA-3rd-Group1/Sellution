@@ -1,5 +1,4 @@
 import { Outlet } from 'react-router-dom';
-// header, footer 추가 예정
 const BasicLayout = () => {
   return (
     <div className='flex justify-center h-screen'>
