@@ -461,6 +461,23 @@ export const SimpleOrderIcon = (props) => (
   </svg>
 );
 
+//위 꺽쇠 아이콘
+export const ChevronUpIcon = (props) => (
+  <svg
+    fill='currentColor'
+    className={props.className}
+    {...props}
+    viewBox='0 0 16 16'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+    <g id='SVGRepo_tracerCarrier' strokeLinecap='round' strokeLinejoin='round'></g>
+    <g id='SVGRepo_iconCarrier'>
+      <path d='m8.05 5.82 5.56 5.66.89-.87L8.91 4.9a1.18 1.18 0 0 0-.86-.39 1.13 1.13 0 0 0-.85.39l-5.7 5.7.88.89z'></path>
+    </g>
+  </svg>
+);
+
 //아래 꺽쇠 아이콘
 export const ChevronDownIcon = (props) => (
   <svg
