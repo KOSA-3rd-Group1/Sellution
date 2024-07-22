@@ -43,7 +43,9 @@ public enum ExceptionCode {
     SAME_OLD_PASSWORD(4011, "기존에 사용한 이력이 있는 비밀번호입니다."),
 
 
+
     // ---------------------------- Account, Order, Pay , EasyPwd 5001 ~ 5500 ---------------------------------------
+
     NOT_FOUND_CUSTOMER(5001,"요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
     INVALID_ACCOUNT_INFO(5002,"유효하지않은 계좌정보입니다."),
     NOT_FOUND_ACCOUNT(5001,"요청한 ID에 해당하는 계좌를 찾을 수 없습니다."),
@@ -64,9 +66,9 @@ public enum ExceptionCode {
     NOT_ENOUGH_STOCK(5016,"재고가 부족합니다." ),
 
 
-    // ---------------------------- Address 6501 ~ 7000 ---------------------------------------
+    // ---------------------------- Address, category, event 6501 ~ 7000 ---------------------------------------
 
-    NOT_FOUND_CUSTOMER_FOR_ADDRESS(6501, "주소와 연관된 고객을 찾을 수 없습니다."),
+    NOT_FOUND_CUSTOMER_FOR_ADDRESS(6501, "주소와 연관된 회원을 찾을 수 없습니다."),
     FAILED_TO_RESET_DEFAULT_ADDRESS(6502, "기본 주소 재설정에 실패했습니다."),
     INVALID_ADDRESS_DATA(6503, "유효하지 않은 주소 데이터입니다."),
 
@@ -74,6 +76,8 @@ public enum ExceptionCode {
     FAIL_TO_GENERATE_QR_CODE(6602, "QR 코드 생성에 실패했습니다."),
 
     NOT_FOUND_CATEGORY(6701, "요청한 ID에 해당하는 카테고리를 찾을 수 없습니다."),
+
+    NOT_FOUND_EVENT(6901, "요청한 ID에 해당하는 이벤트를 찾을 수 없습니다."),
 
     // ---------------------------- Client,Customer 8001 ~ 8999 ---------------------------------------
 
