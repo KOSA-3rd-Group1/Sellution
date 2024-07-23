@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import axios from 'axios';
@@ -13,7 +13,6 @@ const DetailComponent = () => {
   });
 
   useEffect(() => {
-    // 카테고리 정보를 가져오는 API 호출
     const fetchCategory = async () => {
       try {
         const response = await axios.get(
@@ -37,10 +36,16 @@ const DetailComponent = () => {
     setCategory((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (window.confirm('정말로 이 카테고리를 삭제하시겠습니까?')) {
-      // 삭제 API 호출
-      console.log('카테고리 삭제');
+      try {
+        await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/categories/${categoryId}`);
+        alert('카테고리가 성공적으로 삭제되었습니다.');
+        navigate('/product/category');
+      } catch (error) {
+        console.error('카테고리 삭제에 실패했습니다.', error);
+        alert('카테고리 삭제에 실패했습니다.');
+      }
     }
   };
 
@@ -55,6 +60,7 @@ const DetailComponent = () => {
         saveCategoryReq,
       );
       alert('변경사항이 적용되었습니다.');
+      navigate('/product/category');
     } catch (error) {
       console.error('변경사항 적용에 실패했습니다.', error);
       alert('변경사항 적용에 실패했습니다.');
@@ -108,8 +114,8 @@ const DetailComponent = () => {
             <label className='block text-sm font-medium text-gray-700'>상품 수</label>
             <p className='mt-1 text-sm text-gray-500'>{category.productCount} 개</p>
           </div>
+          <hr />
         </div>
-        <hr />
       </section>
 
       <FooterComponent

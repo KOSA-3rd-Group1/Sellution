@@ -30,6 +30,12 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getCategoryById(categoryId));
     }
 
+    @GetMapping("/check")
+    public ResponseEntity<Boolean> checkCategoryNameDuplicate(@RequestParam String name) {
+        boolean isDuplicate = categoryService.isCategoryNameDuplicate(name);
+        return ResponseEntity.ok(isDuplicate);
+    }
+
     @PostMapping
     public ResponseEntity<Void> createCategory(@Valid @RequestBody SaveCategoryReq saveCategoryReq) {
         categoryService.createCategory(saveCategoryReq);

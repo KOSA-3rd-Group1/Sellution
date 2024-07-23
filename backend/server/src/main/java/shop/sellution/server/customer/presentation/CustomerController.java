@@ -5,9 +5,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import shop.sellution.server.customer.application.CustomerService;
+import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.dto.request.*;
+import shop.sellution.server.customer.dto.resonse.FindCustomerInfoRes;
 import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
 
@@ -94,4 +97,14 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "비밀번호 재설정 오청 중 오류가 발생햇습니다."));
         }
     }
+
+
+    @GetMapping("/mypage/{customerId}")
+    public ResponseEntity<FindCustomerInfoRes> getCustomerInfo(@PathVariable Long customerId) {
+        FindCustomerInfoRes customerInfo = customerService.getCustomerInfo(customerId);
+        return ResponseEntity.ok(customerInfo);
+    }
+
+
+
 }

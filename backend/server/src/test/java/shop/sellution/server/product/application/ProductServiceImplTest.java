@@ -16,11 +16,13 @@ import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
+import shop.sellution.server.product.S3Service;
 import shop.sellution.server.product.domain.*;
 import shop.sellution.server.product.dto.request.SaveProductReq;
 import shop.sellution.server.product.dto.response.FindAllProductRes;
 import shop.sellution.server.product.dto.response.FindProductRes;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +43,9 @@ class ProductServiceImplTest {
 
     @Mock
     private CompanyRepository companyRepository;
+
+    @Mock
+    private S3Service s3Service;
 
     @InjectMocks
     private ProductServiceImpl clientProductService;
@@ -129,34 +134,57 @@ class ProductServiceImplTest {
 
     @DisplayName("상품을 생성한다.")
     @Test
-    void createProduct_Success() {
+    void createProduct_Success() throws IOException {
         when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));
         when(categoryRepository.findByName(anyString())).thenReturn(Optional.of(category));
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
-        clientProductService.createProduct(saveProductReq);
+        clientProductService.createProduct(saveProductReq, null, null, null);
 
         verify(productRepository, times(1)).save(any(Product.class));
     }
 
     @DisplayName("상품을 수정한다.")
     @Test
-    void updateProduct_Success() {
+    void updateProduct_Success() throws IOException{
         when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
         when(categoryRepository.findByName(anyString())).thenReturn(Optional.of(category));
 
-        clientProductService.updateProduct(1L, saveProductReq);
+        clientProductService.updateProduct(1L, saveProductReq, null, null, null);
 
         verify(productRepository, times(1)).save(any(Product.class));
     }
 
-    @DisplayName("상품을 삭제한다.")
-    @Test
-    void deleteProduct_Success() {
-        doNothing().when(productRepository).deleteById(anyLong());
+//    @DisplayName("상품을 삭제한다.")
+//    @Test
+//    void deleteProduct_Success() {
+//        doNothing().when(productRepository).deleteById(anyLong());
+//
+//        clientProductService.deleteProduct(1L);
+//
+//        verify(productRepository, times(1)).deleteById(anyLong());
+//    }
+@DisplayName("상품을 삭제한다.")
+@Test
+void deleteProduct_Success() {
+    long productId = 1L;
+    List<ProductImage> images = List.of(
+            ProductImage.builder().imageUrl("image1.jpg").build(),
+            ProductImage.builder().imageUrl("image2.jpg").build()
+    );
 
-        clientProductService.deleteProduct(1L);
+    when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+    when(productImageRepository.findByProductProductId(productId)).thenReturn(images);
+    doNothing().when(s3Service).deleteFile(anyString());
+    doNothing().when(productImageRepository).deleteAll(anyList());
+    doNothing().when(productRepository).delete(any(Product.class));
 
-        verify(productRepository, times(1)).deleteById(anyLong());
-    }
+    clientProductService.deleteProduct(productId);
+
+    verify(productRepository, times(1)).findById(productId);
+    verify(productImageRepository, times(1)).findByProductProductId(productId);
+    verify(s3Service, times(2)).deleteFile(anyString());
+    verify(productImageRepository, times(1)).deleteAll(images);
+    verify(productRepository, times(1)).delete(product);
+}
 }

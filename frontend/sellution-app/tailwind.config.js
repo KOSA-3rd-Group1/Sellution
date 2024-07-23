@@ -19,6 +19,10 @@ export default {
         },
         sidebarline: 'D3D6E0',
       },
+      boxShadow: {
+        header: '2px -1px 5px rgba(0,0,0,0.2)',
+        footer: '0 -5px 5px -5px rgba(0,0,0,0.2);',
+      },
     },
   },
   plugins: [
@@ -33,6 +37,19 @@ export default {
         },
         '.sideBtn': {
           '@apply flex flex-row items-center': '',
+        },
+        '.loginContainer': {
+          'container-type': 'inline-size',
+          'transform-style': 'preserve-3d',
+          'transition-property': 'outline',
+        },
+        '.scene': {
+          'mask-image': `linear-gradient(transparent, white var(--buff) calc(100% - var(--buff)), transparent),
+                         linear-gradient(90deg, transparent, white var(--buff) calc(100% - var(--buff)), transparent)`,
+          'mask-composite': 'intersect',
+        },
+        '.preserve-3d': {
+          'transform-style': 'preserve-3d',
         },
       });
     },

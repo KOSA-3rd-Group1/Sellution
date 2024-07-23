@@ -25,7 +25,7 @@ public class ProductImage {
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "purpose_of_use", length = 20,nullable = false)
+    @Column(name = "purpose_of_use",nullable = false,columnDefinition = "ENUM('THUMBNAIL','LIST','DETAILS')")
     private ProductImageType purposeOfUse;
 
 }

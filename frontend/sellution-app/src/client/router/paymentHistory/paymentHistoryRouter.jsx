@@ -6,7 +6,6 @@ import LazyComponent from '@/client/layout/partials/LazyComponet';
 import MainHeaderComponent from '@/client/layout/partials/MainHeaderComponent';
 
 const ListPage = lazy(() => import('@/client/page/paymentHistory/ListPage'));
-const DetailPage = lazy(() => import('@/client/page/paymentHistory/DetailPage'));
 
 const paymentHistoryRouter = () => {
   return [
@@ -18,21 +17,6 @@ const paymentHistoryRouter = () => {
           title={'결제 내역 관리'}
         >
           <LazyComponent Component={ListPage} />
-        </MainHeaderComponent>
-      ),
-    },
-    {
-      path: ':paymentHistoryId',
-      element: (
-        <MainHeaderComponent
-          breadcrumbs={[
-            { label: '홈', link: '/home' },
-            { label: '결제 내역 관리', link: '/payment-history' },
-            { label: '결제 내역 상세' },
-          ]}
-          title={'결제 내역 상세 정보'}
-        >
-          <LazyComponent Component={DetailPage} />
         </MainHeaderComponent>
       ),
     },

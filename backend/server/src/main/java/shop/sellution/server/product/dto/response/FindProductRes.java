@@ -32,7 +32,7 @@ public class FindProductRes {
                 .code(product.getCode())
                 .thumbnailImage(thumbnailImage)
                 .name(product.getName())
-                .categoryName(product.getCategory().getName())
+                .categoryName(product.getCategory() != null ? product.getCategory().getName() : "카테고리없음")
                 .isVisible(product.getIsVisible())
                 .cost(product.getCost())
                 .stock(product.getStock())

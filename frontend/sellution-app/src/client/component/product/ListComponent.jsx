@@ -1,48 +1,56 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const ListComponent = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1); // 프론트엔드는 1부터 시작
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const itemsPerPage = 10;
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
 
   const handleRowClick = (id) => {
-    navigate(`/products/${id}`);
+    navigate(`/product/${id}`);
   };
 
   useEffect(() => {
-    // 백엔드 API
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/products`)
+      .get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
+        params: {
+          page: currentPage - 1, // 백엔드는 0부터 시작하므로 1을 빼줌
+          size: itemsPerPage,
+        },
+      })
       .then((response) => {
-        setProducts(response.data.content); // 백엔드에서 반환된 데이터 구조에 따라 변경
+        console.log('API Response:', response.data);
+        setProducts(response.data.content);
+        setTotalPages(response.data.totalPages);
+        setTotalElements(response.data.totalElements);
       })
       .catch((error) => {
         console.error('There was an error fetching the products!', error);
       });
-  }, []);
+  }, [currentPage, itemsPerPage]);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
   useEffect(() => {
     // currentPage가 변경될 때마다 스크롤을 맨 위로 초기화
     window.scrollTo(0, 0);
   }, [currentPage]);
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = useMemo(
-    () => products.slice(indexOfFirstItem, indexOfLastItem),
-    [products, indexOfFirstItem, indexOfLastItem],
-  );
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
 
   const renderPageNumbers = () => {
-    const totalPages = Math.ceil(products.length / itemsPerPage);
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, startPage + 4);
 
@@ -53,7 +61,7 @@ const ListComponent = () => {
     return (
       <div className='flex justify-end'>
         <button
-          onClick={() => paginate(Math.max(1, currentPage - 1))}
+          onClick={() => paginate(currentPage - 1)}
           className='mx-1 px-3 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
           disabled={currentPage === 1}
         >
@@ -73,7 +81,7 @@ const ListComponent = () => {
           </button>
         ))}
         <button
-          onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
+          onClick={() => paginate(currentPage + 1)}
           className='mx-1 px-3 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
           disabled={currentPage === totalPages}
         >
@@ -87,7 +95,7 @@ const ListComponent = () => {
     if (selectAll) {
       setSelectedItems([]);
     } else {
-      setSelectedItems(currentItems.map((item) => item.productId));
+      setSelectedItems(products.map((item) => item.productId));
     }
     setSelectAll(!selectAll);
   };
@@ -100,16 +108,40 @@ const ListComponent = () => {
     }
   };
 
-  // const handleRowClick = (id) => {
-  //   navigate(`/products/${id}`);
-  // };
+  const handleDeleteItems = async () => {
+    if (window.confirm('체크하신 상품을 삭제하시겠습니까?')) {
+      try {
+        const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products`, {
+          data: selectedItems,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log('Delete response:', response);
+        // 삭제 후 목록 새로고침
+        setSelectedItems([]);
+        setSelectAll(false);
+        const refreshedProducts = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
+          params: {
+            page: currentPage - 1,
+            size: itemsPerPage,
+          },
+        });
+        setProducts(refreshedProducts.data.content);
+        setTotalPages(refreshedProducts.data.totalPages);
+        setTotalElements(refreshedProducts.data.totalElements);
+      } catch (error) {
+        console.error('There was an error deleting the products!', error);
+      }
+    }
+  };
 
   return (
     <div className='relative w-full h-full justify-between'>
       <section className='absolute w-full h-full flex flex-col'>
         <div className='flex justify-between items-center mb-2'>
           <div className='flex items-center'>
-            총 {products.length}건 / 선택 {selectedItems.length}건
+            총 {totalElements}건 / 선택 {selectedItems.length}건
           </div>
           <div className='flex items-center'>
             <Link
@@ -118,7 +150,10 @@ const ListComponent = () => {
             >
               상품 등록
             </Link>
-            <button className='mx-1 px-4 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'>
+            <button
+              onClick={handleDeleteItems}
+              className='mx-1 px-4 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
+            >
               상품 삭제
             </button>
           </div>
@@ -203,7 +238,7 @@ const ListComponent = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentItems.map((product, index) => (
+                {products.map((product, index) => (
                   <tr
                     key={product.productId}
                     className='hover:bg-brandOrange-light cursor-pointer h-14'

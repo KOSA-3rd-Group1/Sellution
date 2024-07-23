@@ -43,10 +43,34 @@ export const ListBtn = (props) => (
 
 export const EventBtn = ({ Icon, label, ...attr }) => (
   <button
-    className={`h-8 w-fit px-2 row-center-position gap-3 text-xs text-brandOrange border border-brandOrange rounded-md bg-white `}
+    className={`h-8 w-fit min-w-fit px-2 row-center-position gap-3 text-xs text-brandOrange border border-brandOrange rounded-md bg-white `}
     {...attr}
   >
     {Icon && <Icon className='object-contain h-5' />}
     <div>{label}</div>
+  </button>
+);
+
+export const NotBorderBtn = ({ Icon, label, ...attr }) => (
+  <button
+    className={`h-8 w-fit min-w-fit px-2 row-center-position gap-2 text-xs text-black border-transparent cursor-default`}
+    {...attr}
+  >
+    {Icon && <Icon className='object-contain h-5' />}
+    <div>{label}</div>
+  </button>
+);
+
+export const CountOrderBtn = ({ Icon, label, count, ...attr }) => (
+  <button
+    className={`h-8 w-fit min-w-fit px-2 row-center-position gap-2 text-xs bg-brandOrange-light border border-brandOrange rounded-md text-black cursor-default`}
+    {...attr}
+  >
+    {Icon && <Icon className='object-contain h-5' />}
+    <div className='flex items-center'>
+      <div>{label}</div>
+      <div className='pl-2 pr-1 align font-bold text-[#FF4800]'>{count}</div>
+      <div>건</div>
+    </div>
   </button>
 );

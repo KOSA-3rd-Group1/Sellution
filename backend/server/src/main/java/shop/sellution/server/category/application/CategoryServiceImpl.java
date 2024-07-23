@@ -9,7 +9,10 @@ import shop.sellution.server.category.domain.Category;
 import shop.sellution.server.category.domain.CategoryRepository;
 import shop.sellution.server.category.dto.request.SaveCategoryReq;
 import shop.sellution.server.category.dto.response.FindCategoryRes;
+import shop.sellution.server.global.exception.BadRequestException;
+import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.global.type.DisplayStatus;
+import shop.sellution.server.product.S3Service;
 import shop.sellution.server.product.domain.ProductRepository;
 @Service
 @Transactional
@@ -32,9 +35,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     @Override
     public FindCategoryRes getCategoryById(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_CATEGORY));
         int productCount = (int) productRepository.countByCategoryCategoryId(categoryId);
         return FindCategoryRes.fromEntity(category, productCount);
+    }
+
+    @Override
+    public boolean isCategoryNameDuplicate(String name) {
+        return categoryRepository.findByName(name).isPresent();
     }
 
     @Override
@@ -47,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void updateCategory(Long categoryId, SaveCategoryReq saveCategoryReq) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_CATEGORY));
         saveCategoryReq.updateEntity(category);
         categoryRepository.save(category);
     }

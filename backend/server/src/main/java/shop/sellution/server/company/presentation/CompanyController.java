@@ -1,12 +1,17 @@
 package shop.sellution.server.company.presentation;
 
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import shop.sellution.server.company.application.CompanyDisplaySettingServiceImpl;
 import shop.sellution.server.company.application.CompanySaleSettingServiceImpl;
 import shop.sellution.server.company.application.CompanyUrlSettingServiceImpl;
 import shop.sellution.server.company.dto.*;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 //@RequestMapping("/sellsolution")
@@ -39,10 +44,18 @@ public class CompanyController {
         return ResponseEntity.ok(findCompanyDisplaySettingRes);
     }
 
-    @PutMapping("/display-setting")
-    public ResponseEntity<Void> updateCompanyDisplaySetting(@RequestBody SaveCompanyDisplaySettingReq saveCompanyDisplaySettingReq) {
-        clientCompanyDisplayService.updateCompanyDisplaySetting(saveCompanyDisplaySettingReq);
-        return ResponseEntity.ok().build();
+    // multipart/form-data 요청을 처리
+    @PutMapping(value = "/display-setting", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> updateCompanyDisplaySetting(
+            @ModelAttribute SaveCompanyDisplaySettingReq requestDTO,
+            @RequestParam(value = "logoFile", required = false) MultipartFile logoFile,
+            @RequestParam(value = "promotionFiles", required = false) List<MultipartFile> promotionFiles) {
+        try {
+            clientCompanyDisplayService.updateCompanyDisplaySetting(requestDTO, logoFile, promotionFiles);
+            return ResponseEntity.ok().build();
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/sale-setting/{companyId}")
