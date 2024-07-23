@@ -1,6 +1,7 @@
 package shop.sellution.server.auth.application;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import shop.sellution.server.global.util.JWTUtil;

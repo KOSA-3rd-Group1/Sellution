@@ -61,7 +61,8 @@ public class CustomSecurityConfig {
         http.httpBasic(config -> config.disable());
 
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/api", "/", "/api/auth/login", "/api/auth/reissue").permitAll()
+                .requestMatchers("/clients/me").hasRole("CLIENT")
+                .requestMatchers("/contract-company/register","/api", "/", "/api/auth/login", "/api/auth/reissue").permitAll()
                 .requestMatchers("/admin").hasRole("CLIENT")
                 .anyRequest().permitAll());
 //                .anyRequest().authenticated());
@@ -84,6 +85,7 @@ public class CustomSecurityConfig {
 //        configuration.setAllowedOrigins(Collections.singletonList("http://localhosg:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

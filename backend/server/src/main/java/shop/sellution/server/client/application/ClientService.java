@@ -11,6 +11,9 @@ public interface ClientService {
     // 고객 아이디 중복 확인
     void checkClientUsername(CheckClientUsernameReq request);
 
+    // 현재 고객 이름 가져오기
+    String getCurrentUsername();
+
     // 고객 아이디 찾기
     String findClientId(FindClientIdReq request);
 
