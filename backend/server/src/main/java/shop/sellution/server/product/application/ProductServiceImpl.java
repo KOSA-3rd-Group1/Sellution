@@ -146,6 +146,13 @@ public class ProductServiceImpl implements ProductService {
         productRepository.delete(product);
     }
 
+    @Override
+    public void deleteProducts(List<Long> ids) {
+        for (Long productId : ids) {
+            deleteProduct(productId);
+        }
+    }
+
     private void saveProductImage(Product product, MultipartFile imageFile, ProductImageType type) throws IOException {
         if (imageFile != null && !imageFile.isEmpty()) {
             String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product");
