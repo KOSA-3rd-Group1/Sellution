@@ -7,20 +7,25 @@ import AddPage from '@/shopping/page/ordersheet/setting/address/AddPage';
 const addressRouter = () => {
   return [
     {
-      path: '',
-      element: <ListPage />,
-    },
-    {
-      path: ':addressId',
-      element: <DetailPage />,
-    },
-    {
-      path: 'add',
-      element: <AddPage />,
-    },
-    {
-      path: '*',
-      element: <Navigate replace to='' />,
+      path: ':customerId',
+      children: [
+        {
+          path: '',
+          element: <ListPage />,
+        },
+        {
+          path: ':addressId',
+          element: <DetailPage />,
+        },
+        {
+          path: 'add',
+          element: <AddPage />,
+        },
+        {
+          path: '*',
+          element: <Navigate replace to='' />,
+        },
+      ],
     },
   ];
 };
