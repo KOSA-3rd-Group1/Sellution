@@ -24,12 +24,14 @@ import shop.sellution.server.order.domain.type.OrderStatus;
 import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.order.dto.request.FindOrderedProductSimpleReq;
 import shop.sellution.server.order.dto.request.SaveOrderReq;
+import shop.sellution.server.payment.application.PaymentService;
+import shop.sellution.server.payment.dto.request.PaymentReq;
+import shop.sellution.server.payment.util.PaymentUtil;
 import shop.sellution.server.product.domain.Product;
 import shop.sellution.server.product.domain.ProductRepository;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
@@ -51,6 +53,8 @@ public class OrderCreationService {
     private final OrderRepository orderRepository;
     private final DayOptionRepository dayOptionRepository;
     private final AccountRepository accountRepository;
+    private final PaymentService paymentService;
+    private final PaymentUtil paymentUtil;
 
     private static final int ONETIME = 1;
 
@@ -132,6 +136,7 @@ public class OrderCreationService {
                 .nextDeliveryDate(deliveryInfo.getNextDeliveryDate())
                 .totalDeliveryCount(deliveryInfo.getTotalDeliveryCount())
                 .remainingDeliveryCount(deliveryInfo.getTotalDeliveryCount())
+                .nextPaymentDate(saveOrderReq.getDeliveryStartDate().plusMonths(1))
                 .build();
         order.setTotalPrice(order.getPerPrice()*order.getTotalDeliveryCount());
         log.info("생성된 주문 배송시작일: {}", order.getDeliveryStartDate());
@@ -146,6 +151,17 @@ public class OrderCreationService {
         order.setSelectedDays(selectedDays);
 
         log.info("생성된 주문번호 : {}", order.getId());
+
+        if(order.getStatus()==OrderStatus.APPROVED){
+            // 자동주문승인으로 인해 바로 승인이 된다면 , 즉시 결제 시도
+            paymentService.pay(
+                    PaymentReq.builder()
+                            .accountId(order.getAccount().getId())
+                            .orderId(order.getId())
+                            .customerId(order.getCustomer().getId())
+                            .build()
+            );
+        }
 
     }
 
@@ -207,7 +223,7 @@ public class OrderCreationService {
     }
 
     public DeliveryInfo calculateTotalDeliveryCountAndDeliveryEndDate(
-            LocalDateTime deliveryStartDate,
+            LocalDate deliveryStartDate,
             OrderType orderType,
             MonthOption monthOption,
             WeekOption weekOption,
@@ -254,50 +270,60 @@ public class OrderCreationService {
     }
 
     private DeliveryInfo calculateMonthSubscription(
-            LocalDateTime deliveryStartDate,
+            LocalDate deliveryStartDate,
             int months,
             int weekly,
             List<DayOfWeek> deliveryDays
     ) {
-        LocalDateTime subscriptionEndDate = deliveryStartDate.plusMonths(months); // 구독 기간 [ 정기 배송 기간 ]
+        LocalDate subscriptionEndDate = deliveryStartDate.plusMonths(months); // 구독 기간 [ 정기 배송 기간 ]
         int totalDeliveries = 0;
-        LocalDateTime currentDate = deliveryStartDate; // 날짜 이동용 변수는 배송 시작일로 초기화 시켜놓고 시작
-        LocalDateTime DeliveryEndDate = null;
-        LocalDateTime nextDeliveryDate = null;
-        boolean isFirst = false;
+
+        LocalDate currentDate = deliveryStartDate.minusDays(1); // 날짜 이동용 변수는 배송 시작일로 초기화 시켜놓고 시작 , 배송시작일도 포함해야하니까 1일 빼준다.
+        LocalDate DeliveryEndDate = null; // 마지막 배송일
+        LocalDate nextDeliveryDate = subscriptionEndDate.plusDays(1); // 가장 가까운 배송일 구하기 위함
+        boolean isFirst = false; // 가장 가까운 배송일 구하기 위함
 
         // 구독 기간 동안 반복
         while (currentDate.isBefore(subscriptionEndDate) || currentDate.isEqual(subscriptionEndDate)) {
             // 선택된 배송 요일마다 처리
             for (DayOfWeek day : deliveryDays) {
                 // 현재 currentDate 이후에 내가 선택한 요일이 나오는 날짜 찾기  [다음 배송 날짜 계산]
-                LocalDateTime deliveryDate = currentDate.with(TemporalAdjusters.nextOrSame(day));
-                if (deliveryDate.isBefore(subscriptionEndDate)) { // 그 날짜가 구독기간 내에 있으면
+                LocalDate deliveryDate = currentDate.with(TemporalAdjusters.nextOrSame(day));
+                if (deliveryDate.isBefore(subscriptionEndDate) || deliveryDate.isEqual(subscriptionEndDate)) { // 그 날짜가 구독기간 내에 있으면
+                    log.info("뽑힌 날짜 : {}",deliveryDate);
                     totalDeliveries++; // 총 배송 횟수 증가
                     DeliveryEndDate = deliveryDate; // 마지막 배송 날짜 갱신
-                    if(!isFirst)
+
+//                    if(!isFirst  )
+                    if(!isFirst  && deliveryDate.isAfter(currentDate))
                     {
-                        nextDeliveryDate =deliveryDate; // 첫번째 배송일 처리
-                        isFirst = true;
+                        if (deliveryDate.isBefore(nextDeliveryDate)) {
+                            nextDeliveryDate = deliveryDate; // 가장 가까운 배송일 갱신
+                        }
                     }
                 }
             }
+            isFirst = true; // 일주일기간만 비교하면 가장 가까운 날짜 구할 수 있음
             currentDate = currentDate.plusWeeks(weekly); // n주 뒤로 이동 [ n 주 마다 배송 이니까 ]
+        }
+        if(nextDeliveryDate.isAfter(subscriptionEndDate))
+        {
+            nextDeliveryDate = null;
         }
 
         return new DeliveryInfo(totalDeliveries, DeliveryEndDate,nextDeliveryDate);
     }
 
     private DeliveryInfo calculateCountSubscription(
-            LocalDateTime deliveryStartDate,
+            LocalDate deliveryStartDate,
             int totalDeliveryCount,
             int weekly,
             List<DayOfWeek> deliveryDays
     ) {
         int deliveries = 0;
-        LocalDateTime currentDate = deliveryStartDate; // 날짜 이동용 변수는 배송 시작일로 초기화 시켜놓고 시작
-        LocalDateTime DeliveryEndDate = null;
-        LocalDateTime nextDeliveryDate = null;
+        LocalDate currentDate = deliveryStartDate.minusDays(1); // 날짜 이동용 변수는 배송 시작일로 초기화 시켜놓고 시작 , -1일 해줘야 배송시작일도 포함해서 검증함.
+        LocalDate DeliveryEndDate = null;
+        LocalDate nextDeliveryDate = deliveryStartDate.plusMonths(1); // 가장 가까운 배송일 구하기 위함
         boolean isFirst = false;
 
         // 지정된 배송 횟수에 도달할 때까지 반복
@@ -305,15 +331,17 @@ public class OrderCreationService {
             // 선택된 배송 요일마다 처리
             for (DayOfWeek day : deliveryDays) {
                 if (deliveries >= totalDeliveryCount) break; // 지정된 배송 횟수에 도달하면 종료
-                LocalDateTime deliveryDate = currentDate.with(TemporalAdjusters.nextOrSame(day)); // 다음 배송 날짜 계산
+                LocalDate deliveryDate = currentDate.with(TemporalAdjusters.nextOrSame(day)); // 다음 배송 날짜 계산
                 deliveries++; // 총 배송 횟수 증가
                 DeliveryEndDate = deliveryDate; // 마지막 배송 날짜 갱신
-                if(!isFirst)
+                if(!isFirst && deliveryDate.isAfter(currentDate))
                 {
-                    nextDeliveryDate = deliveryDate; // 첫번째 배송일 처리
-                    isFirst = true;
+                    if (deliveryDate.isBefore(nextDeliveryDate)) {
+                        nextDeliveryDate = deliveryDate; // 가장 가까운 배송일 갱신
+                    }
                 }
             }
+            isFirst = true; // 가장 가까운 배송일은 선택된 요일 한바퀴만 돌면 구할 수 있다.
             currentDate = currentDate.plusWeeks(weekly); // n주 뒤로 이동 [ n 주 마다 배송 이니까 ]
         }
 
@@ -324,8 +352,8 @@ public class OrderCreationService {
     @AllArgsConstructor
     static class DeliveryInfo {
         private int totalDeliveryCount;
-        private LocalDateTime deliveryEndDate;
-        private LocalDateTime nextDeliveryDate;
+        private LocalDate deliveryEndDate;
+        private LocalDate nextDeliveryDate;
     }
 
 

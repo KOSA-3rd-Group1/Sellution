@@ -6,11 +6,11 @@ import shop.sellution.server.payment.domain.PaymentHistory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface PaymentHistoryRepository extends
         JpaRepository<PaymentHistory, Long>,
-        PaymentHistoryRepositoryCustom
-{
+        PaymentHistoryRepositoryCustom {
 
     // 해당 주문의 가장 최근 PaymentHistory 조회
     PaymentHistory findFirstByOrderIdOrderByCreatedAtDesc(Long orderId);
@@ -26,5 +26,13 @@ public interface PaymentHistoryRepository extends
             limit 1
             """)
     PaymentHistory findAlreadyHasPaymentHistory(Long orderId, LocalDateTime date);
+
+    @Query("""
+            select ph from PaymentHistory ph
+            where ph.order.id = :orderId
+            and ph.status = 'PENDING'
+            and ph.createdAt = :date
+            """)
+    PaymentHistory findPendingPaymentHistory(Long orderId, LocalDateTime date);
 
 }

@@ -30,14 +30,12 @@ import shop.sellution.server.customer.domain.type.CustomerType;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.order.application.OrderCreationService;
-import shop.sellution.server.order.application.OrderService;
-import shop.sellution.server.order.domain.Order;
-import shop.sellution.server.order.domain.repository.OrderRepository;
 import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.order.dto.request.FindOrderedProductSimpleReq;
 import shop.sellution.server.order.dto.request.SaveOrderReq;
 import shop.sellution.server.product.domain.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -743,7 +741,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
             orderReqBuilder.orderedProducts(orderedProducts);
 
             if (orderType == OrderType.ONETIME) { // 단건 주문이면
-                SaveOrderReq saveOrderReq = orderReqBuilder.deliveryStartDate(LocalDateTime.now().plusDays(3))
+                SaveOrderReq saveOrderReq = orderReqBuilder.deliveryStartDate(LocalDate.now().plusDays(3))
                         .totalDeliveryCount(1)
                         .build();
                 orderCreationService.createOrder(customer.getId(), saveOrderReq);
@@ -752,7 +750,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
             if (orderType == OrderType.MONTH_SUBSCRIPTION) { // 정기[월] 주문이면 월, 주,요일 옵션 필수
                 orderReqBuilder.monthOptionId(monthOptions.get(random.nextInt(monthOptions.size())).getId())
                         .weekOptionId(weekOptions.get(random.nextInt(weekOptions.size())).getId())
-                        .deliveryStartDate(LocalDateTime.now().plusDays(random.nextInt(3)));
+                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(3)));
             }
             if (orderType == OrderType.COUNT_SUBSCRIPTION) { // 정기[횟수] 주문이면
                 int minDeliveryCount = 포켓샐러드.getMinDeliveryCount();
@@ -760,7 +758,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
                 orderReqBuilder.weekOptionId(weekOptions.get(random.nextInt(weekOptions.size())).getId())
                         .totalDeliveryCount((random.nextInt(maxDeliveryCount - minDeliveryCount + 1) + minDeliveryCount))
-                        .deliveryStartDate(LocalDateTime.now().plusDays(random.nextInt(3)));
+                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(3)));
             }
             int numberOfDayOptions = random.nextInt(dayOptions.size()) + 1;
             List<Long> selectedDayOptionIds = new ArrayList<>();

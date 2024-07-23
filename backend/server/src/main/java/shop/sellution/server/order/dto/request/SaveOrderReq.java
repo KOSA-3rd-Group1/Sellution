@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.ToString;
 import shop.sellution.server.order.domain.type.OrderType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class SaveOrderReq {
     private Integer totalDeliveryCount;
 
     @NotNull
-    private LocalDateTime deliveryStartDate; // 단건주문은 주문날짜 + 3일로 전달받는다.
+    private LocalDate deliveryStartDate; // 단건주문은 주문날짜 + 3일로 전달받는다.
 
     @NotNull
     @Size(min =1 ,message = "주문한 상품이 존재해야합니다.")

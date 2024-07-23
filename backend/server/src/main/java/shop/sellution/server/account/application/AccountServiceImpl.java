@@ -15,6 +15,7 @@ import shop.sellution.server.account.infrastructure.AccountAuthService;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.global.exception.BadRequestException;
+import shop.sellution.server.global.util.JasyptEncryptionUtil;
 
 import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_ACCOUNT;
 import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_CUSTOMER;
@@ -28,6 +29,7 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final CustomerRepository customerRepository;
     private final AccountAuthService accountAuthService;
+    private final JasyptEncryptionUtil jasyptEncryptionUtil;
 
     @Transactional(readOnly = true)
     @Override
@@ -42,9 +44,15 @@ public class AccountServiceImpl implements AccountService {
 
         accountAuthService.checkAccount(CheckAccountReq.fromDto(saveAccountReq));
 
+        String accountNumber = saveAccountReq.getAccountNumber();
+        StringBuilder sb = new StringBuilder();
+        String encrypt = jasyptEncryptionUtil.encrypt(accountNumber.substring(0, accountNumber.length() - 3));// 뒤 4자리 제외 암호화
+        sb.append(encrypt);
+        sb.append(accountNumber.substring(accountNumber.length()-4));
+
         Account account = Account.builder()
                 .customer(customer)
-                .accountNumber(saveAccountReq.getAccountNumber())
+                .accountNumber(sb.toString())
                 .bankCode(saveAccountReq.getBankCode())
                 .build();
 
