@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { SetPasswordIcon } from '@/shopping/utility/assets/Icons.jsx';
 
 const EditComponent = () => {
   const [firstPassword, setFirstPassword] = useState('');
@@ -10,7 +11,7 @@ const EditComponent = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [shuffledNumbers, setShuffledNumbers] = useState([]);
   const navigate = useNavigate();
-  const { customerId } = useParams();
+  const { clientName, customerId } = useParams();
 
   useEffect(() => {
     shuffleNumbers();
@@ -88,19 +89,22 @@ const EditComponent = () => {
 
   if (isComplete) {
     return (
-      <div className='flex flex-col items-center justify-center h-screen'>
-        <img src='/lock-icon.png' alt='Lock Icon' className='mb-4' />
-        <h2 className='text-2xl font-bold mb-4'>간편 비밀번호 등록 완료</h2>
-        <button
-          className='bg-brandOrange text-white px-4 py-2 rounded'
-          onClick={() => {
-            console.log('Navigating to:', `/my/${customerId}`);
-            // navigate(`/my/${customerId}`);
-            <Link to={`/my/${customerId}`}></Link>;
-          }}
-        >
-          확인
-        </button>
+      <div className='container mx-auto max-w-lg p-4 bg-white h-screen flex flex-col justify-between'>
+        <div className='space-y-8 flex-grow flex flex-col items-center justify-center'>
+          <h2 className='text-2xl font-bold mb-4'>간편 비밀번호 등록 완료</h2>
+          <SetPasswordIcon className='mb-4' />
+        </div>
+        <div className='mb-8 flex justify-center'>
+          <button
+            className='bg-brandOrange text-white px-4 py-2 rounded-full w-full max-w-sm'
+            onClick={() => {
+              console.log('Navigating to:', `/shopping/${clientName}/my/${customerId}`);
+              navigate(`/shopping/${clientName}/my/${customerId}`);
+            }}
+          >
+            확인
+          </button>
+        </div>
       </div>
     );
   }
