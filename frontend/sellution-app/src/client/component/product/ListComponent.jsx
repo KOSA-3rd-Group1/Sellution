@@ -21,7 +21,7 @@ const ListComponent = () => {
     axios
       .get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
         params: {
-          page: currentPage - 1, // 백엔드는 0부터 시작하므로 1을 빼줍니다
+          page: currentPage - 1, // 백엔드는 0부터 시작하므로 1을 빼줌
           size: itemsPerPage,
         },
       })
@@ -108,6 +108,34 @@ const ListComponent = () => {
     }
   };
 
+  const handleDeleteItems = async () => {
+    if (window.confirm('체크하신 상품을 삭제하시겠습니까?')) {
+      try {
+        const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products`, {
+          data: selectedItems,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log('Delete response:', response);
+        // 삭제 후 목록 새로고침
+        setSelectedItems([]);
+        setSelectAll(false);
+        const refreshedProducts = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
+          params: {
+            page: currentPage - 1,
+            size: itemsPerPage,
+          },
+        });
+        setProducts(refreshedProducts.data.content);
+        setTotalPages(refreshedProducts.data.totalPages);
+        setTotalElements(refreshedProducts.data.totalElements);
+      } catch (error) {
+        console.error('There was an error deleting the products!', error);
+      }
+    }
+  };
+
   return (
     <div className='relative w-full h-full justify-between'>
       <section className='absolute w-full h-full flex flex-col'>
@@ -122,7 +150,10 @@ const ListComponent = () => {
             >
               상품 등록
             </Link>
-            <button className='mx-1 px-4 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'>
+            <button
+              onClick={handleDeleteItems}
+              className='mx-1 px-4 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
+            >
               상품 삭제
             </button>
           </div>

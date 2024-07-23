@@ -11,20 +11,23 @@ import org.springframework.test.util.ReflectionTestUtils;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.account.domain.type.BankCode;
+import shop.sellution.server.account.dto.request.CheckAccountReq;
 import shop.sellution.server.account.dto.request.SaveAccountReq;
 import shop.sellution.server.account.dto.request.UpdateAccountReq;
+import shop.sellution.server.account.dto.response.CheckAccountRes;
 import shop.sellution.server.account.dto.response.FindAccountRes;
+import shop.sellution.server.account.infrastructure.AccountAuthService;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.global.exception.BadRequestException;
+import shop.sellution.server.global.util.JasyptEncryptionUtil;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AccountServiceImplTest {
@@ -34,6 +37,12 @@ class AccountServiceImplTest {
 
     @Mock
     private CustomerRepository customerRepository;
+
+    @Mock
+    private AccountAuthService accountAuthService;
+
+    @Mock
+    private JasyptEncryptionUtil jasyptEncryptionUtil;
 
     @InjectMocks
     private AccountServiceImpl accountService;
@@ -78,7 +87,11 @@ class AccountServiceImplTest {
         Customer customer = Customer.builder().build();
         ReflectionTestUtils.setField(customer, "id", 1L);
 
+        CheckAccountRes checkAccountRes = new CheckAccountRes("Test User");
+
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
+        when(accountAuthService.checkAccount(any(CheckAccountReq.class))).thenReturn(checkAccountRes);
+        when(jasyptEncryptionUtil.encrypt(anyString())).thenReturn("encryptedAccountNumber");
 
         // When
         accountService.saveAccount(customerId, saveAccountReq);
@@ -86,6 +99,7 @@ class AccountServiceImplTest {
         // Then
         verify(customerRepository).findById(customerId);
         verify(accountRepository).save(any(Account.class));
+        verify(accountAuthService).checkAccount(any(CheckAccountReq.class));
 
     }
 
@@ -99,6 +113,7 @@ class AccountServiceImplTest {
         ReflectionTestUtils.setField(account, "id", accountId);
 
         when(accountRepository.findById(accountId)).thenReturn(Optional.of(account));
+        when(accountAuthService.checkAccount(any(CheckAccountReq.class))).thenReturn(any(CheckAccountRes.class));
 
         // When
         accountService.updateAccount(accountId, updateAccountReq);
@@ -107,6 +122,7 @@ class AccountServiceImplTest {
         assertThat(account.getAccountNumber()).isEqualTo("1234567890");
         assertThat(account.getBankCode()).isEqualTo("004");
         verify(accountRepository).findById(accountId);
+        verify(accountAuthService).checkAccount(any(CheckAccountReq.class));
     }
 
     @DisplayName("존재하지않는 계좌라면 예외를 발생시킨다.")

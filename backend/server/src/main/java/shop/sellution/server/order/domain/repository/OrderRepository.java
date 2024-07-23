@@ -35,10 +35,6 @@ public interface OrderRepository extends
     // OrderStatus가 APPROVED 이고, DeliverStatus가 BEFORE_DELIVERY 또는 IN_PROGRESS 이고, deliveryType이 MONTH_SUBSCRIPTION이고 nextPaymentDate가 오늘인 Order 목록조회
     @Query("""
             select distinct o from Order o
-            join fetch o.customer
-            join fetch o.account
-            join fetch o.weekOption
-            join fetch o.monthOption
             where o.status = shop.sellution.server.order.domain.type.OrderStatus.APPROVED
             and o.deliveryStatus in (shop.sellution.server.order.domain.type.DeliveryStatus.BEFORE_DELIVERY,shop.sellution.server.order.domain.type.DeliveryStatus.IN_PROGRESS)
             and o.type = shop.sellution.server.order.domain.type.OrderType.MONTH_SUBSCRIPTION
@@ -49,10 +45,6 @@ public interface OrderRepository extends
     // OrderStatus가 APPROVED 이고, DeliverStatus가 BEFORE_DELIVERY 또는 IN_PROGRESS 이고 nextDeliveryDate 오늘인 Order 목록조회
     @Query("""
             select distinct o from Order o
-            join fetch o.customer
-            join fetch o.account
-            join fetch o.weekOption
-            join fetch o.monthOption
             where o.status = shop.sellution.server.order.domain.type.OrderStatus.APPROVED
             and o.deliveryStatus in (shop.sellution.server.order.domain.type.DeliveryStatus.BEFORE_DELIVERY,shop.sellution.server.order.domain.type.DeliveryStatus.IN_PROGRESS)
             and o.nextDeliveryDate = :date

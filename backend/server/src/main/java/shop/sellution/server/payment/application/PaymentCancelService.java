@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.global.exception.BadRequestException;
@@ -23,8 +22,10 @@ import shop.sellution.server.payment.domain.type.PaymentStatus;
 import shop.sellution.server.payment.domain.type.TokenType;
 import shop.sellution.server.payment.dto.request.PaymentReq;
 import shop.sellution.server.payment.infrastructure.PgTokenClient;
+import shop.sellution.server.payment.util.PaymentUtil;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Map;
 
 import static shop.sellution.server.global.exception.ExceptionCode.*;
@@ -41,6 +42,7 @@ public class PaymentCancelService {
     private final AccountRepository accountRepository;
     private final PgTokenClient pgTokenClient;
     private final WebClient webClient;
+    private final PaymentUtil paymentUtil;
     private final Duration TIMEOUT = Duration.ofSeconds(2);
 
 
@@ -58,8 +60,8 @@ public class PaymentCancelService {
         if (order.getDeliveryStatus() == DeliveryStatus.COMPLETE) {
             throw new BadRequestException(ALREADY_DELIVERED);
         }
-
-        String token = pgTokenClient.getApiAccessToken(order.getPerPrice(), TokenType.PAYMENT_CANCEL);
+        int payCost = paymentUtil.calculateRefundCost(order);
+        String token = pgTokenClient.getApiAccessToken(payCost, TokenType.PAYMENT_CANCEL);
 
         ResponseEntity<Void> response = webClient.post()
                 .uri("/pay/cancel")
@@ -68,7 +70,7 @@ public class PaymentCancelService {
                 .bodyValue(Map.of(
                         "bankCode", account.getBankCode(),
                         "accountNumber", account.getAccountNumber(),
-                        "price", Integer.toString(order.getPerPrice())
+                        "price", Integer.toString(payCost)
                 ))
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, error -> {

@@ -45,6 +45,7 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
@@ -93,6 +94,10 @@ public class Order extends BaseEntity {
     @Setter
     @Column(nullable = true)
     private LocalDate nextPaymentDate; // 다음 결제일
+
+    @Builder.Default
+    @Column(nullable = true)
+    private int paymentCount =0; // 해당 주문에 대해 결제된 횟수
 
     @Column(nullable = false)
     private int totalDeliveryCount;
@@ -168,6 +173,11 @@ public class Order extends BaseEntity {
             Product product = orderedProduct.getProduct();
             product.decreaseStock(orderedProduct.getCount());
         });
+    }
+
+    // 해당 주문의 결제 횟수 증가
+    public void increasePaymentCount() {
+        this.paymentCount++;
     }
 
 

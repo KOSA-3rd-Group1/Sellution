@@ -31,8 +31,9 @@ public interface PaymentHistoryRepository extends
             select ph from PaymentHistory ph
             where ph.order.id = :orderId
             and ph.status = 'PENDING'
-            and ph.createdAt = :date
+            and ph.createdAt >= :startOfDay
+            and ph.createdAt < :endOfDay
             """)
-    PaymentHistory findPendingPaymentHistory(Long orderId, LocalDateTime date);
+    PaymentHistory findPendingPaymentHistory(Long orderId, LocalDateTime startOfDay,LocalDateTime endOfDay);
 
 }

@@ -86,9 +86,13 @@ public class PaymentService {
                 order.getCustomer().changeToNormalCustomer();
             }
             //이 주문이 월정기주문이고,  현재 결제일 + 1달이 마지막 배송일보다 이전이면 아직 구독기간이 남은것이므로 다음 결제일 설정
-            if(order.getType().isMonthSubscription() && order.getDeliveryEndDate().isAfter(order.getDeliveryStartDate().plusMonths(1))){
-                order.setNextPaymentDate(order.getDeliveryStartDate().plusMonths(1)); // 다음 결제일은 현재결제일 + 1달로 설정
+            if(order.getType().isMonthSubscription() && order.getDeliveryEndDate().isAfter(order.getNextPaymentDate().plusMonths(1))){
+                order.setNextPaymentDate(order.getNextPaymentDate().plusMonths(1)); // 다음 결제일은 현재결제일 + 1달로 설정
             }
+            else{
+                order.setNextPaymentDate(null); // 다음 결제일이 없다면 null 로 설정
+            }
+            order.increasePaymentCount();
             log.info("결제 성공");
         } else {
             createFailPaymentHistory(order, account,payCost);

@@ -41,6 +41,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public boolean isCategoryNameDuplicate(String name) {
+        return categoryRepository.findByName(name).isPresent();
+    }
+
+    @Override
     public void createCategory(SaveCategoryReq saveCategoryReq) {
         Category category = saveCategoryReq.toEntity();
         category.setIsVisible(DisplayStatus.Y);
