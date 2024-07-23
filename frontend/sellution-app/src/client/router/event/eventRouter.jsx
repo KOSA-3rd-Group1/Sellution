@@ -6,6 +6,8 @@ import LazyComponent from '@/client/layout/partials/LazyComponet';
 import MainHeaderComponent from '@/client/layout/partials/MainHeaderComponent';
 
 const ListPage = lazy(() => import('@/client/page/event/ListPage'));
+const AddPage = lazy(() => import('@/client/page/event/AddPage'));
+const DetailPage = lazy(() => import('@/client/page/event/DetailPage'));
 
 const eventRouter = () => {
   return [
@@ -17,6 +19,36 @@ const eventRouter = () => {
           title={'이벤트 관리'}
         >
           <LazyComponent Component={ListPage} />
+        </MainHeaderComponent>
+      ),
+    },
+    {
+      path: 'add',
+      element: (
+        <MainHeaderComponent
+          breadcrumbs={[
+            { label: '홈', link: '/home' },
+            { label: '이벤트 관리', link: '/event' },
+            { label: '이벤트 등록' },
+          ]}
+          title={'이벤트 등록'}
+        >
+          <LazyComponent Component={AddPage} />
+        </MainHeaderComponent>
+      ),
+    },
+    {
+      path: ':eventId',
+      element: (
+        <MainHeaderComponent
+          breadcrumbs={[
+            { label: '홈', link: '/home' },
+            { label: '이벤트 관리', link: '/event' },
+            { label: '이벤트 상세' },
+          ]}
+          title={'이벤트 상세 정보'}
+        >
+          <LazyComponent Component={DetailPage} />
         </MainHeaderComponent>
       ),
     },
