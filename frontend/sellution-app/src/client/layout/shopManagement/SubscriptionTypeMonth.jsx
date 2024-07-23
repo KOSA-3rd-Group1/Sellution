@@ -53,45 +53,6 @@ const SubscriptionTypeMonth = () => {
     <div>
       <div className='text-xs'>
         <div className='text-gray-700 font-semibold'>이용 기간</div>
-        {/* <div className='flex flex-col gap-2 m-4'>
-          <div className='relative flex gap-6'>
-            <div>최소</div>
-            <div className='relative'>
-              <input
-                id='minValue'
-                className={`w-24 h-6 border bg-gray-100 placeholder:text-gray-400 outline-none focus:ring-1 focus:ring-brandOrange ring-offset-2 rounded-md text-right pl-2 pr-6`}
-                value={data?.minCount || ''}
-                onChange={(e) => handleChangeValue('minCount', e.target.value)}
-                placeholder='5'
-              />
-              <label
-                htmlFor='minValue'
-                className={`absolute top-1/2 translate-y-[-50%] right-2 ${data?.minCount ? 'text-slate-900' : 'text-gray-400'}`}
-              >
-                회
-              </label>
-            </div>
-          </div>
-          <div className='relative flex gap-6 items-center'>
-            <div>최대</div>
-            <div className='relative'>
-              <input
-                id='maxValue'
-                className={` w-24 h-6 border bg-gray-100 placeholder:text-gray-400 outline-none focus:ring-1 focus:ring-brandOrange ring-offset-2 rounded-md text-right pl-2 pr-6 `}
-                value={data?.maxCount || ''}
-                onChange={(e) => handleChangeValue('maxCount', e.target.value)}
-                type='text'
-                placeholder='30'
-              />
-              <label
-                htmlFor='maxValue'
-                className={`absolute top-1/2 translate-y-[-50%] right-2 ${data?.maxCount ? 'text-slate-900' : 'text-gray-400'}`}
-              >
-                회
-              </label>
-            </div>
-          </div>
-        </div> */}
         <div className='my-4 mx-2'>
           <Select
             isMulti

@@ -1,4 +1,4 @@
-import DetailComponent from '@/client/component/paymentHistory/DetailComponent';
+import DetailComponent from '@/client/component/event/DetailComponent';
 
 const DetailPage = () => {
   return <DetailComponent />;
