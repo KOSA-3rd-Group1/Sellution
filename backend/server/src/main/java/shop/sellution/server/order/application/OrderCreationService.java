@@ -17,6 +17,8 @@ import shop.sellution.server.company.domain.repository.MonthOptionRepository;
 import shop.sellution.server.company.domain.repository.WeekOptionRepository;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
+import shop.sellution.server.event.domain.CouponEvent;
+import shop.sellution.server.event.domain.EventRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.order.domain.*;
 import shop.sellution.server.order.domain.repository.OrderRepository;
@@ -59,6 +61,7 @@ public class OrderCreationService {
     private final AccountRepository accountRepository;
     private final PaymentService paymentService;
     private final SmsServiceImpl smsService;
+    private final EventRepository eventRepository;
 
 
     private static final int ONETIME = 1;
@@ -96,6 +99,14 @@ public class OrderCreationService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ADDRESS));
         Account account = accountRepository.findById(saveOrderReq.getAccountId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACCOUNT));
+
+        CouponEvent couponEvent=null;
+        if(saveOrderReq.getEventId()!=null){
+            couponEvent = eventRepository.findById(saveOrderReq.getEventId()).
+                    orElseThrow( ()-> new BadRequestException(NOT_FOUND_EVENT) );
+        }
+
+
 
         MonthOption monthOption = null;
         WeekOption weekOption = null;
@@ -167,6 +178,8 @@ public class OrderCreationService {
                 %s
                 주문하신 상품 총 가격
                 %d원
+                적용된 쿠폰
+                %s
                 선택하신 배송 시작일
                 %s
                 첫번째 배송일자
@@ -179,6 +192,11 @@ public class OrderCreationService {
                 주문해주셔서 감사합니다.
                 주문이 승인될시 결제가 됩니다.
                 """,order.getCode(),orderedProductInfo,order.getPerPrice(),order.getDeliveryStartDate(),order.getNextDeliveryDate(),order.getDeliveryEndDate(),order.getTotalDeliveryCount());
+        if(couponEvent!=null){
+            message = message + String.format("""
+                    적용된 쿠폰 -> [ 쿠폰명 : %s , 할인율 : %d%% ]
+                    """,couponEvent.getCouponName(),couponEvent.getCouponDiscountRate());
+        }
         smsService.sendSms(customer.getPhoneNumber(),message);
 
         if(order.getStatus()==OrderStatus.APPROVED){
