@@ -2,6 +2,7 @@ package pg.sellution.pgserver.global.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static pg.sellution.pgserver.global.exception.ExceptionCode.INTERNAL_SEVER_ERROR;
-import static pg.sellution.pgserver.global.exception.ExceptionCode.INVALID_REQUEST;
+import static pg.sellution.pgserver.global.exception.ExceptionCode.*;
 
 
 @RestControllerAdvice
@@ -40,6 +40,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest()
                 .body(new ExceptionResponse(INVALID_REQUEST.getCode(), errMessage));
     }
+
+    @ExceptionHandler(RedisConnectionFailureException.class)
+    public ResponseEntity<ExceptionResponse> handleRedisConnectionFailureException(final RedisConnectionFailureException e) {
+        log.error(e.getMessage(), e);
+
+        return ResponseEntity.internalServerError()
+                .body(new ExceptionResponse(REDIS_ERROR.getCode(), REDIS_ERROR.getMessage()));
+    }
+
 
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<ExceptionResponse> handleAuthException(final AuthException e) {

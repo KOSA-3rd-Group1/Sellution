@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaChevronLeft, FaChevronRight, FaSearch } from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 const ListComponent = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -10,76 +10,39 @@ const ListComponent = () => {
   const itemsPerPage = 10;
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalElements, setTotalElements] = useState(0);
 
-  const [deliveryType, setDeliveryType] = useState('전체');
-  const [isDiscount, setIsDiscount] = useState('전체');
-  const [categoryName, setCategoryName] = useState('전체');
-  const [isVisible, setIsVisible] = useState('전체');
-  const [productName, setProductName] = useState('');
-
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [currentPage, deliveryType, isDiscount, categoryName, isVisible, productName]);
-
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`);
-      const categoryData = Array.isArray(response.data)
-        ? response.data
-        : response.data.content || [];
-      setCategories(categoryData);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-      setCategories([]);
-    }
+  const handleRowClick = (id) => {
+    navigate(`/products/${id}`);
   };
 
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
-        params: {
-          page: currentPage - 1,
-          size: itemsPerPage,
-          deliveryType: deliveryType !== '전체' ? deliveryType : null,
-          isDiscount: isDiscount !== '전체' ? isDiscount : null,
-          categoryName: categoryName !== '전체' ? categoryName : null,
-          isVisible: isVisible !== '전체' ? isVisible : null,
-          productName: productName || null,
-        },
+  useEffect(() => {
+    // 백엔드 API
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/products`)
+      .then((response) => {
+        setProducts(response.data.content); // 백엔드에서 반환된 데이터 구조에 따라 변경
+      })
+      .catch((error) => {
+        console.error('There was an error fetching the products!', error);
       });
-      setProducts(response.data.content);
-      setTotalPages(response.data.totalPages);
-      setTotalElements(response.data.totalElements);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
-  };
-
-  const handleSearch = () => {
-    setCurrentPage(1);
-    fetchProducts();
-  };
+  }, []);
 
   useEffect(() => {
     // currentPage가 변경될 때마다 스크롤을 맨 위로 초기화
     window.scrollTo(0, 0);
   }, [currentPage]);
 
-  const paginate = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
-  };
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = useMemo(
+    () => products.slice(indexOfFirstItem, indexOfLastItem),
+    [products, indexOfFirstItem, indexOfLastItem],
+  );
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const renderPageNumbers = () => {
+    const totalPages = Math.ceil(products.length / itemsPerPage);
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, startPage + 4);
 
@@ -90,7 +53,7 @@ const ListComponent = () => {
     return (
       <div className='flex justify-end'>
         <button
-          onClick={() => paginate(currentPage - 1)}
+          onClick={() => paginate(Math.max(1, currentPage - 1))}
           className='mx-1 px-3 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
           disabled={currentPage === 1}
         >
@@ -110,7 +73,7 @@ const ListComponent = () => {
           </button>
         ))}
         <button
-          onClick={() => paginate(currentPage + 1)}
+          onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
           className='mx-1 px-3 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
           disabled={currentPage === totalPages}
         >
@@ -124,7 +87,7 @@ const ListComponent = () => {
     if (selectAll) {
       setSelectedItems([]);
     } else {
-      setSelectedItems(products.map((item) => item.productId));
+      setSelectedItems(currentItems.map((item) => item.productId));
     }
     setSelectAll(!selectAll);
   };
@@ -137,38 +100,16 @@ const ListComponent = () => {
     }
   };
 
-  const handleDeleteItems = async () => {
-    if (selectedItems.length === 0) {
-      alert('삭제할 상품을 선택해주세요.');
-      return;
-    }
-
-    if (window.confirm('체크하신 상품을 삭제하시겠습니까?')) {
-      try {
-        await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products`, {
-          data: selectedItems,
-        });
-        alert('상품이 삭제되었습니다.');
-        fetchProducts();
-        setSelectedItems([]);
-        setSelectAll(false);
-      } catch (error) {
-        console.error('There was an error deleting the products!', error);
-        alert('상품 삭제에 실패했습니다.');
-      }
-    }
-  };
-
-  const handleRowClick = (id) => {
-    navigate(`/product/${id}`);
-  };
+  // const handleRowClick = (id) => {
+  //   navigate(`/products/${id}`);
+  // };
 
   return (
     <div className='relative w-full h-full justify-between'>
       <section className='absolute w-full h-full flex flex-col'>
         <div className='flex justify-between items-center mb-2'>
           <div className='flex items-center'>
-            총 {totalElements}건 / 선택 {selectedItems.length}건
+            총 {products.length}건 / 선택 {selectedItems.length}건
           </div>
           <div className='flex items-center'>
             <Link
@@ -177,10 +118,7 @@ const ListComponent = () => {
             >
               상품 등록
             </Link>
-            <button
-              onClick={handleDeleteItems}
-              className='mx-1 px-4 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
-            >
+            <button className='mx-1 px-4 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'>
               상품 삭제
             </button>
           </div>
@@ -199,56 +137,31 @@ const ListComponent = () => {
                   <th className='p-1 text-center min-w-[100px]'>이미지</th>
                   <th className='p-1 text-center min-w-[200px]'>
                     상품명
-                    <div className='mt-1 flex'>
+                    <div className='mt-1'>
                       <input
                         type='text'
-                        className='border p-1 text-sm rounded flex-grow'
-                        placeholder='검색'
-                        value={productName}
-                        onChange={(e) => setProductName(e.target.value)}
+                        className='border p-1 text-sm rounded'
+                        placeholder='필터'
                       />
-                      <button
-                        onClick={handleSearch}
-                        className='ml-1 bg-brandOrange text-white p-1 rounded'
-                      >
-                        <FaSearch />
-                      </button>
                     </div>
                   </th>
                   <th className='p-1 text-center min-w-[150px]'>
                     카테고리명
                     <div className='mt-1'>
-                      <select
-                        className='border p-1 text-sm rounded'
-                        value={categoryName}
-                        onChange={(e) => {
-                          setCategoryName(e.target.value);
-                          setCurrentPage(1);
-                        }}
-                      >
-                        <option value='전체'>전체</option>
-                        {categories.map((category) => (
-                          <option key={category.id} value={category.name}>
-                            {category.name}
-                          </option>
-                        ))}
+                      <select className='border p-1 text-sm rounded'>
+                        <option>전체</option>
+                        <option>카테고리1</option>
+                        <option>카테고리2</option>
                       </select>
                     </div>
                   </th>
                   <th className='p-1 text-center min-w-[150px]'>
                     쇼핑몰 표시 여부
                     <div className='mt-1'>
-                      <select
-                        className='border p-1 text-sm rounded'
-                        value={isVisible}
-                        onChange={(e) => {
-                          setIsVisible(e.target.value);
-                          setCurrentPage(1); // 표시 여부 변경 시 페이지를 1로 초기화
-                        }}
-                      >
-                        <option value='전체'>전체</option>
-                        <option value='Y'>표시</option>
-                        <option value='N'>미표시</option>
+                      <select className='border p-1 text-sm rounded'>
+                        <option>전체</option>
+                        <option>표시</option>
+                        <option>미표시</option>
                       </select>
                     </div>
                   </th>
@@ -257,18 +170,11 @@ const ListComponent = () => {
                   <th className='p-1 text-center min-w-[150px]'>
                     배송가능 유형
                     <div className='mt-1'>
-                      <select
-                        className='border p-1 text-sm rounded'
-                        value={deliveryType}
-                        onChange={(e) => {
-                          setDeliveryType(e.target.value);
-                          setCurrentPage(1); // 배송 유형 변경 시 페이지를 1로 초기화
-                        }}
-                      >
-                        <option value='전체'>전체</option>
-                        <option value='ONETIME'>단건</option>
-                        <option value='SUBSCRIPTION'>정기</option>
-                        <option value='BOTH'>단건 + 정기</option>
+                      <select className='border p-1 text-sm rounded'>
+                        <option>전체</option>
+                        <option>단건</option>
+                        <option>정기</option>
+                        <option>단건 + 정기</option>
                       </select>
                     </div>
                   </th>
@@ -285,17 +191,10 @@ const ListComponent = () => {
                   <th className='p-1 text-center min-w-[150px]'>
                     할인 적용 여부
                     <div className='mt-1'>
-                      <select
-                        className='border p-1 text-sm rounded'
-                        value={isDiscount}
-                        onChange={(e) => {
-                          setIsDiscount(e.target.value);
-                          setCurrentPage(1); // 할인 적용 여부 변경 시 페이지를 1로 초기화
-                        }}
-                      >
-                        <option value='전체'>전체</option>
-                        <option value='Y'>적용</option>
-                        <option value='N'>미적용</option>
+                      <select className='border p-1 text-sm rounded'>
+                        <option>전체</option>
+                        <option>적용</option>
+                        <option>미적용</option>
                       </select>
                     </div>
                   </th>
@@ -304,7 +203,7 @@ const ListComponent = () => {
                 </tr>
               </thead>
               <tbody>
-                {products.map((product, index) => (
+                {currentItems.map((product, index) => (
                   <tr
                     key={product.productId}
                     className='hover:bg-brandOrange-light cursor-pointer h-14'
@@ -318,13 +217,13 @@ const ListComponent = () => {
                         onClick={(e) => e.stopPropagation()}
                       />
                     </td>
-                    <td className='p-1 text-center'>{index + 1}</td>
+                    <td className='p-1 text-center'>{indexOfFirstItem + index + 1}</td>
                     <td className='p-1 text-center'>{product.code}</td>
                     <td className='p-1 text-center'>
                       {product.thumbnailImage ? (
                         <img
                           src={product.thumbnailImage}
-                          alt={product.name}
+                          // alt={product.name}
                           className='w-12 h-12 object-cover inline-block'
                         />
                       ) : (
@@ -347,7 +246,7 @@ const ListComponent = () => {
                     </td>
                     <td className='p-1 text-center'>{product.previousMonthSales}</td>
                     <td className='p-1 text-center '>
-                      {product.isDiscount === 'Y' ? '적용' : '미적용'}
+                      {product.isDiscount === 'Y' ? '표시' : '미표시'}
                     </td>
                     <td className='p-1 text-center'>{product.discountRate}%</td>
                     <td className='p-1 text-center text-brandOrange'>
@@ -362,6 +261,12 @@ const ListComponent = () => {
         <hr />
         <div className='mt-4 flex justify-end'>{renderPageNumbers()}</div>
       </section>
+
+      {/* <div className='mt-4'>
+        <Link to='productId12345' className='bg-blue-400 text-white px-4 py-2 rounded mr-2'>
+          상품 상세 이동 테스트 버튼
+        </Link>
+      </div> */}
     </div>
   );
 };

@@ -12,6 +12,7 @@ import shop.sellution.server.order.domain.type.DeliveryStatus;
 import shop.sellution.server.order.domain.type.OrderStatus;
 import shop.sellution.server.order.domain.type.OrderType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,9 +34,9 @@ public class FindOrderRes {
 
     private int totalPrice;
 
-    private LocalDateTime deliveryStartDate;
+    private LocalDate deliveryStartDate;
 
-    private LocalDateTime deliveryEndDate;
+    private LocalDate deliveryEndDate;
 
     private int totalDeliveryCount;
 

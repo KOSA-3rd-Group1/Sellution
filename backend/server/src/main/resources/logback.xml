@@ -131,6 +131,20 @@
         </rollingPolicy>
     </appender>
 
+    <!-- 스케줄러 로그 파일 저장 -->
+    <appender name="FILE-SCHEDULER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./logs/scheduler/${BY_DATE}.log</file>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level [%X{REQUEST_ID:-NO REQUEST ID}] ${PID:-} --- [%15.15thread] %-40.40logger{36} : %msg%n%n</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>./logs/backup/scheduler/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
 
 
     <springProfile name="!prod">
@@ -161,6 +175,10 @@
 
         <logger name="shop.sellution.server.account" level="INFO">
             <appender-ref ref="FILE-PAYMENT"/>
+        </logger>
+
+        <logger name="shop.sellution.server.scheduler" level="INFO">
+            <appender-ref ref="FILE-SCHEDULER"/>
         </logger>
     </springProfile>
 

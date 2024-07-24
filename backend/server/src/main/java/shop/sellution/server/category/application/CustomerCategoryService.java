@@ -8,5 +8,5 @@ import shop.sellution.server.global.type.DisplayStatus;
 import java.util.List;
 
 public interface CustomerCategoryService {
-    List<FindCustomerCategoryRes> findAllCategories(String name);
+    List<FindCustomerCategoryRes> findAllCategories(Long companyId);
 }

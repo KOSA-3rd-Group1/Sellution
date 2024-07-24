@@ -6,5 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class CheckAccountRes {
+
     private final String bankHolderName;
 }

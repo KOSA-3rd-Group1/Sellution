@@ -2,6 +2,14 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff
+
+.gradle/8.8/excutionHistory/excutionHistory.lock
+.gradle/8.8/fileHashes/fileHashes.lock
+.gradle/buildOutputCleanup/buildOutputCleanup.lock
+./.gradle
+
+.gradle/
+
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml

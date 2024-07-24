@@ -12,36 +12,41 @@ import paymentRouter from '@/shopping/router/mypage/payment/paymentRouter';
 const mypageRouter = () => {
   return [
     {
-      path: '',
-      element: <IndexPage />,
-    },
-    {
-      path: 'address',
-      children: addressRouter(),
-    },
-    {
-      path: 'payment',
-      children: paymentRouter(),
-    },
-    {
-      path: 'coupon',
-      children: couponRouter(),
-    },
-    {
-      path: 'order',
-      children: orderRouter(),
-    },
-    {
-      path: 'info',
-      children: editCustomerInfoRouter(),
-    },
-    {
-      path: 'auth',
-      children: editSimplePasswordRouter(),
-    },
-    {
-      path: '*',
-      element: <Navigate replace to='' />,
+      path: ':customerId',
+      children: [
+        {
+          path: '',
+          element: <IndexPage />,
+        },
+        {
+          path: 'address',
+          children: addressRouter(),
+        },
+        {
+          path: 'payment',
+          children: paymentRouter(),
+        },
+        {
+          path: 'coupon',
+          children: couponRouter(),
+        },
+        {
+          path: 'order',
+          children: orderRouter(),
+        },
+        {
+          path: 'info',
+          children: editCustomerInfoRouter(),
+        },
+        {
+          path: 'auth/*',
+          children: editSimplePasswordRouter(),
+        },
+        {
+          path: '*',
+          element: <Navigate replace to='' />,
+        },
+      ],
     },
   ];
 };

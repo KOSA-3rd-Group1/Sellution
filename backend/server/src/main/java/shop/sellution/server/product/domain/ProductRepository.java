@@ -35,4 +35,3 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
 
     List<Product> findByProductIdIn(List<Long> productIds);
 }
-

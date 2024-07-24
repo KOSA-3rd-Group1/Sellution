@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const DetailComponent = () => {
-  const { addressId } = useParams();
+  const { clientName, customerId, addressId } = useParams();
+  const navigate = useNavigate();
 
   const DisplayStatus = {
     N: 'N',
@@ -25,6 +26,7 @@ const DetailComponent = () => {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/addresses/${addressId}`,
+          { params: { customerId } },
         );
         setAddress(response.data);
       } catch (error) {
@@ -33,7 +35,7 @@ const DetailComponent = () => {
     };
 
     fetchAddress();
-  }, [addressId]);
+  }, [addressId, customerId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,9 +64,10 @@ const DetailComponent = () => {
     try {
       await axios.put(`${import.meta.env.VITE_BACKEND_URL}/addresses/${addressId}`, {
         ...address,
-        customerId: 1, // 실제 사용 시 로그인한 사용자의 ID로 대체해야 합니다
+        customerId,
       });
       alert('주소가 성공적으로 수정되었습니다.');
+      navigate(`/shopping/${clientName}/my/${customerId}/address`);
     } catch (error) {
       console.error('Error updating address:', error);
       alert('주소 수정 중 오류가 발생했습니다.');

@@ -2,6 +2,7 @@ package shop.sellution.server.customer.application;
 
 import jakarta.servlet.http.HttpServletRequest;
 import shop.sellution.server.customer.dto.request.*;
+import shop.sellution.server.customer.dto.resonse.FindCustomerInfoRes;
 
 public interface CustomerService {
 
@@ -25,4 +26,7 @@ public interface CustomerService {
 
     // 회원 비밀번호 변경
     void changeCustomerPassword(ChangeCustomerPasswordReq request, HttpServletRequest httpRequest);
+
+    // 마이페이지 회원 정보 조회
+    FindCustomerInfoRes getCustomerInfo(Long customerId);
 }
