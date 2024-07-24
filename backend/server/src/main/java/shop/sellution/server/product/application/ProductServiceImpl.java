@@ -1,5 +1,6 @@
 package shop.sellution.server.product.application;
 
+import com.querydsl.core.BooleanBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,8 @@ import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
+import shop.sellution.server.global.type.DeliveryType;
+import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.product.S3Service;
 import shop.sellution.server.product.domain.Product;
 import shop.sellution.server.product.domain.ProductImage;
@@ -48,17 +51,39 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<FindProductRes> getAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable)
-                .map(product -> {
-                    String thumbnailImage = productImageRepository.findByProductProductIdAndPurposeOfUse(product.getProductId(), ProductImageType.THUMBNAIL).stream()
-                            .map(ProductImage::getImageUrl)
-                            .findFirst()
-                            .orElse(null);
+    public Page<FindProductRes> getAllProducts(Pageable pageable, String deliveryType, String isDiscount, String categoryName, String isVisible, String productName) {
+        BooleanBuilder builder = new BooleanBuilder();
 
-                    return FindProductRes.fromEntity(product, thumbnailImage);
-                });
+        if (deliveryType != null && !deliveryType.equals("전체")) {
+            builder.and(product.deliveryType.eq(DeliveryType.valueOf(deliveryType)));
+        }
+        if (isDiscount != null && !isDiscount.equals("전체")) {
+            builder.and(product.isDiscount.eq(DisplayStatus.valueOf(isDiscount)));
+        }
+        if (categoryName != null && !categoryName.equals("전체")) {
+            builder.and(product.category.name.eq(categoryName));
+        }
+        if (isVisible != null && !isVisible.equals("전체")) {
+            builder.and(product.isVisible.eq(DisplayStatus.valueOf(isVisible)));
+        }
+        if (productName != null && !productName.isEmpty()) {
+            builder.and(product.name.containsIgnoreCase(productName));
+        }
+
+        Page<Product> products = productRepository.findAll(builder, pageable);
+
+        return products.map(product -> {
+            String thumbnailImage = productImageRepository.findByProductProductIdAndPurposeOfUse(product.getProductId(), ProductImageType.THUMBNAIL)
+                    .stream()
+                    .map(ProductImage::getImageUrl)
+                    .findFirst()
+                    .orElse(null);
+
+            return FindProductRes.fromEntity(product, thumbnailImage);
+        });
     }
+
+
 
     @Override
     public FindAllProductRes getProductById(Long productId) {
@@ -144,13 +169,6 @@ public class ProductServiceImpl implements ProductService {
 
         // Delete the product
         productRepository.delete(product);
-    }
-
-    @Override
-    public void deleteProducts(List<Long> ids) {
-        for (Long productId : ids) {
-            deleteProduct(productId);
-        }
     }
 
     private void saveProductImage(Product product, MultipartFile imageFile, ProductImageType type) throws IOException {

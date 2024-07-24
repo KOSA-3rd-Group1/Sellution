@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.company.domain.type.SellType;
+import shop.sellution.server.global.exception.BadRequestException;
+import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.product.domain.*;
 import shop.sellution.server.product.dto.response.FindCustomerProductRes;
@@ -30,10 +32,9 @@ public class CustomerProductServiceImpl implements CustomerProductService {
     //2.1 카테고리 필터링
     @Transactional(readOnly = true)
     @Override
-    public Page<FindCustomerProductRes> findAllProducts(String name, DeliveryType deliveryType, Long categoryId, Pageable pageable) {
-        // companyId 찾기
-        Company company = companyRepository.findByName(name).orElseThrow(() -> new IllegalArgumentException("Company not found for name: " + name));
-        Long companyId = company.getCompanyId();
+    public Page<FindCustomerProductRes> findAllProducts(Long companyId, DeliveryType deliveryType, Long categoryId, Pageable pageable) {
+        // companyId 예외처리
+        Company company = companyRepository.findById(companyId).orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_COMPANY));
         SellType sellType = company.getSellType();
 
         // sellType에 따른 조건별 조회 로직 구현

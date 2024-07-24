@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 
-const useLogoHeaderNav = () => {
+const useClientName = () => {
   const location = useLocation();
 
   const getClientName = () => {
@@ -13,4 +13,4 @@ const useLogoHeaderNav = () => {
   return { clientName };
 };
 
-export default useLogoHeaderNav;
+export default useClientName;
