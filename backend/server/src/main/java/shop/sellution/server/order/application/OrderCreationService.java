@@ -17,6 +17,8 @@ import shop.sellution.server.company.domain.repository.MonthOptionRepository;
 import shop.sellution.server.company.domain.repository.WeekOptionRepository;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
+import shop.sellution.server.event.domain.CouponEvent;
+import shop.sellution.server.event.domain.EventRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.order.domain.*;
 import shop.sellution.server.order.domain.repository.OrderRepository;
@@ -29,6 +31,7 @@ import shop.sellution.server.payment.dto.request.PaymentReq;
 import shop.sellution.server.payment.util.PaymentUtil;
 import shop.sellution.server.product.domain.Product;
 import shop.sellution.server.product.domain.ProductRepository;
+import shop.sellution.server.sms.application.SmsServiceImpl;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -57,6 +60,9 @@ public class OrderCreationService {
     private final DayOptionRepository dayOptionRepository;
     private final AccountRepository accountRepository;
     private final PaymentService paymentService;
+    private final SmsServiceImpl smsService;
+    private final EventRepository eventRepository;
+
 
     private static final int ONETIME = 1;
 
@@ -93,6 +99,14 @@ public class OrderCreationService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ADDRESS));
         Account account = accountRepository.findById(saveOrderReq.getAccountId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACCOUNT));
+
+        CouponEvent couponEvent=null;
+        if(saveOrderReq.getEventId()!=null){
+            couponEvent = eventRepository.findById(saveOrderReq.getEventId()).
+                    orElseThrow( ()-> new BadRequestException(NOT_FOUND_EVENT) );
+        }
+
+
 
         MonthOption monthOption = null;
         WeekOption weekOption = null;
@@ -152,10 +166,47 @@ public class OrderCreationService {
         List<SelectedDay> selectedDays = createSelectedDays(order, saveOrderReq.getDayOptionIds());
         order.setSelectedDays(selectedDays);
 
+        String orderedProductInfo = orderedProducts.stream()
+                .map(orderedProduct -> "   " + orderedProduct.getProduct().getName() + " : " + orderedProduct.getCount() + "개\n")
+                .collect(Collectors.joining(""));
         log.info("생성된 주문번호 : {}", order.getId());
+        String message =String.format("""
+                [Sellution] 주문이 완료되었습니다.
+                주문번호
+                %d
+                주문하신 상품 내역
+                %s
+                주문하신 상품 총 가격
+                %d원
+                적용된 쿠폰
+                %s
+                선택하신 배송 시작일
+                %s
+                첫번째 배송일자
+                %s
+                마지막 배송일자
+                %s
+                총 배송횟수
+                %d
+                
+                주문해주셔서 감사합니다.
+                주문이 승인될시 결제가 됩니다.
+                """,order.getCode(),orderedProductInfo,order.getPerPrice(),order.getDeliveryStartDate(),order.getNextDeliveryDate(),order.getDeliveryEndDate(),order.getTotalDeliveryCount());
+        if(couponEvent!=null){
+            message = message + String.format("""
+                    적용된 쿠폰 -> [ 쿠폰명 : %s , 할인율 : %d%% ]
+                    """,couponEvent.getCouponName(),couponEvent.getCouponDiscountRate());
+        }
+        smsService.sendSms(customer.getPhoneNumber(),message);
 
         if(order.getStatus()==OrderStatus.APPROVED){
             // 자동주문승인으로 인해 바로 승인이 된다면 , 즉시 결제 시도
+            String approveMessage = String.format("""
+                    [Sellution] 주문이 승인되었습니다. [ 자동 ]
+                    승인된 주문번호
+                    %d
+                    """,order.getCode());
+            smsService.sendSms(customer.getPhoneNumber(),approveMessage);
             paymentService.pay(
                     PaymentReq.builder()
                             .accountId(order.getAccount().getId())

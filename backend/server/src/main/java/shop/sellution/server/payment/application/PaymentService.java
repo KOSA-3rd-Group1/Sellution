@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.account.domain.AccountRepository;
+import shop.sellution.server.customer.domain.Customer;
+import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.customer.domain.type.CustomerType;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExternalApiException;
@@ -23,6 +25,7 @@ import shop.sellution.server.payment.domain.type.TokenType;
 import shop.sellution.server.payment.dto.request.PaymentReq;
 import shop.sellution.server.payment.infrastructure.PgTokenClient;
 import shop.sellution.server.payment.util.PaymentUtil;
+import shop.sellution.server.sms.application.SmsService;
 
 import java.time.Duration;
 import java.util.Map;
@@ -40,6 +43,8 @@ public class PaymentService {
     private final PgTokenClient pgTokenClient;
     private final PaymentUtil paymentUtil;
     private final WebClient webClient;
+    private final SmsService smsService;
+    private final CustomerRepository customerRepository;
     private final Duration TIMEOUT = Duration.ofSeconds(2);
 
 
@@ -54,6 +59,8 @@ public class PaymentService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACCOUNT));
         Order order = orderRepository.findByOrderId(paymentReq.getOrderId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ORDER));
+        Customer customer = customerRepository.findById(paymentReq.getCustomerId())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER));
 
         int payCost = paymentUtil.calculatePayCost(order, order.getDeliveryStartDate()); // 결제 금액 계산
         String token = pgTokenClient.getApiAccessToken(payCost, TokenType.PAYMENT); // 결제 토큰 발급
@@ -87,12 +94,22 @@ public class PaymentService {
             }
             //이 주문이 월정기주문이고,  현재 결제일 + 1달이 마지막 배송일보다 이전이면 아직 구독기간이 남은것이므로 다음 결제일 설정
             if(order.getType().isMonthSubscription() && order.getDeliveryEndDate().isAfter(order.getNextPaymentDate().plusMonths(1))){
-                order.setNextPaymentDate(order.getNextPaymentDate().plusMonths(1)); // 다음 결제일은 현재결제일 + 1달로 설정
+                order.setNextPaymentDate(order.getNextPaymentDate().plusMonths(1).minusDays(7)); // 다음 결제일은 (현재결제일 + 1달)의 일주일전으로 설정
             }
             else{
                 order.setNextPaymentDate(null); // 다음 결제일이 없다면 null 로 설정
             }
             order.increasePaymentCount();
+            String payMessage = String.format("""
+                    [Sellution] 결제가 완료되었습니다.
+                    결제된 주문번호
+                    %d
+                    결제된 금액
+                    %d원
+                    결제된 계좌 정보
+                    %s
+                    """,order.getCode(),payCost,account.getAccountNumber());
+            smsService.sendSms(customer.getPhoneNumber(),payMessage);
             log.info("결제 성공");
         } else {
             createFailPaymentHistory(order, account,payCost);

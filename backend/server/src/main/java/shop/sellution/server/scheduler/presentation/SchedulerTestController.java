@@ -4,14 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import shop.sellution.server.scheduler.application.SchedulerService2;
+import shop.sellution.server.scheduler.application.SchedulerService;
 
 @RestController
 @RequestMapping("test")
 @RequiredArgsConstructor
 public class SchedulerTestController {
 
-    private final SchedulerService2 schedulerService;
+    private final SchedulerService schedulerService;
 
     @PostMapping("scheduler")
     public void testScheduler() {

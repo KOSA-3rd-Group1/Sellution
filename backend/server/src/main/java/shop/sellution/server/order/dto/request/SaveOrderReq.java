@@ -25,6 +25,8 @@ public class SaveOrderReq {
     @NotNull(message = "주문자 아이디는 필수입니다.")
     private Long accountId;
 
+    private Long eventId;
+
     @Nullable
     private Long monthOptionId;
     @Nullable
