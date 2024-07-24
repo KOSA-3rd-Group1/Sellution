@@ -29,4 +29,10 @@ public interface CustomerService {
 
     // 마이페이지 회원 정보 조회
     FindCustomerInfoRes getCustomerInfo(Long customerId);
+
+    //본인 인증을 위한 메서드
+    void sendAuthenticationCode(Long customerId, String name, String phoneNumber);
+
+    //인증번호 검증을 위한 메소드
+    void verifyAuthenticationCode(Long customerId, String authCode);
 }

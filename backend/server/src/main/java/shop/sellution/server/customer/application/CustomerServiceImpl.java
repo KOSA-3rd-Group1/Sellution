@@ -23,8 +23,7 @@ import java.time.Duration;
 import java.util.UUID;
 
 import static shop.sellution.server.global.exception.ExceptionCode.*;
-import static shop.sellution.server.global.type.SmsAuthType.ID;
-import static shop.sellution.server.global.type.SmsAuthType.PASSWORD;
+import static shop.sellution.server.global.type.SmsAuthType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -275,4 +274,34 @@ public class CustomerServiceImpl implements CustomerService{
                 .customerType(customer.getType())
                 .build();
     }
+
+    //본인 인증을 위한 메서드
+    public void sendAuthenticationCode(Long customerId, String name, String phoneNumber) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER));
+
+        if (!customer.getName().equals(name) || !customer.getPhoneNumber().equals(phoneNumber)) {
+            throw new BadRequestException(INVALID_CUSTOMER_INFO);
+        }
+
+        sendSmsAuthNumber(AUTHENTICATION.getName(), customer);
+    }
+
+    //인증번호 검증을 위한 메소드
+    public void verifyAuthenticationCode(Long customerId, String authCode) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER));
+
+        VerifySmsAuthNumberReq verifyRequest = new VerifySmsAuthNumberReq(
+                AUTHENTICATION.getName(),
+                customer.getUserRole().getRoleName(),
+                customer.getCompany().getCompanyId(),
+                customer.getId(),
+                authCode
+        );
+
+        smsAuthNumberService.verifySmsAuthNumber(verifyRequest);
+    }
+
+
 }
