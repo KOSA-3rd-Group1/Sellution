@@ -62,7 +62,7 @@ const DetailComponent = () => {
     try {
       await axios.put(`${import.meta.env.VITE_BACKEND_URL}/addresses/${addressId}`, {
         ...address,
-        customerId: 1, // 실제 사용 시 로그인한 사용자의 ID로 대체해야 합니다
+        customerId: 1, // 실제 사용 시 로그인한 사용자의 ID로 대체
       });
       alert('주소가 성공적으로 수정되었습니다.');
     } catch (error) {

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import useClientName from '../business/layout/useClientName';
 import {
   HomeIcon,
@@ -10,6 +10,7 @@ import {
 
 const HomeFooter = () => {
   const { clientName } = useClientName();
+  const { customerId } = useParams();
   return (
     <nav className='fixed bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-lg h-16 bg-white flex shadow-footer p-1.5'>
       <Link
@@ -34,7 +35,7 @@ const HomeFooter = () => {
         <p className='text-brandOrange text-xs font-bold pt-1'>단건주문</p>
       </Link>
       <Link
-        to={`/shopping/${clientName}/my`}
+        to={`/shopping/${clientName}/my/${customerId}`}
         className='flex-1 bg-white flex flex-col justify-center items-center relative'
       >
         <MypageIcon className='w-7 h-7 fill-current text-brandOrange stroke-brandOrange stroke-[10]' />

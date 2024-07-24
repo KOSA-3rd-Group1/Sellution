@@ -19,4 +19,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     // 사업체 별 회원의 전화번호 중복 여부 확인
     boolean existsByCompany_CompanyIdAndPhoneNumber(Long companyId, String phoneNumber);
+
 }

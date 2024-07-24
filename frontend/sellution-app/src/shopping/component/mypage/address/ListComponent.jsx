@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 const ListComponent = () => {
   const [addresses, setAddresses] = useState([]);
+  const { customerId } = useParams();
+
   useEffect(() => {
     fetchAddresses();
-  }, []);
+  }, [customerId]);
 
   const DisplayStatus = {
     N: 'N',
@@ -15,7 +17,9 @@ const ListComponent = () => {
 
   const fetchAddresses = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/addresses/customer/1`);
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/addresses/customer/${customerId}`,
+      );
       // 기본 배송지를 맨 위로 정렬
       const sortedAddresses = response.data.sort((a, b) =>
         b.isDefaultAddress.localeCompare(a.isDefaultAddress),
@@ -45,9 +49,12 @@ const ListComponent = () => {
   };
 
   return (
+    // <div>
+    //   <div className='flex justify-center h-screen'>
+    //     <div className='container-box relative w-full max-w-lg h-full flex justify-center pt-14 pb-14'>
     <div className='w-full scroll-box overflow-auto flex-grow p-4'>
       <h1 className='text-xl font-bold mb-4 text-center'>배송지 목록</h1>
-      <div className='mt-4 w-[90%] mx-auto mb-3'>
+      <div className='mt-4 w-[100%] mx-auto mb-3'>
         <Link
           to='add'
           className='block w-full text-center bg-brandOrange text-white py-2 rounded-md hover:bg-orange-600'
@@ -56,7 +63,7 @@ const ListComponent = () => {
         </Link>
       </div>
 
-      <div className='w-[90%] mx-auto'>
+      <div className='w-[100%] mx-auto'>
         {addresses.map((address, index) => (
           <div key={index} className='bg-white rounded-lg shadow-md p-4 mb-4'>
             <div className='flex justify-between items-center mb-2'>
@@ -116,6 +123,9 @@ const ListComponent = () => {
         ))}
       </div>
     </div>
+    //     </div>
+    //   </div>
+    // </div>
   );
 };
 

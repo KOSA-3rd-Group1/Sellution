@@ -5,7 +5,7 @@ import SimplePassword from '@/shopping/page/ordersheet/auth/SimplePasswordPage';
 const authRouter = () => {
   return [
     {
-      path: '',
+      path: ':customerId',
       element: <SimplePassword />,
     },
     {

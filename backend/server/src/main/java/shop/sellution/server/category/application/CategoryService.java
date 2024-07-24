@@ -14,5 +14,6 @@ public interface CategoryService {
     void createCategory(SaveCategoryReq saveCategoryRequestDTO);
     void updateCategory(Long categoryId, SaveCategoryReq saveCategoryRequestDTO);
     void deleteCategory(Long categoryId);
+    boolean isCategoryNameDuplicate(String name);
 
 }
