@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import shop.sellution.server.address.domain.Address;
 import shop.sellution.server.customer.domain.Customer;
+import shop.sellution.server.global.annotation.validation.ValidPhoneNumber;
 import shop.sellution.server.global.type.DisplayStatus;
 
 import java.time.LocalDateTime;
@@ -25,8 +26,8 @@ public class SaveAddressReq {
     @NotBlank(message = "수령인은 필수 입니다.")
     private String name;
     @NotBlank(message = "휴대폰번호는 필수 입니다.")
+    @ValidPhoneNumber
     private String phoneNumber;
-
     @NotBlank(message = "우편번호는 필수 입니다.")
     private String zipcode;
     @NotBlank(message = "주소는 필수 입니다.")

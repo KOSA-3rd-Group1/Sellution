@@ -25,7 +25,8 @@ public class Account {
     @JoinColumn(name = "customer_id",nullable = false)
     private Customer customer;
 
-    @Column(nullable = false, length = 100, unique = true)
+//    @Column(nullable = false, length = 100, unique = true)
+    @Column(nullable = false, length = 100) // 더미데이터를 위해 unique 제약 제거
     private String accountNumber;
 
     @Column(nullable = false, length = 20)

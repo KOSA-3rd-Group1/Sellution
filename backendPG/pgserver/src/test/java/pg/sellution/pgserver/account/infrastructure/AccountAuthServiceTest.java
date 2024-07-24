@@ -9,12 +9,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 import pg.sellution.pgserver.account.dto.request.CheckAccountReq;
 import pg.sellution.pgserver.account.dto.response.CheckAccountRes;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
 
 
 import java.io.IOException;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,12 +58,11 @@ class AccountAuthServiceTest {
                 .addHeader("Content-Type", "application/json"));
 
         // when
-        when(iamPortTokenClient.getApiAccessToken()).thenReturn(Mono.just(accessToken));
-        Mono<CheckAccountRes> result = accountAuthService.checkAccount(req);
+        when(iamPortTokenClient.getApiAccessToken()).thenReturn(accessToken);
+        CheckAccountRes result = accountAuthService.checkAccount(req);
 
         // then
-        StepVerifier.create(result)
-                .expectNextMatches(res -> res.getBankHolderName().equals("길재현"))
-                .verifyComplete();
+        assertNotNull(result);
+        assertEquals("길재현", result.getBankHolderName());
     }
 }

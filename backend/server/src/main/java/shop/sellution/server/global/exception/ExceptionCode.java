@@ -64,6 +64,10 @@ public enum ExceptionCode {
     ALREADY_DELIVERED(5013,"이미 배송이 됬습니다." ),
     ALREADY_REGISTERED_EASY_PWD(5014,"이미 간편비밀번호가 등록 되어있습니다."),
     NOT_MATCH_ACCOUNT_ID(5015,"해당 주문에 사용되지않은 계좌입니다." ),
+    NOT_ENOUGH_STOCK(5016,"재고가 부족합니다." ),
+    FAIL_TO_PAY_CANCEL(5017,"결제취소에 실패하였습니다." ),
+    INVALID_ORDER_INFO_FOR_ONETIME(5018,"단건 주문에 유효하지않은 정보값입니다." ),
+    INVALID_ORDER_INFO_FOR_SUB(5018,"정기 주문에 유효하지않은 정보값입니다." ),
 
 
     // ---------------------------- Address, category, event 6501 ~ 7000 ---------------------------------------
@@ -88,6 +92,7 @@ public enum ExceptionCode {
     NOT_FOUND_ADMIN_ID(8103, "요청한 ID에 해당하는 관리자를 찾을 수 없습니다."),
     INVALID_CURRENT_PASSWORD(8104, "현재 사용중인 비밀번호가 일치하지 않습니다."),
     INVALID_ADMIN_AUTHORITY(8201, "해당 관리자 기능에 대한 접근 권한이 없습니다."),
+    INVALID_CUSTOMER_INFO(8301, "회원의 이름과 전화번호 정보가 일치하지 않습니다"),
 
     //  ---------------------------- Auth 9001 ~ 9998 ---------------------------------------
 
@@ -108,7 +113,7 @@ public enum ExceptionCode {
 
     EXTERNAL_SEVER_ERROR(9998, "외부 서버 에러가 발생하였습니다. 관리자에게 문의해 주세요."),
     INTERNAL_SEVER_ERROR(9999, "서버 에러가 발생하였습니다. 관리자에게 문의해 주세요."),
-    ;
+ ;
 
     private final int code;
     private final String message;

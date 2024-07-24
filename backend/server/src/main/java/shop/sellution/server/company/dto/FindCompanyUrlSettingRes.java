@@ -17,14 +17,14 @@ public class FindCompanyUrlSettingRes {
     private String isShopVisible;
 
     //private byte[] qrCode;
-    private String qrCodeBase64;
+    private String qrCodeUrl;
 
     public static FindCompanyUrlSettingRes fromEntity(Company company) {
         return FindCompanyUrlSettingRes.builder()
                 .companyId(company.getCompanyId())
                 .name(company.getName())
                 .shopUrl("https://www.sellution.shop/shopping/" + company.getName())
-                .qrCodeBase64(Base64Util.encodeToString(company.getQrCode()))
+                .qrCodeUrl(company.getQrCodeUrl())
                 .isShopVisible(company.getIsShopVisible().name())
                 .build();
     }

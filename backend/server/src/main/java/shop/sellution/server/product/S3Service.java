@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -53,30 +54,31 @@ public class S3Service {
         }
     }
 
-//    private String generateFileName(String originalFileName) {
-//        return UUID.randomUUID().toString() + "_" + originalFileName;
-//    }
-//
-//    private String generateFilePath(String companyName, String folderType, String fileName) {
-//        return String.format("%s/%s/%s", companyName, folderType, fileName);
-//    }
+    public String uploadQRCode(byte[] qrCode, Long companyId) throws IOException {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new RuntimeException("Company not found"));
+
+        String companyName = company.getName();
+        String fileName = UUID.randomUUID().toString() + "_qr_code.png";
+        String filePath = String.format("%s/QR/%s", companyName, fileName);
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType("image/png");
+        metadata.setContentLength(qrCode.length);
+
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(qrCode)) {
+            amazonS3.putObject(new PutObjectRequest(bucket, filePath, inputStream, metadata));
+            return amazonS3.getUrl(bucket, filePath).toString(); // Return the S3 URL
+        } catch (AmazonServiceException e) {
+            throw e;
+        }
+    }
+
 
     public void deleteFile(String fileUrl) {
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         amazonS3.deleteObject(bucket, fileName);
     }
 
-
-
-//    public String uploadFile(MultipartFile file) throws IOException {
-//        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-//        ObjectMetadata metadata = new ObjectMetadata();
-//        metadata.setContentType(file.getContentType());
-//        metadata.setContentLength(file.getSize());
-//
-//        amazonS3.putObject(new PutObjectRequest(bucket, fileName, file.getInputStream(), metadata));
-//        return amazonS3.getUrl(bucket, fileName).toString();
-//    }
-//
 
 }
