@@ -178,8 +178,6 @@ public class OrderCreationService {
                 %s
                 주문하신 상품 총 가격
                 %d원
-                적용된 쿠폰
-                %s
                 선택하신 배송 시작일
                 %s
                 첫번째 배송일자
@@ -194,10 +192,11 @@ public class OrderCreationService {
                 """,order.getCode(),orderedProductInfo,order.getPerPrice(),order.getDeliveryStartDate(),order.getNextDeliveryDate(),order.getDeliveryEndDate(),order.getTotalDeliveryCount());
         if(couponEvent!=null){
             message = message + String.format("""
+                    
                     적용된 쿠폰 -> [ 쿠폰명 : %s , 할인율 : %d%% ]
                     """,couponEvent.getCouponName(),couponEvent.getCouponDiscountRate());
         }
-        smsService.sendSms(customer.getPhoneNumber(),message);
+//        smsService.sendSms(customer.getPhoneNumber(),message);
 
         if(order.getStatus()==OrderStatus.APPROVED){
             // 자동주문승인으로 인해 바로 승인이 된다면 , 즉시 결제 시도
@@ -206,7 +205,7 @@ public class OrderCreationService {
                     승인된 주문번호
                     %d
                     """,order.getCode());
-            smsService.sendSms(customer.getPhoneNumber(),approveMessage);
+//            smsService.sendSms(customer.getPhoneNumber(),approveMessage);
             paymentService.pay(
                     PaymentReq.builder()
                             .accountId(order.getAccount().getId())

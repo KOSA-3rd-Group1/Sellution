@@ -12,7 +12,6 @@ import org.springframework.data.redis.core.ValueOperations;
 import pg.sellution.pgserver.auth.domain.Client;
 import pg.sellution.pgserver.auth.domain.ClientRepository;
 import pg.sellution.pgserver.auth.util.AccessToken;
-import pg.sellution.pgserver.global.exception.AuthException;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
