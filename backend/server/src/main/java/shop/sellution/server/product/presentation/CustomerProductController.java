@@ -12,11 +12,11 @@ import shop.sellution.server.product.dto.response.FindCustomerProductRes;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products/company/{companyId}")
+@RequestMapping("/products/company")
 @RequiredArgsConstructor
 public class CustomerProductController {
     private final CustomerProductService customerProductService;
-    @GetMapping()
+    @GetMapping("/{companyId}")
     public ResponseEntity<Page<FindCustomerProductRes>> findAllProducts(@PathVariable Long companyId, //name에서 companyId 추출
                                                                         @RequestParam(value="deliveryType", required = true) DeliveryType deliveryType,
                                                                         @RequestParam(value="categoryId", required = false) Long categoryId,
