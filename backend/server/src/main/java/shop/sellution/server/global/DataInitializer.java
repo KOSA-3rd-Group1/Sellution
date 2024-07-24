@@ -156,7 +156,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .maxDeliveryCount(30)
                 .themeColor("F37021")
                 .sellType(SellType.ALL)
-                .mainPromotion1Title("한끼, 건강하고 간단하게 \uD83E\uDD57")
+                .mainPromotion1Title("한끼, 건강하고 간단하게")
                 .mainPromotion1Content("최고의 퀄리티를 위해\n아끼지 않고 가득 담았습니다.")
                 .mainPromotion2Title("식단 관리 할 사람!")
                 .mainPromotion2Content("너랑!  나랑!")
