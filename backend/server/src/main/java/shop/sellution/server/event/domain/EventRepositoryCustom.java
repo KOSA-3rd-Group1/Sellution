@@ -12,4 +12,6 @@ import java.util.List;
 public interface EventRepositoryCustom {
     List<CouponEvent> findAllOngoingEvents(Company company, LocalDate now);
     Page<CouponEvent> findCouponsByCustomer(Long customerId, LocalDate now, Pageable pageable);
+
+    Page<CouponEvent> findEventsByCompanyAndDate(Company company, LocalDate startDate, LocalDate endDate, Pageable pageable);
 }
