@@ -40,6 +40,7 @@ const useDetail = () => {
         discountRate: productToShow.discountRate,
         discountedPrice: productToShow.discountedPrice,
         stock: productToShow.stock,
+        thumbnailImage: productToShow.thumbnailImage,
       };
       updateSubscriptionCart(newItem);
       console.log('정기배송 장바구니 목록: ', subscriptionCart);
@@ -59,6 +60,7 @@ const useDetail = () => {
         discountRate: productToShow.discountRate,
         discountedPrice: productToShow.discountedPrice,
         stock: productToShow.stock,
+        thumbnailImage: productToShow.thumbnailImage,
       };
       updateOrderListForDirectOrder(newItem);
       setItemCountToAdd(0);

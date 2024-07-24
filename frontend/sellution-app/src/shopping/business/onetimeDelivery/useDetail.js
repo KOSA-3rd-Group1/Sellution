@@ -46,6 +46,7 @@ const useDetail = () => {
         discountRate: productToShow.discountRate,
         discountedPrice: productToShow.discountedPrice,
         stock: productToShow.stock,
+        thumbnailImage: productToShow.thumbnailImage,
       };
       updateOnetimeCart(newItem);
       console.log('단건배송 장바구니 목록: ', onetimeCart);
@@ -67,6 +68,7 @@ const useDetail = () => {
         discountRate: productToShow.discountRate,
         discountedPrice: productToShow.discountedPrice,
         stock: productToShow.stock,
+        thumbnailImage: productToShow.thumbnailImage,
       };
       updateOrderListForDirectOrder(newItem);
       setItemCountToAdd(0);
