@@ -1,11 +1,61 @@
-import React, { useState } from 'react'; // eslint-disable-line no-unused-vars
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
+import axios from 'axios';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { TrashIcon } from '@/client/utility/assets/Icons.jsx';
 
 const OrderComponent = () => {
   const [selectedDays, setSelectedDays] = useState(['MON', 'WED', 'FRI']);
   const days = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
   const navigate = useNavigate();
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const { clientName, customerId } = useParams();
+  const location = useLocation();
+
+  // 첫 번째 useEffect: 컴포넌트 마운트 시 주소 가져오기
+  useEffect(() => {
+    console.log('OrderComponent mounted');
+    const fetchData = async () => {
+      await fetchAddresses();
+      checkForSavedAddress();
+    };
+    fetchData();
+    return () => {
+      console.log('OrderComponent unmounted');
+    };
+  }, [customerId]);
+
+  useEffect(() => {
+    if (location.state && location.state.selectedAddress) {
+      console.log('Setting address from location state:', location.state.selectedAddress);
+      setSelectedAddress(location.state.selectedAddress);
+    }
+  }, [location]);
+
+  const checkForSavedAddress = () => {
+    console.log('Checking for saved address');
+    const savedAddress = localStorage.getItem('selectedAddress');
+    if (savedAddress) {
+      console.log('Found saved address:', savedAddress);
+      setSelectedAddress(JSON.parse(savedAddress));
+      localStorage.removeItem('selectedAddress');
+    }
+  };
+
+  const fetchAddresses = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/addresses/customer/${customerId}`,
+      );
+      setAddresses(response.data);
+      if (!selectedAddress) {
+        const defaultAddress = response.data.find((addr) => addr.isDefaultAddress === 'Y');
+        setSelectedAddress(defaultAddress || null);
+      }
+    } catch (error) {
+      console.error('Error fetching addresses:', error);
+    }
+  };
 
   const toggleDay = (day) => {
     setSelectedDays((prev) =>
@@ -13,12 +63,14 @@ const OrderComponent = () => {
     );
   };
 
-  const handleAddressAdd = () => {
-    navigate('/shopping/page/ordersheet/setting/address/ListComponent');
+  const handleAddressChange = () => {
+    navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
+      state: { returnToOrder: true },
+    });
   };
 
   const handleAddPaymentMethod = () => {
-    navigate('@/shopping/page/ordersheet/setting/payment/AddComponent');
+    navigate(`/shopping/${clientName}/ordersheet/setting/payment`);
   };
 
   const [paymentMethods, setPaymentMethods] = useState([
@@ -39,54 +91,49 @@ const OrderComponent = () => {
     }
   };
 
+  const formatPhoneNumber = (value) => {
+    const cleaned = ('' + value).replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
+    if (match) {
+      return `${match[1]}-${match[2]}-${match[3]}`;
+    }
+    return value;
+  };
+
   return (
-    // <body className='flex justify-center h-screen'>
-    //   <div
-    //     className={`container-box relative w-full max-w-lg h-full flex justify-center ${location.pathname === '/' ? 'pt-16' : 'pt-14'} ${location.pathname === '/sub-item/info' ? 'pb-0' : 'pb-14'}`}
-    //   >
-    //     <div className='w-full scroll-box overflow-auto flex-grow'>
     <div className='container mx-auto max-w-lg p-4 bg-gray-100 h-screen overflow-y-auto'>
       <div className='space-y-4'>
         <h1 className='text-xl font-bold border-b pb-2 mb-4'>주문 / 결제</h1>
 
         <div className='mb-6 bg-white rounded-lg shadow-md p-4'>
-          <h2 className='text-lg font-semibold mb-2'>주문상품</h2>
-          <div className='space-y-4'>
-            {[1, 2].map((item) => (
-              <div key={item} className='flex items-center space-x-4'>
-                <img
-                  src='/path-to-salad-image.jpg'
-                  alt='케이준 샐러드'
-                  className='w-20 h-20 object-cover rounded'
-                />
-                <div>
-                  <h3 className='font-medium'>케이준 샐러드</h3>
-                  <p className='text-sm text-gray-600'>수량: 2개</p>
-                  <p className='text-brandOrange font-medium'>16,000원</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className='mb-6 bg-white rounded-lg shadow-md p-4'>
           <div className='flex justify-between items-center mb-2'>
-            <h2 className='text-lg font-semibold mb-2'>기본 배송지</h2>
+            <h2 className='text-lg font-semibold mb-2'>
+              배송지 {selectedAddress && `(${selectedAddress.addressName})`}
+            </h2>
             <button
-              onClick={handleAddressAdd}
+              onClick={handleAddressChange}
               className='text-gray-500 border border-gray-300 rounded px-2 py-1 text-sm'
             >
-              추가
+              {addresses.length > 0 ? '변경' : '추가'}
             </button>
           </div>
-          <div className='space-y-2'>
-            {['이름', '연락처', '주소', '요청사항'].map((field) => (
-              <div key={field} className='flex items-center'>
-                <span className='text-brandOrange mr-2'>*</span>
-                <span>{field}</span>
+          {selectedAddress ? (
+            <div className='space-y-2'>
+              <div>
+                <span className='text-brandOrange mr-2'>*</span>이름: {selectedAddress.name}
               </div>
-            ))}
-          </div>
+              <div>
+                <span className='text-brandOrange mr-2'>*</span>연락처:{' '}
+                {formatPhoneNumber(selectedAddress.phoneNumber)}
+              </div>
+              <div>
+                <span className='text-brandOrange mr-2'>*</span>주소:{' '}
+                {selectedAddress.streetAddress} {selectedAddress.addressDetail}
+              </div>
+            </div>
+          ) : (
+            <div className='text-gray-500'>등록된 배송지가 없습니다. 배송지를 추가해주세요.</div>
+          )}
           <select className='w-full mt-2 p-2 border rounded'>
             <option>배송요청사항 선택</option>
           </select>
@@ -113,27 +160,27 @@ const OrderComponent = () => {
                 </button>
               ))}
             </div>
+          </div>
 
-            <div className='mb-4'>
-              <h3 className='text-brandOrange mb-2'>* 배송 주기</h3>
-              <select className='w-full p-2 border rounded'>
-                <option>1주마다 배송</option>
-                {/* 백엔드에서 받은 데이터로 옵션을 채우세요 */}
-              </select>
-            </div>
+          <div className='mb-4'>
+            <h3 className='text-brandOrange mb-2'>* 배송 주기</h3>
+            <select className='w-full p-2 border rounded'>
+              <option>1주마다 배송</option>
+              {/* 백엔드에서 받은 데이터로 옵션을 채우세요 */}
+            </select>
+          </div>
 
-            <div className='mb-4'>
-              <h3 className='text-brandOrange mb-2'>* 배송 횟수</h3>
-              <select className='w-full p-2 border rounded'>
-                <option>8회</option>
-                {/* 백엔드에서 받은 데이터로 옵션을 채우세요 */}
-              </select>
-            </div>
+          <div className='mb-4'>
+            <h3 className='text-brandOrange mb-2'>* 배송 횟수</h3>
+            <select className='w-full p-2 border rounded'>
+              <option>8회</option>
+              {/* 백엔드에서 받은 데이터로 옵션을 채우세요 */}
+            </select>
+          </div>
 
-            <div>
-              <h3 className='text-brandOrange mb-2'>* 배송 시작일</h3>
-              <input type='date' className='w-full p-2 border rounded' defaultValue='2024-06-24' />
-            </div>
+          <div>
+            <h3 className='text-brandOrange mb-2'>* 배송 시작일</h3>
+            <input type='date' className='w-full p-2 border rounded' defaultValue='2024-06-24' />
           </div>
         </div>
 
@@ -218,10 +265,7 @@ const OrderComponent = () => {
         </div>
       </div>
     </div>
-    // </body>
   );
-
-  //<div>정기배송 주문 페이지</div>;
 };
 
 export default OrderComponent;
