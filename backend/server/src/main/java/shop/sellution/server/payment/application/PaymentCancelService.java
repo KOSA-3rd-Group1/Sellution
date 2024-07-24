@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.account.domain.AccountRepository;
+import shop.sellution.server.customer.domain.Customer;
+import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExternalApiException;
 import shop.sellution.server.order.domain.Order;
@@ -23,6 +25,7 @@ import shop.sellution.server.payment.domain.type.TokenType;
 import shop.sellution.server.payment.dto.request.PaymentReq;
 import shop.sellution.server.payment.infrastructure.PgTokenClient;
 import shop.sellution.server.payment.util.PaymentUtil;
+import shop.sellution.server.sms.application.SmsService;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -43,6 +46,8 @@ public class PaymentCancelService {
     private final PgTokenClient pgTokenClient;
     private final WebClient webClient;
     private final PaymentUtil paymentUtil;
+    private final SmsService smsService;
+    private final CustomerRepository customerRepository;
     private final Duration TIMEOUT = Duration.ofSeconds(2);
 
 
@@ -55,6 +60,8 @@ public class PaymentCancelService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACCOUNT));
         Order order = orderRepository.findById(paymentReq.getOrderId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ORDER));
+        Customer customer = customerRepository.findById(paymentReq.getCustomerId())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER));
 
         // 이미 배송 완료인 주문은 취소[환불]가 불가능하다.
         if (order.getDeliveryStatus() == DeliveryStatus.COMPLETE) {
@@ -85,7 +92,17 @@ public class PaymentCancelService {
                 .block(TIMEOUT);
 
         if(response != null && response.getStatusCode() == HttpStatus.OK) {
-            createRefundPaymentHistory(order, account);
+            createRefundPaymentHistory(order, account,payCost);
+            String payCancelMessage = String.format("""
+                    [Sellution] 환불처리 되었습니다.
+                    취소된 주문번호
+                    %d
+                    환불된 금액
+                    %d원
+                    환불된 계좌 정보
+                    %s
+                    """,order.getCode(),payCost,account.getAccountNumber());
+            smsService.sendSms(customer.getPhoneNumber(),payCancelMessage);
             log.info("결제 취소 성공");
         } else {
             log.error("결제 취소 실패");
@@ -93,10 +110,8 @@ public class PaymentCancelService {
     }
 
 
-    public void createRefundPaymentHistory(Order order, Account account) {
+    public void createRefundPaymentHistory(Order order, Account account,int price) {
         log.info("환불 결제 내역 생성 시작");
-
-        int price = order.getPerPrice();
 
         PaymentHistory paymentHistory = PaymentHistory.builder()
                 .order(order)

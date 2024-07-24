@@ -53,7 +53,8 @@ public class PaymentUtil {
                 LocalDate startDate = LocalDate.now().plusDays(1);
                 LocalDate endDate = order.getNextPaymentDate().plusDays(7);
                 DeliveryInfo deliveryInfo = calculateDeliveryInfo(startDate, endDate, order.getWeekOption().getWeekValue(), getDeliveryDays(order.getSelectedDays()));
-                yield order.getPerPrice() * deliveryInfo.getTotalDeliveryCount();
+//                log.info("시작일 : {}, 종료일 : {}, 배송정보 : {}, 배송한건당 가격 :{}", startDate, endDate, deliveryInfo, order.getPerPrice());
+                yield (order.getPerPrice() * deliveryInfo.getTotalDeliveryCount());
             }
             case COUNT_SUBSCRIPTION -> order.getRemainingDeliveryCount() * order.getPerPrice(); // 횟수 정기주문은 남은 횟수 * 배송 당 가격을 계산하여 환불해야하는 금액을 계산한다.
         };
