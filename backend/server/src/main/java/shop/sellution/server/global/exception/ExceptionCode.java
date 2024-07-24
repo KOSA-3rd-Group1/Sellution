@@ -87,6 +87,7 @@ public enum ExceptionCode {
     NOT_FOUND_ADMIN_ID(8103, "요청한 ID에 해당하는 관리자를 찾을 수 없습니다."),
     INVALID_CURRENT_PASSWORD(8104, "현재 사용중인 비밀번호가 일치하지 않습니다."),
     INVALID_ADMIN_AUTHORITY(8201, "해당 관리자 기능에 대한 접근 권한이 없습니다."),
+    INVALID_CUSTOMER_INFO(8301, "회원의 이름과 전화번호 정보가 일치하지 않습니다"),
 
     //  ---------------------------- Auth 9001 ~ 9998 ---------------------------------------
 
