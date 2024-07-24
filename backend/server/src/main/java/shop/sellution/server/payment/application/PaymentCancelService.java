@@ -90,41 +90,6 @@ public class PaymentCancelService {
         } else {
             log.error("결제 취소 실패");
         }
-
-
-//        pgTokenClient.getApiAccessToken(order.getPerPrice(), TokenType.PAYMENT_CANCEL)
-//                .flatMap(apiAccessToken -> {
-//                    Map<String, String> body = Map.of(
-//                            "bankCode", account.getBankCode(),
-//                            "accountNumber", account.getAccountNumber(),
-//                            "price", Integer.toString(order.getPerPrice())
-//                    );
-//                    return webClient.post()
-//                            .uri(uriBuilder -> uriBuilder
-//                                    .path("/pay/cancel")
-//                                    .build()
-//                            )
-//                            .header("Authorization", apiAccessToken)
-//                            .bodyValue(body)
-//                            .retrieve()
-//                            .onStatus(HttpStatusCode::is4xxClientError, response -> { // 4xx 에러에 대한 처리
-//                                log.error("4xx error 발생: {}", response.statusCode());
-//                                return Mono.error(new BadRequestException(FAIL_TO_GET_API_TOKEN));
-//                            })
-//                            .onStatus(HttpStatusCode::is5xxServerError, response -> { // 5xx 에러에 대한 처리
-//                                log.error("5xx error 발생: {}", response.statusCode());
-//                                return Mono.error(new ExternalApiException(EXTERNAL_SEVER_ERROR));
-//                            })
-//                            .toBodilessEntity()
-//                            .timeout(TIMEOUT);
-//                })
-//                .doOnSuccess(result -> {
-//                    createRefundPaymentHistory(order, account);
-//                    log.info("결제 취소 성공");
-//                })
-//                .doOnError(error -> {
-//                    log.error("결제 취소 실패", error);
-//                });
     }
 
 
