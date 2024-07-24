@@ -1,19 +1,12 @@
-import { useState } from 'react';
 import useClient from '../business/layout/useClientName';
-import Category from '../layout/partials/Category';
 import { Link, useNavigate } from 'react-router-dom';
 
-const MenuCategoryHeaderNav = ({ title, categoryList, onCategoryClick }) => {
+const MenuHeaderNav = ({ title }) => {
   const { clientName } = useClient();
   const navigate = useNavigate();
   const handleBack = () => {
     navigate(-1);
   };
-  const [isCategoryMenuVisible, setIsCategoryMenuVisible] = useState(false);
-  const toggleCategoryMenu = () => {
-    setIsCategoryMenuVisible((prev) => !prev);
-  };
-
   return (
     <header className='fixed top-0 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-lg h-14 flex justify-between items-center bg-white px-2 shadow-md'>
       <div className='flex items-center space-x-4'>
@@ -29,22 +22,6 @@ const MenuCategoryHeaderNav = ({ title, categoryList, onCategoryClick }) => {
               strokeLinecap='round'
               strokeLinejoin='round'
             ></path>
-          </svg>
-        </button>
-        <button className='header-icon category-button' onClick={toggleCategoryMenu}>
-          <svg
-            className='category-button w-6 h-6 stroke-current text-gray-600 cursor-pointer'
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='#000000'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          >
-            <line x1='3' y1='6' x2='21' y2='6'></line>
-            <line x1='3' y1='12' x2='21' y2='12'></line>
-            <line x1='3' y1='18' x2='21' y2='18'></line>
           </svg>
         </button>
       </div>
@@ -64,11 +41,8 @@ const MenuCategoryHeaderNav = ({ title, categoryList, onCategoryClick }) => {
           </svg>
         </div>
       </Link>
-      {isCategoryMenuVisible && (
-        <Category categoryList={categoryList} onCategoryClick={onCategoryClick} />
-      )}
     </header>
   );
 };
 
-export default MenuCategoryHeaderNav;
+export default MenuHeaderNav;
