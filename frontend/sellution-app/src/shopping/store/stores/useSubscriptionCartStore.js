@@ -7,7 +7,7 @@ const useSubscriptionCartStore = create((set) => ({
   updateSubscriptionCart: (newItem) =>
     set((state) => {
       const updatedItems = [...state.subscriptionCart];
-      const itemIndex = updatedItems.findIndex((item) => item.id === newItem.id);
+      const itemIndex = updatedItems.findIndex((item) => item.productId === newItem.productId);
       if (itemIndex > -1) {
         updatedItems[itemIndex] = {
           ...updatedItems[itemIndex],
@@ -21,7 +21,7 @@ const useSubscriptionCartStore = create((set) => ({
 
   removeFromSubscriptionCart: (itemId) =>
     set((state) => ({
-      subscriptionCart: state.subscriptionCart.filter((item) => item.id !== itemId),
+      subscriptionCart: state.subscriptionCart.filter((item) => item.productId !== itemId),
       selectedSubscriptionItems: state.selectedSubscriptionItems.filter((id) => id !== itemId),
     })),
 
@@ -34,14 +34,14 @@ const useSubscriptionCartStore = create((set) => ({
   increaseSubscriptionCartQuantity: (itemId) =>
     set((state) => ({
       subscriptionCart: state.subscriptionCart.map((item) =>
-        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item,
+        item.productId === itemId ? { ...item, quantity: item.quantity + 1 } : item,
       ),
     })),
 
   decreaseSubscriptionCartQuantity: (itemId) =>
     set((state) => ({
       subscriptionCart: state.subscriptionCart.map((item) =>
-        item.id === itemId ? { ...item, quantity: Math.max(item.quantity - 1, 1) } : item,
+        item.productId === itemId ? { ...item, quantity: Math.max(item.quantity - 1, 1) } : item,
       ),
     })),
 
@@ -54,13 +54,13 @@ const useSubscriptionCartStore = create((set) => ({
 
   selectAllSubscriptionItems: (select) =>
     set((state) => ({
-      selectedSubscriptionItems: select ? state.subscriptionCart.map((item) => item.id) : [],
+      selectedSubscriptionItems: select ? state.subscriptionCart.map((item) => item.productId) : [],
     })),
 
-  removeselectedSubscriptionItems: () =>
+  removeSelectedSubscriptionItems: () =>
     set((state) => ({
       subscriptionCart: state.subscriptionCart.filter(
-        (item) => !state.selectedSubscriptionItems.includes(item.id),
+        (item) => !state.selectedSubscriptionItems.includes(item.productId),
       ),
       selectedSubscriptionItems: [],
     })),

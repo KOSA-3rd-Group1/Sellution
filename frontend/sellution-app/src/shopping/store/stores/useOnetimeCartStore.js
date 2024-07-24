@@ -7,7 +7,7 @@ const useOnetimeCartStore = create((set) => ({
   updateOnetimeCart: (newItem) =>
     set((state) => {
       const updatedItems = [...state.onetimeCart];
-      const itemIndex = updatedItems.findIndex((item) => item.id === newItem.id);
+      const itemIndex = updatedItems.findIndex((item) => item.productId === newItem.productId);
       if (itemIndex > -1) {
         updatedItems[itemIndex] = {
           ...updatedItems[itemIndex],
@@ -21,7 +21,7 @@ const useOnetimeCartStore = create((set) => ({
 
   removeFromOnetimeCart: (itemId) =>
     set((state) => ({
-      onetimeCart: state.onetimeCart.filter((item) => item.id !== itemId),
+      onetimeCart: state.onetimeCart.filter((item) => item.productId !== itemId),
       selectedOnetimeItems: state.selectedOnetimeItems.filter((id) => id !== itemId),
     })),
 
@@ -34,14 +34,14 @@ const useOnetimeCartStore = create((set) => ({
   increaseOnetimeCartQuantity: (itemId) =>
     set((state) => ({
       onetimeCart: state.onetimeCart.map((item) =>
-        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item,
+        item.productId === itemId ? { ...item, quantity: item.quantity + 1 } : item,
       ),
     })),
 
   decreaseOnetimeCartQuantity: (itemId) =>
     set((state) => ({
       onetimeCart: state.onetimeCart.map((item) =>
-        item.id === itemId ? { ...item, quantity: Math.max(item.quantity - 1, 1) } : item,
+        item.productId === itemId ? { ...item, quantity: Math.max(item.quantity - 1, 1) } : item,
       ),
     })),
 
@@ -51,15 +51,15 @@ const useOnetimeCartStore = create((set) => ({
         ? state.selectedOnetimeItems.filter((id) => id !== itemId)
         : [...state.selectedOnetimeItems, itemId],
     })),
-    
+
   selectAllOnetimeItems: (select) =>
     set((state) => ({
-      selectedOnetimeItems: select ? state.onetimeCart.map((item) => item.id) : [],
+      selectedOnetimeItems: select ? state.onetimeCart.map((item) => item.productId) : [],
     })),
-  removeselectedOnetimeItems: () =>
+  removeSelectedOnetimeItems: () =>
     set((state) => ({
       onetimeCart: state.onetimeCart.filter(
-        (item) => !state.selectedOnetimeItems.includes(item.id),
+        (item) => !state.selectedOnetimeItems.includes(item.productId),
       ),
       selectedOnetimeItems: [],
     })),

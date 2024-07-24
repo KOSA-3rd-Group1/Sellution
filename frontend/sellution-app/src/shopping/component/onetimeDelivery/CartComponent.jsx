@@ -4,10 +4,11 @@ import useOnetimeCartStore from './../../store/stores/useOnetimeCartStore';
 import MenuHeaderNav from '../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import useOrderListStore from './../../store/stores/useOrderListStore';
+
 const CartComponent = () => {
   const {
     onetimeCart,
-    selectedOnetimeItems, //index임
+    selectedOnetimeItems, // index는 productId를 사용함
     selectAllOnetimeItems,
     removeSelectedOnetimeItems,
     toggleSelectedOnetimeItems,
