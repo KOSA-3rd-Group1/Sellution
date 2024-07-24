@@ -109,7 +109,7 @@ public class PaymentService {
                     결제된 계좌 정보
                     %s
                     """,order.getCode(),payCost,account.getAccountNumber());
-            smsService.sendSms(customer.getPhoneNumber(),payMessage);
+//            smsService.sendSms(customer.getPhoneNumber(),payMessage);
             log.info("결제 성공");
         } else {
             createFailPaymentHistory(order, account,payCost);

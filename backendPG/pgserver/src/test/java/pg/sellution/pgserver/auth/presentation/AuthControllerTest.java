@@ -62,7 +62,7 @@ class AuthControllerTest extends BaseControllerTest {
         result.andExpect(status().isOk())
                 .andExpect(content().string("success"))
                 .andExpect(header().string("Authorization", "Bearer " + expectedToken))
-                .andDo(document("auth/create-token",
+                .andDo(document("Auth/create-token",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(

@@ -2,6 +2,7 @@ package pg.sellution.pgserver.payment.presentation;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import static pg.sellution.pgserver.global.exception.ExceptionCode.INVALID_AUTH_
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/pg/pay")
+@Slf4j
 public class PaymentController {
 
     private final AccessTokenService accessTokenService;
@@ -27,6 +29,7 @@ public class PaymentController {
 
     @PostMapping("")
     public ResponseEntity<String> pay(@RequestBody PaymentReq paymentReq, HttpServletRequest request) {
+        log.info("---------- 결제 시작 ----------");
         String authHeader = request.getHeader(AUTH_HEADER);
         if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
             throw new AuthException(INVALID_AUTH_HEADER);
@@ -36,11 +39,13 @@ public class PaymentController {
         accessTokenService.invalidateToken(token);
 
         accountAuthService.checkAccount(new CheckAccountReq(paymentReq.getBankCode(), paymentReq.getAccountNumber()));
+        log.info("---------- 결제 종료 ----------");
         return ResponseEntity.ok().body("success");
     }
 
     @PostMapping("/cancel")
     public ResponseEntity<String> cancelPayment(@RequestBody PaymentReq paymentReq, HttpServletRequest request) {
+        log.info("---------- 환불 시작---------- ");
         String authHeader = request.getHeader(AUTH_HEADER);
         if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
             throw new AuthException(INVALID_AUTH_HEADER);
@@ -50,6 +55,7 @@ public class PaymentController {
         accessTokenService.invalidateToken(token);
 
         accountAuthService.checkAccount(new CheckAccountReq(paymentReq.getBankCode(), paymentReq.getAccountNumber()));
+        log.info("---------- 환불 종료 ----------");
         return ResponseEntity.ok().body("success");
     }
 }
