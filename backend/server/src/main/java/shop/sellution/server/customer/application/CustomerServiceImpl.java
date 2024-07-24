@@ -2,16 +2,22 @@ package shop.sellution.server.customer.application;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.sellution.server.auth.dto.CustomUserDetails;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
+import shop.sellution.server.customer.dto.CustomerSearchCondition;
 import shop.sellution.server.customer.dto.request.*;
 import shop.sellution.server.customer.dto.resonse.FindCustomerInfoRes;
+import shop.sellution.server.customer.dto.resonse.FindCustomerRes;
 import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
@@ -134,6 +140,15 @@ public class CustomerServiceImpl implements CustomerService{
         customerRepository.save(customer);
 
         redisTemplate.delete(redisKey);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<FindCustomerRes> findAllCustomerByCompanyId(CustomerSearchCondition condition, Pageable pageable) {
+        CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
+        Long companyId = userDetails.getCompanyId();
+        Page<Customer> customers = customerRepository.findCustomerByCompanyIdAndCondition(companyId, condition, pageable);
+        return customers.map(customer -> FindCustomerRes.fromEntity(customer));
     }
 
     // company_id로 사업체 조회
@@ -263,6 +278,17 @@ public class CustomerServiceImpl implements CustomerService{
     // 비밀번호 시도 횟수 증가
     private void incrementAttemptCount(String redisKey, Long userId, int attemptCount) {
         redisTemplate.opsForValue().set(redisKey, userId + ":" + (attemptCount + 1), Duration.ofMinutes(TOKEN_VALID_MINUTES));
+    }
+
+    // securitycontextholder에서 정보 가져오기
+    private CustomUserDetails getCustomUserDetailsFromSecurityContext() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof CustomUserDetails) {
+            return (CustomUserDetails) principal;
+        } else {
+            throw new AuthException(NOT_FOUND_USER);
+        }
     }
 
     @Override

@@ -67,12 +67,9 @@ export const useAuth = () => {
   }, []);
 
   // 인증용 base api
-  const AuthBaseInstance = useMemo(
-    (contentType = 'JSON') => {
-      return addAuthInterceptor(BaseInstance(contentType), refreshAccessToken, accessToken);
-    },
-    [accessToken],
-  );
+  const AuthBaseInstance = (contentType = 'JSON') => {
+    return addAuthInterceptor(BaseInstance(contentType), refreshAccessToken, accessToken);
+  };
 
   return {
     login,

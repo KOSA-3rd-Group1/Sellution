@@ -25,6 +25,7 @@ public enum ExceptionCode {
     INVALID_COMPANY_ID_FORMAT(7003, "유효하지 않은 사업체 ID 형식입니다."),
     NOT_FOUND_CLIENT(7004, "요청한 ID에 해당하는 고객을 찾을 수 없습니다."),
 //    NOT_FOUND_CUSTOMER(7005, "요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
+    NOT_FOUND_USER(7006, "요청한 ID에 해당하는 사용자 찾을 수 없습니다."),
 
     //JWT
     EXPIRED_JWT_TOKEN(4000, "토큰이 만료되었습니다."),

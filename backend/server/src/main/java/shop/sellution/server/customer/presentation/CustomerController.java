@@ -3,14 +3,18 @@ package shop.sellution.server.customer.presentation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import shop.sellution.server.customer.application.CustomerService;
 import shop.sellution.server.customer.domain.Customer;
+import shop.sellution.server.customer.dto.CustomerSearchCondition;
 import shop.sellution.server.customer.dto.request.*;
 import shop.sellution.server.customer.dto.resonse.FindCustomerInfoRes;
+import shop.sellution.server.customer.dto.resonse.FindCustomerRes;
 import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
 
@@ -96,6 +100,11 @@ public class CustomerController {
         }  catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "비밀번호 재설정 오청 중 오류가 발생햇습니다."));
         }
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<Page<FindCustomerRes>> findAllCustomerByCompanyId(CustomerSearchCondition condition, Pageable pageable) {
+        return ResponseEntity.ok(customerService.findAllCustomerByCompanyId(condition, pageable));
     }
 
 
