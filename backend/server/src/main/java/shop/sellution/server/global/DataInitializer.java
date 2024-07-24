@@ -27,6 +27,10 @@ import shop.sellution.server.contractcompany.domain.ContractCompanyRepository;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.customer.domain.type.CustomerType;
+import shop.sellution.server.event.domain.CouponEvent;
+import shop.sellution.server.event.domain.EventRepository;
+import shop.sellution.server.event.domain.type.EventState;
+import shop.sellution.server.event.domain.type.TargetCustomerType;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.order.application.OrderCreationService;
@@ -59,7 +63,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private final WeekOptionRepository weekOptionRepository;
     private final DayOptionRepository dayOptionRepository;
     private final ProductImageRepository productImageRepository;
-
+    private final EventRepository eventRepository;
     private final OrderCreationService orderCreationService;
 
 
@@ -130,6 +134,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         createAddress();
         createCompanyOptions();
         createOrder();
+        createCouponEvent();
 
 
         alreadySetup = true;
@@ -150,7 +155,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .maxDeliveryCount(30)
                 .themeColor("F37021")
                 .sellType(SellType.ALL)
-                .mainPromotion1Title("한끼, 건강하고 간단하게 \uD83E\uDD57")
+                .mainPromotion1Title("한끼, 건강하고 간단하게")
                 .mainPromotion1Content("최고의 퀄리티를 위해\n아끼지 않고 가득 담았습니다.")
                 .mainPromotion2Title("식단 관리 할 사람!")
                 .mainPromotion2Content("너랑!  나랑!")
@@ -783,5 +788,119 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private int calculateDiscountedPrice(int cost, int discountRate) {
         return cost - (cost * discountRate / 100);
+    }
+
+    private void createCouponEvent() {
+        // 기간이 지난 이벤트 2개
+        CouponEvent pastEvent1 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Past Event 1")
+                .couponDiscountRate(5)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(30))
+                .eventEndDate(LocalDate.now().minusDays(10))
+                .state(EventState.END)
+                .isDeleted(false)
+                .build();
+
+        CouponEvent pastEvent2 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Past Event 2")
+                .couponDiscountRate(10)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(20))
+                .eventEndDate(LocalDate.now().minusDays(5))
+                .state(EventState.END)
+                .isDeleted(false)
+                .build();
+
+        // 진행 중인 이벤트 4개
+        CouponEvent ongoingEvent1 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ongoing Event 1")
+                .couponDiscountRate(15)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(5))
+                .eventEndDate(LocalDate.now().plusDays(10))
+                .state(EventState.ONGOING)
+                .isDeleted(false)
+                .build();
+
+        CouponEvent ongoingEvent2 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ongoing Event 2")
+                .couponDiscountRate(20)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(3))
+                .eventEndDate(LocalDate.now().plusDays(15))
+                .state(EventState.ONGOING)
+                .isDeleted(true)
+                .build();
+
+        CouponEvent ongoingEvent3 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ongoing Event 3")
+                .couponDiscountRate(25)
+                .targetCustomerType(TargetCustomerType.NEW)
+                .eventStartDate(LocalDate.now().minusDays(1))
+                .eventEndDate(LocalDate.now().plusDays(20))
+                .state(EventState.ONGOING)
+                .isDeleted(false)
+                .build();
+
+        CouponEvent ongoingEvent4 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ongoing Event 4")
+                .couponDiscountRate(30)
+                .targetCustomerType(TargetCustomerType.NORMAL)
+                .eventStartDate(LocalDate.now().minusDays(2))
+                .eventEndDate(LocalDate.now().plusDays(25))
+                .state(EventState.ONGOING)
+                .isDeleted(false)
+                .build();
+
+        // 끝난 이벤트 3개
+        CouponEvent endedEvent1 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ended Event 1")
+                .couponDiscountRate(10)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(25))
+                .eventEndDate(LocalDate.now().minusDays(1))
+                .state(EventState.END)
+                .isDeleted(false)
+                .build();
+
+        CouponEvent endedEvent2 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ended Event 2")
+                .couponDiscountRate(20)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(15))
+                .eventEndDate(LocalDate.now().minusDays(1))
+                .state(EventState.END)
+                .isDeleted(false)
+                .build();
+
+        CouponEvent endedEvent3 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ended Event 3")
+                .couponDiscountRate(30)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(10))
+                .eventEndDate(LocalDate.now().minusDays(1))
+                .state(EventState.END)
+                .isDeleted(false)
+                .build();
+
+        eventRepository.save(pastEvent1);
+        eventRepository.save(pastEvent2);
+        eventRepository.save(ongoingEvent1);
+        eventRepository.save(ongoingEvent2);
+        eventRepository.save(ongoingEvent3);
+        eventRepository.save(ongoingEvent4);
+        eventRepository.save(endedEvent1);
+        eventRepository.save(endedEvent2);
+        eventRepository.save(endedEvent3);
     }
 }

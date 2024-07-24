@@ -8,5 +8,5 @@ import shop.sellution.server.product.dto.response.FindCustomerProductRes;
 import java.util.List;
 
 public interface CustomerProductService {
-    Page<FindCustomerProductRes> findAllProducts(String name, DeliveryType deliveryType, Long categoryId, Pageable pageable);
+    Page<FindCustomerProductRes> findAllProducts(Long companyId, DeliveryType deliveryType, Long categoryId, Pageable pageable);
 }
