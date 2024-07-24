@@ -90,8 +90,7 @@ public class Company{
     private String mainPromotion2Content = "임시 컨텐츠입니다. 수정해주세요. ";
 
     @Column(name = "qr_code")
-    @Lob
-    private byte[] qrCode;
+    private String qrCodeUrl;
 
 
     @Builder
@@ -104,55 +103,6 @@ public class Company{
 
     private String generateShopUrl(String name) {
         return "https://www.sellution.shop/shopping/" + name;
-    }
-
-    public void updateDisplayName(String newDisplayName) {
-        this.displayName = newDisplayName;
-    }
-
-    public void updateName(String newName) {
-        this.name = newName;
-        this.shopUrl = generateShopUrl(newName);
-    }
-
-    public void updateShopVisibility(boolean value) {
-        this.isShopVisible = DisplayStatus.fromBoolean(value);
-    }
-
-    public void updateAutoApproval(boolean value) {
-        this.isAutoApproved = DisplayStatus.fromBoolean(value);
-    }
-
-    public void updateNewMemberEvent(boolean value) {
-        this.isNewMemberEvent = DisplayStatus.fromBoolean(value);
-    }
-
-    public void updateServiceType(DeliveryType serviceType) {
-        this.serviceType = serviceType;
-    }
-
-    public void updateSubscriptionType(SubscriptionType subscriptionType) {
-        this.subscriptionType = subscriptionType;
-    }
-
-    public void updateDeliveryCountRange(int min, int max) {
-        this.minDeliveryCount = min;
-        this.maxDeliveryCount = max;
-    }
-
-    public void updateThemeColor(String themeColor) {
-        this.themeColor = themeColor;
-    }
-
-    public void updateMainPromotions(String title1, String content1, String title2, String content2) {
-        this.mainPromotion1Title = title1;
-        this.mainPromotion1Content = content1;
-        this.mainPromotion2Title = title2;
-        this.mainPromotion2Content = content2;
-    }
-
-    public void updateSellType(SellType sellType) {
-        this.sellType = sellType;
     }
 
     // 주문 자동 승인 토글

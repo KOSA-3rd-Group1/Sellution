@@ -8,17 +8,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
+import shop.sellution.server.customer.domain.Customer;
+import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.order.domain.*;
 import shop.sellution.server.order.domain.repository.OrderRepository;
+import shop.sellution.server.order.domain.type.DeliveryStatus;
 import shop.sellution.server.order.domain.type.OrderStatus;
 import shop.sellution.server.order.dto.OrderSearchCondition;
 import shop.sellution.server.order.dto.request.CancelOrderReq;
 import shop.sellution.server.order.dto.response.FindOrderRes;
 import shop.sellution.server.payment.application.PaymentCancelService;
+import shop.sellution.server.payment.application.PaymentService;
 import shop.sellution.server.payment.domain.PaymentHistory;
 import shop.sellution.server.payment.domain.repository.PaymentHistoryRepository;
 import shop.sellution.server.payment.dto.request.PaymentReq;
+import shop.sellution.server.sms.application.SmsService;
 
 import static shop.sellution.server.global.exception.ExceptionCode.*;
 
@@ -33,6 +38,9 @@ public class OrderServiceImpl implements OrderService {
     private final CompanyRepository companyRepository;
     private final PaymentCancelService paymentCancelService;
     private final PaymentHistoryRepository paymentHistoryRepository;
+    private final PaymentService paymentService;
+    private final SmsService smsService;
+    private final CustomerRepository customerRepository;
 
     // 특정 회원의 주문 목록 조회
     @Override
@@ -69,13 +77,27 @@ public class OrderServiceImpl implements OrderService {
     public void approveOrder(Long orderId) {
         log.info("주문 승인 시작 [ 수동 ] ");
 
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_COMPANY_ID));
+        Order order = orderRepository.findOrderById(orderId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ORDER));
 
         if (order.getStatus() == OrderStatus.APPROVED) {
             throw new BadRequestException(ALREADY_APPROVED_ORDER);
         }
+
+        String approveMessage = String.format("""
+                    [Sellution] 주문이 승인되었습니다. [ 수동 ]
+                    승인된 주문번호
+                    %d
+                    """,order.getCode());
+        smsService.sendSms(order.getCustomer().getPhoneNumber(),approveMessage);
+
         order.approveOrder();
+        paymentService.pay(
+                PaymentReq.builder()
+                        .orderId(orderId)
+                        .customerId(order.getCustomer().getId())
+                        .accountId(order.getAccount().getId())
+                        .build());
 
         log.info("주문 승인 완료 [ 수동 ] ");
     }
@@ -101,8 +123,11 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_COMPANY_ID));
 
+        Customer customer = customerRepository.findById(cancelOrderReq.getCustomerId())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER));
+
         // 주문할때 사용했던 계좌인지 확인
-        if(order.getAccount().getId() != cancelOrderReq.getAccountId()) {
+        if(!order.getAccount().getId().equals(cancelOrderReq.getAccountId())) {
             throw new BadRequestException(NOT_MATCH_ACCOUNT_ID);
         }
 
@@ -110,6 +135,13 @@ public class OrderServiceImpl implements OrderService {
         if (order.getStatus() == OrderStatus.CANCEL) {
             throw new BadRequestException(ALREADY_CANCEL_ORDER);
         }
+
+        // 배송완료된 상태인지 확인
+        if (order.getDeliveryStatus() == DeliveryStatus.COMPLETE) {
+            throw new BadRequestException(ALREADY_DELIVERED);
+        }
+
+
 
         order.cancelOrder();
 
@@ -121,13 +153,23 @@ public class OrderServiceImpl implements OrderService {
         PaymentHistory paymentHistory = paymentHistoryRepository.findFirstByOrderIdOrderByCreatedAtDesc(orderId);
         if (paymentHistory != null) {
             if(paymentHistory.getRemainingPaymentCount() < order.getRemainingDeliveryCount())
-            paymentCancelService.cancelPayment(
-                    PaymentReq.builder()
-                            .orderId(orderId)
-                            .customerId(cancelOrderReq.getCustomerId())
-                            .accountId(cancelOrderReq.getAccountId())
-                            .build()
-            );
+            {
+                log.info(" 취소 신청된 주문의 결제내역 : {}", paymentHistory);
+                paymentCancelService.cancelPayment(
+                        PaymentReq.builder()
+                                .orderId(orderId)
+                                .customerId(cancelOrderReq.getCustomerId())
+                                .accountId(cancelOrderReq.getAccountId())
+                                .build()
+                );
+            }
+        }else{
+            String cancelMessage = String.format("""
+                [Sellution] 주문이 취소되었습니다.
+                취소된 주문번호
+                %d
+                """, order.getId(), order.getTotalPrice());
+            smsService.sendSms(customer.getPhoneNumber(), cancelMessage);
         }
 
         log.info("주문 취소 완료");

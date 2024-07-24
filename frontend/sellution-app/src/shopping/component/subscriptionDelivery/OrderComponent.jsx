@@ -1,27 +1,48 @@
-import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
-import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import MenuHeaderNav from '../../layout/MenuHeaderNav';
+import useOrderListStore from './../../store/stores/useOrderListStore';
+import OneButtonFooterLayout from './../../layout/OneButtonFooterLayout';
+import OrderListLayout from '../../layout/OrderListLayout';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { TrashIcon } from '@/client/utility/assets/Icons.jsx';
+import useClientName from '../../business/layout/useClientName';
+import axios from 'axios';
 
 const OrderComponent = () => {
+  const { orderList } = useOrderListStore();
+  //목록 선택
+  const listToShow = orderList;
+
+  // 주소~ 정기배송 주문 추가사항
   const [selectedDays, setSelectedDays] = useState(['MON', 'WED', 'FRI']);
   const days = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
   const navigate = useNavigate();
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const { clientName, customerId } = useParams();
+  const location = useLocation();
 
   // 첫 번째 useEffect: 컴포넌트 마운트 시 주소 가져오기
   useEffect(() => {
     console.log('OrderComponent mounted');
-    fetchAddresses();
+    const fetchData = async () => {
+      await fetchAddresses();
+      checkForSavedAddress();
+    };
+    fetchData();
     return () => {
       console.log('OrderComponent unmounted');
     };
   }, [customerId]);
 
-  // 두 번째 useEffect: 저장된 주소 설정하기
   useEffect(() => {
+    if (location.state && location.state.selectedAddress) {
+      console.log('Setting address from location state:', location.state.selectedAddress);
+      setSelectedAddress(location.state.selectedAddress);
+    }
+  }, [location]);
+
+  const checkForSavedAddress = () => {
     console.log('Checking for saved address');
     const savedAddress = localStorage.getItem('selectedAddress');
     if (savedAddress) {
@@ -29,7 +50,7 @@ const OrderComponent = () => {
       setSelectedAddress(JSON.parse(savedAddress));
       localStorage.removeItem('selectedAddress');
     }
-  }, [addresses]);
+  };
 
   const fetchAddresses = async () => {
     try {
@@ -37,12 +58,7 @@ const OrderComponent = () => {
         `${import.meta.env.VITE_BACKEND_URL}/addresses/customer/${customerId}`,
       );
       setAddresses(response.data);
-      const savedAddress = localStorage.getItem('selectedAddress');
-      if (savedAddress) {
-        console.log('Setting saved address from fetchAddresses:', savedAddress);
-        setSelectedAddress(JSON.parse(savedAddress));
-        localStorage.removeItem('selectedAddress');
-      } else {
+      if (!selectedAddress) {
         const defaultAddress = response.data.find((addr) => addr.isDefaultAddress === 'Y');
         setSelectedAddress(defaultAddress || null);
       }
@@ -58,7 +74,9 @@ const OrderComponent = () => {
   };
 
   const handleAddressChange = () => {
-    navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`);
+    navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
+      state: { returnToOrder: true },
+    });
   };
 
   const handleAddPaymentMethod = () => {
@@ -93,15 +111,17 @@ const OrderComponent = () => {
   };
 
   return (
-    <div className='container mx-auto max-w-lg p-4 bg-gray-100 h-screen overflow-y-auto'>
-      <div className='space-y-4'>
-        <h1 className='text-xl font-bold border-b pb-2 mb-4'>주문 / 결제</h1>
-
-        <div className='mb-6 bg-white rounded-lg shadow-md p-4'>
+    <>
+      <MenuHeaderNav title={'주문 / 결제'} />
+      <div className='flex flex-col items-center w-full'>
+        <OrderListLayout listToShow={listToShow} />
+        <div className='seperator w-full h-4 bg-gray-100'></div>
+        {/*  */}
+        <div className='mb-6 bg-white py-4 w-[90%]'>
           <div className='flex justify-between items-center mb-2'>
-            <h2 className='text-lg font-semibold mb-2'>
+            <span className='block py-2 font-bold'>
               배송지 {selectedAddress && `(${selectedAddress.addressName})`}
-            </h2>
+            </span>
             <button
               onClick={handleAddressChange}
               className='text-gray-500 border border-gray-300 rounded px-2 py-1 text-sm'
@@ -130,12 +150,12 @@ const OrderComponent = () => {
             <option>배송요청사항 선택</option>
           </select>
         </div>
+        <div className='seperator w-full h-4 bg-gray-100'></div>
 
         {/* 정기 배송 설정 섹션 */}
-        <div className='mb-6 bg-white rounded-lg shadow-md p-4'>
-          <h2 className='text-lg font-semibold mb-4'>정기 배송 설정</h2>
-
-          <div className='mb-4'>
+        <div className='mb-6 bg-white py-4 w-[90%] space-y-5'>
+          <span className='block py-2 mb-2 font-bold'>정기 배송 설정</span>
+          <div>
             <h3 className='text-brandOrange mb-2'>* 배송 요일</h3>
             <div className='flex justify-between'>
               {days.map((day) => (
@@ -175,16 +195,18 @@ const OrderComponent = () => {
             <input type='date' className='w-full p-2 border rounded' defaultValue='2024-06-24' />
           </div>
         </div>
+        <div className='seperator w-full h-4 bg-gray-100'></div>
 
-        <div className='mb-6 bg-white rounded-lg shadow-md p-4'>
-          <h2 className='text-lg font-semibold mb-2'>할인쿠폰</h2>
+        <div className='mb-6 bg-white py-4 w-[90%]'>
+          <span className='block py-2 mb-2 font-bold'>할인쿠폰</span>
           <select className='w-full p-2 border rounded'>
             <option>신규회원 10% 할인 쿠폰</option>
           </select>
         </div>
+        <div className='seperator w-full h-4 bg-gray-100'></div>
 
-        <div className='mb-6 bg-white rounded-lg shadow-md p-4'>
-          <h2 className='text-lg font-semibold mb-4'>결제 예상 금액</h2>
+        <div className='mb-6 bg-white py-4 w-[90%]'>
+          <span className='block py-2 mb-2 font-bold'>결제 예상 금액</span>
           <div className='space-y-2'>
             <div className='flex justify-between'>
               <span>총 상품 금액</span>
@@ -208,9 +230,10 @@ const OrderComponent = () => {
             </div>
           </div>
         </div>
+        <div className='seperator w-full h-4 bg-gray-100'></div>
 
-        <div className='bg-white rounded-lg shadow-md p-4'>
-          <h2 className='text-lg font-semibold mb-4'>결제 정보</h2>
+        <div className='bg-white py-4 w-[90%]'>
+          <span className='block py-2 mb-2 font-bold'>결제 정보</span>
           <div className='flex items-center mb-4'>
             <div className='text-brandOrange mr-2'> * </div>
             <span className='font-semibold'>CMS</span>
@@ -256,7 +279,9 @@ const OrderComponent = () => {
           </div>
         </div>
       </div>
-    </div>
+      {/*  */}
+      <OneButtonFooterLayout footerText={'결제하기'} />
+    </>
   );
 };
 

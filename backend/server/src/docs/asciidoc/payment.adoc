@@ -1,0 +1,16 @@
+= Payment(결제내역)
+
+== 회사 결제내역 조회
+/payment-histories/company/{companyId}
+
+=== HTTP Request
+
+include::{snippets}/Payment/payment-history-list/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/Payment/payment-history-list/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Payment/payment-history-list/response-fields.adoc[]

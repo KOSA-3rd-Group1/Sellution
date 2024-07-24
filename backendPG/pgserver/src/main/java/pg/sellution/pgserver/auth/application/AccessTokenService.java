@@ -20,6 +20,7 @@ import javax.crypto.SecretKey;
 import java.time.Duration;
 import java.util.Date;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import static pg.sellution.pgserver.global.exception.ExceptionCode.*;
 
@@ -140,10 +141,11 @@ public class AccessTokenService {
 
     private void validateIpAddress(String storedIp, String currentIp) {
         log.info("ip 검사 - storedIP {} , currentIP {}", storedIp, currentIp);
-        String[] storedParts = storedIp.split(":");
-        String[] currentParts = currentIp.split(":");
+        String[] storedParts = splitIpAddress(storedIp);
+        String[] currentParts = splitIpAddress(currentIp);
 
-        if (storedParts.length != 8 || currentParts.length != 8) {
+
+        if (storedParts.length != currentParts.length) {
             throw new AuthException(INVALID_IP);
         }
 
@@ -154,6 +156,24 @@ public class AccessTokenService {
             }
         }
 
+    }
+
+    private String[] splitIpAddress(String ip) {
+        if (isIPv4(ip)) {
+            return ip.split("\\.");
+        } else if (isIPv6(ip)) {
+            return ip.split(":");
+        } else {
+            throw new AuthException(INVALID_IP_FORMAT);
+        }
+    }
+
+    private boolean isIPv4(String ip) {
+        return Pattern.matches("^(\\d{1,3}\\.){3}\\d{1,3}$", ip);
+    }
+
+    private boolean isIPv6(String ip) {
+        return Pattern.matches("^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$", ip);
     }
 
 }

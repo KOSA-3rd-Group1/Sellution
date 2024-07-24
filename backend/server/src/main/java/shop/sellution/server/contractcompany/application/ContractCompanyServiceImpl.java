@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
+import shop.sellution.server.company.domain.type.SellType;
 import shop.sellution.server.contractcompany.domain.ContractCompany;
 import shop.sellution.server.contractcompany.domain.ContractCompanyRepository;
 import shop.sellution.server.contractcompany.dto.request.FindContractCompanyReq;
@@ -74,6 +75,7 @@ public class ContractCompanyServiceImpl implements ContractCompanyService {
         Company company = Company.builder()
                 .displayName(contractCompanyName)
                 .name(generateUniqueName(contractCompanyName))
+                .sellType(SellType.ALL)
                 .build();
         return companyRepository.save(company);
     }
