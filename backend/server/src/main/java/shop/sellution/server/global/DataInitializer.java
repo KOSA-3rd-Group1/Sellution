@@ -561,7 +561,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .username("newCustomer")
                 .password("newCustomer")
                 .name("샐러드뉴비")
-                .phoneNumber("010-7598-5112")
+                .phoneNumber("01075985112")
                 .type(CustomerType.NEW)
                 .build();
 
@@ -573,7 +573,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .username("dormantCustomer")
                 .password("dormantCustomer")
                 .name("돌아온샐러드귀신")
-                .phoneNumber("010-7598-5112")
+                .phoneNumber("01075985112")
                 .type(CustomerType.DORMANT)
                 .build();
 
@@ -584,7 +584,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .username("normalCustomer")
                 .password("normalCustomer")
                 .name("샐러드매니아")
-                .phoneNumber("010-7598-5112")
+                .phoneNumber("01075985112")
                 .type(CustomerType.NORMAL)
                 .build();
 
@@ -599,7 +599,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                     .username("customer" + i)
                     .password("customer" + i)
                     .name("샐러드매니아" + i)
-                    .phoneNumber("010-1111-1111")
+                    .phoneNumber("01011111111")
                     .type(CustomerType.values()[random.nextInt(OrderType.values().length)])
                     .build();
             customers.add(customer);

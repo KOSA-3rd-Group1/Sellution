@@ -21,12 +21,13 @@ public enum ExceptionCode {
     INVALID_TOKEN_FORMAT(4012, "유효하지 않은 토큰 형식입니다."),
     INVALID_API_KEY(4013, "유효하지 않은 API KEY입니다."),
     INVALID_AUTH_HEADER(4014, "유효하지 않은 헤더입니다."),
+    INVALID_IP_FORMAT(4015,"유효하지않은 IP 포맷입니다." ),
 
     INVALID_ACCOUNT_INFO(5002,"유효하지않은 계좌정보입니다."),
 
+    REDIS_ERROR(9997, "Redis 에러가 발생하였습니다. redis가 켜져있는지 확인하세요"),
     EXTERNAL_SEVER_ERROR(9998, "외부 서버 에러가 발생하였습니다. 관리자에게 문의해 주세요."),
-    INTERNAL_SEVER_ERROR(9999, "서버 에러가 발생하였습니다. 관리자에게 문의해 주세요."),
-    ;
+    INTERNAL_SEVER_ERROR(9999, "서버 에러가 발생하였습니다. 관리자에게 문의해 주세요."),;
 
     private final int code;
     private final String message;
