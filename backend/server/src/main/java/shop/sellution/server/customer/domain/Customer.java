@@ -1,10 +1,7 @@
 package shop.sellution.server.customer.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.customer.domain.type.CustomerType;
 import shop.sellution.server.event.domain.CouponBox;
@@ -22,7 +19,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
+@ToString(exclude = {"company", "couponBoxes"})
 public class Customer extends BaseEntity {
 
     @Id
@@ -51,11 +48,6 @@ public class Customer extends BaseEntity {
     @Builder.Default
     private DisplayStatus isSmsAgreement = DisplayStatus.Y;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "is_in_use", nullable = false, columnDefinition = "ENUM('N','Y') DEFAULT 'N'")
-//    @Builder.Default
-//    private DisplayStatus isInUse = DisplayStatus.N;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, columnDefinition = "ENUM( 'NEW', 'NORMAL', 'DORMANT') default 'NEW'")
     @Builder.Default
@@ -64,11 +56,12 @@ public class Customer extends BaseEntity {
     @Column(name = "easy_pwd")
     private String easyPwd;
 
-    @Column(name = "lastest_delivery_date")
-    private LocalDateTime lastestDeliveryDate; //최신 배송일자 필드 추가
+    @Column(name = "latest_delivery_date")
+    private LocalDateTime latestDeliveryDate; //최신 배송일자 필드 추가
     
     //FetchType.LAZY가 디폴트; 해당 엔티티가 실제로 조회될 때만 관련 데이터 로드
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<CouponBox> couponBoxes = new ArrayList<>();
 
     @Builder
@@ -121,5 +114,20 @@ public class Customer extends BaseEntity {
         if (!this.easyPwd.equals(password)) {
             throw new IllegalArgumentException("간편비밀번호가 일치하지 않습니다.");
         }
+    }
+
+    // 최신 배송일자 갱신
+    public void updateLatestDeliveryDate(LocalDateTime latestDeliveryDate) {
+        this.latestDeliveryDate = latestDeliveryDate;
+    }
+
+    public void addCouponBox(CouponBox couponBox) {
+        couponBoxes.add(couponBox);
+        couponBox.setCustomer(this);
+    }
+
+    public void removeCouponBox(CouponBox couponBox) {
+        couponBoxes.remove(couponBox);
+        couponBox.setCustomer(null);
     }
 }

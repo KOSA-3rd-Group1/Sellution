@@ -20,6 +20,7 @@ public class CouponBox {
     @JoinColumn(name = "event_id")
     private CouponEvent couponEvent;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("customerId")
     @JoinColumn(name = "customer_id")

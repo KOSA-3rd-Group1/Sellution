@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Arrays;
@@ -71,6 +72,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return ResponseEntity.badRequest()
                 .body(new ExceptionResponse(INVALID_REQUEST.getCode(), INVALID_REQUEST.getMessage()));
+    }
+
+    @ExceptionHandler(WebClientRequestException.class)
+    public ResponseEntity<ExceptionResponse> handleWebClientRequestException(final WebClientRequestException e) {
+        log.warn(e.getMessage(), e);
+
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(INTERNAL_SEVER_ERROR.getCode(), INTERNAL_SEVER_ERROR.getMessage()));
     }
 
     @ExceptionHandler(AuthException.class)

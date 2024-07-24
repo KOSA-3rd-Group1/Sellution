@@ -1,0 +1,81 @@
+= Order(주문)
+
+== 고객의 주문 목록 조회
+/orders/customers/{customerId}
+
+=== HTTP Request
+
+include::{snippets}/Order/order-list-by-customer/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/Order/order-list-by-customer/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Order/order-list-by-customer/response-fields.adoc[]
+
+== 회사의 주문 목록 조회
+/orders/company/{companyId}
+
+=== HTTP Request
+
+include::{snippets}/Order/order-list-by-company/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/Order/order-list-by-company/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Order/order-list-by-company/response-fields.adoc[]
+
+== 주문 생성
+/orders/customers/{customerId}
+
+=== HTTP Request
+
+include::{snippets}/Order/create-order/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/Order/create-order/http-response.adoc[]
+
+
+
+== 주문 취소
+/orders/{orderId}/cancel
+
+=== HTTP Request
+
+include::{snippets}/Order/cancel-order/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/Order/cancel-order/http-response.adoc[]
+
+
+
+== 주문 수동 승인
+/orders/{orderId}/approve
+
+=== HTTP Request
+
+include::{snippets}/Order/approve-order/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/Order/approve-order/http-response.adoc[]
+
+
+
+== 주문 자동 승인 토글
+/orders/auto-approve-toggle/company/{companyId}
+
+=== HTTP Request
+
+include::{snippets}/Order/toggle-auto-approve/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/Order/toggle-auto-approve/http-response.adoc[]
