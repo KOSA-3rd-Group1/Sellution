@@ -1,14 +1,12 @@
-import useDetailOption from '../../business/layout/partials/useDetailOption';
-const DetailOptionComponent = () => {
-  const {
-    isDetailOptionVisible,
-    toggleDetailOption,
-    productToShow,
-    itemCountToAdd,
-    setItemCountToAdd,
-    increaseQuantity,
-    decreaseQuantity,
-  } = useDetailOption();
+const DetailOptionComponent = ({
+  productToShow,
+  itemCountToAdd,
+  setItemCountToAdd,
+  increaseQuantity,
+  decreaseQuantity,
+  isDetailOptionVisible,
+  toggleDetailOption,
+}) => {
   return (
     <div
       className={`option-footer-box fixed z-10 w-full max-w-lg transition-bottom duration-300 ${isDetailOptionVisible ? 'bottom-16' : '-bottom-48'} bg-white pb-4 px-4 left-1/2 transform -translate-x-1/2 shadow-footer`}
@@ -73,9 +71,7 @@ const DetailOptionComponent = () => {
             <span className='discount-rate text-xs bg-orange-600 text-white rounded-sm py-1 px-2 mr-2'>
               {productToShow.discountRate}%
             </span>
-            <span className='price text-sm text-gray-400 line-through'>
-              {productToShow.price}원
-            </span>
+            <span className='price text-sm text-gray-400 line-through'>{productToShow.cost}원</span>
           </div>
           <span className='discount-price text-md font-bold'>
             {productToShow.discountedPrice}원

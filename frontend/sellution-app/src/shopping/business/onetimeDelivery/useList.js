@@ -1,25 +1,47 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const useList = () => {
   const [onetimeProductList, setOnetimeProductList] = useState([]);
-  const [isLoading, setIsloading] = useState(true);
+  const [onetimeCategoryList, setOnetimeCategoryList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchProducts = useCallback(async (categoryId) => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/products/company/1?deliveryType=ONETIME${categoryId ? `&categoryId=${categoryId}` : ''}`,
+      );
+      setOnetimeProductList(response.data.content);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchInitialData = async () => {
       try {
-        const response = await axios.get('/');
-        setOnetimeProductList(response.date);
+        const [productResponse, categoryResponse] = await Promise.all([
+          axios.get('http://localhost:8080/products/company/1?deliveryType=ONETIME'),
+          axios.get('http://localhost:8080/categories/company/1'),
+        ]);
+
+        setOnetimeProductList(productResponse.data.content);
+        setOnetimeCategoryList(categoryResponse.data);
+        console.log('카테고리: ', categoryResponse.data);
       } catch (err) {
         setError(err);
       } finally {
-        setIsloading(false);
+        setIsLoading(false);
       }
     };
-    fetchProducts();
+
+    fetchInitialData();
   }, []);
-  // const onetimeDeliveryProductList = [
+  // const dummyProductList = [
   //   {
   //     id: 1,
   //     name: '단건 신선한 제철 과일 세트',
@@ -130,8 +152,10 @@ const useList = () => {
 
   return {
     onetimeProductList,
+    onetimeCategoryList,
     isLoading,
     error,
+    fetchProducts, // fetchProducts 함수를 반환
   };
 };
 

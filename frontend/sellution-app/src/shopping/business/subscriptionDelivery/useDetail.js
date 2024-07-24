@@ -7,7 +7,7 @@ const useDetail = () => {
   const navigate = useNavigate();
   const clientName = useClientName();
 
-  const { onetimeDeliveryId } = useParams();
+  const { subscriptionDeliveryId } = useParams();
   const [activeSlide, setActiveSlide] = useState(1);
   const [productToShow, setProductToShow] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,16 +24,19 @@ const useDetail = () => {
   const decreaseQuantity = () => {
     setItemCountToAdd((prevQuantity) => Math.max(prevQuantity - 1, 0));
   };
-
-  const handleDirectOrder = () => {
-    navigate(`/shopping/${clientName}/onetime/order`);
+  const addToSubscriptionCart = () => {
+    navigate(`/shopping/${clientName}/subscription/cart`);
   };
-
+  const handleDirectOrder = () => {
+    navigate(`/shopping/${clientName}/subscription/order`);
+  };
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        console.log('id: ', `${onetimeDeliveryId}`);
-        const response = await axios.get(`http://localhost:8080/products/${onetimeDeliveryId}`);
+        console.log('id: ', `${subscriptionDeliveryId}`);
+        const response = await axios.get(
+          `http://localhost:8080/products/${subscriptionDeliveryId}`,
+        );
         console.log(response.data);
         setProductToShow(response.data);
       } catch (err) {
@@ -43,7 +46,7 @@ const useDetail = () => {
       }
     };
     fetchProduct();
-  }, [onetimeDeliveryId]);
+  }, [subscriptionDeliveryId]);
 
   return {
     activeSlide,
@@ -57,6 +60,7 @@ const useDetail = () => {
     decreaseQuantity,
     isDetailOptionVisible,
     toggleDetailOption,
+    addToSubscriptionCart,
     handleDirectOrder,
   };
 };
