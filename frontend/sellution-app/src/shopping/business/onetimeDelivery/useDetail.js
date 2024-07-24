@@ -2,13 +2,15 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useClientName from '../layout/useClientName';
+import useOrderListStore from './../../store/stores/useOrderListStore';
 
 const useDetail = () => {
   const navigate = useNavigate();
   const clientName = useClientName();
-
+  const { updateOrderListForDirectOrder } = useOrderListStore();
   const { onetimeDeliveryId } = useParams();
   const [activeSlide, setActiveSlide] = useState(1);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [productToShow, setProductToShow] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,8 +27,26 @@ const useDetail = () => {
     setItemCountToAdd((prevQuantity) => Math.max(prevQuantity - 1, 0));
   };
 
+  const handleSlideChange = (index) => {
+    setActiveSlide(index + 1); // setActiveSlide는 1부터 시작하는 인덱스를 사용하므로 +1 해줍니다.
+    setCurrentImageIndex(index);
+  };
+
   const handleDirectOrder = () => {
-    navigate(`/shopping/${clientName}/onetime/order`);
+    if (itemCountToAdd > 0) {
+      const newItem = {
+        id: productToShow.productId,
+        quantity: itemCountToAdd,
+        name: productToShow.name,
+        cost: productToShow.cost,
+        discountRate: productToShow.discountRate,
+        discountedPrice: productToShow.discountedPrice,
+        stock: productToShow.stock,
+      };
+      updateOrderListForDirectOrder(newItem);
+      setItemCountToAdd(0);
+      navigate(`/shopping/${clientName}/onetime/order`);
+    }
   };
 
   useEffect(() => {
@@ -58,6 +78,7 @@ const useDetail = () => {
     isDetailOptionVisible,
     toggleDetailOption,
     handleDirectOrder,
+    handleSlideChange,
   };
 };
 export default useDetail;

@@ -7,6 +7,7 @@ import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import useOnetimeCartStore from './../../store/stores/useOnetimeCartStore';
 import useClientName from '../../business/layout/useClientName';
 import { useNavigate } from 'react-router-dom';
+import DetailInformationLayout from '../../layout/DetailInformationLayout';
 
 const DetailComponent = () => {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ const DetailComponent = () => {
     isDetailOptionVisible,
     toggleDetailOption,
     handleDirectOrder,
+    handleSlideChange,
   } = useDetail();
 
   if (isLoading) {
@@ -60,8 +62,9 @@ const DetailComponent = () => {
       <DetailLayout
         productToShow={productToShow}
         activeSlide={activeSlide}
-        setActiveSlide={setActiveSlide}
+        handleSlideChange={handleSlideChange}
       />
+      <DetailInformationLayout listImages={productToShow.listImages} />
       {isDetailOptionVisible ? (
         <>
           <DetailOption

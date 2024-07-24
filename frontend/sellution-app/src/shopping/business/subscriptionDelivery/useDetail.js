@@ -2,13 +2,15 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useClientName from '../layout/useClientName';
+import useOrderListStore from '../../store/stores/useOrderListStore';
 
 const useDetail = () => {
   const navigate = useNavigate();
   const clientName = useClientName();
-
+  const { updateOrderListForDirectOrder } = useOrderListStore();
   const { subscriptionDeliveryId } = useParams();
   const [activeSlide, setActiveSlide] = useState(1);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [productToShow, setProductToShow] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,8 +30,28 @@ const useDetail = () => {
     navigate(`/shopping/${clientName}/subscription/cart`);
   };
   const handleDirectOrder = () => {
-    navigate(`/shopping/${clientName}/subscription/order`);
+    if (itemCountToAdd > 0) {
+      const newItem = {
+        id: productToShow.productId,
+        quantity: itemCountToAdd,
+        name: productToShow.name,
+        cost: productToShow.cost,
+        discountRate: productToShow.discountRate,
+        discountedPrice: productToShow.discountedPrice,
+        stock: productToShow.stock,
+      };
+      updateOrderListForDirectOrder(newItem);
+      setItemCountToAdd(0);
+      const customerId = 1;
+      navigate(`/shopping/${clientName}/subscription/order/${customerId}`);
+    }
   };
+
+  const handleSlideChange = (index) => {
+    setActiveSlide(index + 1); // setActiveSlide는 1부터 시작하는 인덱스를 사용하므로 +1 해줍니다.
+    setCurrentImageIndex(index);
+  };
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -62,6 +84,7 @@ const useDetail = () => {
     toggleDetailOption,
     addToSubscriptionCart,
     handleDirectOrder,
+    handleSlideChange,
   };
 };
 export default useDetail;

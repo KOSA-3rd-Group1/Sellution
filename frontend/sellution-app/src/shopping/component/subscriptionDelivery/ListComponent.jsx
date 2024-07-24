@@ -37,7 +37,7 @@ const ListComponent = () => {
                   <div className='product-item-1 flex-[3] flex justify-center items-center'>
                     <div
                       className='product-image w-full max-w-xs h-auto aspect-square rounded-lg bg-cover'
-                      style={{ backgroundImage: `url('/image/product_img.png')` }}
+                      style={{ backgroundImage: `url(${product.thumbnailImage})` }}
                     ></div>
                   </div>
                   <div className='product-item-2 flex-[7] flex flex-col justify-center px-4'>

@@ -15,7 +15,7 @@ const useOrderListStore = create((set) => ({
   resetOrderList: () => {
     set((state) => ({
       ...state,
-      orderLsit: [],
+      orderList: [],
     }));
   },
 

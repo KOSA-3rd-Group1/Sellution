@@ -7,7 +7,7 @@ import TwoButtonFooterLayout from '../../layout/TwoButtonFooterLayout';
 import { useNavigate } from 'react-router-dom';
 import useClientName from '../../business/layout/useClientName';
 import useSubscriptionCartStore from './../../store/stores/useSubscriptionCartStore';
-
+import DetailInformationLayout from '../../layout/DetailInformationLayout';
 const DetailComponent = () => {
   const navigate = useNavigate();
   const { clientName } = useClientName();
@@ -43,6 +43,7 @@ const DetailComponent = () => {
     isDetailOptionVisible,
     toggleDetailOption,
     handleDirectOrder,
+    handleSlideChange,
   } = useDetail();
 
   if (isLoading) {
@@ -58,8 +59,9 @@ const DetailComponent = () => {
       <DetailLayout
         productToShow={productToShow}
         activeSlide={activeSlide}
-        setActiveSlide={setActiveSlide}
+        handleSlideChange={handleSlideChange}
       />
+      <DetailInformationLayout listImages={productToShow.listImages} />
       {isDetailOptionVisible ? (
         <>
           <DetailOption

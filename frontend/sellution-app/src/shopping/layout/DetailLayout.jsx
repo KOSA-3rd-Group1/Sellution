@@ -1,4 +1,4 @@
-const DetailComponent = ({ productToShow, activeSlide, setActiveSlide }) => {
+const DetailComponent = ({ productToShow, activeSlide, handleSlideChange }) => {
   if (!productToShow) {
     return <div>Product not found</div>;
   }
@@ -9,7 +9,7 @@ const DetailComponent = ({ productToShow, activeSlide, setActiveSlide }) => {
       >
         {/* carousel start */}
         <div className='carousel detail-box-1 image-box flex-[4] flex flex-col justify-center items-center w-full'>
-          <div
+          {/* <div
             id='slide1'
             className={`carousel-item relative product-image w-[85%] h-auto aspect-square bg-cover rounded-lg shadow-md ${
               activeSlide === 1 ? 'block' : 'hidden'
@@ -36,16 +36,22 @@ const DetailComponent = ({ productToShow, activeSlide, setActiveSlide }) => {
               activeSlide === 4 ? 'block' : 'hidden'
             }`}
             style={{ backgroundImage: `url('/image/nike4.png')` }}
-          ></div>
+          ></div> */}
+          {productToShow.detailImages.map((imageUrl, index) => (
+            <div
+              key={index}
+              id={`slide${index + 1}`}
+              className={`carousel-item relative product-image w-[85%] h-auto aspect-square bg-cover rounded-lg shadow-md ${activeSlide === index + 1 ? 'block' : 'hidden'}`}
+              style={{ backgroundImage: `url(${imageUrl})` }}
+            ></div>
+          ))}
           {/* carousel button start */}
           <div className='flex justify-center mt-6 gap-2'>
-            {[1, 2, 3, 4].map((slide) => (
+            {productToShow.detailImages.map((_, index) => (
               <button
-                key={slide}
-                className={`w-2 h-2 rounded-full ${
-                  activeSlide === slide ? 'bg-orange-500' : 'bg-gray-300'
-                }`}
-                onClick={() => setActiveSlide(slide)}
+                key={index}
+                className={`w-2 h-2 rounded-full ${activeSlide === index + 1 ? 'bg-orange-500' : 'bg-gray-300'}`}
+                onClick={() => handleSlideChange(index)}
               ></button>
             ))}
           </div>
