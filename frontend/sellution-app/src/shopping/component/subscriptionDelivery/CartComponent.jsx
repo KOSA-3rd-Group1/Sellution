@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import useClientName from './../../business/layout/useClientName';
 import useSubscriptionCartStore from './../../store/stores/useSubscriptionCartStore';
 import MenuHeaderNav from '../../layout/MenuHeaderNav';
@@ -22,10 +22,10 @@ const CartComponent = () => {
   const clientName = useClientName();
   const allSelected =
     subscriptionCart.length > 0 && selectedSubscriptionItems.length === subscriptionCart.length;
-
+  const customerId = useParams();
   const addToOrderList = () => {
     updateOrderList(selectedSubscriptionItems, subscriptionCart);
-    navigate(`/shopping/${clientName}/subscription/order`);
+    navigate(`/shopping/${clientName}/subscription/order/${customerId}`);
   };
 
   return (
@@ -102,7 +102,7 @@ const CartComponent = () => {
                   <div className='product-item-1 flex-[3] flex justify-center items-center '>
                     <div
                       className='product-image h-full aspect-square rounded-lg bg-cover '
-                      style={{ backgroundImage: `url('/image/nike1.png')` }}
+                      style={{ backgroundImage: `url(${item.thumbnailImage})` }}
                     >
                       <Link
                         to={`/shopping/${clientName}/Subscription/${item.productId}`}

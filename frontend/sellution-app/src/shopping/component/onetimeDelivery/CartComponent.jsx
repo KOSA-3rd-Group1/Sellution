@@ -4,10 +4,11 @@ import useOnetimeCartStore from './../../store/stores/useOnetimeCartStore';
 import MenuHeaderNav from '../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import useOrderListStore from './../../store/stores/useOrderListStore';
+
 const CartComponent = () => {
   const {
     onetimeCart,
-    selectedOnetimeItems, //index임
+    selectedOnetimeItems, // index는 productId를 사용함
     selectAllOnetimeItems,
     removeSelectedOnetimeItems,
     toggleSelectedOnetimeItems,
@@ -100,7 +101,7 @@ const CartComponent = () => {
                   <div className='product-item-1 flex-[3] flex justify-center items-center '>
                     <div
                       className='product-image h-full aspect-square rounded-lg bg-cover '
-                      style={{ backgroundImage: `url('/image/nike1.png')` }}
+                      style={{ backgroundImage: `url(${item.thumbnailImage})` }}
                     >
                       <Link
                         to={`/shopping/${clientName}/onetime/${item.productId}`}

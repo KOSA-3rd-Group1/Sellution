@@ -18,7 +18,7 @@ const OrderListLayout = ({ listToShow }) => {
               <div className='flex-1 flex justify-center items-center h-full'>
                 <div
                   className='h-full aspect-square rounded-lg bg-cover'
-                  style={{ backgroundImage: `url('/image/nike2.png')` }}
+                  style={{ backgroundImage: `url(${item.thumbnailImage})` }}
                 ></div>
               </div>
               <div className='flex-2 px-2'>

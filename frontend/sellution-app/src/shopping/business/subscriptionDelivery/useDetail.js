@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useClientName from '../layout/useClientName';
 import useOrderListStore from '../../store/stores/useOrderListStore';
+import useSubscriptionCartStore from '../../store/stores/useSubscriptionCartStore';
 
 const useDetail = () => {
   const navigate = useNavigate();
@@ -26,9 +27,29 @@ const useDetail = () => {
   const decreaseQuantity = () => {
     setItemCountToAdd((prevQuantity) => Math.max(prevQuantity - 1, 0));
   };
+
+  const { subscriptionCart, updateSubscriptionCart } = useSubscriptionCartStore();
   const addToSubscriptionCart = () => {
-    navigate(`/shopping/${clientName}/subscription/cart`);
+    if (itemCountToAdd > 0) {
+      const newItem = {
+        id: productToShow.productId,
+        productId: productToShow.productId,
+        quantity: itemCountToAdd,
+        name: productToShow.name,
+        cost: productToShow.cost,
+        discountRate: productToShow.discountRate,
+        discountedPrice: productToShow.discountedPrice,
+        stock: productToShow.stock,
+        thumbnailImage: productToShow.thumbnailImage,
+      };
+      updateSubscriptionCart(newItem);
+      console.log('정기배송 장바구니 목록: ', subscriptionCart);
+      setItemCountToAdd(0);
+      //setIsDetailPageModalVisible(true);
+      navigate(`/shopping/${clientName}/subscription`);
+    }
   };
+
   const handleDirectOrder = () => {
     if (itemCountToAdd > 0) {
       const newItem = {
@@ -39,6 +60,7 @@ const useDetail = () => {
         discountRate: productToShow.discountRate,
         discountedPrice: productToShow.discountedPrice,
         stock: productToShow.stock,
+        thumbnailImage: productToShow.thumbnailImage,
       };
       updateOrderListForDirectOrder(newItem);
       setItemCountToAdd(0);
