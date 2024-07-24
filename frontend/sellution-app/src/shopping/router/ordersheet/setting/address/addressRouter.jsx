@@ -14,12 +14,12 @@ const addressRouter = () => {
           element: <ListPage />,
         },
         {
-          path: ':addressId',
-          element: <DetailPage />,
-        },
-        {
           path: 'add',
           element: <AddPage />,
+        },
+        {
+          path: ':addressId',
+          element: <DetailPage />,
         },
         {
           path: '*',

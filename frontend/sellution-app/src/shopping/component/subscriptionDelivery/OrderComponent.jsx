@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { TrashIcon } from '@/client/utility/assets/Icons.jsx';
 
 const OrderComponent = () => {
@@ -10,18 +10,29 @@ const OrderComponent = () => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const { clientName, customerId } = useParams();
+  const location = useLocation();
 
   // 첫 번째 useEffect: 컴포넌트 마운트 시 주소 가져오기
   useEffect(() => {
     console.log('OrderComponent mounted');
-    fetchAddresses();
+    const fetchData = async () => {
+      await fetchAddresses();
+      checkForSavedAddress();
+    };
+    fetchData();
     return () => {
       console.log('OrderComponent unmounted');
     };
   }, [customerId]);
 
-  // 두 번째 useEffect: 저장된 주소 설정하기
   useEffect(() => {
+    if (location.state && location.state.selectedAddress) {
+      console.log('Setting address from location state:', location.state.selectedAddress);
+      setSelectedAddress(location.state.selectedAddress);
+    }
+  }, [location]);
+
+  const checkForSavedAddress = () => {
     console.log('Checking for saved address');
     const savedAddress = localStorage.getItem('selectedAddress');
     if (savedAddress) {
@@ -29,7 +40,7 @@ const OrderComponent = () => {
       setSelectedAddress(JSON.parse(savedAddress));
       localStorage.removeItem('selectedAddress');
     }
-  }, [addresses]);
+  };
 
   const fetchAddresses = async () => {
     try {
@@ -37,12 +48,7 @@ const OrderComponent = () => {
         `${import.meta.env.VITE_BACKEND_URL}/addresses/customer/${customerId}`,
       );
       setAddresses(response.data);
-      const savedAddress = localStorage.getItem('selectedAddress');
-      if (savedAddress) {
-        console.log('Setting saved address from fetchAddresses:', savedAddress);
-        setSelectedAddress(JSON.parse(savedAddress));
-        localStorage.removeItem('selectedAddress');
-      } else {
+      if (!selectedAddress) {
         const defaultAddress = response.data.find((addr) => addr.isDefaultAddress === 'Y');
         setSelectedAddress(defaultAddress || null);
       }
@@ -58,7 +64,9 @@ const OrderComponent = () => {
   };
 
   const handleAddressChange = () => {
-    navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`);
+    navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
+      state: { returnToOrder: true },
+    });
   };
 
   const handleAddPaymentMethod = () => {
