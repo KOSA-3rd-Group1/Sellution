@@ -3,8 +3,7 @@ import { KookminBankIcon,KakaoBankIcon,WooriBankIcon,ShinhanBankIcon,IBKIcon,Tos
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from 'axios';
-import TitleHeaderNavLayout from "@/shopping/layout/TitleHeaderNavLayout.jsx";
-
+import MenuHeaderNav from '@/shopping/layout/MenuHeaderNav.jsx';
 // 은행 코드와 은행 이름을 매핑하는 객체
 const BANK_CODES = {
   '004': '국민은행',
@@ -82,29 +81,26 @@ const ListComponent = () => {
   };
 
 
-  const handleCheckChange = (id) => {
-    setPaymentMethods(
-      paymentMethods.map((method) =>
-        method.id === id
-          ? { ...method, isChecked: true }
-          : { ...method, isChecked: false }
-      ),
-    );
-  };
-
-  const handleDeleteAccount = (id) => {
+  const handleDeleteAccount = async (id) => {
     if (window.confirm('해당 계좌를 삭제하시겠습니까?')) {
-      setPaymentMethods(paymentMethods.filter((method) => method.id !== id));
+      try {
+        await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/accounts/${id}`);
+        setPaymentMethods(paymentMethods.filter((method) => method.id !== id));
+        alert('계좌가 성공적으로 삭제되었습니다.');
+      } catch (error) {
+        console.error('계좌 삭제에 실패했습니다:', error);
+        alert('계좌 삭제에 실패했습니다. 다시 시도해주세요.');
+      }
     }
   };
 
   const handleAddPaymentMethod = () => {
-    navigate(`/shopping/${clientName}/my/${customerId}/add`);
+    navigate(`/shopping/${clientName}/my/${customerId}/payment/add`);
   };
 
   return (
-    <div className='w-full h-full bg-red-500'>
-      <TitleHeaderNavLayout title={'오리'} />
+    <div className='w-full h-full'>
+      <MenuHeaderNav title={'결제수단 관리'} />
       <div className='bg-white rounded-lg shadow-md p-4'>
         <h2 className='text-lg font-semibold mb-4'>결제 정보</h2>
         <div className='flex items-center mb-4'>
@@ -129,12 +125,6 @@ const ListComponent = () => {
                     <div className='font-semibold'>계좌번호</div>
                     <div>{method.accountNumber}</div>
                   </div>
-                  <button
-                    onClick={() => handleCheckChange(method.id)}
-                    className='absolute top-3 right-3 w-6 h-6 bg-white rounded-full flex items-center justify-center'
-                  >
-                    {method.isChecked && <span className='text-brandOrange'>✓</span>}
-                  </button>
                   <button
                     onClick={() => handleDeleteAccount(method.id)}
                     className='absolute bottom-4 right-4'
