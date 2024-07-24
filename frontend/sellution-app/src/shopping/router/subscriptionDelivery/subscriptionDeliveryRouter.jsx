@@ -26,7 +26,7 @@ const subscriptionDeliveryRouter = () => {
       element: <CartPage />,
     },
     {
-      path: 'order',
+      path: 'order/:customerId',
       element: <OrderPage />,
     },
     {

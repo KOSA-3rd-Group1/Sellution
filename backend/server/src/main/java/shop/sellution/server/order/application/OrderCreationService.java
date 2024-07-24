@@ -24,15 +24,20 @@ import shop.sellution.server.order.domain.type.OrderStatus;
 import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.order.dto.request.FindOrderedProductSimpleReq;
 import shop.sellution.server.order.dto.request.SaveOrderReq;
+import shop.sellution.server.payment.application.PaymentService;
+import shop.sellution.server.payment.dto.request.PaymentReq;
+import shop.sellution.server.payment.util.PaymentUtil;
 import shop.sellution.server.product.domain.Product;
 import shop.sellution.server.product.domain.ProductRepository;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static shop.sellution.server.global.exception.ExceptionCode.*;
@@ -51,6 +56,7 @@ public class OrderCreationService {
     private final OrderRepository orderRepository;
     private final DayOptionRepository dayOptionRepository;
     private final AccountRepository accountRepository;
+    private final PaymentService paymentService;
 
     private static final int ONETIME = 1;
 
@@ -58,6 +64,27 @@ public class OrderCreationService {
     @Transactional
     public void createOrder(Long customerId, SaveOrderReq saveOrderReq) {
         log.info("주문 생성 시작");
+
+        // 단건주문 생성시 예외처리
+        if (saveOrderReq.getOrderType().isOnetime()) {
+            if (saveOrderReq.getMonthOptionId() != null || saveOrderReq.getWeekOptionId() != null) {
+                throw new BadRequestException(INVALID_ORDER_INFO_FOR_ONETIME);
+            }
+        }
+        // 정기주문[월] 생성시 예외처리
+        if (saveOrderReq.getOrderType().isMonthSubscription()) {
+            if (saveOrderReq.getMonthOptionId() == null || saveOrderReq.getWeekOptionId() == null) {
+                throw new BadRequestException(INVALID_ORDER_INFO_FOR_SUB);
+            }
+        }
+        // 정기주문[횟수] 생성시 예외처리
+        if (saveOrderReq.getOrderType().isCountSubscription()) {
+            if (saveOrderReq.getWeekOptionId() == null || saveOrderReq.getTotalDeliveryCount() == null) {
+                throw new BadRequestException(INVALID_ORDER_INFO_FOR_SUB);
+            }
+        }
+
+
         Company company = companyRepository.findById(saveOrderReq.getCompanyId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_COMPANY_ID));
         Customer customer = customerRepository.findById(customerId)
@@ -104,7 +131,7 @@ public class OrderCreationService {
                 .weekOption(weekOption)
                 .code(orderCodeMaker())
                 .type(saveOrderReq.getOrderType())
-                .status(company.getIsAutoApproved().equals("Y") ? OrderStatus.APPROVED : OrderStatus.HOLD)
+                .status(company.getIsAutoApproved().name().equals("Y")? OrderStatus.APPROVED : OrderStatus.HOLD)
                 .perPrice(totalPrice(saveOrderReq.getOrderedProducts()))
                 .deliveryStartDate(saveOrderReq.getDeliveryStartDate())
                 .deliveryEndDate(deliveryInfo.getDeliveryEndDate())
@@ -112,8 +139,9 @@ public class OrderCreationService {
                 .totalDeliveryCount(deliveryInfo.getTotalDeliveryCount())
                 .remainingDeliveryCount(deliveryInfo.getTotalDeliveryCount())
                 .build();
+        order.setNextPaymentDate(getNextPaymentDate(order));
         order.setTotalPrice(order.getPerPrice()*order.getTotalDeliveryCount());
-
+        log.info("생성된 주문 배송시작일: {}", order.getDeliveryStartDate());
         Order savedOrder = orderRepository.save(order);
 
         // OrderedProduct 엔티티 생성 및 연결
@@ -124,7 +152,18 @@ public class OrderCreationService {
         List<SelectedDay> selectedDays = createSelectedDays(order, saveOrderReq.getDayOptionIds());
         order.setSelectedDays(selectedDays);
 
-        log.info("생성된 주문 : {}", order.getId());
+        log.info("생성된 주문번호 : {}", order.getId());
+
+        if(order.getStatus()==OrderStatus.APPROVED){
+            // 자동주문승인으로 인해 바로 승인이 된다면 , 즉시 결제 시도
+            paymentService.pay(
+                    PaymentReq.builder()
+                            .accountId(order.getAccount().getId())
+                            .orderId(order.getId())
+                            .customerId(order.getCustomer().getId())
+                            .build()
+            );
+        }
 
     }
 
@@ -141,8 +180,12 @@ public class OrderCreationService {
                 .collect(Collectors.toList());
     }
 
-    private List<OrderedProduct> createOrderedProducts(Order
-                                                               order, List<Product> products, List<FindOrderedProductSimpleReq> orderedProducts) {
+    private List<OrderedProduct> createOrderedProducts(
+            Order order,
+            List<Product> products,
+            List<FindOrderedProductSimpleReq> orderedProducts
+    ) {
+
         return orderedProducts.stream()
                 .map(orderedProduct -> {
                     Product product = products.stream()
@@ -155,6 +198,7 @@ public class OrderCreationService {
                             .product(product)
                             .price(product.getCost())
                             .discountRate(product.getDiscountRate())
+                            .count(orderedProduct.getCount())
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -181,7 +225,7 @@ public class OrderCreationService {
     }
 
     public DeliveryInfo calculateTotalDeliveryCountAndDeliveryEndDate(
-            LocalDateTime deliveryStartDate,
+            LocalDate deliveryStartDate,
             OrderType orderType,
             MonthOption monthOption,
             WeekOption weekOption,
@@ -228,78 +272,80 @@ public class OrderCreationService {
     }
 
     private DeliveryInfo calculateMonthSubscription(
-            LocalDateTime deliveryStartDate,
+            LocalDate deliveryStartDate,
             int months,
             int weekly,
             List<DayOfWeek> deliveryDays
     ) {
-        LocalDateTime subscriptionEndDate = deliveryStartDate.plusMonths(months); // 구독 기간 [ 정기 배송 기간 ]
-        int totalDeliveries = 0;
-        LocalDateTime currentDate = deliveryStartDate; // 날짜 이동용 변수는 배송 시작일로 초기화 시켜놓고 시작
-        LocalDateTime DeliveryEndDate = null;
-        LocalDateTime nextDeliveryDate = null;
-        boolean isFirst = false;
+        // 구독 종료일 계산 (deliveryStartDate 기준)
+        LocalDate subscriptionEndDate = deliveryStartDate.plusMonths(months);
 
-        // 구독 기간 동안 반복
-        while (currentDate.isBefore(subscriptionEndDate) || currentDate.isEqual(subscriptionEndDate)) {
-            // 선택된 배송 요일마다 처리
-            for (DayOfWeek day : deliveryDays) {
-                // 현재 currentDate 이후에 내가 선택한 요일이 나오는 날짜 찾기  [다음 배송 날짜 계산]
-                LocalDateTime deliveryDate = currentDate.with(TemporalAdjusters.nextOrSame(day));
-                if (deliveryDate.isBefore(subscriptionEndDate)) { // 그 날짜가 구독기간 내에 있으면
-                    totalDeliveries++; // 총 배송 횟수 증가
-                    DeliveryEndDate = deliveryDate; // 마지막 배송 날짜 갱신
-                    if(!isFirst)
-                    {
-                        nextDeliveryDate =deliveryDate; // 첫번째 배송일 처리
-                        isFirst = true;
-                    }
-                }
-            }
-            currentDate = currentDate.plusWeeks(weekly); // n주 뒤로 이동 [ n 주 마다 배송 이니까 ]
-        }
+        // 다음 주 월요일 계산
+        LocalDate nextMonday = deliveryStartDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
 
-        return new DeliveryInfo(totalDeliveries, DeliveryEndDate,nextDeliveryDate);
+        return calculateDeliveryInfo(nextMonday, subscriptionEndDate, weekly, deliveryDays,-1);
     }
 
-    private DeliveryInfo calculateCountSubscription(
-            LocalDateTime deliveryStartDate,
-            int totalDeliveryCount,
+private DeliveryInfo calculateCountSubscription(
+        LocalDate deliveryStartDate,
+        int totalDeliveryCount,
+        int weekly,
+        List<DayOfWeek> deliveryDays
+) {
+    // 1. 다음 주의 월요일을 찾습니다.
+    LocalDate nextMonday = deliveryStartDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+
+    return calculateDeliveryInfo(nextMonday, null, weekly, deliveryDays, totalDeliveryCount);
+}
+
+private LocalDate getNextPaymentDate(Order order) {
+    if (order.getType().isOnetime() || order.getType().isCountSubscription()) { // 단건주문, 횟수주문에는 다음 결제가없다.
+        return null;
+    } else  { // 월정기 주문이라면
+//        log.info("다음 결제일 : {}",order.getDeliveryStartDate().plusMonths(1).minusDays(7));
+        return order.getDeliveryStartDate().plusMonths(1).minusDays(7);
+    }
+}
+
+    private DeliveryInfo calculateDeliveryInfo(
+            LocalDate startDate,
+            LocalDate endDate,
             int weekly,
-            List<DayOfWeek> deliveryDays
+            List<DayOfWeek> deliveryDays,
+            int maxDeliveries
     ) {
-        int deliveries = 0;
-        LocalDateTime currentDate = deliveryStartDate; // 날짜 이동용 변수는 배송 시작일로 초기화 시켜놓고 시작
-        LocalDateTime DeliveryEndDate = null;
-        LocalDateTime nextDeliveryDate = null;
-        boolean isFirst = false;
+        Set<DayOfWeek> deliveryDaysSet = EnumSet.copyOf(deliveryDays);
+        int deliveryCount = 0;
+        LocalDate currentDate = startDate;
+        LocalDate nextDeliveryDate = null;
+        LocalDate lastDeliveryDate = null;
 
-        // 지정된 배송 횟수에 도달할 때까지 반복
-        while (deliveries < totalDeliveryCount) {
-            // 선택된 배송 요일마다 처리
-            for (DayOfWeek day : deliveryDays) {
-                if (deliveries >= totalDeliveryCount) break; // 지정된 배송 횟수에 도달하면 종료
-                LocalDateTime deliveryDate = currentDate.with(TemporalAdjusters.nextOrSame(day)); // 다음 배송 날짜 계산
-                deliveries++; // 총 배송 횟수 증가
-                DeliveryEndDate = deliveryDate; // 마지막 배송 날짜 갱신
-                if(!isFirst)
-                {
-                    nextDeliveryDate = deliveryDate; // 첫번째 배송일 처리
-                    isFirst = true;
+        while (endDate == null || !currentDate.isAfter(endDate)) {
+            if (deliveryDaysSet.contains(currentDate.getDayOfWeek()) &&
+                    (ChronoUnit.WEEKS.between(startDate, currentDate) % weekly == 0)) {
+                deliveryCount++;
+                if (nextDeliveryDate == null) {
+                    nextDeliveryDate = currentDate;
+                }
+                lastDeliveryDate = currentDate;
+
+                if (maxDeliveries > 0 && deliveryCount >= maxDeliveries) { // 정기(횟수)주문의 경우 배송횟수를 초과하면 종료
+                    break;
                 }
             }
-            currentDate = currentDate.plusWeeks(weekly); // n주 뒤로 이동 [ n 주 마다 배송 이니까 ]
+            currentDate = currentDate.plusDays(1);
         }
 
-        return new DeliveryInfo(totalDeliveryCount, DeliveryEndDate,nextDeliveryDate);
+        return new DeliveryInfo(deliveryCount, lastDeliveryDate, nextDeliveryDate);
     }
+
 
     @Getter
     @AllArgsConstructor
     static class DeliveryInfo {
         private int totalDeliveryCount;
-        private LocalDateTime deliveryEndDate;
-        private LocalDateTime nextDeliveryDate;
+        private LocalDate deliveryEndDate;
+        private LocalDate nextDeliveryDate;
     }
 
 

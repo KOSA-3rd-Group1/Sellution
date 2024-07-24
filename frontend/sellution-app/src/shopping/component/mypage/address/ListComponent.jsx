@@ -30,6 +30,15 @@ const ListComponent = () => {
     }
   };
 
+  const formatPhoneNumber = (value) => {
+    const cleaned = ('' + value).replace(/\D/g, '');
+    const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
+    if (match) {
+      return `${match[1]}-${match[2]}-${match[3]}`;
+    }
+    return value;
+  };
+
   const handleDelete = async (address) => {
     console.log('Address to delete:', address);
     if (address.isDefaultAddress === DisplayStatus.Y) {
@@ -93,7 +102,7 @@ const ListComponent = () => {
                   <span className='text-orange-500'>*</span>
                   <span className='font-bold ml-1'>연락처</span>
                 </span>
-                <span>{address.phoneNumber}</span>
+                <span>{formatPhoneNumber(address.phoneNumber)}</span>
               </div>
               <div className='flex justify-between'>
                 <span className='flex items-center'>

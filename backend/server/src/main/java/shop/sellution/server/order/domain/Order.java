@@ -13,7 +13,9 @@ import shop.sellution.server.global.BaseEntity;
 import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.order.domain.type.OrderStatus;
 import shop.sellution.server.order.domain.type.DeliveryStatus;
+import shop.sellution.server.product.domain.Product;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -43,6 +45,7 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
@@ -80,13 +83,21 @@ public class Order extends BaseEntity {
     private int perPrice;
 
     @Column(nullable = false)
-    private LocalDateTime deliveryStartDate;
+    private LocalDate deliveryStartDate; // 선택된 배송 시작일
 
     @Column(nullable = false)
-    private LocalDateTime deliveryEndDate;
+    private LocalDate deliveryEndDate; // 마지막 배송일
 
     @Column(nullable = false)
-    private LocalDateTime nextDeliveryDate;
+    private LocalDate nextDeliveryDate; // 다음 배송일
+
+    @Setter
+    @Column(nullable = true)
+    private LocalDate nextPaymentDate; // 다음 결제일
+
+    @Builder.Default
+    @Column(nullable = true)
+    private int paymentCount =0; // 해당 주문에 대해 결제된 횟수
 
     @Column(nullable = false)
     private int totalDeliveryCount;
@@ -141,9 +152,15 @@ public class Order extends BaseEntity {
     }
 
     // 다음 배송일 갱신
-    public void updateNextDeliveryDate(LocalDateTime nextDeliveryDate) {
+    public void updateNextDeliveryDate(LocalDate nextDeliveryDate) {
         this.nextDeliveryDate = nextDeliveryDate;
     }
+
+    // 배송상태 변경
+    public void changeDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+    }
+
 
     // 남은 배송횟수 감소
     public void decreaseRemainingDeliveryCount() {
@@ -152,12 +169,17 @@ public class Order extends BaseEntity {
 
     // 주문의 상품재고 감소
     public void decreaseProductStock() {
-        orderedProducts
-                .forEach(
-                        orderedProduct ->
-                                orderedProduct
-                                        .getProduct()
-                                        .decreaseStock(orderedProduct.getCount())
-                );
+        orderedProducts.forEach(orderedProduct -> {
+            Product product = orderedProduct.getProduct();
+            product.decreaseStock(orderedProduct.getCount());
+        });
     }
+
+    // 해당 주문의 결제 횟수 증가
+    public void increasePaymentCount() {
+        this.paymentCount++;
+    }
+
+
+
 }
