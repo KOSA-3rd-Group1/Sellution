@@ -13,6 +13,7 @@ import shop.sellution.server.customer.application.CustomerService;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.dto.CustomerSearchCondition;
 import shop.sellution.server.customer.dto.request.*;
+import shop.sellution.server.customer.dto.resonse.FindCurrentCustomerInfoRes;
 import shop.sellution.server.customer.dto.resonse.FindCustomerInfoRes;
 import shop.sellution.server.customer.dto.resonse.FindCustomerRes;
 import shop.sellution.server.global.exception.AuthException;
@@ -41,6 +42,12 @@ public class CustomerController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("available", false));
         }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, FindCurrentCustomerInfoRes>> getCurrentCustomerInfo() {
+        FindCurrentCustomerInfoRes currentCustomerInfo = customerService.getCurrentUserInfo();
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("data", currentCustomerInfo));
     }
 
     @PostMapping("/find-id")
