@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.sellution.server.customer.dto.CustomerSearchCondition;
 import shop.sellution.server.customer.dto.request.*;
+import shop.sellution.server.customer.dto.resonse.FindCurrentCustomerInfoRes;
 import shop.sellution.server.customer.dto.resonse.FindCustomerInfoRes;
 import shop.sellution.server.customer.dto.resonse.FindCustomerRes;
 
@@ -15,6 +16,9 @@ public interface CustomerService {
 
     // 회원 아이디 중복 확인
     void checkCustomerUsername(CheckCustomerUsernameReq request);
+
+    // 현재 고객 정보 가져오기
+    FindCurrentCustomerInfoRes getCurrentUserInfo();
 
     // 회원 아이디 찾기
     String findCustomerId(FindCustomerIdReq request);

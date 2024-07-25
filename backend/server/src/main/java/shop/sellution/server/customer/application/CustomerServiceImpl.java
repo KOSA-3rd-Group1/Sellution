@@ -16,6 +16,7 @@ import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.customer.dto.CustomerSearchCondition;
 import shop.sellution.server.customer.dto.request.*;
+import shop.sellution.server.customer.dto.resonse.FindCurrentCustomerInfoRes;
 import shop.sellution.server.customer.dto.resonse.FindCustomerInfoRes;
 import shop.sellution.server.customer.dto.resonse.FindCustomerRes;
 import shop.sellution.server.global.exception.AuthException;
@@ -64,6 +65,20 @@ public class CustomerServiceImpl implements CustomerService{
     @Transactional(readOnly = true)
     public void checkCustomerUsername(CheckCustomerUsernameReq request) {
         validateUniqueUsername(request.getCompanyId(), request.getUsername());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public FindCurrentCustomerInfoRes getCurrentUserInfo() {
+        CustomUserDetails customUserDetails = getCustomUserDetailsFromSecurityContext();
+        Customer customer = customerRepository.findById(customUserDetails.getUserId())
+                .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_CUSTOMER));
+        return FindCurrentCustomerInfoRes.builder()
+                .id(customer.getId())
+                .companyId(customer.getCompany().getCompanyId())
+                .name(customer.getName())
+                .customerType(customer.getType())
+                .build();
     }
 
     @Override
