@@ -31,7 +31,7 @@ export const HEADERS = [
     width: 'min-w-36 w-36 max-w-36 text-brandOrange',
   },
   {
-    key: 'lastestDeliveryDate',
+    key: 'latestDeliveryDate',
     label: '최신 주문 일자',
     type: 'filter',
     options: ['오름차순', '내림차순'],

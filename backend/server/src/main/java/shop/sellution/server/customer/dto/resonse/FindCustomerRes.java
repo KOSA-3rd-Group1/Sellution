@@ -17,7 +17,7 @@ public class FindCustomerRes {
     private String customerPhoneNumber; // 회원 휴대폰 번호
     private String customerCreatedAt; // 가입일
     private CustomerType customerType; // 회원 유형
-    private LocalDateTime lastestDeliveryDate; // 최신 배송 일자
+    private LocalDateTime latestDeliveryDate; // 최신 배송 일자
 
     public static FindCustomerRes fromEntity(Customer customer) {
         return FindCustomerRes.builder()
@@ -27,7 +27,7 @@ public class FindCustomerRes {
                 .customerPhoneNumber(customer.getPhoneNumber())
                 .customerCreatedAt(customer.getCreatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE))
                 .customerType(customer.getType())
-                .lastestDeliveryDate(customer.getLastestDeliveryDate())
+                .latestDeliveryDate(customer.getLatestDeliveryDate())
                 .build();
     }
 }

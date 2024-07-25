@@ -18,7 +18,7 @@ public class CustomerSearchCondition {
     private String customerPhoneNumber; // 회원 휴대폰 번호
     private String customerCreatedAt; // 가입일
     private CustomerType customerType; // 회원 유형
-    private LocalDateTime lastestDeliveryDate; // 최신 배송 일자
+    private LocalDateTime latestDeliveryDate; // 최신 배송 일자
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startDate;

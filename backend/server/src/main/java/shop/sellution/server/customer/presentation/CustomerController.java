@@ -131,7 +131,4 @@ public class CustomerController {
         customerService.verifyAuthenticationCode(customerId, verifyAuthCodeReq.getAuthCode());
         return ResponseEntity.ok().build();
     }
-
-
-
 }

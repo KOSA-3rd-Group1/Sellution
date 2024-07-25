@@ -95,9 +95,9 @@ public class CustomerRepositoryCustomImpl implements CustomerRepositoryCustom {
                 case CREATED_AT_DESC:
                     return customer.createdAt.desc();
                 case LATEST_DELIVERY_DATE_ASC:
-                    return customer.lastestDeliveryDate.asc();
+                    return customer.latestDeliveryDate.asc();
                 case LATEST_DELIVERY_DATE_DESC:
-                    return customer.lastestDeliveryDate.desc();
+                    return customer.latestDeliveryDate.desc();
             }
         }
         return customer.id.asc(); // 기본 정렬

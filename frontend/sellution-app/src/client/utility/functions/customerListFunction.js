@@ -34,7 +34,7 @@ export const transformCustomerType = (type) => {
 };
 
 // queryParams 변화
-export const transformLastestDeliveryDate = (type) => {
+export const transformLatestDeliveryDate = (type) => {
   switch (type) {
     case 'LATEST_DELIVERY_DATE_ASC':
       return '오름차순';

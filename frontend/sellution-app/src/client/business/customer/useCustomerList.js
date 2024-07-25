@@ -6,7 +6,7 @@ import {
   formatCustomerType,
   formatPhoneNumber,
   transformCustomerType,
-  transformLastestDeliveryDate,
+  transformLatestDeliveryDate,
 } from '@/client/utility/functions/customerListFunction';
 import { HEADERS, ROW_HEIGHT } from '@/client/utility/tableinfo/CustomerListTableInfo';
 
@@ -21,7 +21,7 @@ import { HEADERS, ROW_HEIGHT } from '@/client/utility/tableinfo/CustomerListTabl
 //       .toISOString()
 //       .split('T')[0],
 //     customerType: ['신규', '일반', '휴면'][Math.floor(Math.random() * 3)],
-//     lastestDeliveryDate: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
+//     latestDeliveryDate: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
 //       .toISOString()
 //       .split('T')[0],
 //   }));
@@ -46,8 +46,8 @@ export const useCustomerList = ({ queryParams, page, size, refresh, updateQueryP
         case 'customerType':
           acc[header.key] = value ? transformCustomerType(value) : 'All';
           break;
-        case 'lastestDeliveryDate':
-          acc[header.key] = transformLastestDeliveryDate(queryParams.get('sortOption'));
+        case 'latestDeliveryDate':
+          acc[header.key] = transformLatestDeliveryDate(queryParams.get('sortOption'));
           break;
         default:
           acc[header.key] = value || '';
@@ -73,7 +73,7 @@ export const useCustomerList = ({ queryParams, page, size, refresh, updateQueryP
       no: index + 1 + page * size,
       customerPhoneNumber: formatPhoneNumber(content.customerPhoneNumber),
       customerType: formatCustomerType(content.customerType),
-      lastestDeliveryDate: content.lastestDeliveryDate || '-',
+      latestDeliveryDate: content.latestDeliveryDate || '-',
     }),
     [],
   );
@@ -82,7 +82,7 @@ export const useCustomerList = ({ queryParams, page, size, refresh, updateQueryP
     const filterAndTransform = (obj) => {
       return Object.entries(obj).reduce((acc, [key, value]) => {
         switch (key) {
-          case 'lastestDeliveryDate':
+          case 'latestDeliveryDate':
             if (value !== null) {
               if (value === '오름차순') {
                 acc['sortOption'] = 'LATEST_DELIVERY_DATE_ASC';
