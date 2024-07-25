@@ -4,7 +4,6 @@ import OneButtonFooterLayout from './../../layout/OneButtonFooterLayout';
 import OrderListLayout from '../../layout/OrderListLayout';
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import useClientName from '../../business/layout/useClientName';
 import axios from 'axios';
 import DeliverySelection from '../../layout/order/DeliverySelection';
 import SubscriptionDeliverySetting from '../../layout/order/SubscriptionDeliverySetting';
@@ -13,17 +12,79 @@ import PaymentEstimation from '../../layout/order/PaymentEstimation';
 import PaymentMethodSelection from '../../layout/order/PaymentMethodSelection';
 
 const OrderComponent = () => {
+  const navigate = useNavigate();
   const { orderList } = useOrderListStore();
+  const { clientName, customerId } = useParams();
+  const location = useLocation();
+
   //목록 선택
   const listToShow = orderList;
 
-  // 주소~ 정기배송 주문 추가사항
-  const [selectedDays, setSelectedDays] = useState(['MON', 'WED', 'FRI']);
-  const navigate = useNavigate();
+  // 배송지
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const { clientName, customerId } = useParams();
-  const location = useLocation();
+  //정기주문
+  const [selectedDays, setSelectedDays] = useState(['MON', 'WED', 'FRI']);
+  //결제정보
+  const [paymentMethods, setPaymentMethods] = useState([
+    { id: 1, bank: 'KB국민은행', accountNumber: '123*****987', isChecked: true },
+  ]);
+
+  const checkForSavedAddress = () => {
+    console.log('Checking for saved address');
+    const savedAddress = localStorage.getItem('selectedAddress');
+    if (savedAddress) {
+      console.log('Found saved address:', savedAddress);
+      setSelectedAddress(JSON.parse(savedAddress));
+      localStorage.removeItem('selectedAddress');
+    }
+  };
+
+  const toggleDay = (day) => {
+    setSelectedDays((prev) =>
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day],
+    );
+  };
+
+  const handleAddressChange = () => {
+    navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
+      state: { returnToOrder: true },
+    });
+  };
+
+  const handleAddPaymentMethod = () => {
+    navigate(`/shopping/${clientName}/ordersheet/setting/payment`);
+  };
+
+  const handleCheckChange = (id) => {
+    setPaymentMethods(
+      paymentMethods.map((method) =>
+        method.id === id ? { ...method, isChecked: !method.isChecked } : method,
+      ),
+    );
+  };
+
+  const handleDeleteAccount = (id) => {
+    if (window.confirm('해당 계좌를 삭제하시겠습니까?')) {
+      setPaymentMethods(paymentMethods.filter((method) => method.id !== id));
+    }
+  };
+
+  //api
+  const fetchAddresses = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/addresses/customer/${customerId}`,
+      );
+      setAddresses(response.data);
+      if (!selectedAddress) {
+        const defaultAddress = response.data.find((addr) => addr.isDefaultAddress === 'Y');
+        setSelectedAddress(defaultAddress || null);
+      }
+    } catch (error) {
+      console.error('Error fetching addresses:', error);
+    }
+  };
 
   // 첫 번째 useEffect: 컴포넌트 마운트 시 주소 가져오기
   useEffect(() => {
@@ -44,65 +105,6 @@ const OrderComponent = () => {
       setSelectedAddress(location.state.selectedAddress);
     }
   }, [location]);
-
-  const checkForSavedAddress = () => {
-    console.log('Checking for saved address');
-    const savedAddress = localStorage.getItem('selectedAddress');
-    if (savedAddress) {
-      console.log('Found saved address:', savedAddress);
-      setSelectedAddress(JSON.parse(savedAddress));
-      localStorage.removeItem('selectedAddress');
-    }
-  };
-
-  const fetchAddresses = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/addresses/customer/${customerId}`,
-      );
-      setAddresses(response.data);
-      if (!selectedAddress) {
-        const defaultAddress = response.data.find((addr) => addr.isDefaultAddress === 'Y');
-        setSelectedAddress(defaultAddress || null);
-      }
-    } catch (error) {
-      console.error('Error fetching addresses:', error);
-    }
-  };
-
-  const toggleDay = (day) => {
-    setSelectedDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day],
-    );
-  };
-
-  const handleAddressChange = () => {
-    navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
-      state: { returnToOrder: true },
-    });
-  };
-
-  const handleAddPaymentMethod = () => {
-    navigate(`/shopping/${clientName}/ordersheet/setting/payment`);
-  };
-
-  const [paymentMethods, setPaymentMethods] = useState([
-    { id: 1, bank: 'KB국민은행', accountNumber: '123*****987', isChecked: true },
-  ]);
-
-  const handleCheckChange = (id) => {
-    setPaymentMethods(
-      paymentMethods.map((method) =>
-        method.id === id ? { ...method, isChecked: !method.isChecked } : method,
-      ),
-    );
-  };
-
-  const handleDeleteAccount = (id) => {
-    if (window.confirm('해당 계좌를 삭제하시겠습니까?')) {
-      setPaymentMethods(paymentMethods.filter((method) => method.id !== id));
-    }
-  };
 
   return (
     <>
