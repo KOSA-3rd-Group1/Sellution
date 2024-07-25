@@ -129,6 +129,23 @@ const OrderCompletedComponent = () => {
     return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
+  const formatPhoneNumber = (phoneNumber) => {
+    if (!phoneNumber) return ''; // 전화번호가 없는 경우 빈 문자열 반환
+
+    // 숫자만 추출
+    const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+
+    // 정규표현식을 사용하여 형식 변경
+    const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
+
+    if (match) {
+      return `${match[1]}-${match[2]}-${match[3]}`;
+    }
+
+    // 매치되지 않으면 원래 값 반환
+    return phoneNumber;
+  };
+
   const calculateTotalProductPrice = () => {
     return orderData.orderedProductList.reduce((total, product) => {
       return total + Math.round(product.price * product.count * (1 - product.discountRate / 100));
@@ -178,7 +195,7 @@ const OrderCompletedComponent = () => {
           </div>
           <div>
             <p className='text-sm font-semibold'>연락처</p>
-            <p className='text-base'>{orderData.customer.phoneNumber}</p>
+            <p className='text-base'>{formatPhoneNumber(orderData.customer.phoneNumber)}</p>
           </div>
           <div>
             <p className='text-sm font-semibold'>주문 상태</p>
@@ -189,7 +206,7 @@ const OrderCompletedComponent = () => {
 
       <div className=' p-4 rounded-lg mb-6 border-b '>
         <h2 className='text-lg font-semibold mb-4'>배송 정보</h2>
-        <div className='bg-gray-100 p-4 rounded-lg grid grid-cols-2 gap-4'>
+        <div className=' bg-gray-100 p-4 rounded-lg grid grid-cols-2 gap-4'>
           <div className='col-span-2'>
             <p className='text-sm font-semibold'>배송지</p>
             <p className='text-base break-words'>
@@ -203,7 +220,7 @@ const OrderCompletedComponent = () => {
           </div>
           <div>
             <p className='text-sm font-semibold'>수령인 전화번호</p>
-            <p className='text-base'>{orderData.address.phoneNumber}</p>
+            <p className='text-base'>{formatPhoneNumber(orderData.address.phoneNumber)}</p>
           </div>
           <div className='col-span-2'>
             <p className='text-sm font-semibold'>배송 상태</p>

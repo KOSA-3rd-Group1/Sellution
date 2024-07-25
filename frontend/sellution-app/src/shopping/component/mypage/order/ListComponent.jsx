@@ -78,7 +78,7 @@ const ListComponent = () => {
       {orders.map((order) => (
         <div key={order.orderCode} className='mb-6 p-4 border rounded shadow'>
           <div className='flex justify-between items-center gap-8 mb-2'>
-            <span className='font-bold '>{formatDate(order.createdAt)}</span>
+            <span className='font-bold '>{formatDate(order.orderCreatedAt)}</span>
             <button className='text-gray-500 text-sm'>주문상세 &gt;</button>
           </div>
 
