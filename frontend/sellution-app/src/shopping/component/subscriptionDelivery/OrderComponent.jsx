@@ -14,9 +14,9 @@ import PaymentMethodSelection from '../../layout/order/PaymentMethodSelection';
 const OrderComponent = () => {
   const navigate = useNavigate();
   const { orderList } = useOrderListStore();
-  const { clientName, customerId } = useParams();
+  const { clientName, customerId: paramCustomerId } = useParams();
   const location = useLocation();
-
+  const customerId = paramCustomerId || '1'; // customerId가 undefined이면 '1'로 설정
   //목록 선택
   const listToShow = orderList;
 
@@ -24,11 +24,27 @@ const OrderComponent = () => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   //정기주문
-  const [selectedDays, setSelectedDays] = useState(['MON', 'WED', 'FRI']);
+  const [subscriptionType, setSubscriptionType] = useState('');
+  const [selectedDays, setSelectedDays] = useState([]);
+  const [dayValues, setDayValues] = useState([]);
+  const [weekValues, setWeekValues] = useState([]);
+  const [monthValues, setMonthValues] = useState([]);
+  const [minDeliveryCount, setMinDeliveryCount] = useState(0);
+  const [maxDeliveryCount, setMaxDeliveryCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   //결제정보
   const [paymentMethods, setPaymentMethods] = useState([
     { id: 1, bank: 'KB국민은행', accountNumber: '123*****987', isChecked: true },
   ]);
+  //쿠폰정보
+  const [coupons, setCoupons] = useState([]);
+  const [selectedCoupon, setSelectedCoupon] = useState(null);
+
+  const handleAddressChange = () => {
+    navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
+      state: { returnToOrder: true },
+    });
+  };
 
   const checkForSavedAddress = () => {
     console.log('Checking for saved address');
@@ -44,12 +60,6 @@ const OrderComponent = () => {
     setSelectedDays((prev) =>
       prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day],
     );
-  };
-
-  const handleAddressChange = () => {
-    navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
-      state: { returnToOrder: true },
-    });
   };
 
   const handleAddPaymentMethod = () => {
@@ -70,6 +80,11 @@ const OrderComponent = () => {
     }
   };
 
+  const handleCouponChange = (e) => {
+    const selected = coupons.find((coupon) => coupon.id === e.target.value);
+    setSelectedCoupon(selected);
+  };
+
   //api
   const fetchAddresses = async () => {
     try {
@@ -81,8 +96,42 @@ const OrderComponent = () => {
         const defaultAddress = response.data.find((addr) => addr.isDefaultAddress === 'Y');
         setSelectedAddress(defaultAddress || null);
       }
+      console.log('fetch한 주소: ', addresses);
     } catch (error) {
       console.error('Error fetching addresses:', error);
+    }
+  };
+  const fetchCoupons = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/events/coupons`);
+      setCoupons(response.data.content);
+      console.log('fetch한 쿠폰: ', coupons);
+    } catch (error) {
+      console.error('Error fetching coupons:', error);
+    }
+  };
+  const fetchSaleSettings = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/sale-setting/1');
+      console.log('여기', response.data);
+      setSubscriptionType(response.data.subscriptionType);
+      setDayValues(response.data.dayValues || []);
+      setWeekValues(response.data.weekValues || []);
+      setMonthValues(response.data.monthValues || []);
+      setMinDeliveryCount(response.data.minDeliveryCount || 0);
+      setMaxDeliveryCount(response.data.maxDeliveryCount || 0);
+      setIsLoading(false);
+      console.log(
+        'fetch한 setting',
+        subscriptionType,
+        dayValues,
+        weekValues,
+        monthValues,
+        minDeliveryCount,
+        maxDeliveryCount,
+      );
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -91,6 +140,8 @@ const OrderComponent = () => {
     console.log('OrderComponent mounted');
     const fetchData = async () => {
       await fetchAddresses();
+      await fetchCoupons();
+      await fetchSaleSettings();
       checkForSavedAddress();
     };
     fetchData();
@@ -121,12 +172,27 @@ const OrderComponent = () => {
         <div className='seperator w-full h-4 bg-gray-100'></div>
 
         {/* 정기 배송 설정 섹션 */}
-        <SubscriptionDeliverySetting selectedDays={selectedDays} toggleDay={toggleDay} />
+        <SubscriptionDeliverySetting
+          selectedDays={selectedDays}
+          toggleDay={toggleDay}
+          dayValues={dayValues}
+          weekValues={weekValues}
+          minDeliveryCount={minDeliveryCount}
+          maxDeliveryCount={maxDeliveryCount}
+          monthValues={monthValues}
+          subscriptionType={subscriptionType}
+          isLoading={isLoading}
+        />
         <div className='seperator w-full h-4 bg-gray-100'></div>
         {/* coupon */}
-        <CouponSelection />
+        <CouponSelection
+          handleCouponChange={handleCouponChange}
+          coupons={coupons}
+          selectedCoupon={selectedCoupon}
+        />
         <div className='seperator w-full h-4 bg-gray-100'></div>
         {/* 결제 예상 금액 */}
+        {/* selectedCoupon 가격 만큼 빼기 */}
         <PaymentEstimation />
         <div className='seperator w-full h-4 bg-gray-100'></div>
         {/* 결제 정보 */}

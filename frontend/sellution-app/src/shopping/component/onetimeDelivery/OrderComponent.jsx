@@ -25,11 +25,23 @@ const OrderComponent = () => {
   const [paymentMethods, setPaymentMethods] = useState([
     { id: 1, bank: 'KB국민은행', accountNumber: '123*****987', isChecked: true },
   ]);
+  //쿠폰정보
+  const [coupons, setCoupons] = useState([]);
+  const [selectedCoupon, setSelectedCoupon] = useState(null);
 
   const handleAddressChange = () => {
     navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
       state: { returnToOrder: true },
     });
+  };
+  const checkForSavedAddress = () => {
+    console.log('Checking for saved address');
+    const savedAddress = localStorage.getItem('selectedAddress');
+    if (savedAddress) {
+      console.log('Found saved address:', savedAddress);
+      setSelectedAddress(JSON.parse(savedAddress));
+      localStorage.removeItem('selectedAddress');
+    }
   };
 
   const handleAddPaymentMethod = () => {
@@ -50,14 +62,9 @@ const OrderComponent = () => {
     }
   };
 
-  const checkForSavedAddress = () => {
-    console.log('Checking for saved address');
-    const savedAddress = localStorage.getItem('selectedAddress');
-    if (savedAddress) {
-      console.log('Found saved address:', savedAddress);
-      setSelectedAddress(JSON.parse(savedAddress));
-      localStorage.removeItem('selectedAddress');
-    }
+  const handleCouponChange = (e) => {
+    const selected = coupons.find((coupon) => coupon.id === e.target.value);
+    setSelectedCoupon(selected);
   };
 
   //api
@@ -71,16 +78,26 @@ const OrderComponent = () => {
         const defaultAddress = response.data.find((addr) => addr.isDefaultAddress === 'Y');
         setSelectedAddress(defaultAddress || null);
       }
+      console.log('fetch한 주소: ', addresses);
     } catch (error) {
       console.error('Error fetching addresses:', error);
     }
   };
-
+  const fetchCoupons = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/events/coupons`);
+      setCoupons(response.data.content);
+      console.log('fetch한 쿠폰: ', coupons);
+    } catch (error) {
+      console.error('Error fetching coupons:', error);
+    }
+  };
   //useEffect
   useEffect(() => {
     console.log('OrderComponent mounted');
     const fetchData = async () => {
       await fetchAddresses();
+      await fetchCoupons();
       checkForSavedAddress();
     };
     fetchData();
@@ -109,8 +126,12 @@ const OrderComponent = () => {
           handleAddressChange={handleAddressChange}
         />
         <div className='seperator w-full h-4 bg-gray-100'></div>
-        {/* 할인쿠폰 */}
-        <CouponSelection />
+        {/* coupon */}
+        <CouponSelection
+          handleCouponChange={handleCouponChange}
+          coupons={coupons}
+          selectedCoupon={selectedCoupon}
+        />
         <div className='seperator w-full h-4 bg-gray-100'></div>
         {/* 결제 예상 금액 */}
         <PaymentEstimation />
