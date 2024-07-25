@@ -83,4 +83,11 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteProducts(@RequestBody List<Long> ids) {
+        productService.deleteProducts(ids);
+        return ResponseEntity.noContent().build();
+    }
+
 }

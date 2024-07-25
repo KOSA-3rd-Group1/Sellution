@@ -19,5 +19,6 @@ public interface ProductService {
     //    void createProduct(SaveProductReq productRequestDTO);
 //    void updateProduct(Long productId, SaveProductReq productRequestDTO);
     void deleteProduct(Long productId);
+    void deleteProducts(List<Long> ids);
     Page<FindProductRes> getAllProducts(Pageable pageable, String deliveryType, String isDiscount, String categoryName, String isVisible, String productName);
 }
