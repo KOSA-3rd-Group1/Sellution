@@ -1,15 +1,28 @@
-import { useCustomerList } from '@/client/business/customer/useCustomerList';
-import { EventBtn } from '@/client/layout/common/Button';
-import { AddCustomerIcon, BulkCustomerIcon, SendIcon } from '@/client/utility/assets/Icons';
-import Table from '@/client/layout/common/Table';
+import TableCustomer from '@/client/layout/common/table/TableCustomer';
 import Pagination from '@/client/layout/common/Pagination';
 import DateRange from '@/client/layout/common/DateRange';
+import { EventBtn, ResetBtn } from '@/client/layout/common/Button';
+import { useMove } from '@/client/business/common/useMove';
+import { useCustomerList } from '@/client/business/customer/useCustomerList';
+import { AddCustomerIcon, BulkCustomerIcon, SendIcon } from '@/client/utility/assets/Icons';
 
 const ListComponent = () => {
+  const {
+    queryParams,
+    page,
+    size,
+    refresh,
+    moveToDetailForCustomer,
+    moveToAdd,
+    moveToPagination,
+    updateQueryParameter,
+  } = useMove();
+
   const {
     HEADERS,
     ROW_HEIGHT,
     data,
+    totalPages,
     totalDataCount,
     tableState,
     dateRangeValue,
@@ -17,9 +30,8 @@ const ListComponent = () => {
     handleChangeDateRangeValue,
     handleBulkCustomerManagementBtn,
     handleSendCouponBtn,
-    handleAddCustomerBtn,
-    handleRowEvent,
-  } = useCustomerList();
+    handleFilterReset,
+  } = useCustomerList({ queryParams, page, size, refresh, updateQueryParameter });
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -31,14 +43,14 @@ const ListComponent = () => {
           />
         </div>
         <div className='flex-grow overflow-hidden'>
-          <Table
+          <TableCustomer
             HEADERS={HEADERS}
             ROW_HEIGHT={ROW_HEIGHT}
             data={data}
             totalDataCount={totalDataCount}
             tableState={tableState}
             setTableState={setTableState}
-            handleRowEvent={handleRowEvent}
+            handleRowEvent={moveToDetailForCustomer}
             Btns={
               <div className='flex justify-center items-center gap-4'>
                 <EventBtn
@@ -47,17 +59,18 @@ const ListComponent = () => {
                   onClick={handleBulkCustomerManagementBtn}
                 />
                 <EventBtn Icon={SendIcon} label={'쿠폰 발송'} onClick={handleSendCouponBtn} />
-                <EventBtn
-                  Icon={AddCustomerIcon}
-                  label={'회원 등록'}
-                  onClick={handleAddCustomerBtn}
-                />
+                <EventBtn Icon={AddCustomerIcon} label={'회원 등록'} onClick={moveToAdd} />
               </div>
             }
+            ResetBtn={<ResetBtn label={'초기화'} onClick={handleFilterReset} />}
           />
         </div>
         <div className='h-12 flex-none flex justify-end items-end '>
-          <Pagination totalDataCount={totalDataCount} />
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            moveToPagination={moveToPagination}
+          />
         </div>
       </section>
     </div>

@@ -44,7 +44,7 @@ public class CustomLogoutFilter extends OncePerRequestFilter {
     }
 
     private boolean isLogoutRequest(HttpServletRequest request) {
-        return request.getRequestURI().equals("/api/auth/logout") && "POST".equalsIgnoreCase(request.getMethod());
+        return request.getRequestURI().equals("/logout") && "POST".equalsIgnoreCase(request.getMethod());
     }
 
     private String extractRefreshToken(HttpServletRequest request) {

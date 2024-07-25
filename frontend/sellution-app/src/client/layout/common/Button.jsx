@@ -51,6 +51,16 @@ export const EventBtn = ({ Icon, label, ...attr }) => (
   </button>
 );
 
+export const ResetBtn = ({ Icon, label, ...attr }) => (
+  <button
+    className={`h-8 w-fit min-w-fit px-2 row-center-position gap-3 text-xs font-light text-gray-500 border border-gray-400 bg-white rounded-md hover:bg-brandOrange-light hover:text-brandOrange hover:border-brandOrange-light `}
+    {...attr}
+  >
+    {Icon && <Icon className='object-contain h-5' />}
+    <div>{label}</div>
+  </button>
+);
+
 export const NotBorderBtn = ({ Icon, label, ...attr }) => (
   <button
     className={`h-8 w-fit min-w-fit px-2 row-center-position gap-2 text-xs text-black border-transparent cursor-default`}

@@ -19,7 +19,7 @@ import static shop.sellution.server.global.exception.ExceptionCode.*;
 public class JWTUtil {
 
     private final SecretKey SECRET_KEY;
-    public static final Long ACCESS_TOKEN_EXPIRE = 1000L; //30 * 60 * 1000L; // 30분
+    public static final Long ACCESS_TOKEN_EXPIRE = 30 * 60 * 1000L; // 30분
     public static final Long REFRESH_TOKEN_EXPIRE = 14 * 24 * 60 * 60 * 1000L; // 14일
 
     public JWTUtil(@Value("${spring.jwt.secret}")String secret) {

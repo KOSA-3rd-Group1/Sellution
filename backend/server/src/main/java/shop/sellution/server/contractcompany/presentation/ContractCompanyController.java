@@ -16,7 +16,7 @@ import shop.sellution.server.contractcompany.dto.response.FindContractCompanyRes
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/contract-company")
+@RequestMapping("/contract-company")
 @RequiredArgsConstructor
 public class ContractCompanyController {
 

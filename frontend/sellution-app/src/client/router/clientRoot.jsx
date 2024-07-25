@@ -50,11 +50,11 @@ const clientRoot = () => [
       },
       {
         path: '',
-        element: <Navigate replace to='home' />,
+        element: <Navigate replace to='login' />,
       },
       {
         path: '*',
-        element: <Navigate replace to='home' />,
+        element: <Navigate replace to='login' />,
       },
     ],
   },
