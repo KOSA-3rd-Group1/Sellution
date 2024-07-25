@@ -10,6 +10,7 @@ import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.address.domain.Address;
 import shop.sellution.server.address.domain.AddressRepository;
 import shop.sellution.server.category.domain.Category;
+import shop.sellution.server.category.domain.CategoryRepository;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.DayOption;
 import shop.sellution.server.company.domain.MonthOption;
@@ -26,22 +27,22 @@ import shop.sellution.server.contractcompany.domain.ContractCompanyRepository;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.customer.domain.type.CustomerType;
+import shop.sellution.server.event.domain.CouponEvent;
+import shop.sellution.server.event.domain.EventRepository;
+import shop.sellution.server.event.domain.type.EventState;
+import shop.sellution.server.event.domain.type.TargetCustomerType;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.order.application.OrderCreationService;
-import shop.sellution.server.order.application.OrderService;
-import shop.sellution.server.order.domain.Order;
-import shop.sellution.server.order.domain.repository.OrderRepository;
 import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.order.dto.request.FindOrderedProductSimpleReq;
 import shop.sellution.server.order.dto.request.SaveOrderReq;
-import shop.sellution.server.product.domain.Product;
-import shop.sellution.server.product.domain.ProductRepository;
+import shop.sellution.server.product.domain.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Profile("data")
 @Component
@@ -50,6 +51,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private boolean alreadySetup = false;
     private final Random random = new Random();
+
+    private final CategoryRepository categoryRepository;
     private final CompanyRepository companyRepository;
     private final ContractCompanyRepository contractCompanyRepository;
     private final ProductRepository productRepository;
@@ -59,7 +62,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private final MonthOptionRepository monthOptionRepository;
     private final WeekOptionRepository weekOptionRepository;
     private final DayOptionRepository dayOptionRepository;
-
+    private final ProductImageRepository productImageRepository;
+    private final EventRepository eventRepository;
     private final OrderCreationService orderCreationService;
 
 
@@ -67,6 +71,22 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private Category 데일리샐러드;
     private Category 테이스티샐러드;
+
+    // 단건 상품들
+    private List<Product> oneTimeProducts = new ArrayList<>();
+    // 정기 상품들
+    private List<Product> subProducts = new ArrayList<>();
+    // 전체 상품들
+    private List<Product> allProducts = new ArrayList<>();
+
+    // 회원들
+    private List<Customer> customers = new ArrayList<>();
+
+    // 옵션들
+    private List<DayOption> dayOptions = new ArrayList<>();
+    private List<WeekOption> weekOptions = new ArrayList<>();
+    private List<MonthOption> monthOptions = new ArrayList<>();
+
 
     // 데일리 샐러드 상품들
     private Product 닭가슴살샐러드;
@@ -84,6 +104,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private Product 페퍼콘닭가슴살샐러드;
     private Product 바질페스토두부면샐러드;
 
+    //이미지 URL들
+    private final Map<String, List<String>> productImageUrls = new HashMap<>();
+
     private Customer 신규회원;
     private Customer 휴면회원;
     private Customer 일반회원;
@@ -93,25 +116,6 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private Address 공용주소;
     private Address 공용주소2;
-
-    private Order 승인전단건주문;
-    private Order 승인전정기주문;
-
-    private MonthOption 삼개월;
-    private MonthOption 육개월;
-    private MonthOption 구개월;
-    private MonthOption 십이개월;
-
-    private WeekOption 일주;
-    private WeekOption 이주;
-    private WeekOption 삼주;
-    private WeekOption 사주;
-    private WeekOption 오주;
-
-    private DayOption 월;
-    private DayOption 수;
-    private DayOption 목;
-    private DayOption 금;
 
 
     @Override
@@ -124,11 +128,13 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         createContractCompany();
         createCategory();
         createProduct();
+        createProductImages();
         createCustomer();
         createAccount();
         createAddress();
         createCompanyOptions();
         createOrder();
+        createCouponEvent();
 
 
         alreadySetup = true;
@@ -139,6 +145,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         포켓샐러드 = Company.builder()
                 .displayName("Pocket Salad")
                 .name("PocketSalad")
+                .shopUrl("https://sellution/shopping/pocketsalad")
                 .isShopVisible(DisplayStatus.Y)
                 .isAutoApproved(DisplayStatus.N)
                 .isNewMemberEvent(DisplayStatus.N)
@@ -148,7 +155,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .maxDeliveryCount(30)
                 .themeColor("F37021")
                 .sellType(SellType.ALL)
-                .mainPromotion1Title("한끼, 건강하고 간단하게 \uD83E\uDD57")
+                .mainPromotion1Title("한끼, 건강하고 간단하게")
                 .mainPromotion1Content("최고의 퀄리티를 위해\n아끼지 않고 가득 담았습니다.")
                 .mainPromotion2Title("식단 관리 할 사람!")
                 .mainPromotion2Content("너랑!  나랑!")
@@ -180,6 +187,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         테이스티샐러드 = Category.builder()
                 .name("테이스티샐러드")
                 .build();
+
+        categoryRepository.save(데일리샐러드);
+        categoryRepository.save(테이스티샐러드);
     }
 
 
@@ -199,7 +209,11 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
+
         productRepository.save(닭가슴살샐러드);
+        oneTimeProducts.add(닭가슴살샐러드);
+        subProducts.add(닭가슴살샐러드);
+
 
         닭가슴살비엔나샐러드 = Product.builder()
                 .company(포켓샐러드)
@@ -217,6 +231,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .build();
         productRepository.save(닭가슴살비엔나샐러드);
 
+        oneTimeProducts.add(닭가슴살비엔나샐러드);
+        subProducts.add(닭가슴살비엔나샐러드);
+
         크래미샐러드 = Product.builder()
                 .company(포켓샐러드)
                 .category(데일리샐러드)
@@ -232,6 +249,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
         productRepository.save(크래미샐러드);
+
+        oneTimeProducts.add(크래미샐러드);
+        subProducts.add(크래미샐러드);
 
         치즈샐러드 = Product.builder()
                 .company(포켓샐러드)
@@ -249,6 +269,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .build();
         productRepository.save(치즈샐러드);
 
+        oneTimeProducts.add(치즈샐러드);
+        subProducts.add(치즈샐러드);
+
         불고기샐러드 = Product.builder()
                 .company(포켓샐러드)
                 .category(데일리샐러드)
@@ -265,6 +288,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .build();
         productRepository.save(불고기샐러드);
 
+        oneTimeProducts.add(불고기샐러드);
+
         닭가슴살볼숯불갈비맛샐러드 = Product.builder()
                 .company(포켓샐러드)
                 .category(데일리샐러드)
@@ -280,6 +305,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
         productRepository.save(닭가슴살볼숯불갈비맛샐러드);
+
+        subProducts.add(닭가슴살볼숯불갈비맛샐러드);
 
         // 테이스티 샐러드 상품들
 
@@ -299,6 +326,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .build();
         productRepository.save(멕시칸타코샐러드);
 
+        oneTimeProducts.add(멕시칸타코샐러드);
+        subProducts.add(멕시칸타코샐러드);
+
         갈릭페퍼로스트닭다리살샐러드 = Product.builder()
                 .company(포켓샐러드)
                 .category(테이스티샐러드)
@@ -314,6 +344,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
         productRepository.save(갈릭페퍼로스트닭다리살샐러드);
+
+        oneTimeProducts.add(갈릭페퍼로스트닭다리살샐러드);
+        subProducts.add(갈릭페퍼로스트닭다리살샐러드);
 
 
         레드칠리로스트닭가슴살샐러드 = Product.builder()
@@ -332,6 +365,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .build();
         productRepository.save(레드칠리로스트닭가슴살샐러드);
 
+        oneTimeProducts.add(레드칠리로스트닭가슴살샐러드);
+        subProducts.add(레드칠리로스트닭가슴살샐러드);
+
         이탈리안더블햄샐러드 = Product.builder()
                 .company(포켓샐러드)
                 .category(테이스티샐러드)
@@ -347,6 +383,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
         productRepository.save(이탈리안더블햄샐러드);
+
+        oneTimeProducts.add(이탈리안더블햄샐러드);
+        subProducts.add(이탈리안더블햄샐러드);
 
         페퍼콘닭가슴살샐러드 = Product.builder()
                 .company(포켓샐러드)
@@ -364,6 +403,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .build();
         productRepository.save(페퍼콘닭가슴살샐러드);
 
+        oneTimeProducts.add(페퍼콘닭가슴살샐러드);
+
+
         바질페스토두부면샐러드 = Product.builder()
                 .company(포켓샐러드)
                 .category(테이스티샐러드)
@@ -380,8 +422,142 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .build();
         productRepository.save(바질페스토두부면샐러드);
 
+        subProducts.add(바질페스토두부면샐러드);
+
+        allProducts.addAll(oneTimeProducts);
+        allProducts.addAll(subProducts);
+
+        // 중복 제거
+        allProducts = new ArrayList<>(new HashSet<>(allProducts));
+    }
+
+    private void createProductImages() {
+        productImageUrls.put("닭가슴살 샐러드", Arrays.asList(
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/%EB%8B%AD%EA%B0%80%EC%8A%B4%EC%82%B4%EC%83%90%EB%9F%AC%EB%93%9C_1_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/1_2.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/1_3.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/1_4.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/1_1_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/1_1_2.jpg"
+        ));
+        productImageUrls.put("닭가슴살 비엔나 샐러드", Arrays.asList(
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/%EB%8B%AD%EA%B0%80%EC%8A%B4%EC%82%B4%EB%B9%84%EC%97%94%EB%82%98%EC%83%90%EB%9F%AC%EB%93%9C_2_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/2_2.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/2_3.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/2_4.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/2_1_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/2_2_2.jpg"
+        ));
+        productImageUrls.put("크래미 샐러드", Arrays.asList(
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/%ED%81%AC%EB%9E%98%EB%AF%B8%EC%83%90%EB%9F%AC%EB%93%9C_3_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/3_2.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/3_3.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/3_4.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/3_1_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/3_1_2.jpg"
+        ));
+        productImageUrls.put("치즈 샐러드", Arrays.asList(
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/%EC%B9%98%EC%A6%88%EC%83%90%EB%9F%AC%EB%93%9C_4_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/4_2.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/4_3.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/4_4.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/4_1_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/4_1_2.jpg"
+        ));
+        productImageUrls.put("불고기 샐러드", Arrays.asList(
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/%EB%B6%88%EA%B3%A0%EA%B8%B0%EC%83%90%EB%9F%AC%EB%93%9C_5_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/5_2.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/5_3.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/5_4.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/5_1_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/5_1_2.jpg"
+        ));
+        productImageUrls.put("닭가슴살볼 숯불갈비맛 샐러드", Arrays.asList(
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/%EB%8B%AD%EA%B0%80%EC%8A%B4%EC%82%B4%EB%B3%BC%EC%88%AF%EB%B6%88%EA%B0%88%EB%B9%84%EB%A7%9B%EC%83%90%EB%9F%AC%EB%93%9C_6_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/6_2.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/6_3.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/6_4.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/6_1_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/6_1_2.jpg"
+        ));
+        productImageUrls.put("멕시칸 타코 샐러드", Arrays.asList(
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/%EB%A9%95%EC%8B%9C%EC%B9%B8%ED%83%80%EC%BD%94%EC%83%90%EB%9F%AC%EB%93%9C_7_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/7_2.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/7_3.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/7_4.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/7_1_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/7_1_2.jpg"
+        ));
+        productImageUrls.put("갈릭페퍼 로스트 닭다리살 샐러드", Arrays.asList(
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/%EA%B0%88%EB%A6%AD%ED%8E%98%ED%8D%BC%EB%A1%9C%EC%8A%A4%ED%8A%B8%EB%8B%AD%EB%8B%A4%EB%A6%AC%EC%82%B4%EC%83%90%EB%9F%AC%EB%93%9C_8_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/8_2.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/8_3.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/8_4.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/8_1_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/8_1_2.jpg"
+        ));
+        productImageUrls.put("레드 칠리 로스트 닭가슴살 샐러드", Arrays.asList(
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/%EB%A0%88%EB%93%9C%EC%B9%A0%EB%A6%AC%EB%A1%9C%EC%8A%A4%ED%8A%B8%EB%8B%AD%EA%B0%80%EC%8A%B4%EC%82%B4%EC%83%90%EB%9F%AC%EB%93%9C_9_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/9_2.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/9_3.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/9_4.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/9_1_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/9_1_2.jpg"
+        ));
+        productImageUrls.put("이탈리안 더블 햄샐러드", Arrays.asList(
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/%EC%9D%B4%ED%83%88%EB%A6%AC%EC%95%88%EB%8D%94%EB%B8%94%ED%96%84%EC%83%90%EB%9F%AC%EB%93%9C_10_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/10_2.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/10_3.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/10_4.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/10_1_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/10_1_2.jpg"
+        ));
+        productImageUrls.put("페퍼콘 닭가슴살 샐러드", Arrays.asList(
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/%ED%8E%98%ED%8D%BC%EC%BD%98%EB%8B%AD%EA%B0%80%EC%8A%B4%EC%82%B4%EC%83%90%EB%9F%AC%EB%93%9C_11_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/11_2.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/11_3.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/11_4.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/11_1_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/11_1_2.jpg"
+        ));
+        productImageUrls.put("바질 페스토 두부면 샐러드", Arrays.asList(
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/%EB%B0%94%EC%A7%88%ED%8E%98%EC%8A%A4%ED%86%A0%EB%91%90%EB%B6%80%EB%A9%B4%EC%83%90%EB%9F%AC%EB%93%9C_12_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/12_2.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/12_3.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/12_4.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/12_1_1.jpg",
+                "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/12_1_2.jpg"
+        ));
+
+        for (Product product : allProducts) {
+            List<String> imageUrls = productImageUrls.get(product.getName());
+            System.out.println(imageUrls.toString());
+            for (int i = 0; i <= 5; i++) {
+                if (i == 0) {
+                    productImageRepository.save(ProductImage.builder()
+                            .product(product)
+                            .imageUrl(imageUrls.get(i))
+                            .purposeOfUse(ProductImageType.THUMBNAIL)
+                            .build());
+                } else if (i >= 4) {
+                    productImageRepository.save(ProductImage.builder()
+                            .product(product)
+                            .imageUrl(imageUrls.get(i))
+                            .purposeOfUse(ProductImageType.DETAILS)
+                            .build());
+                } else {
+                    productImageRepository.save(ProductImage.builder()
+                            .product(product)
+                            .imageUrl(imageUrls.get(i))
+                            .purposeOfUse(ProductImageType.LIST)
+                            .build());
+                }
+            }
+        }
+
 
     }
+
 
     private void createCustomer() {
 
@@ -390,7 +566,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .username("newCustomer")
                 .password("newCustomer")
                 .name("샐러드뉴비")
-                .phoneNumber("010-7598-5112")
+                .phoneNumber("01075985112")
+                .type(CustomerType.NEW)
                 .build();
 
         customerRepository.save(신규회원);
@@ -401,7 +578,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .username("dormantCustomer")
                 .password("dormantCustomer")
                 .name("돌아온샐러드귀신")
-                .phoneNumber("010-7598-5112")
+                .phoneNumber("01075985112")
                 .type(CustomerType.DORMANT)
                 .build();
 
@@ -412,11 +589,27 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .username("normalCustomer")
                 .password("normalCustomer")
                 .name("샐러드매니아")
-                .phoneNumber("010-7598-5112")
+                .phoneNumber("01075985112")
                 .type(CustomerType.NORMAL)
                 .build();
 
+        customerRepository.save(신규회원);
         customerRepository.save(일반회원);
+        customerRepository.save(휴면회원);
+
+
+        for (int i = 0; i < 50; i++) { // 회원 50명 랜덤 생성
+            Customer customer = Customer.builder()
+                    .company(포켓샐러드)
+                    .username("customer" + i)
+                    .password("customer" + i)
+                    .name("샐러드매니아" + i)
+                    .phoneNumber("01011111111")
+                    .type(CustomerType.values()[random.nextInt(OrderType.values().length)])
+                    .build();
+            customers.add(customer);
+            customerRepository.save(customer);
+        }
     }
 
     private void createAccount() {
@@ -430,11 +623,19 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         테스트용공용계좌2 = Account.builder()
                 .customer(휴면회원)
-                .accountNumber("42750204039102")
-                .bankCode("004")
+                .accountNumber("110555920510")
+                .bankCode("088")
                 .build();
 
         accountRepository.save(테스트용공용계좌2);
+
+        for (Customer customer : customers) { // 50명 더미에 같은 계좌[테스트용]
+            accountRepository.save(Account.builder()
+                    .customer(customer)
+                    .accountNumber("42750204039102")
+                    .bankCode("004")
+                    .build());
+        }
     }
 
     private void createAddress() {
@@ -446,6 +647,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .addressDetail("포스코타워 3층")
                 .zipcode("06164")
                 .phoneNumber("010-7598-5112")
+                .isDefaultAddress(DisplayStatus.Y)
                 .build();
 
         addressRepository.save(공용주소);
@@ -458,131 +660,123 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .addressDetail("포스코타워 3층")
                 .zipcode("06164")
                 .phoneNumber("010-7598-5112")
+                .isDefaultAddress(DisplayStatus.Y)
                 .build();
 
         addressRepository.save(공용주소2);
+
+        for (Customer customer : customers) { // 50명 더미에 같은 주소[테스트용]
+            addressRepository.save(Address.builder()
+                    .customer(customer)
+                    .name("집")
+                    .addressName("집")
+                    .address("서울특별시 강남구 테헤란로 427")
+                    .addressDetail("포스코타워 " + random.nextInt(50) + 1 + "층")
+                    .zipcode("06164")
+                    .phoneNumber("010-7598-5333")
+                    .isDefaultAddress(DisplayStatus.Y)
+                    .build());
+        }
     }
 
     private void createCompanyOptions() {
 
-        삼개월 = MonthOption.builder()
-                .company(포켓샐러드)
-                .monthValue(3)
-                .build();
-        육개월 = MonthOption.builder()
-                .company(포켓샐러드)
-                .monthValue(6)
-                .build();
+        for (int i = 1; i <= 4; i++) { // 3 ~ 12 개월
+            MonthOption monthOption = MonthOption.builder()
+                    .company(포켓샐러드)
+                    .monthValue(i * 3)
+                    .build();
+            monthOptions.add(monthOption);
+            monthOptionRepository.save(monthOption);
+        }
 
-        구개월 = MonthOption.builder()
-                .company(포켓샐러드)
-                .monthValue(9)
-                .build();
-        십이개월 = MonthOption.builder()
-                .company(포켓샐러드)
-                .monthValue(12)
-                .build();
+        for (int i = 1; i <= 5; i++) { // 1~5주
+            WeekOption weekOption = WeekOption.builder()
+                    .company(포켓샐러드)
+                    .weekValue(i)
+                    .build();
+            weekOptions.add(weekOption);
+            weekOptionRepository.save(weekOption);
+        }
 
-        monthOptionRepository.save(삼개월);
-        monthOptionRepository.save(육개월);
-        monthOptionRepository.save(구개월);
-        monthOptionRepository.save(십이개월);
-
-
-        일주 = WeekOption.builder()
-                .company(포켓샐러드)
-                .weekValue(1)
-                .build();
-
-        이주 = WeekOption.builder()
-                .company(포켓샐러드)
-                .weekValue(2)
-                .build();
-
-        삼주 = WeekOption.builder()
-                .company(포켓샐러드)
-                .weekValue(3)
-                .build();
-
-        사주 = WeekOption.builder()
-                .company(포켓샐러드)
-                .weekValue(4)
-                .build();
-
-        오주 = WeekOption.builder()
-                .company(포켓샐러드)
-                .weekValue(5)
-                .build();
-
-        weekOptionRepository.save(일주);
-        weekOptionRepository.save(이주);
-        weekOptionRepository.save(삼주);
-        weekOptionRepository.save(사주);
-        weekOptionRepository.save(오주);
-
-        월 = DayOption.builder()
-                .company(포켓샐러드)
-                .dayValue(DayValueType.MON)
-                .build();
-
-        수 = DayOption.builder()
-                .company(포켓샐러드)
-                .dayValue(DayValueType.WED)
-                .build();
-
-        목 = DayOption.builder()
-                .company(포켓샐러드)
-                .dayValue(DayValueType.THU)
-                .build();
-
-        금 = DayOption.builder()
-                .company(포켓샐러드)
-                .dayValue(DayValueType.FRI)
-                .build();
-
-        dayOptionRepository.save(월);
-        dayOptionRepository.save(수);
-        dayOptionRepository.save(목);
-        dayOptionRepository.save(금);
+        for (DayValueType type : DayValueType.values()) {
+            if (type.name().equals("화")) continue; // 화요일 제외 월 ~ 금
+            DayOption dayOption = DayOption.builder()
+                    .company(포켓샐러드)
+                    .dayValue(type)
+                    .build();
+            dayOptions.add(dayOption);
+            dayOptionRepository.save(dayOption);
+        }
     }
 
 
     private void createOrder() {
 
-        // 승인전 단건 주문 생성
-        orderCreationService.createOrder(일반회원.getId(),
-                SaveOrderReq.builder()
-                        .companyId(포켓샐러드.getCompanyId())
-                        .addressId(공용주소.getId())
-                        .accountId(테스트용공용계좌.getId())
-                        .monthOptionId(삼개월.getId())
-                        .weekOptionId(일주.getId())
-                        .orderType(OrderType.ONETIME)
-                        .deliveryStartDate(LocalDateTime.now().plusDays(3))
-                        .orderedProducts(List.of(
-                                FindOrderedProductSimpleReq.builder()
-                                        .productId(닭가슴살샐러드.getProductId())
-                                        .count(1)
-                                        .discountRate(닭가슴살샐러드.getDiscountRate())
-                                        .price(닭가슴살샐러드.getCost())
-                                        .build()
-                                , FindOrderedProductSimpleReq.builder()
-                                        .productId(크래미샐러드.getProductId())
-                                        .count(3)
-                                        .discountRate(크래미샐러드.getDiscountRate())
-                                        .price(크래미샐러드.getCost())
-                                        .build(),
-                                FindOrderedProductSimpleReq.builder()
-                                        .productId(레드칠리로스트닭가슴살샐러드.getProductId())
-                                        .count(3)
-                                        .discountRate(레드칠리로스트닭가슴살샐러드.getDiscountRate())
-                                        .price(레드칠리로스트닭가슴살샐러드.getCost())
-                                        .build()
-                        ))
-                        .dayOptionIds(List.of(월.getId(), 수.getId(), 목.getId(), 금.getId()))
+        for (int i = 0; i < 50; i++) {
+            Customer customer = customers.get(random.nextInt(customers.size()));
+            OrderType orderType = OrderType.values()[random.nextInt(OrderType.values().length)];
+
+            SaveOrderReq.SaveOrderReqBuilder orderReqBuilder = SaveOrderReq.builder()
+                    .companyId(포켓샐러드.getCompanyId())
+                    .addressId(공용주소.getId())
+                    .accountId(테스트용공용계좌.getId())
+                    .orderType(orderType);
+
+            List<Product> eligibleProducts;
+            if (orderType == OrderType.ONETIME) {
+                eligibleProducts = oneTimeProducts;
+            } else {
+                eligibleProducts = subProducts;
+            }
+            List<FindOrderedProductSimpleReq> orderedProducts = new ArrayList<>();
+            int numberOfProducts = random.nextInt(8) + 1;
+            Set<Product> products = new HashSet<>();
+            for (int j = 0; j < numberOfProducts; j++) {
+                products.add(eligibleProducts.get(random.nextInt(eligibleProducts.size())));
+            }
+            for (Product p : products) {
+                orderedProducts.add(FindOrderedProductSimpleReq.builder()
+                        .productId(p.getProductId())
+                        .count(random.nextInt(3) + 1)
+                        .discountRate(p.getDiscountRate())
+                        .price(p.getCost())
                         .build());
+            }
+            orderReqBuilder.orderedProducts(orderedProducts);
 
+            if (orderType == OrderType.ONETIME) { // 단건 주문이면
+                SaveOrderReq saveOrderReq = orderReqBuilder.deliveryStartDate(LocalDate.now().plusDays(3))
+                        .totalDeliveryCount(1)
+                        .build();
+                orderCreationService.createOrder(customer.getId(), saveOrderReq);
+            }
 
+            if (orderType == OrderType.MONTH_SUBSCRIPTION) { // 정기[월] 주문이면 월, 주,요일 옵션 필수
+                orderReqBuilder.monthOptionId(monthOptions.get(random.nextInt(monthOptions.size())).getId())
+                        .weekOptionId(weekOptions.get(random.nextInt(weekOptions.size())).getId())
+                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(3)));
+            }
+            if (orderType == OrderType.COUNT_SUBSCRIPTION) { // 정기[횟수] 주문이면
+                int minDeliveryCount = 포켓샐러드.getMinDeliveryCount();
+                int maxDeliveryCount = 포켓샐러드.getMaxDeliveryCount();
+
+                orderReqBuilder.weekOptionId(weekOptions.get(random.nextInt(weekOptions.size())).getId())
+                        .totalDeliveryCount((random.nextInt(maxDeliveryCount - minDeliveryCount + 1) + minDeliveryCount))
+                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(3)));
+            }
+            int numberOfDayOptions = random.nextInt(dayOptions.size()) + 1;
+            List<Long> selectedDayOptionIds = new ArrayList<>();
+            for (int j = 0; j < numberOfDayOptions; j++) {
+                DayOption dayOption = dayOptions.get(random.nextInt(dayOptions.size()));
+                if (!selectedDayOptionIds.contains(dayOption.getId())) {
+                    selectedDayOptionIds.add(dayOption.getId());
+                }
+            }
+            orderReqBuilder.dayOptionIds(selectedDayOptionIds);
+
+            orderCreationService.createOrder(customer.getId(), orderReqBuilder.build());
+        }
     }
 
 
@@ -594,5 +788,119 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private int calculateDiscountedPrice(int cost, int discountRate) {
         return cost - (cost * discountRate / 100);
+    }
+
+    private void createCouponEvent() {
+        // 기간이 지난 이벤트 2개
+        CouponEvent pastEvent1 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Past Event 1")
+                .couponDiscountRate(5)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(30))
+                .eventEndDate(LocalDate.now().minusDays(10))
+                .state(EventState.END)
+                .isDeleted(false)
+                .build();
+
+        CouponEvent pastEvent2 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Past Event 2")
+                .couponDiscountRate(10)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(20))
+                .eventEndDate(LocalDate.now().minusDays(5))
+                .state(EventState.END)
+                .isDeleted(false)
+                .build();
+
+        // 진행 중인 이벤트 4개
+        CouponEvent ongoingEvent1 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ongoing Event 1")
+                .couponDiscountRate(15)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(5))
+                .eventEndDate(LocalDate.now().plusDays(10))
+                .state(EventState.ONGOING)
+                .isDeleted(false)
+                .build();
+
+        CouponEvent ongoingEvent2 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ongoing Event 2")
+                .couponDiscountRate(20)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(3))
+                .eventEndDate(LocalDate.now().plusDays(15))
+                .state(EventState.ONGOING)
+                .isDeleted(true)
+                .build();
+
+        CouponEvent ongoingEvent3 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ongoing Event 3")
+                .couponDiscountRate(25)
+                .targetCustomerType(TargetCustomerType.NEW)
+                .eventStartDate(LocalDate.now().minusDays(1))
+                .eventEndDate(LocalDate.now().plusDays(20))
+                .state(EventState.ONGOING)
+                .isDeleted(false)
+                .build();
+
+        CouponEvent ongoingEvent4 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ongoing Event 4")
+                .couponDiscountRate(30)
+                .targetCustomerType(TargetCustomerType.NORMAL)
+                .eventStartDate(LocalDate.now().minusDays(2))
+                .eventEndDate(LocalDate.now().plusDays(25))
+                .state(EventState.ONGOING)
+                .isDeleted(false)
+                .build();
+
+        // 끝난 이벤트 3개
+        CouponEvent endedEvent1 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ended Event 1")
+                .couponDiscountRate(10)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(25))
+                .eventEndDate(LocalDate.now().minusDays(1))
+                .state(EventState.END)
+                .isDeleted(false)
+                .build();
+
+        CouponEvent endedEvent2 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ended Event 2")
+                .couponDiscountRate(20)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(15))
+                .eventEndDate(LocalDate.now().minusDays(1))
+                .state(EventState.END)
+                .isDeleted(false)
+                .build();
+
+        CouponEvent endedEvent3 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ended Event 3")
+                .couponDiscountRate(30)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(10))
+                .eventEndDate(LocalDate.now().minusDays(1))
+                .state(EventState.END)
+                .isDeleted(false)
+                .build();
+
+        eventRepository.save(pastEvent1);
+        eventRepository.save(pastEvent2);
+        eventRepository.save(ongoingEvent1);
+        eventRepository.save(ongoingEvent2);
+        eventRepository.save(ongoingEvent3);
+        eventRepository.save(ongoingEvent4);
+        eventRepository.save(endedEvent1);
+        eventRepository.save(endedEvent2);
+        eventRepository.save(endedEvent3);
     }
 }

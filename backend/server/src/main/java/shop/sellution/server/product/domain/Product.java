@@ -2,6 +2,7 @@ package shop.sellution.server.product.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import shop.sellution.server.category.domain.Category;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.global.BaseEntity;
@@ -16,6 +17,7 @@ import static shop.sellution.server.global.type.DisplayStatus.*;
 @Getter
 @Setter
 @Builder
+@Slf4j
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "product")
@@ -83,7 +85,9 @@ public class Product extends BaseEntity {
 
 
     public void decreaseStock(int count) {
+        log.info("상품 전 재고 : {}",stock);
         this.stock -= count;
+        log.info("상품 후 재고 : {}",stock);
     }
 
 }

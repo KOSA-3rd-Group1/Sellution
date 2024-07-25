@@ -1,0 +1,14 @@
+== Auth(일회용 결제 토큰  발행)
+
+=== 일회용 결제 토큰 발행
+/pg/get-token
+
+
+==== HTTP Request
+
+include::{snippets}/Auth/create-token/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Auth/create-token/http-response.adoc[]
+

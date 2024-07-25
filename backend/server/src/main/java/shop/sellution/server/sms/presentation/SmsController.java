@@ -21,14 +21,6 @@ public class SmsController {
     private final SmsService smsService;
     private final SmsAuthNumberService smsAuthNumberService;
 
-    /**
-     * 메시지 발송
-     */
-//    @PostMapping("/send")
-//    public ResponseEntity<Map<String, String>> sendSms(@Valid @RequestBody SendSmsReq request) {
-//        ResponseEntity<Map<String, String>> response = smsService.sendSms(request);
-//        return response;
-//    }
 
     /**
      * SMS를 통해 인증 번호를 발송 (테스트)

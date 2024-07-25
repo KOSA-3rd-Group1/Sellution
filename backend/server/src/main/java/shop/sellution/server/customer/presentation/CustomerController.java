@@ -114,6 +114,24 @@ public class CustomerController {
         return ResponseEntity.ok(customerInfo);
     }
 
+    @PostMapping("/{customerId}/send-auth-code")
+    public ResponseEntity<?> sendAuthenticationCode(
+            @PathVariable Long customerId,
+            @RequestBody SendAuthCodeReq sendAuthCodeReq
+    ) {
+        customerService.sendAuthenticationCode(customerId, sendAuthCodeReq.getName(), sendAuthCodeReq.getPhoneNumber());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{customerId}/verify-auth-code")
+    public ResponseEntity<?> verifyAuthenticationCode(
+            @PathVariable Long customerId,
+            @RequestBody VerifyAuthCodeReq verifyAuthCodeReq
+    ) {
+        customerService.verifyAuthenticationCode(customerId, verifyAuthCodeReq.getAuthCode());
+        return ResponseEntity.ok().build();
+    }
+
 
 
 }

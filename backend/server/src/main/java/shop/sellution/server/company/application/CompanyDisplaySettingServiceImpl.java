@@ -63,45 +63,6 @@ public class CompanyDisplaySettingServiceImpl implements CompanyDisplaySettingSe
             updatePromotionImages(company, promotionUrls);
         }
 
-
-        // Logo Image 처리
-//        CompanyImage logoImage = saveCompanyDisplaySettingReq.toLogoImageEntity(company);
-//        List<CompanyImage> existingLogoImages = companyImageRepository.findAllByCompanyAndPurposeOfUse(company, ImagePurposeType.LOGO);
-//
-//        if (!existingLogoImages.isEmpty()) {
-//            // Update existing logo image(s) only if the URL is different
-//            for (CompanyImage existingImage : existingLogoImages) {
-//                if (!existingImage.getImageUrl().equals(logoImage.getImageUrl())) {
-//                    existingImage.setImageUrl(logoImage.getImageUrl());
-//                    companyImageRepository.save(existingImage);
-//                }
-//            }
-//        } else {
-//            // Save new logo image if none exists
-//            saveLogoImage(logoImage);
-//        }
-//
-//        // Promotion Images 처리
-//        List<CompanyImage> promotionImages = saveCompanyDisplaySettingReq.toPromotionImageEntities(company);
-//        List<CompanyImage> existingPromotionImages = companyImageRepository.findAllByCompanyAndPurposeOfUse(company, ImagePurposeType.PROMOTION);
-//        if (!existingPromotionImages.isEmpty()) {
-//            // Delete and update promotion images only if the URLs are different
-//            boolean needsUpdate = false;
-//            for (CompanyImage existingImage : existingPromotionImages) {
-//                if (!promotionImages.stream().anyMatch(img -> img.getImageUrl().equals(existingImage.getImageUrl()))) {
-//                    needsUpdate = true;
-//                    break;
-//                }
-//            }
-//            if (needsUpdate) {
-//                companyImageRepository.deleteAll(existingPromotionImages);
-//                savePromotionImages(promotionImages);
-//            }
-//        } else {
-//            savePromotionImages(promotionImages);
-//        }
-
-
     }
 
     public void saveLogoImage(CompanyImage logoImage) {

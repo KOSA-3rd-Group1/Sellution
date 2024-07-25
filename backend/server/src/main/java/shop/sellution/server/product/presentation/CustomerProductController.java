@@ -12,16 +12,16 @@ import shop.sellution.server.product.dto.response.FindCustomerProductRes;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products/company/{name}")
+@RequestMapping("/products/company")
 @RequiredArgsConstructor
 public class CustomerProductController {
     private final CustomerProductService customerProductService;
-    @GetMapping()
-    public ResponseEntity<Page<FindCustomerProductRes>> findAllProducts(@PathVariable String name, //name에서 companyId 추출
+    @GetMapping("/{companyId}")
+    public ResponseEntity<Page<FindCustomerProductRes>> findAllProducts(@PathVariable Long companyId, //name에서 companyId 추출
                                                                         @RequestParam(value="deliveryType", required = true) DeliveryType deliveryType,
                                                                         @RequestParam(value="categoryId", required = false) Long categoryId,
                                                                         Pageable pageable){
-        return ResponseEntity.ok(customerProductService.findAllProducts(name, deliveryType, categoryId, pageable));
+        return ResponseEntity.ok(customerProductService.findAllProducts(companyId, deliveryType, categoryId, pageable));
     }
 
     //상세조회는 다른 ProductController에서 구현

@@ -45,7 +45,7 @@ class AccountAuthControllerTest {
         CheckAccountRes res = new CheckAccountRes("길재현");
 
         when(accountAuthService.checkAccount(any(CheckAccountReq.class)))
-                .thenReturn(Mono.just(res));
+                .thenReturn(res);
 
         // when & then
         webTestClient.post()
