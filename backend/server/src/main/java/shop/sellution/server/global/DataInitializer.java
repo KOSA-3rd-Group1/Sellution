@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.address.domain.Address;
@@ -39,14 +40,17 @@ import shop.sellution.server.order.dto.request.FindOrderedProductSimpleReq;
 import shop.sellution.server.order.dto.request.SaveOrderReq;
 import shop.sellution.server.product.domain.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 @Profile("data")
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class DataInitializer implements ApplicationListener<ContextRefreshedEvent> {
 
     private boolean alreadySetup = false;
@@ -133,8 +137,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         createAccount();
         createAddress();
         createCompanyOptions();
-        createOrder();
         createCouponEvent();
+        createOrder();
 
 
         alreadySetup = true;
@@ -641,12 +645,12 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private void createAddress() {
         공용주소 = Address.builder()
                 .customer(일반회원)
-                .name("집")
+                .name("길김이")
                 .addressName("집")
                 .address("서울특별시 강남구 테헤란로 427")
                 .addressDetail("포스코타워 3층")
                 .zipcode("06164")
-                .phoneNumber("010-7598-5112")
+                .phoneNumber("01075985112")
                 .isDefaultAddress(DisplayStatus.Y)
                 .build();
 
@@ -654,12 +658,12 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         공용주소2 = Address.builder()
                 .customer(휴면회원)
-                .name("집")
+                .name("길김이")
                 .addressName("집")
                 .address("서울특별시 강남구 테헤란로 427")
                 .addressDetail("포스코타워 3층")
                 .zipcode("06164")
-                .phoneNumber("010-7598-5112")
+                .phoneNumber("01075985112")
                 .isDefaultAddress(DisplayStatus.Y)
                 .build();
 
@@ -668,12 +672,12 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         for (Customer customer : customers) { // 50명 더미에 같은 주소[테스트용]
             addressRepository.save(Address.builder()
                     .customer(customer)
-                    .name("집")
+                    .name("길김이")
                     .addressName("집")
                     .address("서울특별시 강남구 테헤란로 427")
                     .addressDetail("포스코타워 " + random.nextInt(50) + 1 + "층")
                     .zipcode("06164")
-                    .phoneNumber("010-7598-5333")
+                    .phoneNumber("01075985333")
                     .isDefaultAddress(DisplayStatus.Y)
                     .build());
         }
@@ -755,7 +759,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
             if (orderType == OrderType.MONTH_SUBSCRIPTION) { // 정기[월] 주문이면 월, 주,요일 옵션 필수
                 orderReqBuilder.monthOptionId(monthOptions.get(random.nextInt(monthOptions.size())).getId())
                         .weekOptionId(weekOptions.get(random.nextInt(weekOptions.size())).getId())
-                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(3)));
+                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(14)).with(TemporalAdjusters.next(DayOfWeek.MONDAY)));
             }
             if (orderType == OrderType.COUNT_SUBSCRIPTION) { // 정기[횟수] 주문이면
                 int minDeliveryCount = 포켓샐러드.getMinDeliveryCount();
@@ -763,7 +767,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
                 orderReqBuilder.weekOptionId(weekOptions.get(random.nextInt(weekOptions.size())).getId())
                         .totalDeliveryCount((random.nextInt(maxDeliveryCount - minDeliveryCount + 1) + minDeliveryCount))
-                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(3)));
+                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(14)).with(TemporalAdjusters.next(DayOfWeek.MONDAY)));
             }
             int numberOfDayOptions = random.nextInt(dayOptions.size()) + 1;
             List<Long> selectedDayOptionIds = new ArrayList<>();
@@ -774,6 +778,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 }
             }
             orderReqBuilder.dayOptionIds(selectedDayOptionIds);
+            orderReqBuilder.eventId(random.nextLong(9)+1); // 이벤트 랜덤지정
 
             orderCreationService.createOrder(customer.getId(), orderReqBuilder.build());
         }

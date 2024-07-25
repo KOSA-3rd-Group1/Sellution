@@ -68,7 +68,7 @@ public class OrderCreationService {
 
 
     @Transactional
-    public void createOrder(Long customerId, SaveOrderReq saveOrderReq) {
+    public long createOrder(Long customerId, SaveOrderReq saveOrderReq) {
         log.info("주문 생성 시작");
 
         // 단건주문 생성시 예외처리
@@ -141,12 +141,13 @@ public class OrderCreationService {
                 .customer(customer)
                 .account(account)
                 .address(address)
+                .couponEvent(couponEvent)
                 .monthOption(monthOption)
                 .weekOption(weekOption)
                 .code(orderCodeMaker())
                 .type(saveOrderReq.getOrderType())
                 .status(company.getIsAutoApproved().name().equals("Y")? OrderStatus.APPROVED : OrderStatus.HOLD)
-                .perPrice(totalPrice(saveOrderReq.getOrderedProducts()))
+                .perPrice(totalPrice(saveOrderReq.getOrderedProducts(),couponEvent))
                 .deliveryStartDate(saveOrderReq.getDeliveryStartDate())
                 .deliveryEndDate(deliveryInfo.getDeliveryEndDate())
                 .nextDeliveryDate(deliveryInfo.getNextDeliveryDate())
@@ -214,6 +215,7 @@ public class OrderCreationService {
                             .build()
             );
         }
+        return order.getId();
 
     }
 
@@ -264,12 +266,32 @@ public class OrderCreationService {
         return Long.parseLong(orderCode);
     }
 
-    public int totalPrice(List<FindOrderedProductSimpleReq> orderedProducts) {
+    public int totalPrice(List<FindOrderedProductSimpleReq> orderedProducts, CouponEvent couponEvent) {
         // 주문한 상품들의 가격을 합쳐서 총 가격을 만들어준다.
         return orderedProducts.stream()
                 .mapToInt(product -> {
-                    double discountedPrice = product.getPrice() * (100 - product.getDiscountRate()) / 100.0;
-                    return (int) Math.round(discountedPrice); // 반올림 적용
+                    double originProductPrice = product.getPrice();
+                    double totalDiscountRate = 0;
+
+                    log.info("원래 상품 가격 : {}", originProductPrice);
+
+                    if (product.getDiscountRate() != 0) {
+                        totalDiscountRate += product.getDiscountRate();
+                        log.info("상품 할인율 : {}%", product.getDiscountRate());
+                    }
+
+                    if (couponEvent != null) {
+                        totalDiscountRate += couponEvent.getCouponDiscountRate();
+                        log.info("쿠폰 할인율 : {}%", couponEvent.getCouponDiscountRate());
+                    }
+
+                    double discountAmount = originProductPrice * (totalDiscountRate / 100.0);
+                    double finalPrice = originProductPrice - discountAmount;
+
+                    log.info("총 할인율 : {}%, 할인 금액 : {}, 최종 상품 가격 : {}, 갯수 : {}",
+                            totalDiscountRate, discountAmount, finalPrice, product.getCount());
+
+                    return (int) Math.round(finalPrice * product.getCount());
                 })
                 .sum();
     }
@@ -289,7 +311,7 @@ public class OrderCreationService {
         }
 
         if (orderType.isOnetime()) {
-            return new DeliveryInfo(ONETIME, deliveryStartDate, deliveryStartDate);
+            return new DeliveryInfo(ONETIME, deliveryStartDate, deliveryStartDate.plusDays(3)); // 단건주문은 3일 후 배송
         }
 
         if (weekOption == null || dayOptionIds.isEmpty()) {
@@ -330,10 +352,10 @@ public class OrderCreationService {
         // 구독 종료일 계산 (deliveryStartDate 기준)
         LocalDate subscriptionEndDate = deliveryStartDate.plusMonths(months);
 
-        // 다음 주 월요일 계산
-        LocalDate nextMonday = deliveryStartDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+//         다음 주 월요일 계산
+//        LocalDate nextMonday = deliveryStartDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
 
-        return calculateDeliveryInfo(nextMonday, subscriptionEndDate, weekly, deliveryDays,-1);
+        return calculateDeliveryInfo(deliveryStartDate, subscriptionEndDate, weekly, deliveryDays,-1);
     }
 
 private DeliveryInfo calculateCountSubscription(
@@ -342,10 +364,10 @@ private DeliveryInfo calculateCountSubscription(
         int weekly,
         List<DayOfWeek> deliveryDays
 ) {
-    // 1. 다음 주의 월요일을 찾습니다.
-    LocalDate nextMonday = deliveryStartDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+//     1. 다음 주의 월요일을 찾습니다.
+//    LocalDate nextMonday = deliveryStartDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
 
-    return calculateDeliveryInfo(nextMonday, null, weekly, deliveryDays, totalDeliveryCount);
+    return calculateDeliveryInfo(deliveryStartDate, null, weekly, deliveryDays, totalDeliveryCount);
 }
 
 private LocalDate getNextPaymentDate(Order order) {

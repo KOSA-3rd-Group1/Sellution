@@ -10,9 +10,11 @@ import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
+import shop.sellution.server.event.domain.EventRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.order.domain.*;
 import shop.sellution.server.order.domain.repository.OrderRepository;
+import shop.sellution.server.order.domain.repository.OrderedProductRepository;
 import shop.sellution.server.order.domain.type.DeliveryStatus;
 import shop.sellution.server.order.domain.type.OrderStatus;
 import shop.sellution.server.order.dto.OrderSearchCondition;
@@ -23,7 +25,16 @@ import shop.sellution.server.payment.application.PaymentService;
 import shop.sellution.server.payment.domain.PaymentHistory;
 import shop.sellution.server.payment.domain.repository.PaymentHistoryRepository;
 import shop.sellution.server.payment.dto.request.PaymentReq;
+import shop.sellution.server.product.domain.ProductImage;
+import shop.sellution.server.product.domain.ProductImageRepository;
+import shop.sellution.server.product.domain.ProductRepository;
+import shop.sellution.server.product.dto.ProductImageSummary;
 import shop.sellution.server.sms.application.SmsService;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static shop.sellution.server.global.exception.ExceptionCode.*;
 
@@ -41,6 +52,10 @@ public class OrderServiceImpl implements OrderService {
     private final PaymentService paymentService;
     private final SmsService smsService;
     private final CustomerRepository customerRepository;
+    private final ProductImageRepository productImageRepository;
+    private final ProductRepository productRepository;
+    private final OrderedProductRepository orderedProductRepository;
+    private final EventRepository eventRepository;
 
     // 특정 회원의 주문 목록 조회
     @Override
@@ -49,10 +64,36 @@ public class OrderServiceImpl implements OrderService {
 
         Page<Order> orders = orderRepository.findAllOrderByCustomerId(CustomerId, pageable);
 
+        List<Order> ordersContent = orders.getContent();
+
+        // 주문된 상품들
+        List<Long> orderIds = ordersContent.stream().map(Order::getId).toList();
+        List<OrderedProduct> orderedProducts = orderedProductRepository.findAllByOrderIdIn(orderIds);
+
+        // 주문된 상품의 이미지
+        List<Long> productIds = orderedProducts.stream().map(orderedProduct -> orderedProduct.getProduct().getProductId()).toList();
+        List<ProductImage> productImages = productImageRepository.findAllByProductIdIn(productIds);
+
+        // 주문된 상품들을 주문 아이디로 그룹핑
+        Map<Long, List<OrderedProduct>> orderedProductMap = orderedProducts.stream()
+                .collect(Collectors.groupingBy(op -> op.getOrder().getId()));
+
+        // 상품의 이미지를 상품 아이디로 그룹핑
+        Map<Long, List<ProductImageSummary>> productImageMap = productImages.stream()
+                .collect(Collectors.groupingBy(
+                        pi -> pi.getProduct().getProductId(),
+                        Collectors.mapping(
+                                pi -> new ProductImageSummary(pi.getProductImageId(), pi.getProduct().getProductId(), pi.getImageUrl(), pi.getPurposeOfUse()),
+                                Collectors.toList()
+                        )
+                ));
+
+
         return orders.map(order -> FindOrderRes.fromEntities(
                 order,
-                order.getOrderedProducts(),
-                order.getSelectedDays()
+                orderedProductMap.getOrDefault(order.getId(), List.of()),
+                order.getSelectedDays(),
+                productImageMap
         ));
 
     }
@@ -64,10 +105,36 @@ public class OrderServiceImpl implements OrderService {
 
         Page<Order> orders = orderRepository.findOrderByCompanyIdAndCondition(companyId, condition, pageable);
 
+        List<Order> ordersContent = orders.getContent();
+
+        // 주문된 상품들
+        List<Long> orderIds = ordersContent.stream().map(Order::getId).toList();
+        List<OrderedProduct> orderedProducts = orderedProductRepository.findAllByOrderIdIn(orderIds);
+
+        // 주문된 상품의 이미지
+        List<Long> productIds = orderedProducts.stream().map(orderedProduct -> orderedProduct.getProduct().getProductId()).toList();
+        List<ProductImage> productImages = productImageRepository.findAllByProductIdIn(productIds);
+
+        // 주문된 상품들을 주문 아이디로 그룹핑
+        Map<Long, List<OrderedProduct>> orderedProductMap = orderedProducts.stream()
+                .collect(Collectors.groupingBy(op -> op.getOrder().getId()));
+
+        // 상품의 이미지를 상품 아이디로 그룹핑
+        Map<Long, List<ProductImageSummary>> productImageMap = productImages.stream()
+                .collect(Collectors.groupingBy(
+                        pi -> pi.getProduct().getProductId(),
+                        Collectors.mapping(
+                                pi -> new ProductImageSummary(pi.getProductImageId(), pi.getProduct().getProductId(), pi.getImageUrl(), pi.getPurposeOfUse()),
+                                Collectors.toList()
+                        )
+                ));
+
+
         return orders.map(order -> FindOrderRes.fromEntities(
                 order,
-                order.getOrderedProducts(),
-                order.getSelectedDays()
+                orderedProductMap.getOrDefault(order.getId(), List.of()),
+                order.getSelectedDays(),
+                productImageMap
         ));
 
     }
@@ -85,10 +152,10 @@ public class OrderServiceImpl implements OrderService {
         }
 
         String approveMessage = String.format("""
-                    [Sellution] 주문이 승인되었습니다. [ 수동 ]
-                    승인된 주문번호
-                    %d
-                    """,order.getCode());
+                [Sellution] 주문이 승인되었습니다. [ 수동 ]
+                승인된 주문번호
+                %d
+                """, order.getCode());
 //        smsService.sendSms(order.getCustomer().getPhoneNumber(),approveMessage);
 
         order.approveOrder();
@@ -127,7 +194,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER));
 
         // 주문할때 사용했던 계좌인지 확인
-        if(!order.getAccount().getId().equals(cancelOrderReq.getAccountId())) {
+        if (!order.getAccount().getId().equals(cancelOrderReq.getAccountId())) {
             throw new BadRequestException(NOT_MATCH_ACCOUNT_ID);
         }
 
@@ -142,7 +209,6 @@ public class OrderServiceImpl implements OrderService {
         }
 
 
-
         order.cancelOrder();
 
         /*
@@ -152,8 +218,7 @@ public class OrderServiceImpl implements OrderService {
          */
         PaymentHistory paymentHistory = paymentHistoryRepository.findFirstByOrderIdOrderByCreatedAtDesc(orderId);
         if (paymentHistory != null) {
-            if(paymentHistory.getRemainingPaymentCount() < order.getRemainingDeliveryCount())
-            {
+            if (paymentHistory.getRemainingPaymentCount() < order.getRemainingDeliveryCount()) {
                 log.info(" 취소 신청된 주문의 결제내역 : {}", paymentHistory);
                 paymentCancelService.cancelPayment(
                         PaymentReq.builder()
@@ -163,16 +228,45 @@ public class OrderServiceImpl implements OrderService {
                                 .build()
                 );
             }
-        }else{
+        } else {
             String cancelMessage = String.format("""
-                [Sellution] 주문이 취소되었습니다.
-                취소된 주문번호
-                %d
-                """, order.getId(), order.getTotalPrice());
+                    [Sellution] 주문이 취소되었습니다.
+                    취소된 주문번호
+                    %d
+                    """, order.getId(), order.getTotalPrice());
 //            smsService.sendSms(customer.getPhoneNumber(), cancelMessage);
         }
 
         log.info("주문 취소 완료");
     }
 
+    // 주문 상세조회
+
+
+    @Override
+    public FindOrderRes findOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ORDER));
+
+        // 주문된 상품들
+        List<OrderedProduct> orderedProducts = orderedProductRepository.findAllByOrderIdIn(List.of(orderId));
+
+        // 주문된 상품의 이미지
+        List<Long> productIds = orderedProducts.stream()
+                .map(orderedProduct -> orderedProduct.getProduct().getProductId())
+                .toList();
+        List<ProductImage> productImages = productImageRepository.findAllByProductIdIn(productIds);
+
+        // 상품의 이미지를 상품 아이디로 그룹핑
+        Map<Long, List<ProductImageSummary>> productImageMap = productImages.stream()
+                .collect(Collectors.groupingBy(
+                        pi -> pi.getProduct().getProductId(),
+                        Collectors.mapping(
+                                pi -> new ProductImageSummary(pi.getProductImageId(), pi.getProduct().getProductId(), pi.getImageUrl(), pi.getPurposeOfUse()),
+                                Collectors.toList()
+                        )
+                ));
+
+        return FindOrderRes.fromEntities(order, orderedProducts, order.getSelectedDays(), productImageMap);
+    }
 }

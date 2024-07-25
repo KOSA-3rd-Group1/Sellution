@@ -5,16 +5,19 @@ import lombok.Getter;
 import shop.sellution.server.address.dto.response.FindAddressSummaryRes;
 import shop.sellution.server.company.domain.type.DayValueType;
 import shop.sellution.server.customer.dto.resonse.FindCustomerSummaryRes;
+import shop.sellution.server.event.domain.CouponEvent;
 import shop.sellution.server.order.domain.Order;
 import shop.sellution.server.order.domain.OrderedProduct;
 import shop.sellution.server.order.domain.SelectedDay;
 import shop.sellution.server.order.domain.type.DeliveryStatus;
 import shop.sellution.server.order.domain.type.OrderStatus;
 import shop.sellution.server.order.domain.type.OrderType;
+import shop.sellution.server.product.dto.ProductImageSummary;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Builder
 @Getter
@@ -24,6 +27,8 @@ public class FindOrderRes {
 
     private FindAddressSummaryRes address;
 
+    private Long orderId;
+
     private Long orderCode;
 
     private OrderType type;
@@ -32,9 +37,13 @@ public class FindOrderRes {
 
     private DeliveryStatus deliveryStatus;
 
+    private int perPrice;
+
     private int totalPrice;
 
     private LocalDate deliveryStartDate;
+
+    private LocalDate nextDeliveryDate;
 
     private LocalDate deliveryEndDate;
 
@@ -44,7 +53,7 @@ public class FindOrderRes {
 
     private List<FindOrderedProductRes> orderedProductList;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime orderCreatedAt;
 
     private List<DayValueType> selectedDayList;
 
@@ -52,29 +61,43 @@ public class FindOrderRes {
 
     private Integer selectedMonthOption;
 
+    private Long couponEventId;
 
-    public static FindOrderRes fromEntities(Order order, List<OrderedProduct> orderedProducts, List<SelectedDay> selectedDays) {
+    private String couponName;
+
+    private Integer couponDiscountRate;
+
+
+
+
+    public static FindOrderRes fromEntities(Order order, List<OrderedProduct> orderedProducts, List<SelectedDay> selectedDays, Map<Long, List<ProductImageSummary>> productImageMap) {
         return FindOrderRes.builder()
                 .customer(FindCustomerSummaryRes.fromEntity(order.getCustomer()))
                 .address(FindAddressSummaryRes.fromEntity(order.getAddress()))
+                .orderId(order.getId())
                 .orderCode(order.getCode())
                 .type(order.getType())
                 .status(order.getStatus())
                 .deliveryStatus(order.getDeliveryStatus())
+                .perPrice(order.getPerPrice())
                 .totalPrice(order.getTotalPrice())
                 .deliveryStartDate(order.getDeliveryStartDate())
+                .nextDeliveryDate(order.getNextDeliveryDate())
                 .deliveryEndDate(order.getDeliveryEndDate())
                 .totalDeliveryCount(order.getTotalDeliveryCount())
                 .remainingDeliveryCount(order.getRemainingDeliveryCount())
                 .orderedProductList(orderedProducts.stream()
-                        .map(FindOrderedProductRes::fromEntity)
+                        .map(op -> FindOrderedProductRes.fromEntity(op, productImageMap.get(op.getProduct().getProductId())))
                         .toList())
-                .createdAt(order.getCreatedAt())
+                .orderCreatedAt(order.getCreatedAt())
                 .selectedDayList(selectedDays.stream()
                         .map((sd) -> sd.getDayOption().getDayValue())
                         .toList())
                 .selectedWeekOption(order.getWeekOption() == null ? null : order.getWeekOption().getWeekValue())
                 .selectedMonthOption(order.getMonthOption() == null ? null : order.getMonthOption().getMonthValue())
+                .couponEventId(order.getCouponEvent() != null ? order.getCouponEvent().getId() : null)
+                .couponName(order.getCouponEvent() != null ? order.getCouponEvent().getCouponName() : null)
+                .couponDiscountRate(order.getCouponEvent() != null ? order.getCouponEvent().getCouponDiscountRate() : null)
                 .build();
     }
 

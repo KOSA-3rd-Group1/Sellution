@@ -43,8 +43,8 @@ public class OrderController {
     // 주문하기
     @PostMapping("/customers/{customerId}")
     public ResponseEntity<String> order(@PathVariable Long customerId, @RequestBody SaveOrderReq saveOrderReq) {
-        orderCreationService.createOrder(customerId,saveOrderReq);
-        return ResponseEntity.ok().body("success");
+        long savedOrderId = orderCreationService.createOrder(customerId, saveOrderReq);
+        return ResponseEntity.ok().body("success, 생성된 아이디 : " + savedOrderId);
     }
 
     // 주문 취소하기
@@ -66,6 +66,12 @@ public class OrderController {
     public ResponseEntity<String> autoApproveOrder(@PathVariable Long companyId) {
         orderService.toggleAutoApprove(companyId);
         return ResponseEntity.ok().body("success");
+    }
+
+    // 주문 상세조회
+    @GetMapping("/{orderId}")
+    public ResponseEntity<FindOrderRes> findOrderById(@PathVariable Long orderId) {
+        return ResponseEntity.ok(orderService.findOrder(orderId));
     }
 
 

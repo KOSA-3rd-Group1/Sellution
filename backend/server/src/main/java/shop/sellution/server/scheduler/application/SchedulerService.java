@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.customer.domain.CustomerRepository;
+import shop.sellution.server.event.domain.CouponEvent;
+import shop.sellution.server.event.domain.EventRepository;
+import shop.sellution.server.event.domain.type.EventState;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.order.domain.Order;
 import shop.sellution.server.order.domain.repository.OrderRepository;
@@ -32,6 +35,7 @@ public class SchedulerService {
     private final PaymentUtil paymentUtil;
     private final PaymentService paymentService;
     private final CustomerRepository customerRepository;
+    private final EventRepository eventRepository;
 
 
 //    @Scheduled(cron = "0 0 19 * * *", zone = "Asia/Seoul")
@@ -168,5 +172,28 @@ public class SchedulerService {
     public int regularCustomerTypeToDormant() {
         // 최신 배송일자가 오늘보다 60일 이상 차이나는 회원은 휴면회원으로 변경
         return customerRepository.updateDormantCustomerType(LocalDateTime.now().minusDays(60));
+    }
+
+
+    //    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul") // 자정이여야함
+    @Transactional
+    public void regularEventStateUpdate() {
+        log.info("*************** 스케줄러 시작 *************** ");
+        log.info("*************** 이벤트 상태 변경 시작 *************** ");
+        int eventCount = 0;
+        List<CouponEvent> couponEventList = eventRepository.findAll();
+        for(CouponEvent event : couponEventList){
+            if(!event.isDeleted() && event.getEventEndDate().isBefore(LocalDate.now()) && event.getState() == EventState.ONGOING){
+                event.changeStateToEnd();
+                eventCount++;
+            }else if(!event.isDeleted() && event.getEventStartDate().isEqual(LocalDate.now()) && event.getState()==EventState.UPCOMING){
+                event.changeStateToOngoing();
+                eventCount++;
+            }
+        }
+        log.info("*************** 이벤트 상태 변경 종료 *************** ");
+        log.info("*************** 변경된 이벤트 : {}건 *************** ", eventCount);
+        log.info("*************** 스케줄러 종료 *************** ");
+
     }
 }

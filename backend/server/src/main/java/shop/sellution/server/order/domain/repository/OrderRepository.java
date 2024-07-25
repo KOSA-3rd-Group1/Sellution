@@ -25,6 +25,7 @@ public interface OrderRepository extends
             left join fetch o.address
             left join fetch o.monthOption
             left join fetch o.weekOption
+            left join fetch o.couponEvent
             where o.customer.id = :customerId
             """)
     Page<Order> findAllOrderByCustomerId(@Param("customerId") Long customerId, Pageable pageable);

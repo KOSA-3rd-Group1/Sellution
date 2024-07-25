@@ -29,7 +29,8 @@ public class PaymentUtil {
             case ONETIME, COUNT_SUBSCRIPTION -> order.getTotalPrice(); // 단건 혹은 횟수정기주문이라면 전체 금액을 결제해야한다.
             case MONTH_SUBSCRIPTION -> { // 월정기주문이라면
                 if (order.getPaymentCount() == 0) { // 첫결제라면
-                    LocalDate monday = order.getDeliveryStartDate().with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+//                    LocalDate monday = order.getDeliveryStartDate().with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+                    LocalDate monday = order.getDeliveryStartDate();
                     LocalDate endDate = order.getDeliveryStartDate().plusMonths(1);
                     log.info("monday : {}, endDate : {}", monday,endDate);
                     DeliveryInfo deliveryInfo = calculateDeliveryInfo(monday, endDate, order.getWeekOption().getWeekValue(), getDeliveryDays(order.getSelectedDays()));

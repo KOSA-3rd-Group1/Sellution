@@ -9,6 +9,7 @@ import shop.sellution.server.company.domain.MonthOption;
 import shop.sellution.server.company.domain.WeekOption;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.address.domain.Address;
+import shop.sellution.server.event.domain.CouponEvent;
 import shop.sellution.server.global.BaseEntity;
 import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.order.domain.type.OrderStatus;
@@ -49,6 +50,10 @@ public class Order extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id", nullable = true)
+    private CouponEvent couponEvent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "month_option_id", nullable = true)

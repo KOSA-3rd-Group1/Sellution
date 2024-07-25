@@ -60,7 +60,7 @@ class CompanyControllerTest extends BaseControllerTest {
                 .name("TestCompany")
                 .shopUrl("https://www.sellution.com/shopping/TestCompany")
                 .isShopVisible("Y")
-                .qrCodeBase64("dummyQrCodeBase64String")
+                .qrCodeUrl("dummyQrCodeBase64String")
                 .build();
 
         when(companyUrlSettingService.getCompanyUrlSetting(anyLong())).thenReturn(response);

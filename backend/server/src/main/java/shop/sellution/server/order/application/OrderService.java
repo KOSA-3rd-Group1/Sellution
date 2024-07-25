@@ -22,4 +22,7 @@ public interface OrderService {
 
     // 주문 취소
     void cancelOrder(Long orderId,CancelOrderReq cancelOrderReq);
+
+    // 주문 상세조회
+    FindOrderRes findOrder(Long orderId);
 }

@@ -80,12 +80,15 @@ class OrderControllerTest extends BaseControllerTest {
                         .addressName("집")
                         .createdAt(LocalDateTime.now())
                         .build())
+                .orderId(1L)
                 .orderCode(123456L)
                 .type(OrderType.ONETIME)
                 .status(OrderStatus.APPROVED)
                 .deliveryStatus(DeliveryStatus.IN_PROGRESS)
+                .perPrice(20000)
                 .totalPrice(100000)
                 .deliveryStartDate(LocalDate.now())
+                .nextDeliveryDate(LocalDate.now().plusDays(1))
                 .deliveryEndDate(LocalDate.now().plusDays(7))
                 .totalDeliveryCount(5)
                 .remainingDeliveryCount(2)
@@ -98,7 +101,7 @@ class OrderControllerTest extends BaseControllerTest {
                                 .price(50000)
                                 .build()
                 ))
-                .createdAt(LocalDateTime.now())
+                .orderCreatedAt(LocalDateTime.now())
                 .selectedDayList(Arrays.asList(DayValueType.MON, DayValueType.WED))
                 .selectedWeekOption(1)
                 .selectedMonthOption(1)
@@ -124,6 +127,7 @@ class OrderControllerTest extends BaseControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("content[]").type(JsonFieldType.ARRAY).description("주문 목록"),
+                                fieldWithPath("content[].orderId").type(JsonFieldType.NUMBER).description("주문 ID"),
                                 fieldWithPath("content[].customer.id").type(JsonFieldType.NUMBER).description("고객 ID"),
                                 fieldWithPath("content[].customer.name").type(JsonFieldType.STRING).description("고객 이름"),
                                 fieldWithPath("content[].customer.phoneNumber").type(JsonFieldType.STRING).description("고객 전화번호"),
@@ -140,8 +144,10 @@ class OrderControllerTest extends BaseControllerTest {
                                 fieldWithPath("content[].type").type(JsonFieldType.STRING).description("주문 유형"),
                                 fieldWithPath("content[].status").type(JsonFieldType.STRING).description("주문 상태"),
                                 fieldWithPath("content[].deliveryStatus").type(JsonFieldType.STRING).description("배송 상태"),
+                                fieldWithPath("content[].perPrice").type(JsonFieldType.NUMBER).description("1회 배송 가격"),
                                 fieldWithPath("content[].totalPrice").type(JsonFieldType.NUMBER).description("총 가격"),
                                 fieldWithPath("content[].deliveryStartDate").type(JsonFieldType.STRING).description("배송 시작일"),
+                                fieldWithPath("content[].nextDeliveryDate").type(JsonFieldType.STRING).description("다음 배송일"),
                                 fieldWithPath("content[].deliveryEndDate").type(JsonFieldType.STRING).description("배송 종료일"),
                                 fieldWithPath("content[].totalDeliveryCount").type(JsonFieldType.NUMBER).description("총 배송 횟수"),
                                 fieldWithPath("content[].remainingDeliveryCount").type(JsonFieldType.NUMBER).description("남은 배송 횟수"),
@@ -151,10 +157,14 @@ class OrderControllerTest extends BaseControllerTest {
                                 fieldWithPath("content[].orderedProductList[].count").type(JsonFieldType.NUMBER).description("주문된 상품 수량"),
                                 fieldWithPath("content[].orderedProductList[].discountRate").type(JsonFieldType.NUMBER).description("할인율"),
                                 fieldWithPath("content[].orderedProductList[].price").type(JsonFieldType.NUMBER).description("주문된 상품 가격"),
-                                fieldWithPath("content[].createdAt").type(JsonFieldType.STRING).description("주문 생성일"),
+                                fieldWithPath("content[].orderedProductList[].productImageList").type(JsonFieldType.ARRAY).optional().description("상품 이미지 목록"),
+                                fieldWithPath("content[].orderCreatedAt").type(JsonFieldType.STRING).description("주문 생성일"),
                                 fieldWithPath("content[].selectedDayList[]").type(JsonFieldType.ARRAY).description("선택된 요일 목록"),
                                 fieldWithPath("content[].selectedWeekOption").type(JsonFieldType.NUMBER).description("선택된 주 옵션"),
                                 fieldWithPath("content[].selectedMonthOption").type(JsonFieldType.NUMBER).description("선택된 월 옵션"),
+                                fieldWithPath("content[].couponEventId").type(JsonFieldType.NUMBER).optional().description("쿠폰이벤트 ID"),
+                                fieldWithPath("content[].couponName").type(JsonFieldType.STRING).optional().description("쿠폰 이름"),
+                                fieldWithPath("content[].couponDiscountRate").type(JsonFieldType.NUMBER).optional().description("쿠폰 할인율"),
                                 fieldWithPath("pageable").type(JsonFieldType.STRING).description("페이지 정보"),
                                 fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("총 주문 수"),
                                 fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수"),
@@ -180,6 +190,7 @@ class OrderControllerTest extends BaseControllerTest {
         Long companyId = 1L;
         FindOrderRes orderRes = FindOrderRes.builder()
                 .customer(FindCustomerSummaryRes.builder().id(1L).name("길길").phoneNumber("010-1234-5678").build())
+                .orderId(1L)
                 .address(FindAddressSummaryRes.builder()
                         .id(1L)
                         .address("공릉")
@@ -195,8 +206,10 @@ class OrderControllerTest extends BaseControllerTest {
                 .type(OrderType.ONETIME)
                 .status(OrderStatus.APPROVED)
                 .deliveryStatus(DeliveryStatus.IN_PROGRESS)
+                .perPrice(10000)
                 .totalPrice(100000)
                 .deliveryStartDate(LocalDate.now())
+                .nextDeliveryDate(LocalDate.now().plusDays(1))
                 .deliveryEndDate(LocalDate.now().plusDays(7))
                 .totalDeliveryCount(5)
                 .remainingDeliveryCount(2)
@@ -207,7 +220,7 @@ class OrderControllerTest extends BaseControllerTest {
                         .price(50000)
                         .discountRate(10)
                         .build()))
-                .createdAt(LocalDateTime.now())
+                .orderCreatedAt(LocalDateTime.now())
                 .selectedDayList(Arrays.asList(DayValueType.MON, DayValueType.WED))
                 .selectedWeekOption(1)
                 .selectedMonthOption(1)
@@ -233,6 +246,7 @@ class OrderControllerTest extends BaseControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("content").type(JsonFieldType.ARRAY).description("주문 목록"),
+                                fieldWithPath("content[].orderId").type(JsonFieldType.NUMBER).description("주문 ID"),
                                 fieldWithPath("content[].customer").type(JsonFieldType.OBJECT).optional().description("고객 정보"),
                                 fieldWithPath("content[].customer.id").type(JsonFieldType.NUMBER).optional().description("고객 ID"),
                                 fieldWithPath("content[].customer.name").type(JsonFieldType.STRING).optional().description("고객 이름"),
@@ -251,8 +265,10 @@ class OrderControllerTest extends BaseControllerTest {
                                 fieldWithPath("content[].type").type(JsonFieldType.STRING).description("주문 유형"),
                                 fieldWithPath("content[].status").type(JsonFieldType.STRING).description("주문 상태"),
                                 fieldWithPath("content[].deliveryStatus").type(JsonFieldType.STRING).description("배송 상태"),
+                                fieldWithPath("content[].perPrice").type(JsonFieldType.NUMBER).description("1회 배송 가격"),
                                 fieldWithPath("content[].totalPrice").type(JsonFieldType.NUMBER).description("총 가격"),
                                 fieldWithPath("content[].deliveryStartDate").type(JsonFieldType.STRING).description("배송 시작일"),
+                                fieldWithPath("content[].nextDeliveryDate").type(JsonFieldType.STRING).optional().description("다음 배송일"),
                                 fieldWithPath("content[].deliveryEndDate").type(JsonFieldType.STRING).description("배송 종료일"),
                                 fieldWithPath("content[].totalDeliveryCount").type(JsonFieldType.NUMBER).description("총 배송 횟수"),
                                 fieldWithPath("content[].remainingDeliveryCount").type(JsonFieldType.NUMBER).description("남은 배송 횟수"),
@@ -262,10 +278,14 @@ class OrderControllerTest extends BaseControllerTest {
                                 fieldWithPath("content[].orderedProductList[].count").type(JsonFieldType.NUMBER).description("상품 수량"),
                                 fieldWithPath("content[].orderedProductList[].price").type(JsonFieldType.NUMBER).description("상품 가격"),
                                 fieldWithPath("content[].orderedProductList[].discountRate").type(JsonFieldType.NUMBER).description("할인율"),
-                                fieldWithPath("content[].createdAt").type(JsonFieldType.STRING).description("주문 생성일"),
+                                fieldWithPath("content[].orderedProductList[].productImageList").type(JsonFieldType.ARRAY).optional().description("상품 이미지 목록"),
+                                fieldWithPath("content[].orderCreatedAt").type(JsonFieldType.STRING).description("주문 생성일"),
                                 fieldWithPath("content[].selectedDayList").type(JsonFieldType.ARRAY).description("선택된 요일 목록"),
                                 fieldWithPath("content[].selectedWeekOption").type(JsonFieldType.NUMBER).optional().description("선택된 주 옵션"),
                                 fieldWithPath("content[].selectedMonthOption").type(JsonFieldType.NUMBER).optional().description("선택된 월 옵션"),
+                                fieldWithPath("content[].couponEventId").type(JsonFieldType.NUMBER).optional().description("쿠폰이벤트 ID"),
+                                fieldWithPath("content[].couponName").type(JsonFieldType.STRING).optional().description("쿠폰 이름"),
+                                fieldWithPath("content[].couponDiscountRate").type(JsonFieldType.NUMBER).optional().description("쿠폰 할인율"),
                                 fieldWithPath("pageable").type(JsonFieldType.STRING).description("페이지 정보"),
                                 fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("총 주문 수"),
                                 fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수"),
@@ -292,6 +312,7 @@ class OrderControllerTest extends BaseControllerTest {
                 .companyId(1L)
                 .addressId(1L)
                 .accountId(1L)
+                .eventId(1L)
                 .orderType(OrderType.ONETIME)
                 .deliveryStartDate(LocalDate.now().plusDays(3))
                 .orderedProducts(Collections.singletonList(
@@ -304,14 +325,14 @@ class OrderControllerTest extends BaseControllerTest {
                 ))
                 .build();
 
-        doNothing().when(orderCreationService).createOrder(eq(customerId), any(SaveOrderReq.class));
+        when(orderCreationService.createOrder(eq(customerId), any(SaveOrderReq.class))).thenReturn(1L);
 
         // When & Then
         mockMvc.perform(post("/orders/customers/{customerId}", customerId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(saveOrderReq)))
                 .andExpect(status().isOk())
-                .andExpect(content().string("success"))
+                .andExpect(content().string("success, 생성된 아이디 : 1"))
                 .andDo(document("Order/create-order",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -322,6 +343,7 @@ class OrderControllerTest extends BaseControllerTest {
                                 fieldWithPath("companyId").type(JsonFieldType.NUMBER).description("회사 ID"),
                                 fieldWithPath("addressId").type(JsonFieldType.NUMBER).description("주소 ID"),
                                 fieldWithPath("accountId").type(JsonFieldType.NUMBER).description("계정 ID"),
+                                fieldWithPath("eventId").type(JsonFieldType.NUMBER).description("쿠폰이벤트 ID"),
                                 fieldWithPath("monthOptionId").type(JsonFieldType.NUMBER).optional().description("월 옵션 ID"),
                                 fieldWithPath("weekOptionId").type(JsonFieldType.NUMBER).optional().description("주 옵션 ID"),
                                 fieldWithPath("orderType").type(JsonFieldType.STRING).description("주문 타입"),
@@ -405,6 +427,103 @@ class OrderControllerTest extends BaseControllerTest {
                         preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("companyId").description("회사 ID")
+                        )
+                ));
+    }
+
+    @DisplayName("주문 ID로 주문을 조회한다")
+    @Test
+    void findOrderById_Success() throws Exception {
+        // Given
+        Long orderId = 1L;
+        FindOrderRes orderRes = FindOrderRes.builder()
+                .customer(FindCustomerSummaryRes.builder().id(1L).name("Test Customer").phoneNumber("010-1234-5678").build())
+                .orderId(1L)
+                .address(FindAddressSummaryRes.builder()
+                        .id(1L)
+                        .address("Test Address")
+                        .name("Test Name")
+                        .zipcode("12345")
+                        .addressDetail("Test Detail")
+                        .phoneNumber("010-1234-5678")
+                        .isDefaultAddress(DisplayStatus.Y)
+                        .addressName("Home")
+                        .createdAt(LocalDateTime.now())
+                        .build())
+                .orderCode(123456L)
+                .type(OrderType.ONETIME)
+                .status(OrderStatus.APPROVED)
+                .deliveryStatus(DeliveryStatus.IN_PROGRESS)
+                .perPrice(20000)
+                .totalPrice(100000)
+                .deliveryStartDate(LocalDate.now())
+                .nextDeliveryDate(LocalDate.now().plusDays(1))
+                .deliveryEndDate(LocalDate.now().plusDays(7))
+                .totalDeliveryCount(1)
+                .remainingDeliveryCount(1)
+                .orderedProductList(Collections.singletonList(FindOrderedProductRes.builder()
+                        .productId(1L)
+                        .productName("Test Product")
+                        .count(2)
+                        .price(50000)
+                        .discountRate(10)
+                        .build()))
+                .orderCreatedAt(LocalDateTime.now())
+                .nextDeliveryDate(LocalDate.now().plusDays(1))
+                .build();
+
+        when(orderService.findOrder(orderId)).thenReturn(orderRes);
+
+        // When & Then
+        mockMvc.perform(get("/orders/{orderId}", orderId))
+                .andExpect(status().isOk())
+                .andDo(document("Order/find-order-by-id",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("orderId").description("주문 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("orderId").type(JsonFieldType.NUMBER).description("주문 ID"),
+                                fieldWithPath("customer").type(JsonFieldType.OBJECT).description("고객 정보"),
+                                fieldWithPath("customer.id").type(JsonFieldType.NUMBER).description("고객 ID"),
+                                fieldWithPath("customer.name").type(JsonFieldType.STRING).description("고객 이름"),
+                                fieldWithPath("customer.phoneNumber").type(JsonFieldType.STRING).description("고객 전화번호"),
+                                fieldWithPath("address").type(JsonFieldType.OBJECT).description("주소 정보"),
+                                fieldWithPath("address.id").type(JsonFieldType.NUMBER).description("주소 ID"),
+                                fieldWithPath("address.address").type(JsonFieldType.STRING).description("주소"),
+                                fieldWithPath("address.name").type(JsonFieldType.STRING).description("수령인 이름"),
+                                fieldWithPath("address.zipcode").type(JsonFieldType.STRING).description("우편번호"),
+                                fieldWithPath("address.addressDetail").type(JsonFieldType.STRING).description("상세 주소"),
+                                fieldWithPath("address.phoneNumber").type(JsonFieldType.STRING).description("전화번호"),
+                                fieldWithPath("address.isDefaultAddress").type(JsonFieldType.STRING).description("기본 주소 여부"),
+                                fieldWithPath("address.addressName").type(JsonFieldType.STRING).description("주소 별칭"),
+                                fieldWithPath("address.createdAt").type(JsonFieldType.STRING).description("주소 생성일"),
+                                fieldWithPath("orderCode").type(JsonFieldType.NUMBER).description("주문 코드"),
+                                fieldWithPath("type").type(JsonFieldType.STRING).description("주문 유형"),
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("주문 상태"),
+                                fieldWithPath("deliveryStatus").type(JsonFieldType.STRING).description("배송 상태"),
+                                fieldWithPath("perPrice").type(JsonFieldType.NUMBER).description("1회 배송 가격"),
+                                fieldWithPath("totalPrice").type(JsonFieldType.NUMBER).description("총 가격"),
+                                fieldWithPath("deliveryStartDate").type(JsonFieldType.STRING).description("배송 시작일"),
+                                fieldWithPath("deliveryEndDate").type(JsonFieldType.STRING).description("배송 종료일"),
+                                fieldWithPath("nextDeliveryDate").type(JsonFieldType.STRING).description("다음 배송일"),
+                                fieldWithPath("totalDeliveryCount").type(JsonFieldType.NUMBER).description("총 배송 횟수"),
+                                fieldWithPath("remainingDeliveryCount").type(JsonFieldType.NUMBER).description("남은 배송 횟수"),
+                                fieldWithPath("orderedProductList").type(JsonFieldType.ARRAY).description("주문된 상품 목록"),
+                                fieldWithPath("orderedProductList[].productId").type(JsonFieldType.NUMBER).description("상품 ID"),
+                                fieldWithPath("orderedProductList[].productName").type(JsonFieldType.STRING).description("상품 이름"),
+                                fieldWithPath("orderedProductList[].count").type(JsonFieldType.NUMBER).description("상품 수량"),
+                                fieldWithPath("orderedProductList[].price").type(JsonFieldType.NUMBER).description("상품 가격"),
+                                fieldWithPath("orderedProductList[].discountRate").type(JsonFieldType.NUMBER).description("할인율"),
+                                fieldWithPath("orderedProductList[].productImageList").type(JsonFieldType.ARRAY).optional().description("상품 이미지 목록"),
+                                fieldWithPath("orderCreatedAt").type(JsonFieldType.STRING).description("주문 생성일"),
+                                fieldWithPath("selectedDayList").type(JsonFieldType.ARRAY).optional().description("선택된 배송 요일 목록"),
+                                fieldWithPath("selectedWeekOption").type(JsonFieldType.STRING).optional().description("선택된 주 옵션"),
+                                fieldWithPath("selectedMonthOption").type(JsonFieldType.STRING).optional().description("선택된 월 옵션"),
+                                fieldWithPath("couponEventId").type(JsonFieldType.NUMBER).optional().description("쿠폰이벤트 ID"),
+                                fieldWithPath("couponName").type(JsonFieldType.STRING).optional().description("쿠폰 이름"),
+                                fieldWithPath("couponDiscountRate").type(JsonFieldType.NUMBER).optional().description("쿠폰 할인율")
                         )
                 ));
     }
