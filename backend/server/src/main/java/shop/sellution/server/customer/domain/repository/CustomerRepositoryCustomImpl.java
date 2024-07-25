@@ -14,7 +14,9 @@ import shop.sellution.server.customer.domain.type.CustomerSortType;
 import shop.sellution.server.customer.domain.type.CustomerType;
 import shop.sellution.server.customer.dto.CustomerSearchCondition;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static shop.sellution.server.customer.domain.QCustomer.customer;
@@ -75,9 +77,12 @@ public class CustomerRepositoryCustomImpl implements CustomerRepositoryCustom {
         return type != null ? customer.type.eq(type) : null;
     }
 
-    private BooleanExpression betweenDates(DateTimePath<LocalDateTime> datePath, LocalDateTime startDate, LocalDateTime endDate) {
+    private BooleanExpression betweenDates(DateTimePath<LocalDateTime> datePath, LocalDate startDate, LocalDate endDate) {
         if (startDate != null && endDate != null) {
-            return datePath.between(startDate, endDate);
+            return datePath.between(
+                    startDate.atStartOfDay(),
+                    endDate.atTime(LocalTime.MAX)
+            );
         }
         return null;
     }

@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useAuthStore from '@/client/store/stores/useAuthStore';
+import useUserInfoStore from '@/client/store/stores/useUserInfoStore';
+import { login } from '@/client/utility/apis/login/loginApi';
 
-export const useLogin = ({ login }) => {
+export const useLogin = () => {
   const navigate = useNavigate();
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const setName = useUserInfoStore((state) => state.setName);
 
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
@@ -28,7 +33,7 @@ export const useLogin = ({ login }) => {
       setError('');
       setIsLoading(true);
       try {
-        const success = await login(username, password);
+        const success = await login(username, password, setAccessToken, setName);
         if (success) {
           navigate('/home'); // 로그인 성공 시 홈으로 이동
         } else {

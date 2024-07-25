@@ -1,10 +1,8 @@
 import { useLogin } from '@/client/business/login/useLogin';
-import { useAuth } from '@/client/business/common/useAuth';
 import { LogoIcon } from '@/client/utility/assets/LoginIcons';
 import { EyeOnIcon, EyeOffIcon } from '@/client/utility/assets/Icons';
 
 const LoginComponent = () => {
-  const { login } = useAuth();
   const {
     username,
     password,
@@ -15,7 +13,7 @@ const LoginComponent = () => {
     setPassword,
     togglePasswordVisibility,
     handleSubmit,
-  } = useLogin({ login });
+  } = useLogin();
 
   return (
     <div className='w-full min-h-screen bg-gray-100 flex items-center justify-center p-4 flex-1'>

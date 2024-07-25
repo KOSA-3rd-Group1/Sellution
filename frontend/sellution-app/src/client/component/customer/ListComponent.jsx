@@ -1,32 +1,38 @@
-import { useCustomerList } from '@/client/business/customer/useCustomerList';
-import { EventBtn } from '@/client/layout/common/Button';
-import { AddCustomerIcon, BulkCustomerIcon, SendIcon } from '@/client/utility/assets/Icons';
-import Table from '@/client/layout/common/Table';
+import TableCustomer from '@/client/layout/common/table/TableCustomer';
 import Pagination from '@/client/layout/common/Pagination';
 import DateRange from '@/client/layout/common/DateRange';
-import { useAuth } from '../../business/common/useAuth';
-import { useMove } from '../../business/common/useMove';
+import { EventBtn, ResetBtn } from '@/client/layout/common/Button';
+import { useMove } from '@/client/business/common/useMove';
+import { useCustomerList } from '@/client/business/customer/useCustomerList';
+import { AddCustomerIcon, BulkCustomerIcon, SendIcon } from '@/client/utility/assets/Icons';
 
 const ListComponent = () => {
-  const { AuthBaseInstance } = useAuth();
-  const { page, size, refresh, moveToList, moveToDetailForCustomer, moveToAdd, moveToPagination } =
-    useMove();
+  const {
+    queryParams,
+    page,
+    size,
+    refresh,
+    moveToDetailForCustomer,
+    moveToAdd,
+    moveToPagination,
+    updateQueryParameter,
+  } = useMove();
+
   const {
     HEADERS,
     ROW_HEIGHT,
     data,
+    totalPages,
     totalDataCount,
     tableState,
     dateRangeValue,
-    totalPages,
     setTableState,
     handleChangeDateRangeValue,
     handleBulkCustomerManagementBtn,
     handleSendCouponBtn,
-    // handleAddCustomerBtn,
-    // handleRowEvent,
-  } = useCustomerList({ AuthBaseInstance, page, size, refresh });
-  console.log(page, size, totalPages);
+    handleFilterReset,
+  } = useCustomerList({ queryParams, page, size, refresh, updateQueryParameter });
+
   return (
     <div className='relative w-full h-full justify-between'>
       <section className='absolute w-full h-full flex flex-col'>
@@ -37,7 +43,7 @@ const ListComponent = () => {
           />
         </div>
         <div className='flex-grow overflow-hidden'>
-          <Table
+          <TableCustomer
             HEADERS={HEADERS}
             ROW_HEIGHT={ROW_HEIGHT}
             data={data}
@@ -56,6 +62,7 @@ const ListComponent = () => {
                 <EventBtn Icon={AddCustomerIcon} label={'회원 등록'} onClick={moveToAdd} />
               </div>
             }
+            ResetBtn={<ResetBtn label={'초기화'} onClick={handleFilterReset} />}
           />
         </div>
         <div className='h-12 flex-none flex justify-end items-end '>

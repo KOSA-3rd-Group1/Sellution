@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '@/client/business/common/useAuth';
 import { useNavbar } from '@/client/business/layout/useNavbar';
 import {
   HambergerIcon,
@@ -10,8 +9,7 @@ import {
 } from '@/client/utility/assets/Icons';
 
 const NavbarComponent = (props) => {
-  const { logout } = useAuth();
-  const { name, isOpen, dropdownRef, toggleDropdown, selectLogoutBtn } = useNavbar({ logout });
+  const { name, isOpen, dropdownRef, toggleDropdown, selectLogoutBtn } = useNavbar();
 
   return (
     <nav className='w-full h-full flex justify-between items-center bg-navbarBackground'>
