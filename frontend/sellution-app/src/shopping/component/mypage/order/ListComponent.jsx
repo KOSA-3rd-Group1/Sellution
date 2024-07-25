@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams , useNavigate  } from 'react-router-dom';
 import { format } from 'date-fns';
 import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx";
 
 const ListComponent = () => {
   const [orders, setOrders] = useState([]);
-  const { customerId } = useParams();
+  const { clientName,customerId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -22,6 +23,19 @@ const ListComponent = () => {
 
     fetchOrders();
   }, [customerId]);
+
+  const handleOrderDetailClick = (order) => {
+    let url;
+    if (order.type === 'ONETIME') {
+      url = `/shopping/${clientName}/onetime/order-completed/${order.orderId}`;
+    } else if (order.type === 'MONTH_SUBSCRIPTION' || order.type === 'COUNT_SUBSCRIPTION') {
+      url = `/shopping/${clientName}/subscription/order-completed/${order.orderId}`;
+    } else {
+      console.error('알 수 없는 주문 타입:', order.type);
+      return;
+    }
+    navigate(url);
+  };
 
   const formatDate = (dateString) => {
     return format(new Date(dateString), 'yyyy.MM.dd (HH시 mm분)');
@@ -76,10 +90,12 @@ const ListComponent = () => {
       <MenuHeaderNav title={'주문 목록'} />
       {/*<h1 className='text-2xl font-bold mb-4'>주문 목록</h1>*/}
       {orders.map((order) => (
-        <div key={order.orderCode} className='mb-6 p-4 border rounded shadow'>
+        <div key={order.orderId} className='mb-6 p-4 border rounded shadow'>
           <div className='flex justify-between items-center gap-8 mb-2'>
             <span className='font-bold '>{formatDate(order.orderCreatedAt)}</span>
-            <button className='text-gray-500 text-sm'>주문상세 &gt;</button>
+            <button className='text-gray-500 text-sm' onClick={() => handleOrderDetailClick(order)}>
+              주문상세 &gt;
+            </button>
           </div>
 
           <div className='grid grid-cols-2 gap-4 text-sm'>
@@ -92,9 +108,13 @@ const ListComponent = () => {
             <div>
               {order.type === 'MONTH_SUBSCRIPTION' ? (
                 <>
-                  구독 기간 동안<br />결제될 총 금액
+                  구독 기간 동안
+                  <br />
+                  결제될 총 금액
                 </>
-              ) : '결제금액'}
+              ) : (
+                '결제금액'
+              )}
             </div>
             <div className='flex items-center'>{order.totalPrice}원</div>
             <div>주문상태</div>

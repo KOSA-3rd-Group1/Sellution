@@ -148,7 +148,7 @@ const OrderCompletedComponent = () => {
 
   const calculateTotalProductPrice = () => {
     return orderData.orderedProductList.reduce((total, product) => {
-      return total + Math.round(product.price * product.count * (1 - product.discountRate / 100));
+      return total + Math.round(product.price * product.count);
     }, 0);
   };
 
