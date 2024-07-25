@@ -33,10 +33,11 @@ const useHome = () => {
       }
     };
 
-    if (clientName != name) {
+    if (clientName.toLowerCase() != name.toLowerCase()) {
       fetchData(clientName, setAllCompanyData); // 데이터 요청 함수 호출
     } else {
       setData({ ...getAllCompanyData() });
+      console.log('렌더링된 데이터', getAllCompanyData());
     }
   }, [clientName]); // 빈 배열을 두어 한 번만 실행되도록 설정 -> url의 clientName이 변경될 때마다 재 요청
 

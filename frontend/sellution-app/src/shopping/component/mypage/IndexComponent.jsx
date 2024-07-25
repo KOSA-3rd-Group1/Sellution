@@ -9,12 +9,13 @@ import {
   SimplePasswordIcon,
 } from '@/shopping/utility/assets/Icons.jsx';
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import MenuHeaderNav from './../../layout/MenuHeaderNav';
 import HomeFooter from './../../layout/HomeFooter';
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 
 const IndexComponent = () => {
-  const { customerId } = useParams(); // useParams를 사용하여 customerId 가져오기
+  const customerId = useUserInfoStore((state) => state.id);
   const [customerInfo, setCustomerInfo] = useState({ name: '', customerType: '' });
 
   useEffect(() => {

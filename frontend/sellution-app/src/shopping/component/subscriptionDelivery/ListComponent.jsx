@@ -1,13 +1,13 @@
 import useList from '../../business/subscriptionDelivery/useList';
 import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import MenuCategoryHeaderNav from '../../layout/MenuCategoryHeaderNav';
-import useClientName from '../../business/layout/useClientName';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import { Link, useNavigate } from 'react-router-dom';
 
 const ListComponent = () => {
   const navigate = useNavigate();
   const { subscriptionProductList, isLoading, subscriptionCategoryList, fetchProducts } = useList();
-  const { clientName } = useClientName();
+  const clientName = useCompanyInfoStore((state) => state.name);
   const moveToSubscriptionCartPage = () => {
     navigate(`/shopping/${clientName}/subscription/cart`);
   };

@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import useClientName from './../../business/layout/useClientName';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import useSubscriptionCartStore from './../../store/stores/useSubscriptionCartStore';
 import MenuHeaderNav from '../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
@@ -19,7 +19,7 @@ const CartComponent = () => {
   const { updateOrderList } = useOrderListStore();
 
   const navigate = useNavigate();
-  const clientName = useClientName();
+  const clientName = useCompanyInfoStore((state) => state.name);
   const allSelected =
     subscriptionCart.length > 0 && selectedSubscriptionItems.length === subscriptionCart.length;
   const customerId = useParams();

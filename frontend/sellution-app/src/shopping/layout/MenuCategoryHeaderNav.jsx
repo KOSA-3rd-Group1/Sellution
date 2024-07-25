@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import useClient from '../business/layout/useClientName';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import Category from '../layout/partials/Category';
 import { Link, useNavigate } from 'react-router-dom';
 
 const MenuCategoryHeaderNav = ({ title, categoryList, onCategoryClick }) => {
-  const { clientName } = useClient();
+  const clientName = useCompanyInfoStore((state) => state.name);
   const navigate = useNavigate();
   const handleBack = () => {
     navigate(-1);

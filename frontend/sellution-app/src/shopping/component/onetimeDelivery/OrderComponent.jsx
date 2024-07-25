@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import MenuHeaderNav from '../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import CouponSelection from '../../layout/order/CouponSelection';
@@ -9,11 +9,14 @@ import OrderListLayout from '../../layout/OrderListLayout';
 import useOrderListStore from './../../store/stores/useOrderListStore';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 
 const OrderComponent = () => {
   const navigate = useNavigate();
   const { orderList } = useOrderListStore();
-  const { clientName, customerId } = useParams();
+  const clientName = useCompanyInfoStore((state) => state.name);
+  const customerId = useUserInfoStore((state) => state.id);
   const location = useLocation();
 
   // 목록 선택

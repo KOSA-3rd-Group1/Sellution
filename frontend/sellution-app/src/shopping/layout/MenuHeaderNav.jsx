@@ -1,8 +1,8 @@
-import useClient from '../business/layout/useClientName';
 import { Link, useNavigate } from 'react-router-dom';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 
 const MenuHeaderNav = ({ title }) => {
-  const { clientName } = useClient();
+  const clientName = useCompanyInfoStore((state) => state.name);
   const navigate = useNavigate();
   const handleBack = () => {
     navigate(-1);

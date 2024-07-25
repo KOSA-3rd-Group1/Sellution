@@ -1,9 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
-import useClientName from './../../business/layout/useClientName';
 import useOnetimeCartStore from './../../store/stores/useOnetimeCartStore';
 import MenuHeaderNav from '../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import useOrderListStore from './../../store/stores/useOrderListStore';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 
 const CartComponent = () => {
   const {
@@ -19,7 +19,7 @@ const CartComponent = () => {
   const { updateOrderList } = useOrderListStore();
 
   const navigate = useNavigate();
-  const clientName = useClientName();
+  const clientName = useCompanyInfoStore((state) => state.name);
   const allSelected = onetimeCart.length > 0 && selectedOnetimeItems.length === onetimeCart.length;
 
   const addToOrderList = () => {

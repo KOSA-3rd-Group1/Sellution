@@ -3,20 +3,22 @@ import useOrderListStore from './../../store/stores/useOrderListStore';
 import OneButtonFooterLayout from './../../layout/OneButtonFooterLayout';
 import OrderListLayout from '../../layout/OrderListLayout';
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import DeliverySelection from '../../layout/order/DeliverySelection';
 import SubscriptionDeliverySetting from '../../layout/order/SubscriptionDeliverySetting';
 import CouponSelection from '../../layout/order/CouponSelection';
 import PaymentEstimation from '../../layout/order/PaymentEstimation';
 import PaymentMethodSelection from '../../layout/order/PaymentMethodSelection';
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 
 const OrderComponent = () => {
   const navigate = useNavigate();
   const { orderList } = useOrderListStore();
-  const { clientName, customerId: paramCustomerId } = useParams();
+  const clientName = useCompanyInfoStore((state) => state.name);
+  const customerId = useUserInfoStore((state) => state.id);
   const location = useLocation();
-  const customerId = paramCustomerId || '1'; // customerId가 undefined이면 '1'로 설정
   //목록 선택
   const listToShow = orderList;
 
