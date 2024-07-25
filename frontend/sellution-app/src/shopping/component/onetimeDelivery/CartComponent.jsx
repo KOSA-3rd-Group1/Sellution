@@ -175,7 +175,7 @@ const CartComponent = () => {
           {/* 목록 끝 */}
         </section>
       </div>
-      <OneButtonFooterLayout onClick={addToOrderList} footerText={'결제하기'} />
+      <OneButtonFooterLayout onClick={addToOrderList} footerText={'구매하기'} />
     </>
   );
 };
