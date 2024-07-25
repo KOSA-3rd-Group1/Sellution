@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { addContentTypeInterceptor } from '@/client/utility/axios/Interceptors';
+import { addContentTypeInterceptor } from '@/shopping/utility/axios/Interceptors';
 
 const BaseInstance = (contentType = 'JSON') => {
   let instance = axios.create({

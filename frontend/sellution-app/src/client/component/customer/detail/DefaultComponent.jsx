@@ -1,10 +1,21 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import { InfoInput } from '@/client/layout/common/Input';
+import { useMove } from '@/client/business/common/useMove';
 import { useCustomerDefault } from '@/client/business/customer/detail/useCustomerDefault';
 
 const DefaultComponent = () => {
+  const {
+    page,
+    size,
+    refresh,
+    moveToPath,
+    moveToDetailForCustomer,
+    moveToAdd,
+    moveToPagination,
+    updateQueryParameter,
+  } = useMove();
   const { data, handleChangeInputValue, moveList, handleSaveData, handleDeleteData } =
-    useCustomerDefault();
+    useCustomerDefault({ moveToPath });
 
   return (
     <div className='relative w-full h-full justify-between'>

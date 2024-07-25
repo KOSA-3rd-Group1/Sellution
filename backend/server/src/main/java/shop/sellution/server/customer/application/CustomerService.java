@@ -1,8 +1,12 @@
 package shop.sellution.server.customer.application;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import shop.sellution.server.customer.dto.CustomerSearchCondition;
 import shop.sellution.server.customer.dto.request.*;
 import shop.sellution.server.customer.dto.resonse.FindCustomerInfoRes;
+import shop.sellution.server.customer.dto.resonse.FindCustomerRes;
 
 public interface CustomerService {
 
@@ -26,6 +30,9 @@ public interface CustomerService {
 
     // 회원 비밀번호 변경
     void changeCustomerPassword(ChangeCustomerPasswordReq request, HttpServletRequest httpRequest);
+
+    // 회원 필터링 조회
+    Page<FindCustomerRes> findAllCustomerByCompanyId(CustomerSearchCondition condition, Pageable pageable);
 
     // 마이페이지 회원 정보 조회
     FindCustomerInfoRes getCustomerInfo(Long customerId);
