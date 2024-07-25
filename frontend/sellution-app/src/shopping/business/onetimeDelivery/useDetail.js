@@ -34,6 +34,7 @@ const useDetail = () => {
   };
 
   const { onetimeCart, updateOnetimeCart } = useOnetimeCartStore();
+  const [isDetailPageModalVisible, setIsDetailPageModalVisible] = useState(false);
   const addToOnetimeCart = () => {
     //stock대신 quantity를 가진 newItem 객체 만들어서, 장바구니에 넣기
     if (itemCountToAdd > 0) {
@@ -52,8 +53,8 @@ const useDetail = () => {
       console.log('단건배송 장바구니 목록: ', onetimeCart);
       setItemCountToAdd(0); //장바구니에 넣어준 다음에 수량 0으로 다시 변경 >> 장바구니 버튼 누르면 0으로 초기화 되는 것
       //modal창 띄우기
-      // setIsDetailPageModalVisible(true);
-      navigate(`/shopping/${clientName}/onetime`);
+      setIsDetailPageModalVisible(true);
+      //navigate(`/shopping/${clientName}/onetime`);
     }
   };
 
@@ -74,6 +75,13 @@ const useDetail = () => {
       setItemCountToAdd(0);
       navigate(`/shopping/${clientName}/onetime/order`);
     }
+  };
+
+  const moveToOnetimeList = () => {
+    navigate(`/shopping/${clientName}/onetime`);
+  };
+  const moveToOnetimeCartPage = () => {
+    navigate(`/shopping/${clientName}/onetime/cart`);
   };
 
   useEffect(() => {
@@ -107,6 +115,9 @@ const useDetail = () => {
     handleDirectOrder,
     handleSlideChange,
     addToOnetimeCart,
+    isDetailPageModalVisible,
+    moveToOnetimeList,
+    moveToOnetimeCartPage,
   };
 };
 export default useDetail;

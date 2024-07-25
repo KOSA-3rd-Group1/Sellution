@@ -5,8 +5,9 @@ import DetailOption from '../../layout/partials/DetailOption';
 import OneButtonFooterLayout from './../../layout/OneButtonFooterLayout';
 import TwoButtonFooterLayout from '../../layout/TwoButtonFooterLayout';
 import DetailInformationLayout from '../../layout/DetailInformationLayout';
-const DetailComponent = () => {
+import TwoButtonModal from '../../layout/partials/TwoButtonModal';
 
+const DetailComponent = () => {
   const {
     activeSlide,
     setActiveSlide,
@@ -22,6 +23,9 @@ const DetailComponent = () => {
     handleDirectOrder,
     handleSlideChange,
     addToSubscriptionCart,
+    isDetailPageModalVisible,
+    moveToSubscriptionList,
+    moveToSubscriptionCartPage,
   } = useDetail();
 
   if (isLoading) {
@@ -54,6 +58,11 @@ const DetailComponent = () => {
           <TwoButtonFooterLayout
             addToCart={addToSubscriptionCart}
             handleDirectOrder={handleDirectOrder}
+          />
+          <TwoButtonModal
+            isDetailPageModalVisible={isDetailPageModalVisible}
+            onClickLeft={moveToSubscriptionList}
+            onClickRight={moveToSubscriptionCartPage}
           />
         </>
       ) : (
