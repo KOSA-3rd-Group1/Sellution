@@ -13,6 +13,9 @@ const OrderComponent = () => {
       <MenuHeaderNav title={'주문 / 결제'} />
       <div className='flex flex-col items-center w-full'>
         <OrderListLayout listToShow={listToShow} />
+        {/* 배송지 */}
+        {/*  */}
+        {/*  */}
       </div>
       <OneButtonFooterLayout footerText={'결제하기'} />
     </>
