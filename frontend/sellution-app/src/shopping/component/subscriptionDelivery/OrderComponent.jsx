@@ -95,7 +95,7 @@ const OrderComponent = () => {
   };
 
   const handleAddPaymentMethod = () => {
-    navigate(`/shopping/${clientName}/ordersheet/setting/payment`);
+    navigate(`/shopping/${clientName}/my/customerId/payment/add`);
   };
 
   const handleCheckChange = (id) => {
@@ -206,6 +206,7 @@ const OrderComponent = () => {
       console.error('Error creating order:', error);
       alert('주문 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
     }
+
   };
 
   //api

@@ -82,7 +82,7 @@ const IndexComponent = () => {
             {
               component: <OrderDetailIcon className='w-6 h-6 mr-3 text-gray-400' />,
               text: '주문내역 조회',
-              link: `orders`,
+              link: `order`,
             },
             {
               component: <ProfileIcon className='w-6 h-6 mr-3 text-gray-400' />,

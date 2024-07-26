@@ -30,7 +30,7 @@ const subscriptionDeliveryRouter = () => {
       element: <OrderPage />,
     },
     {
-      path: 'order-completed',
+      path: 'order-completed/:orderId',
       element: <OrderCompletedPage />,
     },
     {
