@@ -25,12 +25,29 @@ const OrderComponent = () => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   // 결제정보
-  const [paymentMethods, setPaymentMethods] = useState([
-    { id: 1, bank: 'KB국민은행', accountNumber: '123*****987', isChecked: true },
-  ]);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+
   //쿠폰정보
   const [coupons, setCoupons] = useState([]);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
+
+  //결제금액
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [productDiscountTotal, setProductDiscountTotal] = useState(0); //상품 할인 금액
+  const [couponDiscountTotal, setCouponDiscountTotal] = useState(0); // 쿠폰 할인 금액
+  const [finalPrice, setFinalPrice] = useState(0);
+
+  const BANK_CODES = {
+    '004': '국민은행',
+    '090': '카카오뱅크',
+    '088': '신한은행',
+    '020': '우리은행',
+    '003': '기업은행',
+    '092': '토스뱅크',
+    '071': '우체국은행',
+    '011': '농협은행',
+    '081': '하나은행',
+  };
 
   const handleAddressChange = () => {
     navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
@@ -46,6 +63,12 @@ const OrderComponent = () => {
       localStorage.removeItem('selectedAddress');
     }
   };
+  const handleCouponChange = (e) => {
+    const selected = coupons.find((coupon) => coupon.id === e.target.value);
+    console.log('쿠폰: ', selected);
+    setSelectedCoupon(selected);
+    calculateTotalPrice();
+  };
 
   const handleAddPaymentMethod = () => {
     navigate(`/shopping/${clientName}/ordersheet/setting/payment`);
@@ -54,20 +77,69 @@ const OrderComponent = () => {
   const handleCheckChange = (id) => {
     setPaymentMethods(
       paymentMethods.map((method) =>
-        method.id === id ? { ...method, isChecked: !method.isChecked } : method,
+        method.id === id ? { ...method, isChecked: true } : { ...method, isChecked: false },
       ),
     );
   };
 
-  const handleDeleteAccount = (id) => {
+  const handleDeleteAccount = async (id) => {
     if (window.confirm('해당 계좌를 삭제하시겠습니까?')) {
-      setPaymentMethods(paymentMethods.filter((method) => method.id !== id));
+      try {
+        await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/accounts/${id}`);
+        setPaymentMethods(paymentMethods.filter((method) => method.id !== id));
+        alert('계좌가 성공적으로 삭제되었습니다.');
+      } catch (error) {
+        console.error('계좌 삭제에 실패했습니다:', error);
+        alert('계좌 삭제에 실패했습니다. 다시 시도해주세요.');
+      }
     }
   };
+  // 계좌번호 마스킹 함수
+  const maskAccountNumber = (accountNumber) => {
+    if (accountNumber.length <= 4) return accountNumber;
+    return '*'.repeat(accountNumber.length - 4) + accountNumber.slice(-4);
+  };
 
-  const handleCouponChange = (e) => {
-    const selected = coupons.find((coupon) => coupon.id === e.target.value);
-    setSelectedCoupon(selected);
+  // 결제금액 계산
+  const calculateTotalPrice = () => {
+    const total = listToShow.reduce((sum, item) => sum + item.cost * item.quantity, 0);
+    const productDiscountTotal = listToShow.reduce(
+      (sum, item) => sum + (item.cost - item.discountedPrice) * item.quantity,
+      0,
+    );
+    const couponDiscountTotal = selectedCoupon
+      ? Math.floor(
+          listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
+            (selectedCoupon.couponDiscountRate / 100),
+        )
+      : 0;
+
+    console.log('total price', total);
+    console.log('product discount total', productDiscountTotal);
+    console.log('coupon discount total', couponDiscountTotal);
+
+    setTotalPrice(total);
+    setProductDiscountTotal(productDiscountTotal);
+    setCouponDiscountTotal(couponDiscountTotal);
+    setFinalPrice(total - productDiscountTotal - couponDiscountTotal);
+  };
+
+  //유효성 검사 함수
+  const validateForm = () => {
+    return (
+      selectedAddress !== null &&
+      selectedAddress !== '' &&
+      paymentMethods.some((method) => method.isChecked)
+    );
+  };
+
+  const isOrderButtonDisabled = !validateForm();
+
+  //주문 데이터 생성 (결제하기 버튼)
+  const handleOrderClick = () => {
+    if (isOrderButtonDisabled) return;
+    // 주문 데이터 생성 및 처리 로직
+    navigate(`/shopping/${clientName}/subscription/order-completed`);
   };
 
   //api
@@ -95,12 +167,37 @@ const OrderComponent = () => {
       console.error('Error fetching coupons:', error);
     }
   };
+
+  const fetchAccounts = async () => {
+    if (!customerId) {
+      console.error('customerId가 없습니다.');
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/accounts/customers/${customerId}`,
+      );
+      const accounts = response.data.content.map((account) => ({
+        id: account.accountId,
+        bank: BANK_CODES[account.bankCode] || '알 수 없는 은행',
+        accountNumber: maskAccountNumber(account.accountNumber),
+        bankCode: account.bankCode,
+        isChecked: false,
+      }));
+      console.log('fetch한 account: ', customerId, accounts);
+      setPaymentMethods(accounts);
+    } catch (error) {
+      console.error('계좌 정보를 가져오는 데 실패했습니다:', error);
+    }
+  };
   //useEffect
   useEffect(() => {
     console.log('OrderComponent mounted');
     const fetchData = async () => {
       await fetchAddresses();
       await fetchCoupons();
+      await fetchAccounts();
       checkForSavedAddress();
     };
     fetchData();
@@ -115,6 +212,11 @@ const OrderComponent = () => {
       setSelectedAddress(location.state.selectedAddress);
     }
   }, [location]);
+
+  useEffect(() => {
+    calculateTotalPrice();
+    console.log('계산 변경: ', selectedCoupon);
+  }, [selectedCoupon, orderList]);
 
   return (
     <>
@@ -137,7 +239,12 @@ const OrderComponent = () => {
         />
         <div className='seperator w-full h-4 bg-gray-100'></div>
         {/* 결제 예상 금액 */}
-        <PaymentEstimation />
+        <PaymentEstimation
+          totalPrice={totalPrice}
+          productDiscountTotal={productDiscountTotal}
+          couponDiscountTotal={couponDiscountTotal}
+          finalPrice={finalPrice}
+        />
         <div className='seperator w-full h-4 bg-gray-100'></div>
         {/* 결제 정보 */}
         <PaymentMethodSelection
@@ -147,7 +254,11 @@ const OrderComponent = () => {
           handleAddPaymentMethod={handleAddPaymentMethod}
         />
       </div>
-      <OneButtonFooterLayout footerText={'결제하기'} />
+      <OneButtonFooterLayout
+        footerText={'결제하기'}
+        onClick={handleOrderClick}
+        isDisabled={isOrderButtonDisabled}
+      />
     </>
   );
 };
