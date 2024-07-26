@@ -12,15 +12,10 @@ import shop.sellution.server.address.domain.Address;
 import shop.sellution.server.address.domain.AddressRepository;
 import shop.sellution.server.category.domain.Category;
 import shop.sellution.server.category.domain.CategoryRepository;
-import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.DayOption;
-import shop.sellution.server.company.domain.MonthOption;
-import shop.sellution.server.company.domain.WeekOption;
-import shop.sellution.server.company.domain.repository.CompanyRepository;
-import shop.sellution.server.company.domain.repository.DayOptionRepository;
-import shop.sellution.server.company.domain.repository.MonthOptionRepository;
-import shop.sellution.server.company.domain.repository.WeekOptionRepository;
+import shop.sellution.server.company.domain.*;
+import shop.sellution.server.company.domain.repository.*;
 import shop.sellution.server.company.domain.type.DayValueType;
+import shop.sellution.server.company.domain.type.ImagePurposeType;
 import shop.sellution.server.company.domain.type.SellType;
 import shop.sellution.server.company.domain.type.SubscriptionType;
 import shop.sellution.server.contractcompany.domain.ContractCompany;
@@ -69,6 +64,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private final ProductImageRepository productImageRepository;
     private final EventRepository eventRepository;
     private final OrderCreationService orderCreationService;
+    private final CompanyImageRepository companyImageRepository;
 
 
     private Company 포켓샐러드;
@@ -151,7 +147,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .name("PocketSalad")
                 .shopUrl("https://sellution/shopping/pocketsalad")
                 .isShopVisible(DisplayStatus.Y)
-                .isAutoApproved(DisplayStatus.N)
+                .isAutoApproved(DisplayStatus.Y)
                 .isNewMemberEvent(DisplayStatus.N)
                 .serviceType(DeliveryType.BOTH)
                 .subscriptionType(SubscriptionType.MONTH)
@@ -165,6 +161,33 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .mainPromotion2Content("너랑!  나랑!")
                 .build();
         companyRepository.save(포켓샐러드);
+
+        CompanyImage logo = CompanyImage.builder()
+                .company(포켓샐러드)
+                .imageUrl("https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/setting/%ED%8F%AC%EC%BA%A3%EC%83%90%EB%9F%AC%EB%93%9C_%EB%A1%9C%EA%B3%A0.png")
+                .purposeOfUse(ImagePurposeType.LOGO)
+                .build();
+        companyImageRepository.save(logo);
+        CompanyImage promotion1 = CompanyImage.builder()
+                .company(포켓샐러드)
+                .imageUrl("https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/setting/%EB%A9%94%EC%9D%B8%ED%94%84%EB%A1%9C%EB%AA%A8%EC%85%98.jfif")
+                .purposeOfUse(ImagePurposeType.PROMOTION)
+                .build();
+        companyImageRepository.save(promotion1);
+        CompanyImage promotion2 = CompanyImage.builder()
+                .company(포켓샐러드)
+                .imageUrl("https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/setting/%EB%A9%94%EC%9D%B8%ED%94%84%EB%A1%9C%EB%AA%A8%EC%85%982.jfif")
+                .purposeOfUse(ImagePurposeType.PROMOTION)
+                .build();
+        companyImageRepository.save(promotion2);
+        CompanyImage promotion3 = CompanyImage.builder()
+                .company(포켓샐러드)
+                .imageUrl("https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/setting/%EB%A9%94%EC%9D%B8%ED%94%84%EB%A1%9C%EB%AA%A8%EC%85%983.jfif")
+                .purposeOfUse(ImagePurposeType.PROMOTION)
+                .build();
+        companyImageRepository.save(promotion3);
+
+
     }
 
     private void createContractCompany() {
@@ -717,7 +740,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private void createOrder() {
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 10; i++) {
             Customer customer = customers.get(random.nextInt(customers.size()));
             OrderType orderType = OrderType.values()[random.nextInt(OrderType.values().length)];
 

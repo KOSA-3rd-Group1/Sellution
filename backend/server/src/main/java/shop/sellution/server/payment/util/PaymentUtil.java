@@ -24,9 +24,12 @@ import java.util.stream.Collectors;
 public class PaymentUtil {
 
     // 결제해야하는 금액 계산 메소드 -> 배송 시작일 ~ 다음 결제일까지의 배송 횟수를 계산하여 결제해야하는 금액을 계산한다.
-    public int calculatePayCost(Order order, LocalDate deliveryStartDate) {
+    public PayInfo calculatePayCost(Order order, LocalDate deliveryStartDate) {
         return switch (order.getType()) {
-            case ONETIME, COUNT_SUBSCRIPTION -> order.getTotalPrice(); // 단건 혹은 횟수정기주문이라면 전체 금액을 결제해야한다.
+            case ONETIME, COUNT_SUBSCRIPTION -> PayInfo.builder()
+                    .payAmount(order.getTotalPrice()) // 단건 혹은 횟수정기주문이라면 전체 금액을 결제해야한다.
+                    .deliveryCount(null) // 단건, 횟수주문은 이번달 배송횟수가 필요없다.
+                    .build();
             case MONTH_SUBSCRIPTION -> { // 월정기주문이라면
                 if (order.getPaymentCount() == 0) { // 첫결제라면
 //                    LocalDate monday = order.getDeliveryStartDate().with(TemporalAdjusters.next(DayOfWeek.MONDAY));
@@ -35,12 +38,18 @@ public class PaymentUtil {
                     log.info("monday : {}, endDate : {}", monday,endDate);
                     DeliveryInfo deliveryInfo = calculateDeliveryInfo(monday, endDate, order.getWeekOption().getWeekValue(), getDeliveryDays(order.getSelectedDays()));
                     log.info("deliveryInfo : {}", deliveryInfo);
-                    yield order.getPerPrice() * deliveryInfo.getTotalDeliveryCount();
+                    yield PayInfo.builder()
+                            .payAmount(order.getPerPrice() * deliveryInfo.getTotalDeliveryCount()) // 이번달 결제금액
+                            .deliveryCount(deliveryInfo.getTotalDeliveryCount()) // 이번달 배송횟수
+                            .build();
                 }else{
                     LocalDate startDate = order.getDeliveryStartDate().plusMonths(order.getPaymentCount()+1).plusDays(1);
                     LocalDate endDate = order.getDeliveryStartDate().plusMonths(order.getPaymentCount()+2);
                     DeliveryInfo deliveryInfo = calculateDeliveryInfo(startDate, endDate, order.getWeekOption().getWeekValue(), getDeliveryDays(order.getSelectedDays()));
-                    yield order.getPerPrice() * deliveryInfo.getTotalDeliveryCount();
+                    yield PayInfo.builder()
+                            .payAmount(order.getPerPrice() * deliveryInfo.getTotalDeliveryCount()) // 이번달 결제금액
+                            .deliveryCount(deliveryInfo.getTotalDeliveryCount()) // 이번달 배송횟수
+                            .build();
                 }
             }
         };

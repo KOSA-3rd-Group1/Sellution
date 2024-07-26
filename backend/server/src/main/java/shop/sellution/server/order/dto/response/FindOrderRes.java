@@ -2,10 +2,10 @@ package shop.sellution.server.order.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import shop.sellution.server.address.dto.response.FindAddressSummaryRes;
 import shop.sellution.server.company.domain.type.DayValueType;
 import shop.sellution.server.customer.dto.resonse.FindCustomerSummaryRes;
-import shop.sellution.server.event.domain.CouponEvent;
 import shop.sellution.server.order.domain.Order;
 import shop.sellution.server.order.domain.OrderedProduct;
 import shop.sellution.server.order.domain.SelectedDay;
@@ -67,6 +67,11 @@ public class FindOrderRes {
 
     private Integer couponDiscountRate;
 
+    private Integer paymentCount;
+
+    private LocalDate nextPaymentDate;
+
+    private Integer thisMonthDeliveryCount;
 
 
 
@@ -98,6 +103,9 @@ public class FindOrderRes {
                 .couponEventId(order.getCouponEvent() != null ? order.getCouponEvent().getId() : null)
                 .couponName(order.getCouponEvent() != null ? order.getCouponEvent().getCouponName() : null)
                 .couponDiscountRate(order.getCouponEvent() != null ? order.getCouponEvent().getCouponDiscountRate() : null)
+                .thisMonthDeliveryCount(order.getThisMonthDeliveryCount())
+                .nextPaymentDate(order.getNextPaymentDate())
+                .paymentCount(order.getPaymentCount())
                 .build();
     }
 

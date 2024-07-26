@@ -266,7 +266,8 @@ public class OrderServiceImpl implements OrderService {
                                 Collectors.toList()
                         )
                 ));
+        FindOrderRes findOrderRes = FindOrderRes.fromEntities(order, orderedProducts, order.getSelectedDays(), productImageMap);
 
-        return FindOrderRes.fromEntities(order, orderedProducts, order.getSelectedDays(), productImageMap);
+        return findOrderRes;
     }
 }

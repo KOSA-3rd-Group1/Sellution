@@ -196,4 +196,16 @@ public class SchedulerService {
         log.info("*************** 스케줄러 종료 *************** ");
 
     }
+
+    //    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul") // 자정이여야함
+    @Transactional
+    public void regularOrderCancel() { // 배송당일이 됬는데 승인이 안된 주문은 취소한다.
+        log.info("*************** 스케줄러 시작 *************** ");
+        log.info("*************** 배송당일인데 승인이 안된 주문은 취소 상태로 변경 *************** ");
+        int count = orderRepository.updateHoldOrderStatusToCancel(LocalDate.now());
+        log.info("*************** 취소로 변경된 주문 : {}건 *************** ", count);
+        log.info("*************** 스케줄러 종료 *************** ");
+
+    }
+
 }

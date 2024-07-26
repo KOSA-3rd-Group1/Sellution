@@ -154,7 +154,7 @@ public class OrderCreationService {
                 .totalDeliveryCount(deliveryInfo.getTotalDeliveryCount())
                 .remainingDeliveryCount(deliveryInfo.getTotalDeliveryCount())
                 .build();
-        order.setNextPaymentDate(getNextPaymentDate(order));
+//        order.setNextPaymentDate(getNextPaymentDate(order));
         order.setTotalPrice(order.getPerPrice()*order.getTotalDeliveryCount());
         log.info("생성된 주문 배송시작일: {}", order.getDeliveryStartDate());
         Order savedOrder = orderRepository.save(order);
