@@ -322,7 +322,7 @@ const OrderCompletedComponent = () => {
   const totalProductPrice = calculateTotalProductPrice();
   const totalDiscountAmount = calculateTotalDiscountAmount();
   const couponDiscountAmount = calculateCouponDiscountAmount(totalProductPrice);
-  const finalTotalPrice = totalProductPrice - couponDiscountAmount - totalDiscountAmount;
+  const finalTotalPrice = orderData.totalPrice;
 
   return (
     <div className='max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg'>

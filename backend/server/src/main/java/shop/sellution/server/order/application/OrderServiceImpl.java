@@ -1,5 +1,6 @@
 package shop.sellution.server.order.application;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
+import shop.sellution.server.company.domain.type.DayValueType;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.event.domain.EventRepository;
@@ -18,22 +20,28 @@ import shop.sellution.server.order.domain.repository.OrderedProductRepository;
 import shop.sellution.server.order.domain.type.DeliveryStatus;
 import shop.sellution.server.order.domain.type.OrderStatus;
 import shop.sellution.server.order.dto.OrderSearchCondition;
+import shop.sellution.server.order.dto.request.CalculateReq;
 import shop.sellution.server.order.dto.request.CancelOrderReq;
+import shop.sellution.server.order.dto.response.CalculateRes;
 import shop.sellution.server.order.dto.response.FindOrderRes;
 import shop.sellution.server.payment.application.PaymentCancelService;
 import shop.sellution.server.payment.application.PaymentService;
 import shop.sellution.server.payment.domain.PaymentHistory;
 import shop.sellution.server.payment.domain.repository.PaymentHistoryRepository;
 import shop.sellution.server.payment.dto.request.PaymentReq;
+import shop.sellution.server.payment.util.PaymentUtil;
 import shop.sellution.server.product.domain.ProductImage;
 import shop.sellution.server.product.domain.ProductImageRepository;
 import shop.sellution.server.product.domain.ProductRepository;
 import shop.sellution.server.product.dto.ProductImageSummary;
 import shop.sellution.server.sms.application.SmsService;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static shop.sellution.server.global.exception.ExceptionCode.*;
@@ -56,6 +64,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final OrderedProductRepository orderedProductRepository;
     private final EventRepository eventRepository;
+    private final PaymentUtil paymentUtil;
 
     // 특정 회원의 주문 목록 조회
     @Override
@@ -269,5 +278,58 @@ public class OrderServiceImpl implements OrderService {
         FindOrderRes findOrderRes = FindOrderRes.fromEntities(order, orderedProducts, order.getSelectedDays(), productImageMap);
 
         return findOrderRes;
+    }
+
+    @Override
+    public CalculateRes calculatePrice(CalculateReq calculateReq) {
+        Set<DayOfWeek> days = calculateReq.getSelectedDays().stream()
+                .map(DayValueType::changeToDayOfWeek).collect(Collectors.toSet());
+        LocalDate startDate = calculateReq.getStartDate();
+        LocalDate oneMonth = startDate.plusMonths(1);
+        LocalDate subEndDate = startDate.plusMonths(calculateReq.getMonthOptionValue());
+
+        DeliveryInfo oneMonthInfo = calculateCost(startDate, oneMonth, calculateReq.getWeekOptionValue(), days);
+        DeliveryInfo subInfo = calculateCost(startDate, subEndDate, calculateReq.getWeekOptionValue(), days);
+
+        return CalculateRes.builder()
+                .deliveryNextDate(oneMonthInfo.getNextDeliveryDate())
+                .thisMonthPrice(oneMonthInfo.getTotalDeliveryCount() * calculateReq.getPerPrice())
+                .thisMonthDeliveryCount(oneMonthInfo.getTotalDeliveryCount())
+                .totalPrice(subInfo.getTotalDeliveryCount() * calculateReq.getPerPrice())
+                .deliveryEndDate(subInfo.getDeliveryEndDate())
+                .totalDeliveryCount(subInfo.getTotalDeliveryCount())
+                .build();
+    }
+    public DeliveryInfo calculateCost(LocalDate startDate, LocalDate endDate, int weekly, Set<DayOfWeek> deliveryDaysSet) {
+        int totalDeliveryCount = 0;
+        LocalDate currentDate = startDate;
+        LocalDate nextDeliveryDate = null;
+        LocalDate deliveryEndDate = null;
+
+        while (!currentDate.isAfter(endDate)) {
+            if (deliveryDaysSet.contains(currentDate.getDayOfWeek()) &&
+                    (currentDate.getDayOfWeek().getValue() % weekly == 0)) {
+                totalDeliveryCount++;
+                deliveryEndDate = currentDate;
+                if (nextDeliveryDate == null) {
+                    nextDeliveryDate = currentDate;
+                }
+            }
+            currentDate = currentDate.plusDays(1);
+        }
+
+        return new DeliveryInfo(totalDeliveryCount, nextDeliveryDate, deliveryEndDate);
+    }
+    @Getter
+    static class DeliveryInfo {
+        private int totalDeliveryCount;
+        private LocalDate nextDeliveryDate;
+        private LocalDate deliveryEndDate;
+
+        public DeliveryInfo(int totalDeliveryCount, LocalDate nextDeliveryDate, LocalDate deliveryEndDate) {
+            this.totalDeliveryCount = totalDeliveryCount;
+            this.nextDeliveryDate = nextDeliveryDate;
+            this.deliveryEndDate = deliveryEndDate;
+        }
     }
 }

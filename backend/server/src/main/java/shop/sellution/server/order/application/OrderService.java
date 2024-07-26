@@ -3,7 +3,9 @@ package shop.sellution.server.order.application;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.sellution.server.order.dto.OrderSearchCondition;
+import shop.sellution.server.order.dto.request.CalculateReq;
 import shop.sellution.server.order.dto.request.CancelOrderReq;
+import shop.sellution.server.order.dto.response.CalculateRes;
 import shop.sellution.server.order.dto.response.FindOrderRes;
 
 public interface OrderService {
@@ -25,4 +27,8 @@ public interface OrderService {
 
     // 주문 상세조회
     FindOrderRes findOrder(Long orderId);
+
+    // 정기주문(월)을 위한 계산로직
+    CalculateRes calculatePrice(CalculateReq calculateReq);
+
 }

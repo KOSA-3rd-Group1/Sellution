@@ -271,27 +271,26 @@ public class OrderCreationService {
         return orderedProducts.stream()
                 .mapToInt(product -> {
                     double originProductPrice = product.getPrice();
-                    double totalDiscountRate = 0;
+                    double productPrice = product.getPrice();
+                    double productDiscountPrice = 0;
+                    double eventDiscountPrice =0;
 
                     log.info("원래 상품 가격 : {}", originProductPrice);
 
                     if (product.getDiscountRate() != 0) {
-                        totalDiscountRate += product.getDiscountRate();
-                        log.info("상품 할인율 : {}%", product.getDiscountRate());
+                        productDiscountPrice = originProductPrice * (product.getDiscountRate() / 100.0);
+                        productPrice = originProductPrice - productDiscountPrice;
+                        log.info("상품 할인율에 의한 할인가 : {} , 할인 후 가격 {}", productDiscountPrice, productPrice);
                     }
 
                     if (couponEvent != null) {
-                        totalDiscountRate += couponEvent.getCouponDiscountRate();
-                        log.info("쿠폰 할인율 : {}%", couponEvent.getCouponDiscountRate());
+                        eventDiscountPrice = productPrice * (couponEvent.getCouponDiscountRate() / 100.0);
+                        productPrice = productPrice - eventDiscountPrice;
+                        log.info("쿠폰 할인율에 의한 할인가 : {}, 할인 후 가격 {}", eventDiscountPrice, productPrice);
                     }
 
-                    double discountAmount = originProductPrice * (totalDiscountRate / 100.0);
-                    double finalPrice = originProductPrice - discountAmount;
 
-                    log.info("총 할인율 : {}%, 할인 금액 : {}, 최종 상품 가격 : {}, 갯수 : {}",
-                            totalDiscountRate, discountAmount, finalPrice, product.getCount());
-
-                    return (int) Math.round(finalPrice * product.getCount());
+                    return (int) Math.round(productPrice * product.getCount());
                 })
                 .sum();
     }

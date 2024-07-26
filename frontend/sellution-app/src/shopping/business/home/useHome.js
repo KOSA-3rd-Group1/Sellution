@@ -10,6 +10,7 @@ const useHome = () => {
   const [data, setData] = useState(null); // 데이터 상태 추가
 
   const { clientName } = useParams(); // url 상 clientName <- 회사명
+  console.log("클라이언트 이름 ", clientName);
 
   // localstorage에서 관리되는 회사 정보
   // 추후 회사 정보가 필요한 작업에서 회사의 정보가 없다면 home으로 돌려보내야 합니다.
