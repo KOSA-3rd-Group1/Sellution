@@ -184,7 +184,7 @@ public class ProductServiceImpl implements ProductService {
 
     private void saveProductImage(Product product, MultipartFile imageFile, ProductImageType type) throws IOException {
         if (imageFile != null && !imageFile.isEmpty()) {
-            String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product");
+            String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product", type);
             Optional<ProductImage> existingImageOpt = productImageRepository.findByProductAndPurposeOfUse(product, type);
             if (existingImageOpt.isPresent()) {
                 ProductImage existingImage = existingImageOpt.get();
@@ -213,7 +213,7 @@ public class ProductServiceImpl implements ProductService {
 
             List<ProductImage> newImages = new ArrayList<>();
             for (MultipartFile imageFile : imageFiles) {
-                String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product");
+                String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product",type);
                 ProductImage newImage = ProductImage.builder()
                         .product(product)
                         .imageUrl(imageUrl)

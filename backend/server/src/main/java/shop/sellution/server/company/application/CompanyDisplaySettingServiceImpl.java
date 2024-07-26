@@ -49,7 +49,7 @@ public class CompanyDisplaySettingServiceImpl implements CompanyDisplaySettingSe
 
         // Logo Image 처리
         if (logoFile != null && !logoFile.isEmpty()) {
-            String logoUrl = s3Service.uploadFile(logoFile, company.getCompanyId(), "setting");
+            String logoUrl = s3Service.uploadFile(logoFile, company.getCompanyId(), "setting", ImagePurposeType.LOGO);
             updateLogoImage(company, logoUrl);
         }
 
@@ -57,7 +57,7 @@ public class CompanyDisplaySettingServiceImpl implements CompanyDisplaySettingSe
         if (promotionFiles != null && !promotionFiles.isEmpty()) {
             List<String> promotionUrls = new ArrayList<>();
             for (MultipartFile file : promotionFiles) {
-                String url = s3Service.uploadFile(file, company.getCompanyId(), "setting");
+                String url = s3Service.uploadFile(file, company.getCompanyId(), "setting",ImagePurposeType.PROMOTION);
                 promotionUrls.add(url);
             }
             updatePromotionImages(company, promotionUrls);
