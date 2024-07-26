@@ -20,17 +20,17 @@ const EventModal = ({ isOpen, onClose, onClick, onCloseForToday }) => {
           </svg>
         </button>
         <div className='text-center'>
-          <h1 className='text-2xl font-bold mb-4 text-brandOrange'>전 상품 최대 무제한 21% 쿠폰</h1>
-          <p className='text-gray-600 mb-6'>중복 쿠폰으로 추가 할인 받아보세요.</p>
+          <h1 className='text-[1.2rem] font-bold mb-4 text-brandOrange'>전 상품 최대 무제한 21% 쿠폰</h1>
+          <p className='text-gray-600 mb-6 text-[0.9rem]'>중복 쿠폰으로 추가 할인 받아보세요.</p>
           <div className='flex justify-center space-x-4'>
             <button
-              className='text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300'
+              className='text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-100 transition duration-300 text-[0.8rem]'
               onClick={onCloseForToday}
             >
               오늘 하루 그만보기
             </button>
             <button
-              className='bg-brandOrange text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition duration-300'
+              className='bg-brandOrange text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition duration-300 text-[0.8rem]'
               onClick={onClick}
             >
               이벤트 보기
