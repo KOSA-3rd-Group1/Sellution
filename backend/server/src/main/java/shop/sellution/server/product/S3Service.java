@@ -54,32 +54,32 @@ public class S3Service {
         String filePath = String.format("%s/%s/%s", companyName, folderType, fileName);
 
 
-        MultipartFile resizedFile;
-        switch (purpose) {
-            case "logo":
-                resizedFile = resizeImage(fileName, fileFormatName, file, 300, 100); // 3:1 ratio
-                break;
-            case "promotion":
-                resizedFile = resizeImage(fileName, fileFormatName, file, 300, 300); // Square
-                break;
-            case "product":
-                switch (getProductImageType(fileName)) {
-                    case THUMBNAIL:
-                        resizedFile = resizeImage(fileName, fileFormatName, file, 300, 300); // Square
-                        break;
-                    case LIST:
-                        resizedFile = resizeImage(fileName, fileFormatName, file, 300, 300); // Square
-                        break;
-                    case DETAILS:
-                        resizedFile = file; // No resizing for detail images
-                        break;
-                    default:
-                        resizedFile = file;
-                }
-                break;
-            default:
-                resizedFile = file; // No resizing for other purposes
-        }
+//        MultipartFile resizedFile;
+//        switch (purpose) {
+//            case "logo":
+//                resizedFile = resizeImage(fileName, fileFormatName, file, 300, 100); // 3:1 ratio
+//                break;
+//            case "promotion":
+//                resizedFile = resizeImage(fileName, fileFormatName, file, 300, 300); // Square
+//                break;
+//            case "product":
+//                switch (getProductImageType(fileName)) {
+//                    case THUMBNAIL:
+//                        resizedFile = resizeImage(fileName, fileFormatName, file, 300, 300); // Square
+//                        break;
+//                    case LIST:
+//                        resizedFile = resizeImage(fileName, fileFormatName, file, 300, 300); // Square
+//                        break;
+//                    case DETAILS:
+//                        resizedFile = file; // No resizing for detail images
+//                        break;
+//                    default:
+//                        resizedFile = file;
+//                }
+//                break;
+//            default:
+//                resizedFile = file; // No resizing for other purposes
+//        }
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(file.getContentType());
