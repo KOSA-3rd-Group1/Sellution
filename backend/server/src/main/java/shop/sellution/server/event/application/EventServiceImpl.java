@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.sellution.server.auth.dto.CustomUserDetails;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.customer.domain.Customer;
@@ -15,12 +17,15 @@ import shop.sellution.server.event.domain.type.EventState;
 import shop.sellution.server.event.dto.request.SaveEventReq;
 import shop.sellution.server.event.dto.request.UpdateEventReq;
 import shop.sellution.server.event.dto.response.FindEventRes;
+import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +39,9 @@ public class EventServiceImpl implements EventService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<FindEventRes> findAllEvents(Long companyId, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+    public Page<FindEventRes> findAllEvents(LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long companyId =  principal.getCompanyId();
         Company company = getCompanyById(companyId);
         // 필터링 x
         if(startDate == null && endDate == null){
@@ -48,7 +55,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void saveEvent(Long companyId, SaveEventReq saveEventReq) {
+    public void saveEvent(SaveEventReq saveEventReq) {
+        CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long companyId =  principal.getCompanyId();
         //당일은 startdate가 불가능하게
         LocalDate now = LocalDate.now();
         LocalDate tomorrow = now.plusDays(1);
@@ -102,7 +111,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Page<FindEventRes> findCoupons(Long customerId, Pageable pageable) {
+    public Page<FindEventRes> findCoupons(Pageable pageable) {
+        CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long customerId =  principal.getUserId();
         //event 종료기간이 지나지 않고 isUsed가 N인 쿠폰
         LocalDate now = LocalDate.now();
         return eventRepositoryCustom.findCouponsByCustomer(customerId, now, pageable)
@@ -110,12 +121,15 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void saveCoupon(Long customerId, Long eventId) {
+    public void saveCoupon(Long eventId) {
         //쿠폰 다운로드 로직
         //1. 해당 이벤트가 종료되었는지 확인
         //2. 해당 이벤트가 삭제되었는지 확인
         //3. 해당 이벤트가 이미 다운로드 되었는지 확인
         //4. 쿠폰 다운로드
+        CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
+        Long customerId = userDetails.getUserId();
+        System.out.println("customerId >>>>> " + customerId);
         LocalDate now = LocalDate.now();
         CouponEvent event = getEventById(eventId);
         if(now.isAfter(event.getEventEndDate()) || now.isBefore(event.getEventStartDate())){
@@ -149,6 +163,16 @@ public class EventServiceImpl implements EventService {
     private Customer getCustomerById(Long customerId) {
         return customerRepository.findById(customerId)
                 .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_CUSTOMER));
+    }
+
+    private CustomUserDetails getCustomUserDetailsFromSecurityContext() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("principal >>>>> " + principal);
+        if (principal instanceof CustomUserDetails) {
+            return (CustomUserDetails) principal;
+        } else {
+            throw new AuthException(NOT_FOUND_USER);
+        }
     }
 }
 

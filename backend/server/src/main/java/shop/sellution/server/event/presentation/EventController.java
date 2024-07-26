@@ -7,8 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import shop.sellution.server.auth.dto.CustomUserDetails;
 import shop.sellution.server.event.application.EventService;
 import shop.sellution.server.event.dto.request.SaveEventReq;
 import shop.sellution.server.event.dto.request.UpdateEventReq;
@@ -28,15 +30,15 @@ public class EventController {
                                                             @RequestParam(required = false) LocalDate endDate,
                                                             Pageable pageable) {
         //company id 받을 예정
-        Long companyId = 1L;
-        Page<FindEventRes> result = eventService.findAllEvents(companyId, startDate, endDate, pageable);
+        //Long companyId = 1L;
+        Page<FindEventRes> result = eventService.findAllEvents(startDate, endDate, pageable);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping
     public ResponseEntity<String> saveEvent(@Valid @RequestBody SaveEventReq saveEventReq) {
-        Long companyId = 1L;
-        eventService.saveEvent(companyId, saveEventReq);
+        //Long companyId = 1L;
+        eventService.saveEvent(saveEventReq);
         return ResponseEntity.ok("success");
     }
     @PutMapping("/{eventId}")
@@ -62,16 +64,17 @@ public class EventController {
     @GetMapping("/coupons")
     public ResponseEntity<Page<FindEventRes>> findCoupons(Pageable pageable) {
         //회원 id 받을 예정
-        Long customerId = 1L;
-        Page<FindEventRes> result = eventService.findCoupons(customerId, pageable);
+        //Long customerId = 1L;
+        Page<FindEventRes> result = eventService.findCoupons(pageable);
         return ResponseEntity.ok(result);
     }
     //회원이 쿠폰 다운로드
     @PostMapping("/{eventId}/coupons")
     public ResponseEntity<String> saveCoupon(@PathVariable Long eventId) {
         //회원 id 받을 예정
-        Long customerId = 1L;
-        eventService.saveCoupon(customerId, eventId);
+        //Long customerId = 1L;
+        System.out.println("범인:"+eventId);
+        eventService.saveCoupon(eventId);
         return ResponseEntity.ok("success");
     }
 
