@@ -727,7 +727,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         }
 
         for (DayValueType type : DayValueType.values()) {
-            if (type.name().equals("화")) continue; // 화요일 제외 월 ~ 금
+            if (type.name().equals("TUE")) continue; // 화요일 제외 월 ~ 금
             DayOption dayOption = DayOption.builder()
                     .company(포켓샐러드)
                     .dayValue(type)

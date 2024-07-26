@@ -14,6 +14,7 @@ import shop.sellution.server.event.dto.request.SaveEventReq;
 import shop.sellution.server.event.dto.request.UpdateEventReq;
 import shop.sellution.server.event.dto.response.FindEventRes;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -21,12 +22,14 @@ import java.util.List;
 @RequestMapping("/events")
 public class EventController {
     private final EventService eventService;
-
+    //고객 시점~
     @GetMapping
-    public ResponseEntity<Page<FindEventRes>> findAllEvents(Pageable pageable) {
+    public ResponseEntity<Page<FindEventRes>> findAllEvents(@RequestParam(required = false) LocalDate startDate,
+                                                            @RequestParam(required = false) LocalDate endDate,
+                                                            Pageable pageable) {
         //company id 받을 예정
         Long companyId = 1L;
-        Page<FindEventRes> result = eventService.findAllEvents(companyId, pageable);
+        Page<FindEventRes> result = eventService.findAllEvents(companyId, startDate, endDate, pageable);
         return ResponseEntity.ok(result);
     }
 
@@ -47,7 +50,7 @@ public class EventController {
         eventService.deleteEvent(eventId);
         return ResponseEntity.ok("success");
     }
-    //~고객 시점
+    //회원 시점~
     //회원이 사이트에서 현재 진행중인 쿠폰 이벤트 조회
     @GetMapping("/company/{companyId}")
     public ResponseEntity<List<FindEventRes>> findAllOngoingEvents(@PathVariable Long companyId) {

@@ -34,9 +34,17 @@ public class EventServiceImpl implements EventService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<FindEventRes> findAllEvents(Long companyId, Pageable pageable) {
-        return eventRepository.findAllByCompanyCompanyIdAndIsDeletedFalse(companyId, pageable)
+    public Page<FindEventRes> findAllEvents(Long companyId, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        Company company = getCompanyById(companyId);
+        // 필터링 x
+        if(startDate == null && endDate == null){
+            return eventRepository.findAllByCompanyCompanyIdAndIsDeletedFalse(companyId, pageable)
+                    .map(FindEventRes::fromEntity);
+        }
+        // 필터링 o
+        return eventRepositoryCustom.findEventsByCompanyAndDate(company, startDate, endDate, pageable)
                 .map(FindEventRes::fromEntity);
+
     }
 
     @Override

@@ -10,7 +10,7 @@ const DUMMY = {
   isInUse: '미이용중',
 };
 
-export const useCustomerDefault = () => {
+export const useCustomerDefault = ({ moveToPath }) => {
   const { customerId } = useParams();
   const navigate = useNavigate();
 
@@ -29,9 +29,10 @@ export const useCustomerDefault = () => {
 
   // 목록으로 이동
   const moveList = () => {
-    navigate({
-      pathname: '/customer',
-    });
+    moveToPath('/customer');
+    // navigate({
+    //   pathname: '/customer',
+    // });
   };
 
   // 변경사항 적용

@@ -3,9 +3,11 @@ package shop.sellution.server.client.application;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.sellution.server.auth.dto.CustomUserDetails;
 import shop.sellution.server.client.domain.Client;
 import shop.sellution.server.client.domain.ClientRepository;
 import shop.sellution.server.client.dto.request.*;
@@ -58,6 +60,13 @@ public class ClientServiceImpl implements ClientService {
     @Transactional(readOnly = true)
     public void checkClientUsername(CheckClientUsernameReq request) {
         validateUniqueUsername(request.getUsername());
+    }
+
+    @Override
+    public String getCurrentUsername() {
+        CustomUserDetails customUserDetails = getCustomUserDetailsFromSecurityContext();
+        Client client = findClientByUsername(customUserDetails.getUsername());
+        return client.getName();
     }
 
     @Override
@@ -265,5 +274,16 @@ public class ClientServiceImpl implements ClientService {
     // 비밀번호 시도 횟수 증가
     private void incrementAttemptCount(String redisKey, Long userId, int attemptCount) {
         redisTemplate.opsForValue().set(redisKey, userId + ":" + (attemptCount + 1), Duration.ofMinutes(TOKEN_VALID_MINUTES));
+    }
+
+    // securitycontextholder에서 정보 가져오기
+    private CustomUserDetails getCustomUserDetailsFromSecurityContext() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof CustomUserDetails) {
+            return (CustomUserDetails) principal;
+        } else {
+            throw new AuthException(NOT_FOUND_CLIENT);
+        }
     }
 }

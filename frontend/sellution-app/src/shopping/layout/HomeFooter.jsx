@@ -7,8 +7,11 @@ import {
   MypageIcon,
   CartIcon,
 } from '../utility/assets/Icons';
+import useAuthStore from '@/shopping/store/stores/useAuthStore';
 
 const HomeFooter = () => {
+  const accessToken = useAuthStore((state) => state.accessToken);
+  console.log(accessToken);
   const { clientName } = useClientName();
   const { customerId } = useParams();
   return (
@@ -35,7 +38,11 @@ const HomeFooter = () => {
         <p className='text-brandOrange text-xs font-bold pt-1'>단건주문</p>
       </Link>
       <Link
-        to={`/shopping/${clientName}/my/${customerId}`}
+        to={
+          accessToken === null || accessToken === ''
+            ? `/shopping/${clientName}/login`
+            : `/shopping/${clientName}/my/${customerId}`
+        }
         className='flex-1 bg-white flex flex-col justify-center items-center relative'
       >
         <MypageIcon className='w-7 h-7 fill-current text-brandOrange stroke-brandOrange stroke-[10]' />

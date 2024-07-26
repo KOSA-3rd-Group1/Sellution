@@ -1,17 +1,20 @@
 package shop.sellution.server.company.presentation;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import shop.sellution.server.company.application.CompanyDisplaySettingServiceImpl;
 import shop.sellution.server.company.application.CompanySaleSettingServiceImpl;
+import shop.sellution.server.company.application.CompanyServiceImpl;
 import shop.sellution.server.company.application.CompanyUrlSettingServiceImpl;
 import shop.sellution.server.company.dto.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 //@RequestMapping("/sellsolution")
@@ -19,11 +22,13 @@ public class CompanyController {
     private final CompanyUrlSettingServiceImpl clientCompanyService;
     private final CompanyDisplaySettingServiceImpl clientCompanyDisplayService;
     private final CompanySaleSettingServiceImpl clientCompanySaleService;
+    private final CompanyServiceImpl companyService;
 
-    public CompanyController(CompanyUrlSettingServiceImpl clientCompanyService, CompanyDisplaySettingServiceImpl clientCompanyDisplayService, CompanySaleSettingServiceImpl clientCompanySaleService) {
+    public CompanyController(CompanyUrlSettingServiceImpl clientCompanyService, CompanyDisplaySettingServiceImpl clientCompanyDisplayService, CompanySaleSettingServiceImpl clientCompanySaleService, CompanyServiceImpl companyService) {
         this.clientCompanyService = clientCompanyService;
         this.clientCompanyDisplayService = clientCompanyDisplayService;
         this.clientCompanySaleService = clientCompanySaleService;
+        this.companyService = companyService;
     }
 
     @GetMapping("/url-setting/{companyId}")
@@ -70,10 +75,9 @@ public class CompanyController {
         return ResponseEntity.ok().build();
     }
 
-
-
-
-
-
-
+    @GetMapping("/shopping-find-companyId/{companyName}")
+    public ResponseEntity<Map<String, FindCompanyInfoRes>> getCompanyInfo(@PathVariable String companyName) {
+        FindCompanyInfoRes findCompanyInfo = companyService.findCompanyId(companyName);
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("data", findCompanyInfo));
+    }
 }

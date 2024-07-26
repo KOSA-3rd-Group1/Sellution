@@ -63,4 +63,33 @@ public class EventRepositoryImpl implements EventRepositoryCustom{
         return new PageImpl<>(res, pageable, total != null ? total : 0L );
     }
 
+    @Override
+    public Page<CouponEvent> findEventsByCompanyAndDate(Company company, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        QCouponEvent couponEvent = QCouponEvent.couponEvent;
+
+        List<CouponEvent> res = queryFactory
+                .select(couponEvent)
+                .from(couponEvent)
+                .where(
+                        couponEvent.company.eq(company)
+                                .and(couponEvent.isDeleted.isFalse())
+                                .and(couponEvent.eventStartDate.loe(endDate))
+                                .and(couponEvent.eventEndDate.goe(startDate))
+                )
+                .fetch();
+
+        Long total = queryFactory
+                .select(couponEvent.count())
+                .from(couponEvent)
+                .where(
+                        couponEvent.company.eq(company)
+                                .and(couponEvent.isDeleted.isFalse())
+                                .and(couponEvent.eventStartDate.loe(startDate))
+                                .and(couponEvent.eventEndDate.goe(endDate))
+                )
+                .fetchOne();
+        return new PageImpl<>(res, pageable, total != null ? total : 0L );
+
+    }
+
 }

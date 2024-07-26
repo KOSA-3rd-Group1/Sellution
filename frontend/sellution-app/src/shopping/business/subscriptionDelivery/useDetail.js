@@ -29,6 +29,7 @@ const useDetail = () => {
   };
 
   const { subscriptionCart, updateSubscriptionCart } = useSubscriptionCartStore();
+  const [isDetailPageModalVisible, setIsDetailPageModalVisible] = useState(false);
   const addToSubscriptionCart = () => {
     if (itemCountToAdd > 0) {
       const newItem = {
@@ -45,8 +46,8 @@ const useDetail = () => {
       updateSubscriptionCart(newItem);
       console.log('정기배송 장바구니 목록: ', subscriptionCart);
       setItemCountToAdd(0);
-      //setIsDetailPageModalVisible(true);
-      navigate(`/shopping/${clientName}/subscription`);
+      setIsDetailPageModalVisible(true);
+      //navigate(`/shopping/${clientName}/subscription`);
     }
   };
 
@@ -72,6 +73,13 @@ const useDetail = () => {
   const handleSlideChange = (index) => {
     setActiveSlide(index + 1); // setActiveSlide는 1부터 시작하는 인덱스를 사용하므로 +1 해줍니다.
     setCurrentImageIndex(index);
+  };
+
+  const moveToSubscriptionList = () => {
+    navigate(`/shopping/${clientName}/subscription`);
+  };
+  const moveToSubscriptionCartPage = () => {
+    navigate(`/shopping/${clientName}/subscription/cart`);
   };
 
   useEffect(() => {
@@ -107,6 +115,9 @@ const useDetail = () => {
     addToSubscriptionCart,
     handleDirectOrder,
     handleSlideChange,
+    isDetailPageModalVisible,
+    moveToSubscriptionList,
+    moveToSubscriptionCartPage,
   };
 };
 export default useDetail;

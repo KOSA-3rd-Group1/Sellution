@@ -34,7 +34,6 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-
         // 사용자 요청에서 username, password, role, companyId 추출
         String companyId = request.getParameter("companyId") == null ? "0" : request.getParameter("companyId");
         String username = request.getParameter("role") + ":" + obtainUsername(request) + ":" + companyId;
@@ -74,8 +73,6 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
         CookieUtil.addCookie(response, "refresh", refreshToken, (int) (JWTUtil.REFRESH_TOKEN_EXPIRE / 1000)); // refreshToken는 쿠키에 저장
 
         response.setStatus(HttpStatus.OK.value());
-
-
     }
 
     // 로그인 실패 시 실행하는 메소드

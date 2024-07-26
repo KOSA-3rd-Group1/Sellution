@@ -1,9 +1,11 @@
 package shop.sellution.server.client.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import shop.sellution.server.client.domain.type.PermissionType;
 import shop.sellution.server.global.annotation.validation.ValidId;
 import shop.sellution.server.global.annotation.validation.ValidPassword;
@@ -13,8 +15,10 @@ import java.util.Set;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class SaveClientReq {
 
+    @NotNull
     private Long companyId;
 
     @NotBlank
