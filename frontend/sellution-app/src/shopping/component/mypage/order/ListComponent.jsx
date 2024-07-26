@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams , useNavigate  } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -6,7 +6,7 @@ import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx";
 
 const ListComponent = () => {
   const [orders, setOrders] = useState([]);
-  const { clientName,customerId } = useParams();
+  const { clientName, customerId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {

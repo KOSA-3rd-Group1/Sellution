@@ -1,7 +1,6 @@
 import useHome from '@/shopping/business/home/useHome.js';
 import LogoHeaderNav from '../../layout/LogoHeaderNav';
 import HomeFooter from '../../layout/HomeFooter';
-import EventComponent from './EventComponent';
 import EventModal from '../../layout/EventModal';
 const HomeComponent = () => {
   const defaultImages = [

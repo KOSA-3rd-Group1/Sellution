@@ -24,7 +24,7 @@ const EventComponent = () => {
       <div className='w-full min-h-screen bg-white flex flex-col items-center px-4 py-12'>
         <div className='max-w-4xl w-full flex flex-col items-center'>
           <div className='text-center mb-12'>
-            <p className='text-xl md:text-5xl font-extrabold text-black mb-4 animate-pulse'>
+            <p className='text-[1.4rem] font-extrabold text-black mb-4 animate-pulse'>
               🎉 SPECIAL COUPON EVENT 🎉
             </p>
             <p className='text-md text-black'>놓치지 마세요! 특별한 할인 기회</p>

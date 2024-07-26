@@ -5,11 +5,13 @@ import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import useOrderListStore from './../../store/stores/useOrderListStore';
 import useOnetimeCartStore from '../../store/stores/useOnetimeCartStore';
 import useAuthStore from '@/shopping/store/stores/useAuthStore';
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 
 const useDetail = () => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const navigate = useNavigate();
   const clientName = useCompanyInfoStore((state) => state.name);
+  const customerId = useUserInfoStore((state) => state.id);
   const { updateOrderListForDirectOrder } = useOrderListStore();
   const { onetimeDeliveryId } = useParams();
   const [activeSlide, setActiveSlide] = useState(1);
@@ -78,7 +80,7 @@ const useDetail = () => {
       };
       updateOrderListForDirectOrder(newItem);
       setItemCountToAdd(0);
-      navigate(`/shopping/${clientName}/onetime/order`);
+      navigate(`/shopping/${clientName}/onetime/order/${customerId}`);
     }
   };
 

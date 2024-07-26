@@ -1,10 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import axios from 'axios';
-import { KookminBankIcon, KakaoBankIcon, ShinhanBankIcon, WooriBankIcon, IBKIcon, TossBankIcon, PostBankIcon, NonghyupBankIcon, HanaBankIcon } from '@/client/utility/assets/BankIcons.jsx';
+import {
+  KookminBankIcon,
+  KakaoBankIcon,
+  ShinhanBankIcon,
+  WooriBankIcon,
+  IBKIcon,
+  TossBankIcon,
+  PostBankIcon,
+  NonghyupBankIcon,
+  HanaBankIcon,
+} from '@/client/utility/assets/BankIcons.jsx';
 import { AccountAuthCheckIcon } from '@/shopping/utility/assets/Icons.jsx';
-import OneButtonFooterLayout from "@/shopping/layout/OneButtonFooterLayout.jsx";
-import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx";
+import OneButtonFooterLayout from '@/shopping/layout/OneButtonFooterLayout.jsx';
+import MenuHeaderNav from '@/shopping/layout/MenuHeaderNav.jsx';
 
 const BANK_INFO = [
   { code: '004', name: '국민은행', icon: KookminBankIcon },
@@ -19,7 +29,7 @@ const BANK_INFO = [
 ];
 
 const AddComponent = () => {
-  const { customerId } = useParams();
+  const customerId = useUserInfoStore((state) => state.id);
   const [selectedBank, setSelectedBank] = useState(null);
   const [accountNumber, setAccountNumber] = useState('');
   const [customerName, setCustomerName] = useState('');
@@ -29,7 +39,9 @@ const AddComponent = () => {
   useEffect(() => {
     const fetchCustomerName = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/customers/${customerId}`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/customers/${customerId}`,
+        );
         setCustomerName(response.data.name);
       } catch (error) {
         console.error('Failed to fetch customer name:', error);
@@ -51,10 +63,13 @@ const AddComponent = () => {
     }
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/accounts/auth/check-account`, {
-        bankCode: selectedBank,
-        accountNumber: accountNumber
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/accounts/auth/check-account`,
+        {
+          bankCode: selectedBank,
+          accountNumber: accountNumber,
+        },
+      );
 
       if (response.data.bankHolderName === customerName) {
         setIsAuthenticated(true);
@@ -69,16 +84,16 @@ const AddComponent = () => {
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto">
+    <div className='p-4 max-w-md mx-auto'>
       <MenuHeaderNav title={'결제수단 등록'} />
       {/*<h1 className="text-2xl font-bold mb-4">결제 수단 등록</h1>*/}
 
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-2">
-          <span className="text-brandOrange mr-1">*</span>
+      <div className='mb-6'>
+        <h2 className='text-lg font-semibold mb-2'>
+          <span className='text-brandOrange mr-1'>*</span>
           은행 선택
         </h2>
-        <div className="grid grid-cols-3 gap-4">
+        <div className='grid grid-cols-3 gap-4'>
           {BANK_INFO.map((bank) => (
             <button
               key={bank.code}
@@ -87,34 +102,34 @@ const AddComponent = () => {
               }`}
               onClick={() => handleBankSelect(bank.code)}
             >
-              <bank.icon className="w-10 h-10 mb-1" />
-              <span className="text-xs">{bank.name}</span>
+              <bank.icon className='w-10 h-10 mb-1' />
+              <span className='text-xs'>{bank.name}</span>
             </button>
           ))}
         </div>
       </div>
 
       <form onSubmit={handleAccountAuth}>
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold mb-2">
-            <span className="text-brandOrange mr-1">*</span>
+        <div className='mb-4'>
+          <h2 className='text-lg font-semibold mb-2'>
+            <span className='text-brandOrange mr-1'>*</span>
             계좌 번호 입력
           </h2>
-          <div className="mb-2">
-            <label className="block text-sm font-medium text-gray-700">이름</label>
+          <div className='mb-2'>
+            <label className='block text-sm font-medium text-gray-700'>이름</label>
             <input
-              type="text"
-              className="w-full p-2 bg-gray-100 border border-gray-300 rounded"
+              type='text'
+              className='w-full p-2 bg-gray-100 border border-gray-300 rounded'
               value={customerName}
               disabled
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">계좌번호</label>
+            <label className='block text-sm font-medium text-gray-700'>계좌번호</label>
             <input
-              type="text"
-              className="w-full p-2 border border-gray-300 rounded"
-              placeholder="계좌번호를 입력해주세요."
+              type='text'
+              className='w-full p-2 border border-gray-300 rounded'
+              placeholder='계좌번호를 입력해주세요.'
               value={accountNumber}
               onChange={(e) => setAccountNumber(e.target.value)}
               required
@@ -122,14 +137,14 @@ const AddComponent = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-center">
+        <div className='flex items-center justify-center'>
           <button
-            type="submit"
-            className="bg-brandOrange text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition duration-300"
+            type='submit'
+            className='bg-brandOrange text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition duration-300'
           >
             계좌 인증하기
           </button>
-          {isAuthenticated && <AccountAuthCheckIcon className="text-green-500 w-6 h-6" />}
+          {isAuthenticated && <AccountAuthCheckIcon className='text-green-500 w-6 h-6' />}
         </div>
       </form>
 
@@ -139,7 +154,7 @@ const AddComponent = () => {
         </p>
       )}
 
-      <OneButtonFooterLayout footerText="저장"/>
+      <OneButtonFooterLayout footerText='저장' />
     </div>
   );
 };

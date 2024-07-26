@@ -4,6 +4,7 @@ import MenuHeaderNav from '../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import useOrderListStore from './../../store/stores/useOrderListStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 
 const CartComponent = () => {
   const {
@@ -20,11 +21,12 @@ const CartComponent = () => {
 
   const navigate = useNavigate();
   const clientName = useCompanyInfoStore((state) => state.name);
+  const customerId = useUserInfoStore((state) => state.id);
   const allSelected = onetimeCart.length > 0 && selectedOnetimeItems.length === onetimeCart.length;
 
   const addToOrderList = () => {
     updateOrderList(selectedOnetimeItems, onetimeCart);
-    navigate(`/shopping/${clientName}/onetime/order`);
+    navigate(`/shopping/${clientName}/onetime/order/${customerId}`);
   };
 
   return (

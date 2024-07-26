@@ -1,9 +1,10 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import useSubscriptionCartStore from './../../store/stores/useSubscriptionCartStore';
 import MenuHeaderNav from '../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import useOrderListStore from '../../store/stores/useOrderListStore';
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 
 const CartComponent = () => {
   const {
@@ -22,8 +23,8 @@ const CartComponent = () => {
   const clientName = useCompanyInfoStore((state) => state.name);
   const allSelected =
     subscriptionCart.length > 0 && selectedSubscriptionItems.length === subscriptionCart.length;
-  const customerId = useParams();
-  const addToOrderList = () => {
+    const customerId = useUserInfoStore((state) => state.id);
+    const addToOrderList = () => {
     updateOrderList(selectedSubscriptionItems, subscriptionCart);
     navigate(`/shopping/${clientName}/subscription/order/${customerId}`);
   };

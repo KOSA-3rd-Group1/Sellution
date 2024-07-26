@@ -238,7 +238,8 @@ const OrderCompletedComponent = () => {
               </span>
             </p>
             <p className='flex justify-between font-semibold text-lg border-t pt-2'>
-              <span>구독기간 결제될 총 금액</span>
+              <span>
+                구독기간 결제될 총 금액</span>
               <span className='text-brandOrange'>
                 {(orderData.totalDeliveryCount * orderData.perPrice).toLocaleString()}원
               </span>

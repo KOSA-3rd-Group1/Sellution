@@ -1,5 +1,4 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useLocation, useNavigate } from 'react-router-dom';
 import MenuHeaderNav from '../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import CouponSelection from '../../layout/order/CouponSelection';
@@ -12,18 +11,14 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
-import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
-import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 
 const OrderComponent = () => {
   const navigate = useNavigate();
   const { orderList } = useOrderListStore();
   const clientName = useCompanyInfoStore((state) => state.name);
   const customerId = useUserInfoStore((state) => state.id);
-  const clientName = useCompanyInfoStore((state) => state.name);
-  const customerId = useUserInfoStore((state) => state.id);
   const location = useLocation();
-
+  const companyId = useCompanyInfoStore((state) => state.companyId);
   // 목록 선택
   const listToShow = orderList;
   // 배송지
@@ -31,31 +26,9 @@ const OrderComponent = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   // 결제정보
   const [paymentMethods, setPaymentMethods] = useState([]);
-
-  const [paymentMethods, setPaymentMethods] = useState([]);
-
   //쿠폰정보
   const [coupons, setCoupons] = useState([]);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
-
-  //결제금액
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [productDiscountTotal, setProductDiscountTotal] = useState(0); //상품 할인 금액
-  const [couponDiscountTotal, setCouponDiscountTotal] = useState(0); // 쿠폰 할인 금액
-  const [finalPrice, setFinalPrice] = useState(0);
-
-  const BANK_CODES = {
-    '004': '국민은행',
-    '090': '카카오뱅크',
-    '088': '신한은행',
-    '020': '우리은행',
-    '003': '기업은행',
-    '092': '토스뱅크',
-    '071': '우체국은행',
-    '011': '농협은행',
-    '081': '하나은행',
-  };
-
   //결제금액
   const [totalPrice, setTotalPrice] = useState(0);
   const [productDiscountTotal, setProductDiscountTotal] = useState(0); //상품 할인 금액
@@ -94,12 +67,6 @@ const OrderComponent = () => {
     setSelectedCoupon(selected);
     calculateTotalPrice();
   };
-  const handleCouponChange = (e) => {
-    const selected = coupons.find((coupon) => coupon.id === e.target.value);
-    console.log('쿠폰: ', selected);
-    setSelectedCoupon(selected);
-    calculateTotalPrice();
-  };
 
   const handleAddPaymentMethod = () => {
     navigate(`/shopping/${clientName}/my/customerId/payment/add`);
@@ -109,12 +76,10 @@ const OrderComponent = () => {
     setPaymentMethods(
       paymentMethods.map((method) =>
         method.id === id ? { ...method, isChecked: true } : { ...method, isChecked: false },
-        method.id === id ? { ...method, isChecked: true } : { ...method, isChecked: false },
       ),
     );
   };
 
-  const handleDeleteAccount = async (id) => {
   const handleDeleteAccount = async (id) => {
     if (window.confirm('해당 계좌를 삭제하시겠습니까?')) {
       try {
@@ -169,10 +134,45 @@ const OrderComponent = () => {
   const isOrderButtonDisabled = !validateForm();
 
   //주문 데이터 생성 (결제하기 버튼)
-  const handleOrderClick = () => {
+  const handleOrderClick = async () => {
     if (isOrderButtonDisabled) return;
-    // 주문 데이터 생성 및 처리 로직
-    navigate(`/shopping/${clientName}/subscription/order-completed`);
+
+    const orderedProducts = listToShow.map((item) => ({
+      productId: item.id,
+      count: item.quantity,
+      price: item.discountedPrice || item.cost,
+      discountRate: item.discountRate || 0,
+    }));
+
+    const saveOrderReq = {
+      companyId: companyId, // 회사 ID
+      addressId: selectedAddress.addressId, // 주소 ID
+      accountId: paymentMethods.find((method) => method.isChecked).id, // 결제 수단 ID
+      eventId: selectedCoupon ? selectedCoupon.id : null, // 쿠폰 ID (선택 사항)
+      monthOptionId: null, // 월 옵션 ID (선택 사항)
+      weekOptionId: null, // 주 옵션 ID (선택 사항)
+      orderType: 'ONETIME', // 주문 타입
+      totalDeliveryCount: null, // 총 배송 횟수 (선택 사항)
+      deliveryStartDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 현재 날짜로부터 3일 후
+      orderedProducts: orderedProducts, // 주문한 상품들
+      dayOptionIds: null, // 선택된 요일들 ID (선택 사항)
+    };
+
+    console.log('주문 보내는 양식: ', saveOrderReq);
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/orders/customers/${customerId}`,
+        saveOrderReq,
+      );
+      if (response.data.startsWith('success')) {
+        const savedOrderId = response.data.split('생성된 아이디 : ')[1];
+        navigate(`/shopping/${clientName}/subscription/order-completed/${savedOrderId}`);
+      }
+    } catch (error) {
+      console.error('Error creating order:', error);
+      alert('주문 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
   };
 
   //api
@@ -184,9 +184,8 @@ const OrderComponent = () => {
       setAddresses(response.data);
       if (!selectedAddress) {
         const defaultAddress = response.data.find((addr) => addr.isDefaultAddress === 'Y');
-        setSelectedAddress(defaultAddress || null);
+        setSelectedAddress(defaultAddress || response.data[0] || null);
       }
-      console.log('fetch한 주소: ', addresses);
     } catch (error) {
       console.error('Error fetching addresses:', error);
     }
@@ -225,29 +224,6 @@ const OrderComponent = () => {
     }
   };
 
-  const fetchAccounts = async () => {
-    if (!customerId) {
-      console.error('customerId가 없습니다.');
-      return;
-    }
-
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/accounts/customers/${customerId}`,
-      );
-      const accounts = response.data.content.map((account) => ({
-        id: account.accountId,
-        bank: BANK_CODES[account.bankCode] || '알 수 없는 은행',
-        accountNumber: maskAccountNumber(account.accountNumber),
-        bankCode: account.bankCode,
-        isChecked: false,
-      }));
-      console.log('fetch한 account: ', customerId, accounts);
-      setPaymentMethods(accounts);
-    } catch (error) {
-      console.error('계좌 정보를 가져오는 데 실패했습니다:', error);
-    }
-  };
   //useEffect
   useEffect(() => {
     console.log('OrderComponent mounted');
@@ -276,11 +252,6 @@ const OrderComponent = () => {
     console.log('계산 변경: ', selectedCoupon);
   }, [selectedCoupon, orderList]);
 
-  useEffect(() => {
-    calculateTotalPrice();
-    console.log('계산 변경: ', selectedCoupon);
-  }, [selectedCoupon, orderList]);
-
   return (
     <>
       <MenuHeaderNav title={'주문 / 결제'} />
@@ -302,12 +273,6 @@ const OrderComponent = () => {
         />
         <div className='seperator w-full h-4 bg-gray-100'></div>
         {/* 결제 예상 금액 */}
-        <PaymentEstimation
-          totalPrice={totalPrice}
-          productDiscountTotal={productDiscountTotal}
-          couponDiscountTotal={couponDiscountTotal}
-          finalPrice={finalPrice}
-        />
         <PaymentEstimation
           totalPrice={totalPrice}
           productDiscountTotal={productDiscountTotal}

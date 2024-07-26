@@ -22,7 +22,6 @@ const OrderComponent = () => {
   const companyId = useCompanyInfoStore((state) => state.companyId);
   //목록 선택
   const listToShow = orderList;
-
   // 배송지
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -199,15 +198,15 @@ const OrderComponent = () => {
         `${import.meta.env.VITE_BACKEND_URL}/orders/customers/${customerId}`,
         saveOrderReq,
       );
-      if (response.data === 'success') {
-        navigate(`/shopping/${clientName}/subscription/order-completed`);
+      if (response.data.startsWith('success')) {
+        const savedOrderId = response.data.split('생성된 아이디 : ')[1];
+        navigate(`/shopping/${clientName}/subscription/order-completed/${savedOrderId}`);
       }
     } catch (error) {
       console.error('Error creating order:', error);
       alert('주문 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
     }
-
-  };
+};
 
   //api
   const fetchAddresses = async () => {
