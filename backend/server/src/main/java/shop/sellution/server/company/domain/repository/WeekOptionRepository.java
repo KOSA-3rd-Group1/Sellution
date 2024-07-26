@@ -16,4 +16,6 @@ public interface WeekOptionRepository extends JpaRepository<WeekOption, Long> {
     @Modifying
     @Query("DELETE FROM WeekOption w WHERE w.company = :company")
     void deleteByCompany(Company company);
+
+    List<WeekOption> findAllByCompany(Company company);
 }
