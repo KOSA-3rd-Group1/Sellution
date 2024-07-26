@@ -17,4 +17,6 @@ public interface MonthOptionRepository extends JpaRepository<MonthOption, Long> 
     @Modifying
     @Query("DELETE FROM MonthOption m WHERE m.company = :company")
     void deleteByCompany(Company company);
+
+    List<MonthOption> findAllByCompany(Company company);
 }
