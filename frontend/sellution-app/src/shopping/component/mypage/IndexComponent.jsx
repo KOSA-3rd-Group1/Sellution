@@ -91,7 +91,7 @@ const IndexComponent = () => {
             {
               component: <SimplePasswordIcon className='w-6 h-6 mr-3 text-gray-400' />,
               text: '간편비밀번호 설정',
-              link: `auth/edit`,
+              link: `auth/sms`,
             },
           ].map((item, index) => (
             <Link key={index} to={item.link} className='block'>
