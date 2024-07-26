@@ -114,6 +114,27 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.findAllCustomerByCompanyId(condition, pageable));
     }
 
+    @PostMapping("/self")
+    public ResponseEntity<FindCustomerRes> registerCustomerFromClient(@Valid @RequestBody RegisterCustomerReq request) {
+        FindCustomerRes findCustomerRes = customerService.registerCustomerFromClient(request);
+        return ResponseEntity.status(HttpStatus.OK).body(findCustomerRes);
+    }
+
+    @GetMapping("/{customerId}")
+    public ResponseEntity<FindCustomerRes> findCustomerById(@PathVariable Long customerId) {
+        FindCustomerRes findCustomerRes = customerService.getCustomerById(customerId);
+        return ResponseEntity.status(HttpStatus.OK).body(findCustomerRes);
+    }
+
+    @PutMapping("/{customerId}")
+    public ResponseEntity<String> updateCustomer(
+            @PathVariable Long customerId,
+            @RequestBody @Valid RegisterCustomerReq request
+    ) {
+        customerService.updateCustomer(customerId, request);
+        return ResponseEntity.ok("success");
+    }
+
 
     @GetMapping("/mypage/{customerId}")
     public ResponseEntity<FindCustomerInfoRes> getCustomerInfo(@PathVariable Long customerId) {

@@ -1,21 +1,35 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import { InfoInput } from '@/client/layout/common/Input';
+import AlertModal from '@/client/layout/common/modal/AlertModal';
+import AutoCloseModal from '@/client/layout/common/modal/AutoCloseModal';
 import { useMove } from '@/client/business/common/useMove';
+import { useModal } from '@/client/business/common/useModal';
 import { useCustomerDefault } from '@/client/business/customer/detail/useCustomerDefault';
 
 const DefaultComponent = () => {
+  const { moveToPathname, moveToDefaultPath } = useMove();
   const {
-    page,
-    size,
-    refresh,
-    moveToPath,
-    moveToDetailForCustomer,
-    moveToAdd,
-    moveToPagination,
-    updateQueryParameter,
-  } = useMove();
-  const { data, handleChangeInputValue, moveList, handleSaveData, handleDeleteData } =
-    useCustomerDefault({ moveToPath });
+    alertModalState,
+    autoCloseModalState,
+    openAlertModal,
+    closeAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  } = useModal();
+  const {
+    data,
+    handleChangeInputValue,
+    moveList,
+    handleSaveData,
+    handleDeleteData,
+    checkChangeContent,
+  } = useCustomerDefault({
+    moveToPathname,
+    moveToDefaultPath,
+    openAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  });
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -29,8 +43,9 @@ const DefaultComponent = () => {
               <div className='flex-1 min-w-32'>회원명</div>
               <div className='flex-1 min-w-64'>
                 <InfoInput
-                  value={data.name || ''}
-                  onChange={(e) => handleChangeInputValue('name', e.target.value)}
+                  value={data.customerName || ''}
+                  onChange={(e) => handleChangeInputValue('customerName', e.target.value)}
+                  maxLength={50}
                 />
               </div>
             </li>
@@ -38,33 +53,34 @@ const DefaultComponent = () => {
               <div className='flex-1 min-w-32'>휴대폰 번호</div>
               <div className='flex-1 min-w-64'>
                 <InfoInput
-                  value={data.phoneNumber || ''}
-                  onChange={(e) => handleChangeInputValue('phoneNumber', e.target.value)}
+                  value={data.customerPhoneNumber || ''}
+                  onChange={(e) => handleChangeInputValue('customerPhoneNumber', e.target.value)}
+                  maxLength={11}
                 />
               </div>
             </li>
             <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
               <div className='flex-1 min-w-32'>회원 아이디</div>
               <div className='flex-1 min-w-64'>
-                <InfoInput value={data.username || ''} readOnly />
+                <InfoInput value={data.customerUsername || ''} readOnly />
               </div>
             </li>
             <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
               <div className='flex-1 min-w-32'>가입일</div>
               <div className='flex-1 min-w-64'>
-                <InfoInput value={data.createdAt || ''} readOnly />
+                <InfoInput value={data.customerCreatedAt || ''} readOnly />
               </div>
             </li>
             <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
               <div className='flex-1 min-w-32'>회원 유형</div>
               <div className='flex-1 min-w-64'>
-                <InfoInput value={data.type || ''} disabled />
+                <InfoInput value={data.customerType || ''} disabled />
               </div>
             </li>
             <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
-              <div className='flex-1 min-w-32'>이용 여부</div>
+              <div className='flex-1 min-w-32'>최신 주문 일자</div>
               <div className='flex-1 min-w-64'>
-                <InfoInput value={data.isInUse || ''} disabled />
+                <InfoInput value={data.latestDeliveryDate || '-'} disabled />
               </div>
             </li>
           </ul>
@@ -73,7 +89,24 @@ const DefaultComponent = () => {
       <FooterComponent
         btn1={{ label: '회원 삭제', event: handleDeleteData }}
         btn2={{ label: '변경사항 적용', event: handleSaveData }}
-        back={{ label: '목록으로', event: moveList }}
+        back={{ label: '목록으로', event: checkChangeContent }}
+      />
+
+      <AlertModal
+        isOpen={alertModalState.isOpen}
+        onClose={closeAlertModal}
+        onConfirm={moveList}
+        type={alertModalState.type}
+        title={alertModalState.title}
+        message={alertModalState.message}
+      />
+
+      <AutoCloseModal
+        isOpen={autoCloseModalState.isOpen}
+        onClose={closeAutoCloseModal}
+        title={autoCloseModalState.title}
+        message={autoCloseModalState.message}
+        duration={1500}
       />
     </div>
   );

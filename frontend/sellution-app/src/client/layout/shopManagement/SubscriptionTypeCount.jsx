@@ -37,6 +37,7 @@ const SubscriptionTypeCount = () => {
                 value={data?.minCount || ''}
                 onChange={(e) => handleChangeValue('minCount', e.target.value)}
                 placeholder='5'
+                maxLength={4}
               />
               <label
                 htmlFor='minValue'
@@ -56,6 +57,7 @@ const SubscriptionTypeCount = () => {
                 onChange={(e) => handleChangeValue('maxCount', e.target.value)}
                 type='text'
                 placeholder='30'
+                maxLength={4}
               />
               <label
                 htmlFor='maxValue'

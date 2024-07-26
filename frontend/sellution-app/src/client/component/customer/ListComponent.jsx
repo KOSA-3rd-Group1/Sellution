@@ -12,8 +12,7 @@ const ListComponent = () => {
     page,
     size,
     refresh,
-    moveToDetailForCustomer,
-    moveToAdd,
+    moveToPathname,
     moveToPagination,
     updateQueryParameter,
   } = useMove();
@@ -29,7 +28,7 @@ const ListComponent = () => {
     setTableState,
     handleChangeDateRangeValue,
     handleBulkCustomerManagementBtn,
-    handleSendCouponBtn,
+    // handleSendCouponBtn,
     handleFilterReset,
   } = useCustomerList({ queryParams, page, size, refresh, updateQueryParameter });
 
@@ -50,7 +49,7 @@ const ListComponent = () => {
             totalDataCount={totalDataCount}
             tableState={tableState}
             setTableState={setTableState}
-            handleRowEvent={moveToDetailForCustomer}
+            handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
                 <EventBtn
@@ -58,8 +57,12 @@ const ListComponent = () => {
                   label={'대량 회원 관리'}
                   onClick={handleBulkCustomerManagementBtn}
                 />
-                <EventBtn Icon={SendIcon} label={'쿠폰 발송'} onClick={handleSendCouponBtn} />
-                <EventBtn Icon={AddCustomerIcon} label={'회원 등록'} onClick={moveToAdd} />
+                {/* <EventBtn Icon={SendIcon} label={'쿠폰 발송'} onClick={handleSendCouponBtn} /> */}
+                <EventBtn
+                  Icon={AddCustomerIcon}
+                  label={'회원 등록'}
+                  onClick={() => moveToPathname('add')}
+                />
               </div>
             }
             ResetBtn={<ResetBtn label={'초기화'} onClick={handleFilterReset} />}

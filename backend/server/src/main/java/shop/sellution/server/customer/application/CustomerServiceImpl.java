@@ -27,7 +27,9 @@ import shop.sellution.server.sms.dto.request.SendSmsAuthNumberReq;
 import shop.sellution.server.sms.dto.request.VerifySmsAuthNumberReq;
 
 import java.time.Duration;
+import java.util.Random;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import static shop.sellution.server.global.exception.ExceptionCode.*;
 import static shop.sellution.server.global.type.SmsAuthType.*;
@@ -163,6 +165,59 @@ public class CustomerServiceImpl implements CustomerService{
         Long companyId = userDetails.getCompanyId();
         Page<Customer> customers = customerRepository.findCustomerByCompanyIdAndCondition(companyId, condition, pageable);
         return customers.map(customer -> FindCustomerRes.fromEntity(customer));
+    }
+
+    @Override
+    public FindCustomerRes registerCustomerFromClient(RegisterCustomerReq request) {
+        CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
+        Long companyId = userDetails.getCompanyId();
+
+        validateUniquePhoneNumber(companyId, request.getPhoneNumber());
+
+        String username = generateCustomerUsername(companyId); // 회원 아이디 생성
+        String password = generatePassword(); // 회원 임시 비밀번호 생성
+
+        // 아이디와 임시 비밀번호를 고객에게 문자(또는 메일)로 보내는 로직 구현 (추후)
+        System.out.println("이거 나오나?");
+        System.out.println(request.getCustomerName());
+        System.out.println(request.getPhoneNumber());
+        System.out.println(username);
+        System.out.println(password);
+        Company company = findCompanyById(companyId);
+        SaveCustomerReq customerReq = SaveCustomerReq.builder()
+                .companyId(companyId)
+                .username(username)
+                .password(password)
+                .name(request.getCustomerName())
+                .phoneNumber(request.getPhoneNumber())
+                .build();
+
+        Customer customer = createCustomer(company, customerReq);
+        Customer savedCustomer = customerRepository.save(customer);
+        return FindCustomerRes.fromEntity(savedCustomer);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public FindCustomerRes getCustomerById(Long customerId) {
+        Customer customer = findCustomerById(customerId);
+        return FindCustomerRes.fromEntity(customer);
+    }
+
+    @Override
+    public void updateCustomer(Long customerId, RegisterCustomerReq request) {
+        CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
+        Long companyId = userDetails.getCompanyId();
+
+        Customer customer = findCustomerById(customerId);
+
+        if (!customer.getPhoneNumber().equals(request.getPhoneNumber())) {
+            validateUniquePhoneNumber(companyId, request.getPhoneNumber());
+        }
+
+        customer.updatePhoneNumber(request.getPhoneNumber());
+        customer.changeName(request.getCustomerName());
+        customerRepository.save(customer);
     }
 
     // company_id로 사업체 조회
@@ -304,6 +359,59 @@ public class CustomerServiceImpl implements CustomerService{
             throw new AuthException(NOT_FOUND_USER);
         }
     }
+
+    // 회원 아이디 자동 생성
+    private String generateCustomerUsername(Long companyId) {
+        Random random = new Random();
+        String customerUsername;
+        do {
+            StringBuilder sb = new StringBuilder();
+
+            // 랜덤 문자로 시작
+            sb.append((char) (random.nextInt(26) + 'a'));
+
+            // 5-19의 random alphanumeric characters
+            int length = random.nextInt(15) + 5;
+            for (int i = 0; i < length; i++) {
+                char c;
+                if (random.nextBoolean()) {
+                    c = (char) (random.nextInt(10) + '0');
+                } else {
+                    c = (char) (random.nextInt(26) + (random.nextBoolean() ? 'a' : 'A'));
+                }
+                sb.append(c);
+            }
+
+            customerUsername = sb.toString();
+        } while (!isValidCustomerId(customerUsername) || customerRepository.existsByCompany_CompanyIdAndUsername(companyId, customerUsername));
+
+        return customerUsername;
+    }
+
+    private boolean isValidCustomerId(String customerId) {
+        return Pattern.matches("^[a-zA-Z][a-zA-Z0-9]{5,19}$", customerId);
+    }
+
+    private String generatePassword() {
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@$!%*#?&";
+
+        do {
+            sb.setLength(0);
+            for (int i = 0; i < 12; i++) {
+                sb.append(chars.charAt(random.nextInt(chars.length())));
+            }
+        } while (!isValidPassword(sb.toString()));
+
+        return sb.toString();
+    }
+
+    private boolean isValidPassword(String password) {
+        return Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,16}$", password);
+    }
+
+
 
     @Override
     @Transactional(readOnly = true)

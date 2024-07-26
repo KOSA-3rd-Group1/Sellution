@@ -100,7 +100,7 @@ const Table = ({
                 <tr
                   key={row.id}
                   className={`relative w-full ${ROW_HEIGHT} border-b border-b-[#F1F1F4] group`}
-                  onClick={handleRowEvent ? () => handleRowEvent(row.id) : undefined}
+                  onClick={handleRowEvent ? () => handleRowEvent(`${row.id}/default`) : undefined}
                 >
                   <td
                     className='sticky min-w-14 w-14 max-w-14 p-3 z-10 left-[0px] bg-white group-hover:bg-brandOrange-light'
