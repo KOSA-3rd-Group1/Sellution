@@ -18,7 +18,7 @@ const useCoupon = () => {
         console.error('쿠폰 다운로드에 실패했습니다:', response);
       }
     } catch (error) {
-      console.error('쿠폰 다운로드에 실패했습니다:', error);
+      throw new Error(error.response.data.message || '쿠폰 다운로드에 실패했습니다.');
     }
   };
   return {
