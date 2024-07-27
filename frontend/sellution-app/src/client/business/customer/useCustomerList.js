@@ -8,7 +8,7 @@ import {
   transformCustomerType,
   transformLatestDeliveryDate,
 } from '@/client/utility/functions/customerListFunction';
-import { HEADERS, ROW_HEIGHT } from '@/client/utility/tableinfo/CustomerListTableInfo';
+import { HEADERS } from '@/client/utility/tableinfo/CustomerListTableInfo';
 
 // 더미 데이터 생성 함수
 // const generateDummyData = (count) => {
@@ -134,9 +134,9 @@ export const useCustomerList = ({ queryParams, page, size, refresh, updateQueryP
 
   // api 요청으로 데이터 받아오기
   useEffect(() => {
-    const fetch = async () => {
+    const fetch = async (setAccessToken, accessToken) => {
       const pageParam = prepareSearchParams(tableState, page, size);
-      const responseData = await postCustomerList(pageParam, accessToken, setAccessToken); // API 요청
+      const responseData = await postCustomerList(pageParam, setAccessToken, accessToken); // API 요청
 
       const { content, empty, pageable, totalElements, totalPages } = responseData.data;
 
@@ -160,7 +160,7 @@ export const useCustomerList = ({ queryParams, page, size, refresh, updateQueryP
         updateQueryParameter(pageParam, 1);
       }
     };
-    fetch();
+    fetch(setAccessToken, accessToken);
   }, [debouncedTableState, dateRangeValue, page, refresh]);
 
   // 날짜 범위 조회 핸들러
@@ -169,23 +169,11 @@ export const useCustomerList = ({ queryParams, page, size, refresh, updateQueryP
     setDateRangeValue(newDataRangeValue);
   };
 
-  // 대량 회원 관리 버튼
-  const handleBulkCustomerManagementBtn = () => {
-    alert('대량 회원 관리 버튼');
-  };
-
-  // 쿠폰 발송 버튼
-  const handleSendCouponBtn = () => {
-    alert('쿠폰 발송 버튼 로직');
-  };
-
   const handleFilterReset = () => {
     setTableState({});
   };
 
   return {
-    HEADERS,
-    ROW_HEIGHT,
     data,
     totalPages,
     totalDataCount,
@@ -193,8 +181,6 @@ export const useCustomerList = ({ queryParams, page, size, refresh, updateQueryP
     dateRangeValue,
     setTableState,
     handleChangeDateRangeValue,
-    handleBulkCustomerManagementBtn,
-    handleSendCouponBtn,
     handleFilterReset,
   };
 };

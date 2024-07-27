@@ -4,7 +4,8 @@ import DateRange from '@/client/layout/common/DateRange';
 import { EventBtn, ResetBtn } from '@/client/layout/common/Button';
 import { useMove } from '@/client/business/common/useMove';
 import { useCustomerList } from '@/client/business/customer/useCustomerList';
-import { AddCustomerIcon, BulkCustomerIcon, SendIcon } from '@/client/utility/assets/Icons';
+import { AddCustomerIcon } from '@/client/utility/assets/Icons';
+import { HEADERS, ROW_HEIGHT } from '@/client/utility/tableinfo/CustomerListTableInfo';
 
 const ListComponent = () => {
   const {
@@ -18,8 +19,6 @@ const ListComponent = () => {
   } = useMove();
 
   const {
-    HEADERS,
-    ROW_HEIGHT,
     data,
     totalPages,
     totalDataCount,
@@ -27,8 +26,6 @@ const ListComponent = () => {
     dateRangeValue,
     setTableState,
     handleChangeDateRangeValue,
-    handleBulkCustomerManagementBtn,
-    // handleSendCouponBtn,
     handleFilterReset,
   } = useCustomerList({ queryParams, page, size, refresh, updateQueryParameter });
 
@@ -52,11 +49,11 @@ const ListComponent = () => {
             handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
-                <EventBtn
+                {/* <EventBtn
                   Icon={BulkCustomerIcon}
                   label={'대량 회원 관리'}
                   onClick={handleBulkCustomerManagementBtn}
-                />
+                /> */}
                 {/* <EventBtn Icon={SendIcon} label={'쿠폰 발송'} onClick={handleSendCouponBtn} /> */}
                 <EventBtn
                   Icon={AddCustomerIcon}

@@ -1,31 +1,42 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
-import TableOrder from '@/client/layout/common/TableOrder';
+import TableOrder from '@/client/layout/common/table/TableOrder';
 import { EventBtn } from '@/client/layout/common/Button';
+import { useMove } from '@/client/business/common/useMove';
 import { useCustomerOrderList } from '@/client/business/customer/detail/order/useCustomerOrderList';
-import { useCustomerOnetimeOrderList } from '@/client/business/customer/detail/order/useCustomerOnetimeOrderList';
+// import { useCustomerOnetimeOrderList } from '@/client/business/customer/detail/order/useCustomerOnetimeOrderList';
 import { SimpleOrderIcon } from '@/client/utility/assets/Icons';
+import {
+  SUBSCRIPTION_HEADERS,
+  SUBSCRIPTION_ROW_HEIGHT,
+  ONETIME_HEADERS,
+  ONETIME_ROW_HEIGHT,
+} from '@/client/utility/tableinfo/CustomerOrderListTableInfo';
 
 const ListComponent = () => {
-  const {
-    HEADERS: SUBSCRIPTION_HEADERS,
-    ROW_HEIGHT: SUBSCRIPTION_ROW_HEIGHT,
-    data: SUBSCRIPTION_data,
-    totalDataCount: SUBSCRIPTION_totalDataCount,
-    handleApproveAllSimpleOrderBtn: SUBSCRIPTION_handleApproveAllSimpleOrderBtn,
-    handleApproveSimpleOrderBtn: SUBSCRIPTION_handleApproveSimpleOrderBtn,
-    handleRowEvent: SUBSCRIPTION_handleRowEvent,
-    moveList,
-  } = useCustomerOrderList();
+  const { moveToPathname } = useMove();
 
   const {
-    HEADERS: ONETIME_HEADERS,
-    ROW_HEIGHT: ONETIME_ROW_HEIGHT,
-    data: ONETIME_data,
-    totalDataCount: ONETIME_totalDataCount,
-    handleApproveAllSimpleOrderBtn: ONETIME_handleApproveAllSimpleOrderBtn,
-    handleApproveSimpleOrderBtn: ONETIME_handleApproveSimpleOrderBtn,
-    handleRowEvent: ONETIME_handleRowEvent,
-  } = useCustomerOnetimeOrderList();
+    subscriptionData,
+    subscriptionTotalDataCount,
+    onetimeData,
+    onetimeTotalDataCount,
+    handleApproveAllSimpleOrderBtn,
+    handleApproveSimpleOrderBtn,
+  } = useCustomerOrderList();
+
+  //   const {
+  //     data: SUBSCRIPTION_data,
+  //     totalDataCount: SUBSCRIPTION_totalDataCount,
+  //     handleApproveAllSimpleOrderBtn: SUBSCRIPTION_handleApproveAllSimpleOrderBtn,
+  //     handleApproveSimpleOrderBtn: SUBSCRIPTION_handleApproveSimpleOrderBtn,
+  //   } = useCustomerOrderList();
+
+  //   const {
+  //     data: ONETIME_data,
+  //     totalDataCount: ONETIME_totalDataCount,
+  //     handleApproveAllSimpleOrderBtn: ONETIME_handleApproveAllSimpleOrderBtn,
+  //     handleApproveSimpleOrderBtn: ONETIME_handleApproveSimpleOrderBtn,
+  //   } = useCustomerOnetimeOrderList();
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -37,16 +48,16 @@ const ListComponent = () => {
           <TableOrder
             HEADERS={SUBSCRIPTION_HEADERS}
             ROW_HEIGHT={SUBSCRIPTION_ROW_HEIGHT}
-            data={SUBSCRIPTION_data}
-            totalDataCount={SUBSCRIPTION_totalDataCount}
-            handleApproveSimpleOrderBtn={SUBSCRIPTION_handleApproveAllSimpleOrderBtn}
-            handleRowEvent={SUBSCRIPTION_handleRowEvent}
+            data={subscriptionData}
+            totalDataCount={subscriptionTotalDataCount}
+            handleApproveSimpleOrderBtn={handleApproveAllSimpleOrderBtn}
+            handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
                 <EventBtn
                   Icon={SimpleOrderIcon}
                   label={'간편 주문 승인'}
-                  onClick={SUBSCRIPTION_handleApproveSimpleOrderBtn}
+                  onClick={handleApproveSimpleOrderBtn}
                 />
               </div>
             }
@@ -60,23 +71,23 @@ const ListComponent = () => {
           <TableOrder
             HEADERS={ONETIME_HEADERS}
             ROW_HEIGHT={ONETIME_ROW_HEIGHT}
-            data={ONETIME_data}
-            totalDataCount={ONETIME_totalDataCount}
-            handleApproveSimpleOrderBtn={ONETIME_handleApproveAllSimpleOrderBtn}
-            handleRowEvent={ONETIME_handleRowEvent}
+            data={onetimeData}
+            totalDataCount={onetimeTotalDataCount}
+            handleApproveSimpleOrderBtn={handleApproveAllSimpleOrderBtn}
+            handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
                 <EventBtn
                   Icon={SimpleOrderIcon}
                   label={'간편 주문 승인'}
-                  onClick={ONETIME_handleApproveSimpleOrderBtn}
+                  onClick={handleApproveSimpleOrderBtn}
                 />
               </div>
             }
           />
         </div>
       </section>
-      <FooterComponent back={{ label: '목록으로', event: moveList }} />
+      <FooterComponent back={{ label: '목록으로', event: () => moveToPathname('/customer') }} />
     </div>
   );
 };

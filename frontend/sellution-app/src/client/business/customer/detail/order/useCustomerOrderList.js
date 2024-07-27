@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import useAuthStore from '@/client/store/stores/useAuthStore';
+import { getCustomerOrderList } from '@/client/utility/apis/customer/detail/order/customerOrderListApi';
 
 // 더미 데이터 생성 함수
-const generateDummyData = (count) => {
+const generateDummyDataSubscriptionData = (count) => {
   return Array.from({ length: count }, (_, index) => ({
     id: index + 1,
     createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
@@ -25,115 +27,75 @@ const generateDummyData = (count) => {
   }));
 };
 
+// 더미 데이터 생성 함수
+const generateDummyOneTimeOrderData = (count) => {
+  return Array.from({ length: count }, (_, index) => ({
+    id: index + 1,
+    createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
+      .toISOString()
+      .split('T')[0],
+    orderId: `${Math.floor(10000000 + Math.random() * 90000000)}`,
+    productInfo: '[no.131] light melange gray ... 외 3',
+    totalPrice: `${Math.floor(100000 + Math.random() * 900000)}`,
+    type: ['정기(횟수 단위)', '정기(월 단위)'][Math.floor(Math.random() * 2)],
+    status: ['승인 대기', '주문 승인'][Math.floor(Math.random() * 2)],
+    deliveryStartDate: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
+      .toISOString()
+      .split('T')[0],
+    deliveryEndDate: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
+      .toISOString()
+      .split('T')[0],
+  }));
+};
+
 //더미 데이터
-const DUMMY_DATA = generateDummyData(10);
+const DUMMY_DATA_SUBSCRIPTION = generateDummyDataSubscriptionData(10);
+const DUMMY_DATA_ONETIME = generateDummyOneTimeOrderData(10);
 
 export const useCustomerOrderList = () => {
-  const HEADERS = [
-    {
-      key: 'createdAt',
-      label: '주문일',
-      width: 'min-w-40 w-40 max-w-40',
-    },
-    {
-      key: 'orderId',
-      label: '주문번호',
-      width: 'min-w-44 w-44 max-w-44',
-    },
-    {
-      key: 'productInfo',
-      label: '상품 정보',
-      width: 'min-w-72 w-72 max-w-72',
-    },
-    {
-      key: 'totalPrice',
-      label: '총금액',
-      width: 'min-w-40 w-40 max-w-40',
-    },
-    {
-      key: 'type',
-      label: '주문 유형', // 정기(월 단위) <-MONTH_SUBSCRIPTION, 정기(횟수 단위) <- COUNT_SUBSRIPTION
-      width: 'min-w-40 w-40 max-w-40',
-    },
-    {
-      key: 'status', //주문 승인 여부
-      label: '주문 상태',
-      width: 'min-w-48 w-48 max-w-48 text-brandOrange',
-    },
-    {
-      key: 'dayOption', // 선택한 요일
-      label: '배송 주기',
-      width: 'min-w-40 w-40 max-w-40',
-    },
-    {
-      key: 'totalDeliveryCount', // 횟수 단위 정기 주문
-      label: '배송 횟수',
-      width: 'min-w-40 w-40 max-w-40',
-    },
-    {
-      key: 'dateOption', // 월 또는 주 단위 정기 주문
-      label: '구독 기간',
-      width: 'min-w-40 w-40 max-w-40',
-    },
-    {
-      key: 'deliveryStartDate',
-      label: '배송 시작일',
-      width: 'min-w-40 w-40 max-w-40',
-    },
-    {
-      key: 'deliveryEndDate',
-      label: '배송 종료일',
-      width: 'min-w-40 w-40 max-w-40',
-    },
-  ];
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
-  const ROW_HEIGHT = 'min-h-12 h-12 max-h-12';
+  const { customerId } = useParams();
 
-  const navigate = useNavigate();
+  const [subscriptionData, setSubscriptionData] = useState([]); // 정기 배송 테이블 데이터
+  const [subscriptionTotalDataCount, setSubscriptionTotalDataCount] = useState(0); // 정기 배송 데이터 총 개수
 
-  // 정기 배송 테이블 데이터
-  const [data, setData] = useState([]);
+  const [onetimeData, setOnetimeData] = useState([]); // 단건 배송 테이블 데이터
+  const [onetimeTotalDataCount, setOnetimeTotalDataCount] = useState(0); // 단건 배송 데이터 총 개수
 
-  // 정기 배송 데이터 총 개수
-  const [totalDataCount, setTotalDataCount] = useState(0);
-
-  // api 요청으로 데이터 받아오기 (작업해야 할 부분)
+  // api 요청으로 데이터 받아오기
   useEffect(() => {
-    setData(DUMMY_DATA);
-    setTotalDataCount(10);
+    const fetch = async (customerId, setAccessToken, accessToken) => {
+      const response = await getCustomerOrderList(customerId, setAccessToken, accessToken);
+      setSubscriptionData(DUMMY_DATA_SUBSCRIPTION);
+      setOnetimeData(DUMMY_DATA_ONETIME);
+
+      setSubscriptionTotalDataCount(10);
+      setOnetimeTotalDataCount(10);
+    };
+
+    fetch(customerId, setAccessToken, accessToken);
   }, []);
 
-  // 간편 주문 승인 이벤트 (작업해야 할 부분: 간편 주문 승인 일관 승인 시, 서버로 api 요청, 이후 응답받아서 성공하면 해당하는 데이터만 변경)
+  // 간편 주문 승인 이벤트
+  // 간편 주문 승인 일관 승인 시, 선택한 항목 하나씩 서버로 api 요청, 이후 응답받아서 성공하면 해당하는 데이터만 변경
   const handleApproveAllSimpleOrderBtn = () => {
     alert('간편 주문 일괄 승인');
   };
 
-  // 간편 주문 승인 이벤트 (작업해야 할 부분: 간편 주문 승인 시, 서버로 api 요청, 이후 응답 받아서 성공하면 해당 데이터 변경)
+  // 간편 주문 승인 이벤트
+  // 간편 주문 승인 시, 서버로 api 요청, 이후 응답 받아서 성공하면 해당 데이터 변경
   const handleApproveSimpleOrderBtn = (orderId) => {
     alert(`간편 주문 승인 ${orderId}`);
   };
 
-  // 테이블 row onClick 이벤트
-  const handleRowEvent = (e) => {
-    navigate({
-      pathname: `${e}`,
-    });
-  };
-
-  const moveList = () => {
-    navigate({
-      pathname: '/customer',
-    });
-  };
-
   return {
-    HEADERS,
-    ROW_HEIGHT,
-    data,
-    totalDataCount,
+    subscriptionData,
+    subscriptionTotalDataCount,
+    onetimeData,
+    onetimeTotalDataCount,
     handleApproveAllSimpleOrderBtn,
     handleApproveSimpleOrderBtn,
-    handleRowEvent,
-    moveList,
   };
 };

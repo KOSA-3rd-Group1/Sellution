@@ -1,11 +1,13 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
-import TablePayment from '@/client/layout/common/TablePayment';
+import TablePayment from '@/client/layout/common/table/TablePayment';
 import { EventBtn } from '@/client/layout/common/Button';
+import { useMove } from '@/client/business/common/useMove';
 import { useCustomerPaymentList } from '@/client/business/customer/detail/payment/useCustomerPaymentList';
+import { HEADERS, ROW_HEIGHT } from '@/client/utility/tableinfo/CustomerPaymentListTableInfo';
 
 const ListComponent = () => {
-  const { HEADERS, ROW_HEIGHT, data, totalDataCount, handleAddBtn, handleRowEvent, moveList } =
-    useCustomerPaymentList();
+  const { moveToPathname } = useMove();
+  const { data, totalDataCount } = useCustomerPaymentList();
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -19,16 +21,16 @@ const ListComponent = () => {
             ROW_HEIGHT={ROW_HEIGHT}
             data={data}
             totalDataCount={totalDataCount}
-            handleRowEvent={handleRowEvent}
+            handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
-                <EventBtn label={'결제 수단 등록'} onClick={handleAddBtn} />
+                <EventBtn label={'결제 수단 등록'} onClick={() => moveToPathname('add')} />
               </div>
             }
           />
         </div>
       </section>
-      <FooterComponent back={{ label: '목록으로', event: moveList }} />
+      <FooterComponent back={{ label: '목록으로', event: () => moveToPathname('/customer') }} />
     </div>
   );
 };

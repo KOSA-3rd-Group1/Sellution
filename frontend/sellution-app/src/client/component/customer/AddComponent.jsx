@@ -16,24 +16,26 @@ const AddComponent = () => {
     openAutoCloseModal,
     closeAutoCloseModal,
   } = useModal();
-  const { data, handleChangeInputValue, moveList, handleSaveData, scuccessCloseAutoCloseModal } =
-    useCustomerAdd({
-      moveToPathname,
-      moveToDefaultPath,
-      openAlertModal,
-      openAutoCloseModal,
-      closeAutoCloseModal,
-    });
+  const {
+    data,
+    handleChangeInputValue,
+    checkMoveList,
+    checkSaveContent,
+    scuccessCloseAutoCloseModal,
+    handleOnConfirm,
+  } = useCustomerAdd({
+    moveToPathname,
+    moveToDefaultPath,
+    openAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  });
   console.log(data);
-
-  const handleConfirm = () => {
-    console.log('작업을 계속 수행합니다.');
-  };
 
   return (
     <div className='relative w-full h-full justify-between'>
       <section className='absolute w-full h-[calc(100%-58px)] p-2 flex flex-col overflow-y-auto'>
-        <div className='w-1/2'>
+        <div className='w-3/5'>
           <div className='w-full h-20 text-lg font-semibold flex items-center'>
             <div>기본정보</div>
           </div>
@@ -54,8 +56,8 @@ const AddComponent = () => {
                 <InfoInput
                   value={data.phoneNumber || ''}
                   onChange={(e) => handleChangeInputValue('phoneNumber', e.target.value)}
-                  placeholder='“-” 없이 숫자만 입력하세요.'
-                  maxlength={11}
+                  placeholder='휴대폰 번호를 입력하세요.'
+                  maxlength={15}
                 />
               </div>
             </li>
@@ -75,18 +77,14 @@ const AddComponent = () => {
         </div>
       </section>
       <FooterComponent
-        btn1={{ label: '취소', event: moveList }}
-        btn2={{
-          label: '회원 등록',
-          event: () =>
-            openAlertModal('warning', '주의', '이 작업은 취소할 수 없습니다. 계속하시겠습니까?'),
-        }}
+        btn1={{ label: '취소', event: checkMoveList }}
+        btn2={{ label: '회원 등록', event: checkSaveContent }}
       />
 
       <AlertModal
         isOpen={alertModalState.isOpen}
         onClose={closeAlertModal}
-        onConfirm={handleSaveData}
+        onConfirm={handleOnConfirm}
         type={alertModalState.type}
         title={alertModalState.title}
         message={alertModalState.message}

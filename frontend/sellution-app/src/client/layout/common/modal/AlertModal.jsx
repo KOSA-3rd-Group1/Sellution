@@ -75,8 +75,8 @@ const AlertModal = ({ isOpen, onClose, type, title, message, onConfirm }) => {
                 </ModalBtn>
                 <ModalBtn
                   onClick={() => {
-                    onConfirm();
                     onClose();
+                    onConfirm();
                   }}
                   variant={'warning'}
                   className='w-14 h-8'

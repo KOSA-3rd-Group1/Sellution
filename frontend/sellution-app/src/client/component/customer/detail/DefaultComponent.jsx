@@ -19,10 +19,11 @@ const DefaultComponent = () => {
   const {
     data,
     handleChangeInputValue,
-    moveList,
-    handleSaveData,
-    handleDeleteData,
-    checkChangeContent,
+    checkMoveList,
+    checkSaveContent,
+    checkDeleteContent,
+    scuccessCloseAutoCloseModal,
+    handleOnConfirm,
   } = useCustomerDefault({
     moveToPathname,
     moveToDefaultPath,
@@ -55,7 +56,7 @@ const DefaultComponent = () => {
                 <InfoInput
                   value={data.customerPhoneNumber || ''}
                   onChange={(e) => handleChangeInputValue('customerPhoneNumber', e.target.value)}
-                  maxLength={11}
+                  maxLength={15}
                 />
               </div>
             </li>
@@ -87,15 +88,15 @@ const DefaultComponent = () => {
         </div>
       </section>
       <FooterComponent
-        btn1={{ label: '회원 삭제', event: handleDeleteData }}
-        btn2={{ label: '변경사항 적용', event: handleSaveData }}
-        back={{ label: '목록으로', event: checkChangeContent }}
+        btn1={{ label: '회원 삭제', event: checkDeleteContent }}
+        btn2={{ label: '변경사항 적용', event: checkSaveContent }}
+        back={{ label: '목록으로', event: checkMoveList }}
       />
 
       <AlertModal
         isOpen={alertModalState.isOpen}
         onClose={closeAlertModal}
-        onConfirm={moveList}
+        onConfirm={handleOnConfirm}
         type={alertModalState.type}
         title={alertModalState.title}
         message={alertModalState.message}
@@ -103,7 +104,7 @@ const DefaultComponent = () => {
 
       <AutoCloseModal
         isOpen={autoCloseModalState.isOpen}
-        onClose={closeAutoCloseModal}
+        onClose={scuccessCloseAutoCloseModal}
         title={autoCloseModalState.title}
         message={autoCloseModalState.message}
         duration={1500}
