@@ -60,10 +60,15 @@ public class PaymentUtil {
         return switch (order.getType()) {
             case ONETIME -> order.getDeliveryStatus() == DeliveryStatus.BEFORE_DELIVERY ? order.getTotalPrice() : 0; // 단건은 배송전에만 환불가능
             case MONTH_SUBSCRIPTION -> { // 월 정기주문은 환불시점 +1일 ~ (다음결제일+7일)의 배송횟수를 계산하여 환불해야하는 금액을 계산한다.
-                LocalDate startDate = LocalDate.now().plusDays(1);
-                LocalDate endDate = order.getNextPaymentDate().plusDays(7);
+                LocalDate startDate = null;
+                if (LocalDate.now().isBefore(order.getDeliveryStartDate())) { // 배송시작일 이전에 환불이면 배송시작일부터 계산
+                    startDate = order.getDeliveryStartDate();
+                } else {
+                    startDate = LocalDate.now().plusDays(1);
+                }
+                LocalDate endDate = order.getDeliveryStartDate().plusMonths(order.getPaymentCount());
                 DeliveryInfo deliveryInfo = calculateDeliveryInfo(startDate, endDate, order.getWeekOption().getWeekValue(), getDeliveryDays(order.getSelectedDays()));
-//                log.info("시작일 : {}, 종료일 : {}, 배송정보 : {}, 배송한건당 가격 :{}", startDate, endDate, deliveryInfo, order.getPerPrice());
+                log.info("환불정보 시작일 : {}, 종료일 : {}, 배송정보 : {}, 배송한건당 가격 :{}", startDate, endDate, deliveryInfo, order.getPerPrice());
                 yield (order.getPerPrice() * deliveryInfo.getTotalDeliveryCount());
             }
             case COUNT_SUBSCRIPTION -> order.getRemainingDeliveryCount() * order.getPerPrice(); // 횟수 정기주문은 남은 횟수 * 배송 당 가격을 계산하여 환불해야하는 금액을 계산한다.

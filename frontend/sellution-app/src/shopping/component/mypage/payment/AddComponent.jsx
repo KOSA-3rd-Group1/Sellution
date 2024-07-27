@@ -5,6 +5,7 @@ import { KookminBankIcon, KakaoBankIcon, ShinhanBankIcon, WooriBankIcon, IBKIcon
 import { AccountAuthCheckIcon } from '@/shopping/utility/assets/Icons.jsx';
 import OneButtonFooterLayout from "@/shopping/layout/OneButtonFooterLayout.jsx";
 import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx";
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 
 const BANK_INFO = [
   { code: '004', name: '국민은행', icon: KookminBankIcon },
@@ -19,12 +20,14 @@ const BANK_INFO = [
 ];
 
 const AddComponent = () => {
-  const { customerId } = useParams();
+  // const { customerId } = useParams();
   const [selectedBank, setSelectedBank] = useState(null);
   const [accountNumber, setAccountNumber] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authMessage, setAuthMessage] = useState('');
+  const customerId = useUserInfoStore((state) => state.name);
+
 
   useEffect(() => {
     const fetchCustomerName = async () => {

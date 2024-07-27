@@ -6,6 +6,7 @@ import DetailPage from '@/shopping/page/subscriptionDelivery/DetailPage';
 import CartPage from '@/shopping/page/subscriptionDelivery/CartPage';
 import OrderPage from '@/shopping/page/subscriptionDelivery/OrderPage';
 import OrderCompletedPage from '@/shopping/page/subscriptionDelivery/OrderCompletedPage';
+import OrderCompletedPaymentHistoryPage from "@/shopping/page/subscriptionDelivery/OrderCompletedPaymentHistoryPage.jsx";
 
 const subscriptionDeliveryRouter = () => {
   return [
@@ -37,6 +38,10 @@ const subscriptionDeliveryRouter = () => {
       path: '*',
       element: <Navigate replace to='' />,
     },
+    {
+      path: 'payment-history/:orderId',
+      element: <OrderCompletedPaymentHistoryPage />,
+    }
   ];
 };
 

@@ -5,8 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.sellution.server.payment.domain.PaymentHistory;
 import shop.sellution.server.payment.domain.repository.PaymentHistoryRepository;
 import shop.sellution.server.payment.dto.request.FindPaymentHistoryCond;
+import shop.sellution.server.payment.dto.response.FindPaymentHistoryDetailRes;
 import shop.sellution.server.payment.dto.response.FindPaymentHistoryRes;
 
 @Service
@@ -19,5 +21,11 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
     @Transactional(readOnly = true)
     public Page<FindPaymentHistoryRes> findPaymentHistoryByCompanyId(Long companyId, FindPaymentHistoryCond findPaymentHistoryCond, Pageable pageable) {
         return paymentHistoryRepository.findPaymentHistoryByConditions(companyId, findPaymentHistoryCond, pageable);
+    }
+
+    @Override
+    public Page<FindPaymentHistoryDetailRes> findPaymentHistoryByOrderId(Long orderId, Pageable pageable) {
+        Page<PaymentHistory> page = paymentHistoryRepository.findAllByOrderId(orderId, pageable);
+        return page.map(FindPaymentHistoryDetailRes::fromEntity);
     }
 }
