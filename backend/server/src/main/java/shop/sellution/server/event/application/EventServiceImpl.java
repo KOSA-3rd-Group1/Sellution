@@ -40,8 +40,8 @@ public class EventServiceImpl implements EventService {
     @Transactional(readOnly = true)
     @Override
     public Page<FindEventRes> findAllEvents(LocalDate startDate, LocalDate endDate, Pageable pageable) {
-        CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long companyId =  principal.getCompanyId();
+        CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
+        Long companyId = userDetails.getCompanyId();
         Company company = getCompanyById(companyId);
         // 필터링 x
         if(startDate == null && endDate == null){
@@ -56,8 +56,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void saveEvent(SaveEventReq saveEventReq) {
-        CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long companyId =  principal.getCompanyId();
+        CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
+        Long companyId = userDetails.getCompanyId();
         //당일은 startdate가 불가능하게
         LocalDate now = LocalDate.now();
         LocalDate tomorrow = now.plusDays(1);
@@ -112,8 +112,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Page<FindEventRes> findCoupons(Pageable pageable) {
-        CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long customerId =  principal.getUserId();
+        CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
+        Long customerId = userDetails.getUserId();
         //event 종료기간이 지나지 않고 isUsed가 N인 쿠폰
         LocalDate now = LocalDate.now();
         return eventRepositoryCustom.findCouponsByCustomer(customerId, now, pageable)

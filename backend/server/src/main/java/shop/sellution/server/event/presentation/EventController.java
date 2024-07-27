@@ -73,7 +73,6 @@ public class EventController {
     public ResponseEntity<String> saveCoupon(@PathVariable Long eventId) {
         //회원 id 받을 예정
         //Long customerId = 1L;
-        System.out.println("범인:"+eventId);
         eventService.saveCoupon(eventId);
         return ResponseEntity.ok("success");
     }
