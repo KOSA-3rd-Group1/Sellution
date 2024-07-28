@@ -40,7 +40,7 @@ public class AccountAuthService {
                 .header("Authorization", "Bearer " + apiAccessToken)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, error -> {
-                    log.error("4xx error 발생");
+                    log.warn("4xx error 발생");
                     throw new BadRequestException(INVALID_ACCOUNT_INFO);
                 })
                 .onStatus(HttpStatusCode::is5xxServerError, error -> {

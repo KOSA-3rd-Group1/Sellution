@@ -96,11 +96,14 @@ public class SchedulerService {
             PaymentHistory paymentHistory = paymentHistoryRepository.findPendingPaymentHistory(orderId, yesterday.atStartOfDay(),yesterday.plusDays(1).atStartOfDay()); // LocalDate와 LocalDateTime을 비교하기위해..
             // 2.1 "어제" 생성된 결제내역이 PENDING(실패)이면 다시 결제를 시도한다.
             if (paymentHistory != null) {
-                paymentService.pay(PaymentReq.builder()
+                boolean result = paymentService.pay(PaymentReq.builder()
                         .orderId(orderId)
                         .customerId(order.getCustomer().getId())
                         .accountId(order.getAccount().getId())
                         .build());
+                if (!result) { // 재결제 실패라면 주문 취소
+                    order.cancelOrder();
+                }
                 // 3. 현재 스케줄러에서 시도한 결제횟수를 증가시킨다.
                 retryPaymentCount++;
             }
