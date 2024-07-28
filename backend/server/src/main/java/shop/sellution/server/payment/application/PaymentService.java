@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import shop.sellution.server.account.application.AccountService;
+import shop.sellution.server.account.application.AccountServiceImpl;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.customer.domain.Customer;
@@ -16,6 +18,7 @@ import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.customer.domain.type.CustomerType;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExternalApiException;
+import shop.sellution.server.order.application.OrderService;
 import shop.sellution.server.order.domain.Order;
 import shop.sellution.server.order.domain.repository.OrderRepository;
 import shop.sellution.server.payment.domain.PaymentHistory;
@@ -47,6 +50,7 @@ public class PaymentService {
     private final WebClient webClient;
     private final SmsService smsService;
     private final CustomerRepository customerRepository;
+    private final AccountServiceImpl accountService;
     private final Duration TIMEOUT = Duration.ofSeconds(2);
 
 
@@ -67,14 +71,15 @@ public class PaymentService {
         PayInfo payInfo = paymentUtil.calculatePayCost(order, order.getDeliveryStartDate());// 결제 금액 계산 [ 정기(월)이라면 이번달 결제금액 ,이번달 배송횟수가 반환 ]
         String token = pgTokenClient.getApiAccessToken(payInfo.getPayAmount(), TokenType.PAYMENT); // 결제 토큰 발급
         order.updateThisMonthDeliveryCount(payInfo.getDeliveryCount()); // 이번달 배송횟수 업데이트
-
+        String decryptedAccountNumber = accountService.getDecryptedAccountNumber(account.getAccountNumber());
+        log.info("결제 계좌번호 복호화 완료 {}",decryptedAccountNumber);
         ResponseEntity<Void> response = webClient.post()
                 .uri("/pay")
                 .header("Authorization", token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(Map.of(
                         "bankCode", account.getBankCode(),
-                        "accountNumber", account.getAccountNumber(),
+                        "accountNumber", decryptedAccountNumber,
                         "price", Integer.toString(payInfo.getPayAmount())
                 )).retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, error -> {

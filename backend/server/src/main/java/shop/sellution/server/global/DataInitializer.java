@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import shop.sellution.server.account.application.AccountService;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.account.domain.AccountRepository;
+import shop.sellution.server.account.dto.request.SaveAccountReq;
 import shop.sellution.server.address.domain.Address;
 import shop.sellution.server.address.domain.AddressRepository;
 import shop.sellution.server.category.domain.Category;
@@ -29,6 +31,7 @@ import shop.sellution.server.event.domain.type.EventState;
 import shop.sellution.server.event.domain.type.TargetCustomerType;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
+import shop.sellution.server.global.util.JasyptEncryptionUtil;
 import shop.sellution.server.order.application.OrderCreationService;
 import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.order.dto.request.FindOrderedProductSimpleReq;
@@ -55,7 +58,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private final CompanyRepository companyRepository;
     private final ContractCompanyRepository contractCompanyRepository;
     private final ProductRepository productRepository;
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
     private final CustomerRepository customerRepository;
     private final AddressRepository addressRepository;
     private final MonthOptionRepository monthOptionRepository;
@@ -111,8 +114,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private Customer 휴면회원;
     private Customer 일반회원;
 
-    private Account 테스트용공용계좌;
-    private Account 테스트용공용계좌2;
+    private Long 테스트용공용계좌아이디;
 
     private Address 공용주소;
     private Address 공용주소2;
@@ -625,7 +627,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         customerRepository.save(휴면회원);
 
 
-        for (int i = 0; i < 50; i++) { // 회원 50명 랜덤 생성
+        for (int i = 0; i < 30; i++) {
             Customer customer = Customer.builder()
                     .company(포켓샐러드)
                     .username("customer" + i)
@@ -640,25 +642,15 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     }
 
     private void createAccount() {
-        테스트용공용계좌 = Account.builder()
-                .customer(일반회원)
+
+        테스트용공용계좌아이디 = accountService.saveAccount(일반회원.getId(), SaveAccountReq.builder()
                 .accountNumber("42750204039102")
                 .bankCode("004")
-                .build();
+                .build());
 
-        accountRepository.save(테스트용공용계좌);
-
-        테스트용공용계좌2 = Account.builder()
-                .customer(휴면회원)
-                .accountNumber("110555920510")
-                .bankCode("088")
-                .build();
-
-        accountRepository.save(테스트용공용계좌2);
 
         for (Customer customer : customers) { // 50명 더미에 같은 계좌[테스트용]
-            accountRepository.save(Account.builder()
-                    .customer(customer)
+            accountService.saveAccount(customer.getId(), SaveAccountReq.builder()
                     .accountNumber("42750204039102")
                     .bankCode("004")
                     .build());
@@ -747,7 +739,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
             SaveOrderReq.SaveOrderReqBuilder orderReqBuilder = SaveOrderReq.builder()
                     .companyId(포켓샐러드.getCompanyId())
                     .addressId(공용주소.getId())
-                    .accountId(테스트용공용계좌.getId())
+                    .accountId(테스트용공용계좌아이디)
                     .orderType(orderType);
 
             List<Product> eligibleProducts;
