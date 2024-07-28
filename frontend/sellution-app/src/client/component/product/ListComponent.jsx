@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useProductList } from '@/client/business/product/useProductList';
 import TableProduct from '@/client/layout/common/table/TableProduct';
@@ -20,7 +20,13 @@ const ListComponent = () => {
     handleSelectRow,
     selectedRows,
     selectedCount,
+    fetchProducts,
+    updatePage,
   } = useProductList();
+
+  useEffect(() => {
+    fetchProducts();
+  }, [tableState.currentPage]);
 
   const renderPageNumbers = () => {
     const totalPages = Math.ceil(totalDataCount / tableState.itemsPerPage);
@@ -62,7 +68,9 @@ const ListComponent = () => {
     );
   };
 
-  //
+  const handleRowClick = (productId) => {
+    navigate(`/product/${productId}?page=${tableState.currentPage}`);
+  };
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -77,7 +85,10 @@ const ListComponent = () => {
             data={data}
             totalDataCount={totalDataCount}
             tableState={tableState}
-            setTableState={setTableState}
+            setTableState={(newState) => {
+              setTableState(newState);
+              fetchProducts(); // tableState가 변경될 때마다 fetchProducts 호출
+            }}
             handleRowEvent={handleRowEvent}
             handleSelectAll={handleSelectAll}
             handleSelectRow={handleSelectRow}
@@ -90,6 +101,7 @@ const ListComponent = () => {
                 <EventBtn label={'상품 삭제'} onClick={handleDeleteProductsBtn} />
               </div>
             }
+            onRowClick={handleRowClick}
           />
         </div>
         <div className='h-12 flex-none flex justify-end items-end '>{renderPageNumbers()}</div>

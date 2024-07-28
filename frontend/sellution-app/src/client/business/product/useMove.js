@@ -35,6 +35,13 @@ export const useMove = () => {
     });
   };
 
+  const moveToList = () => {
+    navigate({
+      pathname: '.',
+      search: queryParams.toString(),
+    });
+  };
+
   const moveToDetailForCustomer = (num) => {
     navigate({
       pathname: `${num}/default`,
@@ -79,6 +86,7 @@ export const useMove = () => {
     size,
     refresh,
     moveToPath,
+    moveToList,
     moveToDetail,
     moveToDetailForCustomer,
     moveToAdd,

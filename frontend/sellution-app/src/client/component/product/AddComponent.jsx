@@ -2,34 +2,21 @@ import React, { useState, useRef, useEffect } from 'react'; // eslint-disable-li
 import { useNavigate } from 'react-router-dom';
 import { EditIcon, TrashIcon } from '@/client/utility/assets/Icons.jsx';
 import FooterComponent from '@/client/layout/partials/FooterComponent';
+import ImageUploader2 from '@/client/layout/common/ImageUploader2';
 
 const AddComponent = () => {
-  // 상품 설명 이미지(detailImages)
+  // 상태 관리
   const [productDetailImages, setProductDetailImages] = useState([]);
-
-  // 상품 설명 이미지 파일 이름
   const [productDetailImageNames, setProductDetailImageNames] = useState([]);
-
-  // 상품 대표 이미지, 썸네일 이미지(thumbnailImage)
   const [selectedThumbnailImage, setSelectedThumbnailImage] = useState(null);
-
-  // 상품 이미지들(listImages)
-  const [productImages, setProductImages] = useState(Array(5).fill(null));
-
-  // 상품 이미지들의 인덱스 저장
+  const [productImages, setProductImages] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
-
-  // 할인 적용 여부
   const [isDiscountApplied, setIsDiscountApplied] = useState(false);
-
-  // 파일 입력 필드를 참조
   const detailImageInputRef = useRef(null);
-  // const productImageInputRef = useRef(null);
-
   const [categories, setCategories] = useState([]);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
-  // // DisplayStatus 열거형 정의
   const DisplayStatus = {
     VISIBLE: 'Y',
     INVISIBLE: 'N',
@@ -41,21 +28,18 @@ const AddComponent = () => {
     BOTH: 'BOTH',
   };
 
-  const navigate = useNavigate();
-
-  // 초기 상태 설정
   const [productInfo, setProductInfo] = useState({
-    name: '', // 상품명
-    categoryName: '', // 카테고리
-    productInformation: '', // 상품 설명 문구
-    cost: 0, // 가격
-    isDiscount: DisplayStatus.INVISIBLE, // 할인 적용 여부
-    discountRate: 0, // 할인율
-    discountedPrice: 0, // 할인된 가격
-    discountStartDate: '', // 할인 시작일
-    discountEndDate: '', // 할인 종료일
-    deliveryType: '', // 배송 타입
-    stock: 0, // 재고
+    name: '',
+    categoryName: '',
+    productInformation: '',
+    cost: 0,
+    isDiscount: DisplayStatus.INVISIBLE,
+    discountRate: 0,
+    discountedPrice: 0,
+    discountStartDate: '',
+    discountEndDate: '',
+    deliveryType: '',
+    stock: 0,
     isVisible: DisplayStatus.VISIBLE,
   });
 
@@ -63,19 +47,15 @@ const AddComponent = () => {
     const { name, value } = e.target;
     let parsedValue = value;
 
-    // stock, cost, discountRate는 숫자로 변환
     if (name === 'stock' || name === 'cost' || name === 'discountRate') {
       parsedValue = value === '' ? 0 : parseInt(value, 10);
     }
 
-    // 할인 적용 여부
     if (name === 'isDiscount') {
       setIsDiscountApplied(value === DisplayStatus.VISIBLE);
       parsedValue = value === 'Y' ? DisplayStatus.VISIBLE : DisplayStatus.INVISIBLE;
     }
 
-    // 배송 타입 변환
-    // 배송 타입 변환
     if (name === 'deliveryType') {
       switch (value) {
         case DeliveryType.ONETIME:
@@ -93,8 +73,8 @@ const AddComponent = () => {
       [name]: parsedValue,
     }));
   };
+
   useEffect(() => {
-    // 카테고리 목록 가져오기
     fetch(`${import.meta.env.VITE_BACKEND_URL}/categories?size=100`)
       .then((response) => response.json())
       .then((data) => {
@@ -120,81 +100,51 @@ const AddComponent = () => {
     setIsCategoryDropdownOpen(false);
   };
 
-  // 상품 상세 설명 이미지(여러 개)
-  const handleDetailImageChange = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const files = Array.from(e.target.files);
-      const newImages = [];
-      const newImageNames = [];
-
-      files.forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          newImages.push(event.target.result);
-          newImageNames.push(file.name);
-
-          if (newImages.length === files.length) {
-            setProductDetailImages((prevImages) => [...prevImages, ...newImages]);
-            setProductDetailImageNames((prevNames) => [...prevNames, ...newImageNames]);
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-    } else {
-      setProductDetailImages([]);
-      setProductDetailImageNames([]);
-    }
+  const handleThumbnailImageChange = (images) => {
+    setSelectedThumbnailImage(images[0]);
   };
 
-  // 대표 이미지 설정(썸네일이미지)
-  const handleThumbnailImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setSelectedThumbnailImage(event.target.result);
-      };
-      reader.readAsDataURL(e.target.files[0]);
-    } else {
-      setSelectedThumbnailImage(null);
-    }
+  const handleProductImagesChange = (images) => {
+    setProductImages(images);
   };
 
-  // 상품 이미지들 설정
-  const handleImagesChange = (e, index) => {
-    const files = e.target.files;
-    if (files && files[0]) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setProductImages((prevImages) => {
-          const newImages = [...prevImages];
-          newImages[index] = event.target.result;
-          return newImages;
-        });
-      };
-      reader.readAsDataURL(files[0]);
-    }
+  const handleDetailImagesChange = (images) => {
+    setProductDetailImages(images);
+    setProductDetailImageNames(images.map((_, index) => `상품 설명 이미지 ${index + 1}`));
   };
 
-  const handleSelectImage = (index) => {
-    setSelectedImageIndex(index);
+  const handleChangePromotionImg = (images) => {
+    console.log('Current images:', images);
+    setPromotionImg(images);
   };
 
-  const handleDetailImageButtonClick = () => {
-    if (detailImageInputRef.current) {
-      detailImageInputRef.current.click();
-    }
+  const handleChangeLogoImg = (images) => {
+    console.log('Current images:', images);
+    setLogoImg(images);
   };
 
-  const handleRemoveImage = (index) => {
-    setProductImages((prevImages) => {
-      const newImages = [...prevImages];
-      newImages[index] = null;
-      return newImages;
-    });
-    if (selectedImageIndex === index) {
-      setSelectedImageIndex(null);
-    }
+  const handleChangeThemeColor = (color) => {
+    console.log('theme clolr:', color);
+    setThemeColor(color);
   };
+
+  const handleUploadSuccess = (newImages) => {
+    console.log('Uploaded images:', newImages);
+  };
+
+  const handleBeforeRemove = (image, index) => {
+    return window.confirm(`이미지를 제거하시겠습니까?`);
+  };
+
+  const handleEditImage = (updatedImage, index) => {
+    return window.confirm(`이미지를 변경하시겠습니까?`);
+  };
+
+  const handleSaveData = () => {
+    alert('변경사항 적용');
+  };
+
+  const handleRestoreData = () => {};
 
   const moveList = () => {
     navigate({
@@ -210,11 +160,9 @@ const AddComponent = () => {
     }
   }, [productInfo.cost, productInfo.discountRate, productInfo.isDiscount]);
 
-  // 상품 등록
   const registerProduct = () => {
     const formData = new FormData();
 
-    // JSON 데이터 추가
     const jsonData = {
       companyId: 1,
       name: productInfo.name,
@@ -236,7 +184,6 @@ const AddComponent = () => {
 
     formData.append('product', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
 
-    // 이미지 파일 추가
     if (selectedThumbnailImage) {
       formData.append('thumbnailImage', dataURItoBlob(selectedThumbnailImage), 'thumbnail.jpg');
     }
@@ -268,7 +215,6 @@ const AddComponent = () => {
       });
   };
 
-  // Data URI를 Blob으로 변환하는 함수
   function dataURItoBlob(dataURI) {
     const byteString = atob(dataURI.split(',')[1]);
     const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
@@ -281,11 +227,10 @@ const AddComponent = () => {
   }
 
   return (
-    <div className='w-full h-full flex flex-col justify-between'>
-      <section className='flex-auto p-4'>
-        <div className='grid grid-cols-2 gap-4'>
-          {/* 상품 정보 */}
-          <div className='p-4 rounded'>
+    <div className='relative w-full h-full flex flex-col'>
+      <section className='flex-grow overflow-y-auto pb-[58px]'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+          <div className='p-4 rounded bg-white shadow-md'>
             <h2 className='text-xl font-semibold mb-4'>상품 정보</h2>
             <hr className='border-t-2 border-gray-300 mb-4' />
             <div className='space-y-6'>
@@ -332,6 +277,7 @@ const AddComponent = () => {
                 </div>
               </div>
               <hr className='border-gray-200' />
+
               <div className='flex'>
                 <label className='w-1/4 text-sm font-medium pt-2'>상품 설명 문구</label>
                 <div className='flex-1 ml-32'>
@@ -344,20 +290,19 @@ const AddComponent = () => {
                 </div>
               </div>
               <hr className='border-gray-200' />
-              <div className='flex items-center'>
-                <label className='w-1/4 text-sm font-medium'>상품 설명 이미지 파일 (선택)</label>
-                <div className='flex-1 ml-32'>
-                  <button
-                    onClick={handleDetailImageButtonClick}
-                    className='border border-orange-500 text-orange-500 px-4 py-2 rounded-md w-full hover:bg-brandOrange hover:text-white'
-                  >
-                    이미지 업로드
-                  </button>
-                  <input
-                    type='file'
-                    ref={detailImageInputRef}
-                    onChange={handleDetailImageChange}
-                    className='hidden'
+              <div className='flex flex-col space-y-2'>
+                <label className='text-sm font-medium'>상품 설명 이미지</label>
+                <div className='w-full'>
+                  <ImageUploader2
+                    inputId={'file-upload-detail'}
+                    onUploadSuccess={handleUploadSuccess}
+                    onBeforeRemove={handleBeforeRemove}
+                    onEditImage={handleEditImage}
+                    onDataChange={handleDetailImagesChange}
+                    isMultiImage={true}
+                    maxImageCount={5}
+                    containerHeight={'min-h-[120px]'}
+                    previewSize={'w-28 h-28'}
                     multiple
                   />
                   {productDetailImageNames && (
@@ -367,118 +312,46 @@ const AddComponent = () => {
                   )}
                 </div>
               </div>
-              <hr className='border-gray-200' />
             </div>
           </div>
 
-          {/* 상품 이미지 */}
-          <div className='p-4 rounded'>
+          <div className='p-4 rounded bg-white shadow-md'>
             <h2 className='text-xl font-semibold mb-4'>상품 이미지</h2>
             <hr className='border-t-2 border-gray-300 mb-4' />
             <div className='space-y-6'>
               <div>
                 <h3 className='text-sm font-medium mb-2'>상품 대표 이미지</h3>
-                <div className='w-full max-w-md mx-auto mt-6'>
-                  <div className='border-2 border-dashed border-gray-300 rounded-md p-4 flex flex-col items-center'>
-                    <div className='flex flex-col items-center space-y-4'>
-                      {selectedThumbnailImage ? (
-                        <img
-                          src={selectedThumbnailImage}
-                          alt='Selected'
-                          className='w-32 h-32 object-cover'
-                        />
-                      ) : (
-                        <div className='border p-4 rounded flex flex-col items-center justify-center w-32 h-32 bg-gray-50'>
-                          <p className='text-sm text-gray-500'>
-                            이미지 업로드 <br />
-                            300 * 300
-                          </p>
-                        </div>
-                      )}
-                      <input
-                        type='file'
-                        name='productImage'
-                        onChange={handleThumbnailImageChange}
-                        className='w-full text-center p-2 cursor-pointer'
-                      />
-                    </div>
-                  </div>
-                </div>
+                <ImageUploader2
+                  inputId={'file-upload-logo'}
+                  onUploadSuccess={handleUploadSuccess}
+                  onBeforeRemove={handleBeforeRemove}
+                  onEditImage={handleEditImage}
+                  onDataChange={handleChangeLogoImg}
+                  isMultiImage={false}
+                  maxImageCount={1}
+                  containerHeight={'h-30'}
+                  previewSize={'w-28 h-28'}
+                />
               </div>
-              <hr className='border-gray-200' />
+              <hr />
               <div>
                 <h3 className='text-sm font-medium mb-2'>상품 이미지</h3>
-                <div className='flex'>
-                  <div className='w-4/5 grid grid-cols-5 gap-4'>
-                    {productImages.map((image, index) => (
-                      <div
-                        key={index}
-                        className={`border rounded-md p-2 flex items-center justify-center cursor-pointer aspect-square ${selectedImageIndex === index ? 'border-orange-500' : ''}`}
-                        onClick={() => handleSelectImage(index)}
-                      >
-                        {image ? (
-                          <img
-                            src={image}
-                            alt={`Product ${index}`}
-                            className='w-full h-full object-cover rounded-md'
-                          />
-                        ) : (
-                          <div className='w-full h-full flex items-center justify-center bg-gray-50 rounded-md'>
-                            <p className='text-sm text-gray-500'>이미지 {index + 1}</p>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                  <div className='w-1/5 border-2 border-dashed border-gray-300 rounded-md p-4 ml-4 flex flex-col items-center justify-center'>
-                    {selectedImageIndex !== null && productImages[selectedImageIndex] ? (
-                      <>
-                        <img
-                          src={productImages[selectedImageIndex]}
-                          alt={`Selected ${selectedImageIndex}`}
-                          className='w-32 h-32 object-cover mb-2 rounded-md'
-                        />
-                        <input
-                          type='file'
-                          onChange={(e) => handleImagesChange(e, selectedImageIndex)}
-                          className='mb-2 text-sm'
-                        />
-                        <div className='flex space-x-2'>
-                          <button
-                            onClick={() =>
-                              handleImagesChange({ target: { files: [] } }, selectedImageIndex)
-                            }
-                          >
-                            <EditIcon className='w-6 h-6 text-gray-600' />
-                          </button>
-                          <button onClick={() => handleRemoveImage(selectedImageIndex)}>
-                            <TrashIcon className='w-6 h-6 text-gray-600' />
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <input
-                        type='file'
-                        onChange={(e) =>
-                          handleImagesChange(
-                            e,
-                            selectedImageIndex !== null
-                              ? selectedImageIndex
-                              : productImages.indexOf(null),
-                          )
-                        }
-                        className='cursor-pointer text-sm'
-                      />
-                    )}
-                  </div>
-                </div>
+                <ImageUploader2
+                  inputId={'product-images'}
+                  onUploadSuccess={handleUploadSuccess}
+                  onBeforeRemove={handleBeforeRemove}
+                  onEditImage={handleEditImage}
+                  onDataChange={handleProductImagesChange}
+                  isMultiImage={true}
+                  maxImageCount={5}
+                  containerHeight={'h-30'}
+                  previewSize={'w-28 h-28'}
+                  multiple
+                />
               </div>
-              <hr className='border-gray-200' />
             </div>
           </div>
-
-          {/* 금액 정보 */}
-          <div className='p-4 rounded'>
+          <div className='p-4 rounded bg-white shadow-md'>
             <h2 className='text-xl font-semibold mb-4'>금액 정보</h2>
             <hr className='border-t-2 border-gray-300 mb-4' />
             <div className='space-y-6'>
@@ -522,7 +395,7 @@ const AddComponent = () => {
                 </div>
               </div>
               <hr className='border-gray-200' />
-              <div className='flex items-center '>
+              <div className='flex items-center'>
                 <label className='w-1/4 text-sm font-medium'>기간 설정</label>
                 <div className='flex-1 flex items-center space-x-2 ml-32'>
                   <input
@@ -544,7 +417,7 @@ const AddComponent = () => {
               </div>
               <hr className='border-gray-200' />
               <div className='flex items-center'>
-                <label className='w-1/4 text-sm font-medium '>할인율</label>
+                <label className='w-1/4 text-sm font-medium'>할인율</label>
                 <div className='flex-1 flex items-center ml-32'>
                   <input
                     type='text'
@@ -572,8 +445,7 @@ const AddComponent = () => {
             </div>
           </div>
 
-          {/* 판매 정보 */}
-          <div className='p-4 rounded'>
+          <div className='p-4 rounded bg-white shadow-md'>
             <h2 className='text-xl font-semibold mb-4'>판매 정보</h2>
             <hr className='border-t-2 border-gray-300 mb-4' />
             <div className='space-y-6'>

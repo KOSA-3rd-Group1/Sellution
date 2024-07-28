@@ -104,26 +104,22 @@ export const useProductList = () => {
 
   const ROW_HEIGHT = 'min-h-14 h-14 max-h-14';
 
-  const [tableState, setTableState] = useState({
-    currentPage: 1,
-    itemsPerPage: 10,
-    ...HEADERS.reduce((acc, header) => {
+  const initialTableState = HEADERS.reduce(
+    (acc, header) => {
       if (header.type === 'search') acc[header.key] = '';
       if (header.type === 'filter') acc[header.key] = '전체';
-      if (header.type === 'sort') acc[header.key] = null;
       return acc;
-    }, {}),
-  });
+    },
+    { currentPage: 1, itemsPerPage: 10 },
+  );
+
+  const [tableState, setTableState] = useState(initialTableState);
 
   const debouncedTableState = useDebounce(tableState, 300);
 
   useEffect(() => {
     fetchCategories();
   }, []);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [debouncedTableState]);
 
   const fetchCategories = async () => {
     try {
@@ -138,24 +134,40 @@ export const useProductList = () => {
     }
   };
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    setTableState((prev) => ({ ...prev, currentPage: page }));
+  }, [location.search]);
+
   const fetchProducts = async () => {
     try {
       const params = {
         page: tableState.currentPage - 1,
         size: tableState.itemsPerPage,
-        ...Object.fromEntries(
-          Object.entries(tableState).filter(
-            ([key, value]) =>
-              value !== '전체' && value !== '' && !['currentPage', 'itemsPerPage'].includes(key),
-          ),
-        ),
       };
 
-      Object.keys(mapFilterValues).forEach((key) => {
-        if (params[key] && mapFilterValues[key][params[key]]) {
-          params[key] = mapFilterValues[key][params[key]];
-        }
-      });
+      if (tableState.name && tableState.name !== '') {
+        params.productName = tableState.name;
+      }
+
+      if (tableState.categoryName && tableState.categoryName !== '전체') {
+        params.categoryName = tableState.categoryName;
+      }
+
+      if (tableState.isVisible && tableState.isVisible !== '전체') {
+        params.isVisible = mapFilterValues.isVisible[tableState.isVisible];
+      }
+
+      if (tableState.deliveryType && tableState.deliveryType !== '전체') {
+        params.deliveryType = mapFilterValues.deliveryType[tableState.deliveryType];
+      }
+
+      if (tableState.isDiscount && tableState.isDiscount !== '전체') {
+        params.isDiscount = mapFilterValues.isDiscount[tableState.isDiscount];
+      }
+
+      console.log('Fetching products with params:', params);
 
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
         params,
@@ -177,8 +189,19 @@ export const useProductList = () => {
       setTotalDataCount(response.data.totalElements);
     } catch (error) {
       console.error('Error fetching products:', error);
+      setData([]);
+      setTotalDataCount(0);
     }
   };
+
+  const updatePage = (newPage) => {
+    setTableState((prev) => ({ ...prev, currentPage: newPage }));
+    navigate(`/product?page=${newPage}`);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, [debouncedTableState]);
 
   const handleRowEvent = (id) => {
     navigate(`/product/${id}`);
@@ -248,6 +271,8 @@ export const useProductList = () => {
     handleSelectAll,
     handleSelectRow,
     selectedRows,
+    updatePage,
     selectedCount: Object.values(selectedRows).filter(Boolean).length,
+    fetchProducts,
   };
 };
