@@ -1,6 +1,7 @@
 package shop.sellution.server.product.application;
 
 import com.querydsl.core.BooleanBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 import static shop.sellution.server.product.domain.QProduct.product;
 
 @Service
+@Slf4j
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -54,6 +56,9 @@ public class ProductServiceImpl implements ProductService {
     public Page<FindProductRes> getAllProducts(Pageable pageable, String deliveryType, String isDiscount, String categoryName, String isVisible, String productName) {
         BooleanBuilder builder = new BooleanBuilder();
 
+        log.info("Fetching products with parameters - deliveryType: {}, isDiscount: {}, categoryName: {}, isVisible: {}, productName: {}",
+                deliveryType, isDiscount, categoryName, isVisible, productName);
+
         if (deliveryType != null && !deliveryType.equals("전체")) {
             builder.and(product.deliveryType.eq(DeliveryType.valueOf(deliveryType)));
         }
@@ -72,6 +77,8 @@ public class ProductServiceImpl implements ProductService {
 
         Page<Product> products = productRepository.findAll(builder, pageable);
 
+        log.info("Products found: " + products.getTotalElements());
+
         return products.map(product -> {
             String thumbnailImage = productImageRepository.findByProductProductIdAndPurposeOfUse(product.getProductId(), ProductImageType.THUMBNAIL)
                     .stream()
@@ -82,7 +89,6 @@ public class ProductServiceImpl implements ProductService {
             return FindProductRes.fromEntity(product, thumbnailImage);
         });
     }
-
 
 
     @Override
