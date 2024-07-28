@@ -1,15 +1,24 @@
-import { EventBtn, NotBorderBtn, CountOrderBtn } from '@/client/layout/common/Button';
-import Table from '@/client/layout/common/Table';
+import { EventBtn, NotBorderBtn, CountOrderBtn, ResetBtn } from '@/client/layout/common/Button';
+import TableOrder from '@/client/layout/common/table/TableOrder';
 import Pagination from '@/client/layout/common/Pagination';
 import DateRange from '@/client/layout/common/DateRange';
 import ToggleButton from '@/client/layout/common/ToggleButton';
+import { useMove } from '@/client/business/common/useMove';
 import { useOrderList } from '@/client/business/order/useOrderList';
 import { SimpleOrderIcon } from '@/client/utility/assets/Icons';
+import { HEADERS, ROW_HEIGHT } from '@/client/utility/tableinfo/OrderListTableInfo';
 
 const ListComponent = () => {
   const {
-    HEADERS,
-    ROW_HEIGHT,
+    queryParams,
+    page,
+    size,
+    refresh,
+    moveToPathname,
+    moveToPagination,
+    updateQueryParameter,
+  } = useMove();
+  const {
     data,
     totalDataCount,
     tableState,
@@ -17,10 +26,11 @@ const ListComponent = () => {
     isAutoOrderApproved,
     setTableState,
     handleChangeDateRangeValue,
+    handleFilterReset,
     handleToggleAutoOrderApproved,
-    handleApproveSimpleOrderBtn,
-    handleRowEvent,
-  } = useOrderList();
+    handleApproveAllSimpleOrderBtn,
+    // handleRowEvent,
+  } = useOrderList({ queryParams, page, size, refresh, updateQueryParameter });
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -39,24 +49,26 @@ const ListComponent = () => {
           </div>
         </div>
         <div className='flex-grow overflow-hidden'>
-          <Table
+          <TableOrder
             HEADERS={HEADERS}
             ROW_HEIGHT={ROW_HEIGHT}
             data={data}
             totalDataCount={totalDataCount}
             tableState={tableState}
             setTableState={setTableState}
-            handleRowEvent={handleRowEvent}
+            handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
                 <CountOrderBtn label={'주문승인대기'} count={12} />
                 <EventBtn
                   Icon={SimpleOrderIcon}
                   label={'간편주문승인'}
-                  onClick={handleApproveSimpleOrderBtn}
+                  onClick={handleApproveAllSimpleOrderBtn}
                 />
               </div>
             }
+            ResetBtn={<ResetBtn label={'초기화'} onClick={handleFilterReset} />}
+            tableId={'onetime'}
           />
         </div>
         <div className='h-12 flex-none flex justify-end items-end '>

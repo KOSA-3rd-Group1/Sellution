@@ -28,4 +28,5 @@ public interface ClientService {
 
     // 고객 비밀번호 변경
     void changeClientPassword(ChangeClientPasswordReq request, HttpServletRequest httpRequest);
+
 }

@@ -70,7 +70,7 @@ public enum ExceptionCode {
     INVALID_ORDER_INFO_FOR_SUB(5018,"정기 주문에 유효하지않은 정보값입니다." ),
 
 
-    // ---------------------------- Address, category, event 6501 ~ 7000 ---------------------------------------
+    // ---------------------------- Product, Address, category, event 6501 ~ 7000 ---------------------------------------
 
     NOT_FOUND_CUSTOMER_FOR_ADDRESS(6501, "주소와 연관된 회원을 찾을 수 없습니다."),
     FAILED_TO_RESET_DEFAULT_ADDRESS(6502, "기본 주소 재설정에 실패했습니다."),
@@ -80,6 +80,10 @@ public enum ExceptionCode {
     FAIL_TO_GENERATE_QR_CODE(6602, "QR 코드 생성에 실패했습니다."),
 
     NOT_FOUND_CATEGORY(6701, "요청한 ID에 해당하는 카테고리를 찾을 수 없습니다."),
+
+    FAIL_TO_UPLOAD_IMAGE(6801, "S3에 이미지 등록이 실패했습니다."),
+    INVALID_IMAGE(6802, "유효하지 않는 이미지입니다."),
+//    INVALID_LOGO_IMAGE_SIZE(6803, "로고 이미지는 정사각형이어야 합니다."),
 
     NOT_FOUND_EVENT(6901, "요청한 ID에 해당하는 이벤트를 찾을 수 없습니다."),
 

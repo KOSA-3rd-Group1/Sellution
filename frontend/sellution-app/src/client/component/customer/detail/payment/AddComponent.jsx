@@ -2,10 +2,35 @@ import { InfoInput } from '@/client/layout/common/Input';
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import BankSelector from '@/client/layout/common/BankSelector';
 import RadioButtonGroup from '@/client/layout/common/RadioButtonGroup';
+import AlertModal from '@/client/layout/common/modal/AlertModal';
+import AutoCloseModal from '@/client/layout/common/modal/AutoCloseModal';
+import { useMove } from '@/client/business/common/useMove';
+import { useModal } from '@/client/business/common/useModal';
 import { useCustomerPaymentAdd } from '@/client/business/customer/detail/payment/useCustomerPaymentAdd';
 
 const AddComponent = () => {
-  const { data, handleChangeInputValue, moveList, handleSaveData } = useCustomerPaymentAdd();
+  const { moveToPathname } = useMove();
+  const {
+    alertModalState,
+    autoCloseModalState,
+    openAlertModal,
+    closeAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  } = useModal();
+  const {
+    data,
+    handleChangeInputValue,
+    checkMoveList,
+    checkSaveContent,
+    scuccessCloseAutoCloseModal,
+    handleOnConfirm,
+  } = useCustomerPaymentAdd({
+    moveToPathname,
+    openAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  });
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -45,6 +70,7 @@ const AddComponent = () => {
                     value={data.accountNumber || ''}
                     onChange={(e) => handleChangeInputValue('accountNumber', e.target.value)}
                     placeholder='계좌번호를 입력하세요.'
+                    maxLength={25}
                   />
                 </div>
               </li>
@@ -59,8 +85,25 @@ const AddComponent = () => {
         </div>
       </section>
       <FooterComponent
-        btn1={{ label: '취소', event: moveList }}
-        btn2={{ label: '결제수단 등록', event: handleSaveData }}
+        btn1={{ label: '취소', event: checkMoveList }}
+        btn2={{ label: '결제수단 등록', event: checkSaveContent }}
+      />
+
+      <AlertModal
+        isOpen={alertModalState.isOpen}
+        onClose={closeAlertModal}
+        onConfirm={handleOnConfirm}
+        type={alertModalState.type}
+        title={alertModalState.title}
+        message={alertModalState.message}
+      />
+
+      <AutoCloseModal
+        isOpen={autoCloseModalState.isOpen}
+        onClose={scuccessCloseAutoCloseModal}
+        title={autoCloseModalState.title}
+        message={autoCloseModalState.message}
+        duration={1500}
       />
     </div>
   );

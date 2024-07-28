@@ -44,7 +44,7 @@ public class CouponEvent {
     private LocalDate eventEndDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "ENUM('UPCOMING','ONGOING','END') default 'UPCOMING'")
     @Builder.Default
     private EventState state = EventState.UPCOMING;
 

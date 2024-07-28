@@ -38,6 +38,18 @@ public interface CustomerService {
     // 회원 필터링 조회
     Page<FindCustomerRes> findAllCustomerByCompanyId(CustomerSearchCondition condition, Pageable pageable);
 
+    // 고객의 회원 등록
+    FindCustomerRes registerCustomerFromClient(RegisterCustomerReq request);
+
+    // 고객의 회원 상세 정보 조회
+    FindCustomerRes getCustomerById(Long customerId);
+
+    // 고객의 회원 정보 수정
+    void updateCustomer(Long customerId, RegisterCustomerReq request);
+
+    // 고객의 회원 정보 삭제 - 추후 회원이 사용하는 데이터의 삭제 기능 확인 후 구현
+    // void deleteCustomer(Long customerId);
+
     // 마이페이지 회원 정보 조회
     FindCustomerInfoRes getCustomerInfo(Long customerId);
 

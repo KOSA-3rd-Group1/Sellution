@@ -33,6 +33,16 @@ export const AddCustomerIcon = (props) => (
     </g>
   </svg>
 );
+// 계좌 인증 성공시 붙는 체크 아이콘
+export const AccountAuthCheckIcon = (props) => (
+  <svg width='23' height='23' viewBox='0 0 23 23' fill='none' xmlns='http://www.w3.org/2000/svg'>
+    <rect width='23' height='23' rx='11.5' fill='#57E65C' />
+    <path
+      d='M15.9333 9.3884C16.2493 9.07081 16.2493 8.55584 15.9333 8.23822C15.6173 7.92059 15.105 7.92059 14.789 8.23822L9.96686 13.0852L8.38129 11.4916C8.06531 11.1739 7.55298 11.1739 7.23699 11.4916C6.921 11.8092 6.921 12.3241 7.23699 12.6417L9.39471 14.8106C9.71074 15.1282 10.223 15.1282 10.539 14.8106L15.9333 9.3884Z'
+      fill='white'
+    />
+  </svg>
+);
 
 //배송지 아이콘
 export const DeliveryAddressIcon = (props) => (

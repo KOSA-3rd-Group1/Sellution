@@ -13,6 +13,7 @@ import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.payment.domain.type.PaymentStatus;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -52,12 +53,24 @@ public class PaymentHistory {
     @Column(nullable = false)
     private int remainingPaymentCount;
 
+    @Column(nullable = true)
+    LocalDate thisSubMonthStartDate;
+
+    @Column(nullable = true)
+    LocalDate thisSubMonthEndDate;
+
+    @Column(nullable = true)
+    private Integer deliveryPerPrice;
+
+    @Column(nullable = true)
+    private Integer thisMonthDeliveryCount;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Builder
-    public PaymentHistory(Order order, Account account, PaymentStatus status, int price, OrderType type, int totalPaymentCount, int remainingPaymentCount) {
+    public PaymentHistory(Order order, Account account, PaymentStatus status, int price, OrderType type, int totalPaymentCount, int remainingPaymentCount, LocalDate thisSubMonthStartDate, LocalDate thisSubMonthEndDate, Integer deliveryPerPrice, Integer thisMonthDeliveryCount, LocalDateTime createdAt) {
         this.order = order;
         this.account = account;
         this.status = status;
@@ -65,5 +78,10 @@ public class PaymentHistory {
         this.type = type;
         this.totalPaymentCount = totalPaymentCount;
         this.remainingPaymentCount = remainingPaymentCount;
+        this.thisSubMonthStartDate = thisSubMonthStartDate;
+        this.thisSubMonthEndDate = thisSubMonthEndDate;
+        this.deliveryPerPrice = deliveryPerPrice;
+        this.thisMonthDeliveryCount = thisMonthDeliveryCount;
+        this.createdAt = createdAt;
     }
 }

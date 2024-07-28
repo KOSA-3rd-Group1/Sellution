@@ -19,32 +19,11 @@ export const useMove = () => {
   queryParams.set('page', page);
   queryParams.set('size', size);
 
-  const moveToPath = (pathname) => {
-    const queryStr = queryParams.toString();
+  // queryParams를 유지하면서 pathname으로 경로 이동
+  const moveToPathname = (pathname) => {
     setRefresh(!refresh);
     navigate({
-      pathname: pathname,
-      search: queryStr,
-    });
-  };
-
-  const moveToDetail = (num) => {
-    navigate({
-      pathname: `${num}`,
-      search: queryParams.toString(), //수정시에 기존의 쿼리 스트링 유지를 위해
-    });
-  };
-
-  const moveToDetailForCustomer = (num) => {
-    navigate({
-      pathname: `${num}/default`,
-      search: queryParams.toString(), //수정시에 기존의 쿼리 스트링 유지를 위해
-    });
-  };
-
-  const moveToAdd = () => {
-    navigate({
-      pathname: `add`,
+      pathname,
       search: queryParams.toString(),
     });
   };
@@ -73,16 +52,27 @@ export const useMove = () => {
     });
   };
 
+  // 기본 목록으로 이동
+  const moveToDefaultPath = (pathname) => {
+    const search = createSearchParams({
+      page: 1,
+      size: 10,
+    }).toString();
+    // setRefresh(!refresh);
+    navigate({
+      pathname,
+      search,
+    });
+  };
+
   return {
     queryParams,
     page,
     size,
     refresh,
-    moveToPath,
-    moveToDetail,
-    moveToDetailForCustomer,
-    moveToAdd,
+    moveToPathname,
     moveToPagination,
     updateQueryParameter,
+    moveToDefaultPath,
   };
 };
