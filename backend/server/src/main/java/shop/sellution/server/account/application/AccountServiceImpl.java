@@ -1,6 +1,7 @@
 package shop.sellution.server.account.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_CUS
 @Transactional
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
@@ -34,7 +36,9 @@ public class AccountServiceImpl implements AccountService {
     @Transactional(readOnly = true)
     @Override
     public Page<FindAccountRes> findAllAccountsByCustomerId(Long customerId, Pageable pageable) {
-        return accountRepository.findAllByCustomerId(customerId, pageable).map(FindAccountRes::fromEntity);
+        return accountRepository.findAllByCustomerId(customerId, pageable)
+                .map(FindAccountRes::fromEntity)
+                .map(this::maskAccountNumber);
     }
 
     @Override
@@ -77,5 +81,14 @@ public class AccountServiceImpl implements AccountService {
 
         accountRepository.delete(account);
     }
+
+    private FindAccountRes maskAccountNumber(FindAccountRes findAccountRes) {
+        String accountNumber = findAccountRes.getAccountNumber();
+        String decryptedAccountNumber = jasyptEncryptionUtil.decrypt(accountNumber.substring(0, accountNumber.length() - 4));
+        String maskedAccountNumber = "*".repeat(decryptedAccountNumber.length()) + accountNumber.substring(accountNumber.length()-4);
+        findAccountRes.setAccountNumber(maskedAccountNumber);
+        return findAccountRes;
+    }
+
 
 }

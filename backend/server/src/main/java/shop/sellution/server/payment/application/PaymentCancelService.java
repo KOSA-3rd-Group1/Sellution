@@ -119,8 +119,6 @@ public class PaymentCancelService {
                 .price(price)
                 .status(PaymentStatus.CANCEL)
                 .type(order.getType())
-                .totalPaymentCount(order.getTotalDeliveryCount())
-                .remainingPaymentCount(order.getRemainingDeliveryCount())
                 .build();
 
         paymentHistoryRepository.save(paymentHistory);

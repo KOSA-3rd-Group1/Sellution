@@ -51,7 +51,7 @@ public class PaymentService {
 
 
     @Transactional
-    public void pay(PaymentReq paymentReq) {
+    public boolean pay(PaymentReq paymentReq) {
         /*
         첫결제는 승인이후 바로시작, 정기주문(월) 경우 다음 결제일은 배송선택일 + 1달
          */
@@ -90,11 +90,12 @@ public class PaymentService {
 
 
         if (response != null && response.getStatusCode() == HttpStatus.OK) {
-            createSuccessPaymentHistory(order, account,payInfo);
             if (order.getCustomer().getType() == CustomerType.DORMANT || order.getCustomer().getType() == CustomerType.NEW) {
                 order.getCustomer().changeToNormalCustomer();
             }
             order.increasePaymentCount(); // 결제횟수 증가
+            createSuccessPaymentHistory(order, account,payInfo);
+
 
 
 
@@ -121,9 +122,11 @@ public class PaymentService {
                     """,order.getCode(),payInfo.getPayAmount(),account.getAccountNumber());
 //            smsService.sendSms(customer.getPhoneNumber(),payMessage);
             log.info("결제 성공");
+            return true;
         } else {
             createFailPaymentHistory(order, account,payInfo);
             log.info("결제 실패");
+            return false;
         }
 
 
@@ -141,10 +144,10 @@ public class PaymentService {
                     .status(PaymentStatus.COMPLETE)
                     .price(payInfo.getPayAmount())
                     .type(order.getType())
-                    .totalPaymentCount(order.getTotalDeliveryCount())
-                    .remainingPaymentCount(order.getRemainingDeliveryCount() - 1)
-                    .thisSubMonthStartDate(order.getDeliveryStartDate().plusMonths(order.getPaymentCount()))
-                    .thisSubMonthEndDate(order.getDeliveryStartDate().plusMonths(order.getPaymentCount() + 1))
+                    .totalPaymentCount(order.getMonthOption().getMonthValue())
+                    .remainingPaymentCount(order.getMonthOption().getMonthValue() - order.getPaymentCount())
+                    .thisSubMonthStartDate(order.getDeliveryStartDate().plusMonths(order.getPaymentCount()-1))
+                    .thisSubMonthEndDate(order.getDeliveryStartDate().plusMonths(order.getPaymentCount()))
                     .deliveryPerPrice(order.getPerPrice())
                     .thisMonthDeliveryCount(payInfo.getDeliveryCount())
                     .build();
@@ -156,8 +159,8 @@ public class PaymentService {
                     .status(PaymentStatus.COMPLETE)
                     .price(payInfo.getPayAmount())
                     .type(order.getType())
-                    .totalPaymentCount(order.getTotalDeliveryCount())
-                    .remainingPaymentCount(order.getRemainingDeliveryCount() - 1)
+                    .totalPaymentCount(1)
+                    .remainingPaymentCount(0)
                     .build();
         }
         paymentHistoryRepository.save(paymentHistory);
