@@ -15,10 +15,10 @@ const PaymentEstimation = () => {
           <span>상품 할인</span>
           <span>0원</span>
         </div>
-        <div className='flex justify-between'>
+        {/* <div className='flex justify-between'>
           <span>배송비</span>
           <span>4,000원</span>
-        </div>
+        </div> */}
         <div className='flex justify-between font-bold mt-2 pt-2 border-t'>
           <span>총 결제 금액</span>
           <span className='text-brandOrange'>46,300원</span>

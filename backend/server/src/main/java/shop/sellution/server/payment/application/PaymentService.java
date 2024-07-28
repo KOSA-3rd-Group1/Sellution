@@ -24,10 +24,12 @@ import shop.sellution.server.payment.domain.type.PaymentStatus;
 import shop.sellution.server.payment.domain.type.TokenType;
 import shop.sellution.server.payment.dto.request.PaymentReq;
 import shop.sellution.server.payment.infrastructure.PgTokenClient;
+import shop.sellution.server.payment.util.PayInfo;
 import shop.sellution.server.payment.util.PaymentUtil;
 import shop.sellution.server.sms.application.SmsService;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Map;
 
 import static shop.sellution.server.global.exception.ExceptionCode.*;
@@ -62,9 +64,9 @@ public class PaymentService {
         Customer customer = customerRepository.findById(paymentReq.getCustomerId())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER));
 
-        int payCost = paymentUtil.calculatePayCost(order, order.getDeliveryStartDate()); // 결제 금액 계산
-        String token = pgTokenClient.getApiAccessToken(payCost, TokenType.PAYMENT); // 결제 토큰 발급
-
+        PayInfo payInfo = paymentUtil.calculatePayCost(order, order.getDeliveryStartDate());// 결제 금액 계산 [ 정기(월)이라면 이번달 결제금액 ,이번달 배송횟수가 반환 ]
+        String token = pgTokenClient.getApiAccessToken(payInfo.getPayAmount(), TokenType.PAYMENT); // 결제 토큰 발급
+        order.updateThisMonthDeliveryCount(payInfo.getDeliveryCount()); // 이번달 배송횟수 업데이트
 
         ResponseEntity<Void> response = webClient.post()
                 .uri("/pay")
@@ -73,7 +75,7 @@ public class PaymentService {
                 .bodyValue(Map.of(
                         "bankCode", account.getBankCode(),
                         "accountNumber", account.getAccountNumber(),
-                        "price", Integer.toString(payCost)
+                        "price", Integer.toString(payInfo.getPayAmount())
                 )).retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, error -> {
                     log.error("4xx error 발생");
@@ -88,18 +90,26 @@ public class PaymentService {
 
 
         if (response != null && response.getStatusCode() == HttpStatus.OK) {
-            createSuccessPaymentHistory(order, account,payCost);
+            createSuccessPaymentHistory(order, account,payInfo);
             if (order.getCustomer().getType() == CustomerType.DORMANT || order.getCustomer().getType() == CustomerType.NEW) {
                 order.getCustomer().changeToNormalCustomer();
             }
-            //이 주문이 월정기주문이고,  현재 결제일 + 1달이 마지막 배송일보다 이전이면 아직 구독기간이 남은것이므로 다음 결제일 설정
-            if(order.getType().isMonthSubscription() && order.getDeliveryEndDate().isAfter(order.getNextPaymentDate().plusMonths(1))){
-                order.setNextPaymentDate(order.getNextPaymentDate().plusMonths(1).minusDays(7)); // 다음 결제일은 (현재결제일 + 1달)의 일주일전으로 설정
+            order.increasePaymentCount(); // 결제횟수 증가
+
+
+
+            if(order.getType().isMonthSubscription()) {
+                //이 주문이 월정기주문이고, 이번달 구독기간의 끝이 총 구독기간의 끝이아니라면 결제일 갱신
+                LocalDate thisSubMonthEndDate = order.getDeliveryStartDate().plusMonths(order.getPaymentCount());
+                LocalDate subMonthEndDate = order.getDeliveryStartDate().plusMonths(order.getMonthOption().getMonthValue());
+
+                if (!thisSubMonthEndDate.isEqual(subMonthEndDate)) {
+                    order.setNextPaymentDate(thisSubMonthEndDate.minusDays(7)); // 다음 결제일은 (현재결제일 + 1달)의 일주일전으로 설정
+                }
             }
             else{
                 order.setNextPaymentDate(null); // 다음 결제일이 없다면 null 로 설정
             }
-            order.increasePaymentCount();
             String payMessage = String.format("""
                     [Sellution] 결제가 완료되었습니다.
                     결제된 주문번호
@@ -108,11 +118,11 @@ public class PaymentService {
                     %d원
                     결제된 계좌 정보
                     %s
-                    """,order.getCode(),payCost,account.getAccountNumber());
+                    """,order.getCode(),payInfo.getPayAmount(),account.getAccountNumber());
 //            smsService.sendSms(customer.getPhoneNumber(),payMessage);
             log.info("결제 성공");
         } else {
-            createFailPaymentHistory(order, account,payCost);
+            createFailPaymentHistory(order, account,payInfo);
             log.info("결제 실패");
         }
 
@@ -120,36 +130,71 @@ public class PaymentService {
     }
 
     @Transactional
-    public void createSuccessPaymentHistory(Order order, Account account,int payCost) {
+    public void createSuccessPaymentHistory(Order order, Account account,PayInfo payInfo) {
         log.info("성공 결제 내역 생성 시작");
 
-        PaymentHistory paymentHistory = PaymentHistory.builder()
-                .order(order)
-                .account(account)
-                .price(payCost)
-                .status(PaymentStatus.COMPLETE)
-                .type(order.getType())
-                .totalPaymentCount(order.getTotalDeliveryCount())
-                .remainingPaymentCount(order.getRemainingDeliveryCount() - 1) // 남은 배송횟수 -1 이 남은 결제 횟수
-                .build();
+        PaymentHistory paymentHistory= null;
+        if (order.getType().isMonthSubscription()) {
+            paymentHistory = PaymentHistory.builder()
+                    .order(order)
+                    .account(account)
+                    .status(PaymentStatus.COMPLETE)
+                    .price(payInfo.getPayAmount())
+                    .type(order.getType())
+                    .totalPaymentCount(order.getTotalDeliveryCount())
+                    .remainingPaymentCount(order.getRemainingDeliveryCount() - 1)
+                    .thisSubMonthStartDate(order.getDeliveryStartDate().plusMonths(order.getPaymentCount()))
+                    .thisSubMonthEndDate(order.getDeliveryStartDate().plusMonths(order.getPaymentCount() + 1))
+                    .deliveryPerPrice(order.getPerPrice())
+                    .thisMonthDeliveryCount(payInfo.getDeliveryCount())
+                    .build();
+        }
+        else{
+            paymentHistory = PaymentHistory.builder()
+                    .order(order)
+                    .account(account)
+                    .status(PaymentStatus.COMPLETE)
+                    .price(payInfo.getPayAmount())
+                    .type(order.getType())
+                    .totalPaymentCount(order.getTotalDeliveryCount())
+                    .remainingPaymentCount(order.getRemainingDeliveryCount() - 1)
+                    .build();
+        }
         paymentHistoryRepository.save(paymentHistory);
 
         log.info("성공 결제 내역 생성 완료");
     }
 
     @Transactional
-    public void createFailPaymentHistory(Order order, Account account,int payCost) {
+    public void createFailPaymentHistory(Order order, Account account,PayInfo payInfo) {
         log.info("실패 결제 내역 생성 시작");
-
-        PaymentHistory paymentHistory = PaymentHistory.builder()
-                .order(order)
-                .account(account)
-                .price(payCost)
-                .status(PaymentStatus.PENDING)
-                .type(order.getType())
-                .totalPaymentCount(order.getTotalDeliveryCount())
-                .remainingPaymentCount(order.getRemainingDeliveryCount())
-                .build();
+        PaymentHistory paymentHistory= null;
+        if (order.getType().isMonthSubscription()) {
+            paymentHistory = PaymentHistory.builder()
+                    .order(order)
+                    .account(account)
+                    .status(PaymentStatus.PENDING)
+                    .price(payInfo.getPayAmount())
+                    .type(order.getType())
+                    .totalPaymentCount(order.getTotalDeliveryCount())
+                    .remainingPaymentCount(order.getRemainingDeliveryCount())
+                    .thisSubMonthStartDate(order.getDeliveryStartDate().plusMonths(order.getPaymentCount()))
+                    .thisSubMonthEndDate(order.getDeliveryStartDate().plusMonths(order.getPaymentCount() + 1))
+                    .deliveryPerPrice(order.getPerPrice())
+                    .thisMonthDeliveryCount(payInfo.getDeliveryCount())
+                    .build();
+        }
+        else{
+            paymentHistory = PaymentHistory.builder()
+                    .order(order)
+                    .account(account)
+                    .status(PaymentStatus.PENDING)
+                    .price(payInfo.getPayAmount())
+                    .type(order.getType())
+                    .totalPaymentCount(order.getTotalDeliveryCount())
+                    .remainingPaymentCount(order.getRemainingDeliveryCount())
+                    .build();
+        }
         paymentHistoryRepository.save(paymentHistory);
         log.info("실패 결제 내역 생성 완료");
 

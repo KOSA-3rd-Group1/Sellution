@@ -19,4 +19,5 @@ public interface DayOptionRepository extends JpaRepository<DayOption, Long> {
     void deleteByCompany(Company company);
 
     List<DayOption> findByIdIn(List<Long> dayOptionIds);
+    List<DayOption> findAllByCompany(Company company);
 }

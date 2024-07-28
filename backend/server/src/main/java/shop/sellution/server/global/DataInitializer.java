@@ -5,21 +5,17 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.address.domain.Address;
 import shop.sellution.server.address.domain.AddressRepository;
 import shop.sellution.server.category.domain.Category;
 import shop.sellution.server.category.domain.CategoryRepository;
-import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.DayOption;
-import shop.sellution.server.company.domain.MonthOption;
-import shop.sellution.server.company.domain.WeekOption;
-import shop.sellution.server.company.domain.repository.CompanyRepository;
-import shop.sellution.server.company.domain.repository.DayOptionRepository;
-import shop.sellution.server.company.domain.repository.MonthOptionRepository;
-import shop.sellution.server.company.domain.repository.WeekOptionRepository;
+import shop.sellution.server.company.domain.*;
+import shop.sellution.server.company.domain.repository.*;
 import shop.sellution.server.company.domain.type.DayValueType;
+import shop.sellution.server.company.domain.type.ImagePurposeType;
 import shop.sellution.server.company.domain.type.SellType;
 import shop.sellution.server.company.domain.type.SubscriptionType;
 import shop.sellution.server.contractcompany.domain.ContractCompany;
@@ -39,14 +35,17 @@ import shop.sellution.server.order.dto.request.FindOrderedProductSimpleReq;
 import shop.sellution.server.order.dto.request.SaveOrderReq;
 import shop.sellution.server.product.domain.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 @Profile("data")
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class DataInitializer implements ApplicationListener<ContextRefreshedEvent> {
 
     private boolean alreadySetup = false;
@@ -65,6 +64,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private final ProductImageRepository productImageRepository;
     private final EventRepository eventRepository;
     private final OrderCreationService orderCreationService;
+    private final CompanyImageRepository companyImageRepository;
 
 
     private Company 포켓샐러드;
@@ -133,8 +133,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         createAccount();
         createAddress();
         createCompanyOptions();
-        createOrder();
         createCouponEvent();
+        createOrder();
 
 
         alreadySetup = true;
@@ -147,7 +147,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .name("PocketSalad")
                 .shopUrl("https://sellution/shopping/pocketsalad")
                 .isShopVisible(DisplayStatus.Y)
-                .isAutoApproved(DisplayStatus.N)
+                .isAutoApproved(DisplayStatus.Y)
                 .isNewMemberEvent(DisplayStatus.N)
                 .serviceType(DeliveryType.BOTH)
                 .subscriptionType(SubscriptionType.MONTH)
@@ -161,6 +161,33 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .mainPromotion2Content("너랑!  나랑!")
                 .build();
         companyRepository.save(포켓샐러드);
+
+        CompanyImage logo = CompanyImage.builder()
+                .company(포켓샐러드)
+                .imageUrl("https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/setting/%ED%8F%AC%EC%BA%A3%EC%83%90%EB%9F%AC%EB%93%9C_%EB%A1%9C%EA%B3%A0.png")
+                .purposeOfUse(ImagePurposeType.LOGO)
+                .build();
+        companyImageRepository.save(logo);
+        CompanyImage promotion1 = CompanyImage.builder()
+                .company(포켓샐러드)
+                .imageUrl("https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/setting/%EB%A9%94%EC%9D%B8%ED%94%84%EB%A1%9C%EB%AA%A8%EC%85%98.jfif")
+                .purposeOfUse(ImagePurposeType.PROMOTION)
+                .build();
+        companyImageRepository.save(promotion1);
+        CompanyImage promotion2 = CompanyImage.builder()
+                .company(포켓샐러드)
+                .imageUrl("https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/setting/%EB%A9%94%EC%9D%B8%ED%94%84%EB%A1%9C%EB%AA%A8%EC%85%982.jfif")
+                .purposeOfUse(ImagePurposeType.PROMOTION)
+                .build();
+        companyImageRepository.save(promotion2);
+        CompanyImage promotion3 = CompanyImage.builder()
+                .company(포켓샐러드)
+                .imageUrl("https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/setting/%EB%A9%94%EC%9D%B8%ED%94%84%EB%A1%9C%EB%AA%A8%EC%85%983.jfif")
+                .purposeOfUse(ImagePurposeType.PROMOTION)
+                .build();
+        companyImageRepository.save(promotion3);
+
+
     }
 
     private void createContractCompany() {
@@ -641,12 +668,12 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private void createAddress() {
         공용주소 = Address.builder()
                 .customer(일반회원)
-                .name("집")
+                .name("길김이")
                 .addressName("집")
                 .address("서울특별시 강남구 테헤란로 427")
                 .addressDetail("포스코타워 3층")
                 .zipcode("06164")
-                .phoneNumber("010-7598-5112")
+                .phoneNumber("01075985112")
                 .isDefaultAddress(DisplayStatus.Y)
                 .build();
 
@@ -654,12 +681,12 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         공용주소2 = Address.builder()
                 .customer(휴면회원)
-                .name("집")
+                .name("길김이")
                 .addressName("집")
                 .address("서울특별시 강남구 테헤란로 427")
                 .addressDetail("포스코타워 3층")
                 .zipcode("06164")
-                .phoneNumber("010-7598-5112")
+                .phoneNumber("01075985112")
                 .isDefaultAddress(DisplayStatus.Y)
                 .build();
 
@@ -668,12 +695,12 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         for (Customer customer : customers) { // 50명 더미에 같은 주소[테스트용]
             addressRepository.save(Address.builder()
                     .customer(customer)
-                    .name("집")
+                    .name("길김이")
                     .addressName("집")
                     .address("서울특별시 강남구 테헤란로 427")
                     .addressDetail("포스코타워 " + random.nextInt(50) + 1 + "층")
                     .zipcode("06164")
-                    .phoneNumber("010-7598-5333")
+                    .phoneNumber("01075985333")
                     .isDefaultAddress(DisplayStatus.Y)
                     .build());
         }
@@ -700,7 +727,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         }
 
         for (DayValueType type : DayValueType.values()) {
-            if (type.name().equals("화")) continue; // 화요일 제외 월 ~ 금
+            if (type.name().equals("TUE")) continue; // 화요일 제외 월 ~ 금
             DayOption dayOption = DayOption.builder()
                     .company(포켓샐러드)
                     .dayValue(type)
@@ -713,7 +740,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private void createOrder() {
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 10; i++) {
             Customer customer = customers.get(random.nextInt(customers.size()));
             OrderType orderType = OrderType.values()[random.nextInt(OrderType.values().length)];
 
@@ -755,7 +782,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
             if (orderType == OrderType.MONTH_SUBSCRIPTION) { // 정기[월] 주문이면 월, 주,요일 옵션 필수
                 orderReqBuilder.monthOptionId(monthOptions.get(random.nextInt(monthOptions.size())).getId())
                         .weekOptionId(weekOptions.get(random.nextInt(weekOptions.size())).getId())
-                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(3)));
+                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(14)).with(TemporalAdjusters.next(DayOfWeek.MONDAY)));
             }
             if (orderType == OrderType.COUNT_SUBSCRIPTION) { // 정기[횟수] 주문이면
                 int minDeliveryCount = 포켓샐러드.getMinDeliveryCount();
@@ -763,7 +790,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
                 orderReqBuilder.weekOptionId(weekOptions.get(random.nextInt(weekOptions.size())).getId())
                         .totalDeliveryCount((random.nextInt(maxDeliveryCount - minDeliveryCount + 1) + minDeliveryCount))
-                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(3)));
+                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(14)).with(TemporalAdjusters.next(DayOfWeek.MONDAY)));
             }
             int numberOfDayOptions = random.nextInt(dayOptions.size()) + 1;
             List<Long> selectedDayOptionIds = new ArrayList<>();
@@ -774,6 +801,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 }
             }
             orderReqBuilder.dayOptionIds(selectedDayOptionIds);
+            orderReqBuilder.eventId(random.nextLong(9)+1); // 이벤트 랜덤지정
 
             orderCreationService.createOrder(customer.getId(), orderReqBuilder.build());
         }

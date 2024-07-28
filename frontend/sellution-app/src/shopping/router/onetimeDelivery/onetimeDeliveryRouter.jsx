@@ -21,11 +21,11 @@ const onetimeDeliveryRouter = () => {
       element: <CartPage />,
     },
     {
-      path: 'order',
+      path: 'order/:customerId',
       element: <OrderPage />,
     },
     {
-      path: 'order-completed',
+      path: 'order-completed/:orderId',
       element: <OrderCompletedPage />,
     },
     {
