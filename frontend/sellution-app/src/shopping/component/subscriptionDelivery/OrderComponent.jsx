@@ -35,6 +35,14 @@ const OrderComponent = () => {
   const [minDeliveryCount, setMinDeliveryCount] = useState(0);
   const [maxDeliveryCount, setMaxDeliveryCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [monthlyPriceData, setMonthlyPriceData] = useState({
+    thisMonthDeliveryCount: 0,
+    thisMonthPrice: 0,
+    totalDeliveryCount: 0,
+    totalPrice: 0,
+    deliveryNextDate: '',
+    deliveryEndDate: ''
+  });
 
   const [selectedWeek, setSelectedWeek] = useState('');
   const [selectedCount, setSelectedCount] = useState('');
@@ -124,8 +132,25 @@ const OrderComponent = () => {
     return '*'.repeat(accountNumber.length - 4) + accountNumber.slice(-4);
   };
 
+  //월별 결제 >> 결제금액 계산 함수
+  const calculateMonthlyPrice = async () => {
+    try {
+      const response = await axios.post('http://localhost:8080/orders/month/calculate-price', {
+        selectedDays: selectedDays,
+        weekOptionValue: selectedWeek.value,
+        monthOptionValue: selectedMonth.value,
+        perPrice: finalPrice,
+        startDate: selectedStartDate,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error calculating monthly price:', error);
+      return null;
+    }
+  };
+
   // 결제금액 계산
-  const calculateTotalPrice = () => {
+  const calculateTotalPrice = async () => {
     const total = listToShow.reduce((sum, item) => sum + item.cost * item.quantity, 0);
     const productDiscountTotal = listToShow.reduce(
       (sum, item) => sum + (item.cost - item.discountedPrice) * item.quantity,
@@ -138,15 +163,28 @@ const OrderComponent = () => {
         )
       : 0;
 
-    console.log('total price', total);
-    console.log('product discount total', productDiscountTotal);
-    console.log('coupon discount total', couponDiscountTotal);
-
     setTotalPrice(total);
     setProductDiscountTotal(productDiscountTotal);
     setCouponDiscountTotal(couponDiscountTotal);
     setFinalPrice(total - productDiscountTotal - couponDiscountTotal);
+
+    if (subscriptionType === 'MONTH' && selectedStartDate && selectedWeek && selectedMonth && selectedDays.length > 0) {
+      const monthlyPriceData = await calculateMonthlyPrice();
+      if (monthlyPriceData) {
+        setMonthlyPriceData(monthlyPriceData);
+      }
+    } else {
+      setMonthlyPriceData({
+        thisMonthDeliveryCount: 0,
+        thisMonthPrice: 0,
+        totalDeliveryCount: 0,
+        totalPrice: 0,
+        deliveryNextDate: '',
+        deliveryEndDate: ''
+      });
+    }
   };
+
   //유효성 검사 함수
   const validateForm = () => {
     const isSubscriptionValid =
@@ -192,7 +230,16 @@ const OrderComponent = () => {
       orderedProducts: orderedProducts, // 주문한 상품들
       dayOptionIds: selectedDays.map((day) => dayValues.find((d) => d.value === day).id), // 선택된 요일들 ID
     };
+
     console.log('주문 보내는 양식: ', saveOrderReq);
+    if (subscriptionType === 'MONTH' && monthlyPriceData) {
+      saveOrderReq.thisMonthDeliveryCount = monthlyPriceData.thisMonthDeliveryCount;
+      saveOrderReq.thisMonthPrice = monthlyPriceData.thisMonthPrice;
+      saveOrderReq.totalDeliveryCount = monthlyPriceData.totalDeliveryCount;
+      saveOrderReq.totalPrice = monthlyPriceData.totalPrice;
+      saveOrderReq.deliveryNextDate = monthlyPriceData.deliveryNextDate;
+      saveOrderReq.deliveryEndDate = monthlyPriceData.deliveryEndDate;
+    }
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/orders/customers/${customerId}`,
@@ -206,7 +253,7 @@ const OrderComponent = () => {
       console.error('Error creating order:', error);
       alert('주문 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
     }
-};
+  };
 
   //api
   const fetchAddresses = async () => {
@@ -223,7 +270,7 @@ const OrderComponent = () => {
       console.error('Error fetching addresses:', error);
     }
   };
-  
+
   const fetchCoupons = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/events/coupons`);
@@ -282,6 +329,7 @@ const OrderComponent = () => {
       await fetchSaleSettings();
       await fetchAccounts();
       checkForSavedAddress();
+      calculateTotalPrice(); // 기본값 설정을 위해 초기 호출
     };
     fetchData();
     return () => {
@@ -299,7 +347,7 @@ const OrderComponent = () => {
   useEffect(() => {
     calculateTotalPrice();
     console.log('계산 변경: ', selectedCoupon);
-  }, [selectedCoupon, orderList]);
+  }, [selectedCoupon, orderList, selectedStartDate, selectedWeek, selectedMonth, selectedDays]);
 
   return (
     <>
@@ -350,6 +398,9 @@ const OrderComponent = () => {
           productDiscountTotal={productDiscountTotal}
           couponDiscountTotal={couponDiscountTotal}
           finalPrice={finalPrice}
+          monthlyPriceData={monthlyPriceData}
+          subscriptionType={subscriptionType}
+          selectedCount={selectedCount}
         />
         <div className='seperator w-full h-4 bg-gray-100'></div>
         {/* 결제 정보 */}
@@ -358,6 +409,7 @@ const OrderComponent = () => {
           handleCheckChange={handleCheckChange}
           handleDeleteAccount={handleDeleteAccount}
           handleAddPaymentMethod={handleAddPaymentMethod}
+          subscriptionType={subscriptionType}
         />
       </div>
       {/*  */}
