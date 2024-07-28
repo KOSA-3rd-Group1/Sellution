@@ -6,7 +6,12 @@ const LogoHeaderNav = ({ logoImageUrl }) => {
   return (
     <header className='fixed top-0 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-lg h-16 flex justify-center items-center bg-white shadow-md'>
       <Link to={`/shopping/${clientName}/home`}>
-        <img src={logoImageUrl || '/image/shoppingmall_logo.png'} alt='Shoppingmall Logo' />
+        <img
+          src={logoImageUrl || '/image/shoppingmall_logo.png'}
+          alt='Shoppingmall Logo'
+          className='h-12'
+          style={{ objectFit: 'contain' }}
+        />
       </Link>
     </header>
   );
