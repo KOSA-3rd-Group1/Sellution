@@ -160,7 +160,7 @@ const AddComponent = () => {
     }
   }, [productInfo.cost, productInfo.discountRate, productInfo.isDiscount]);
 
-  const registerProduct = () => {
+  const registerProduct = async () => {
     const formData = new FormData();
 
     const jsonData = {
@@ -185,45 +185,59 @@ const AddComponent = () => {
     formData.append('product', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
 
     if (selectedThumbnailImage) {
-      formData.append('thumbnailImage', dataURItoBlob(selectedThumbnailImage), 'thumbnail.jpg');
+      const thumbnailBlob = await dataURItoBlob(selectedThumbnailImage);
+      formData.append('thumbnailImage', thumbnailBlob, 'thumbnail.jpg');
     }
 
-    productImages.forEach((image, index) => {
-      if (image) {
-        formData.append('listImages', dataURItoBlob(image), `list_${index}.jpg`);
+    for (let i = 0; i < productImages.length; i++) {
+      if (productImages[i]) {
+        const imageBlob = await dataURItoBlob(productImages[i]);
+        formData.append('listImages', imageBlob, `list_${i}.jpg`);
       }
-    });
+    }
 
-    productDetailImages.forEach((image, index) => {
-      formData.append('detailImages', dataURItoBlob(image), `detail_${index}.jpg`);
-    });
+    for (let i = 0; i < productDetailImages.length; i++) {
+      const imageBlob = await dataURItoBlob(productDetailImages[i]);
+      formData.append('detailImages', imageBlob, `detail_${i}.jpg`);
+    }
 
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/products`, {
-      method: 'POST',
-      body: formData,
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log('Product registered successfully');
-          moveList();
-        } else {
-          console.error('Failed to register product');
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/products`, {
+        method: 'POST',
+        body: formData,
       });
+
+      if (response.ok) {
+        console.log('Product registered successfully');
+        moveList();
+      } else {
+        console.error('Failed to register product');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   function dataURItoBlob(dataURI) {
-    const byteString = atob(dataURI.split(',')[1]);
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
+    if (dataURI.split(',')[0].indexOf('base64') >= 0) {
+      const byteString = atob(dataURI.split(',')[1]);
+      const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      return new Blob([ab], { type: mimeString });
     }
-    return new Blob([ab], { type: mimeString });
+
+    // URL인 경우 (예: blob:http://...)
+    if (dataURI.startsWith('blob:') || dataURI.startsWith('http')) {
+      return fetch(dataURI).then((res) => res.blob());
+    }
+
+    // 그 외의 경우, 빈 Blob 반환
+    console.error('Unhandled dataURI format:', dataURI);
+    return new Blob([], { type: 'application/octet-stream' });
   }
 
   return (

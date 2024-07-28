@@ -1,11 +1,13 @@
-import { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useProductList } from '@/client/business/product/useProductList';
 import TableProduct from '@/client/layout/common/table/TableProduct';
 import { EventBtn } from '@/client/layout/common/Button';
 
 const ListComponent = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const {
     HEADERS,
     ROW_HEIGHT,
@@ -25,6 +27,12 @@ const ListComponent = () => {
   } = useProductList();
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    setTableState((prev) => ({ ...prev, currentPage: page }));
+  }, [location.search]);
+
+  useEffect(() => {
     fetchProducts();
   }, [tableState.currentPage]);
 
@@ -38,7 +46,7 @@ const ListComponent = () => {
     return (
       <div className='flex justify-end'>
         <button
-          onClick={() => setTableState((prev) => ({ ...prev, currentPage: prev.currentPage - 1 }))}
+          onClick={() => updatePage(tableState.currentPage - 1)}
           className='mx-1 px-3 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
           disabled={tableState.currentPage === 1}
         >
@@ -47,7 +55,7 @@ const ListComponent = () => {
         {Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((number) => (
           <button
             key={number}
-            onClick={() => setTableState((prev) => ({ ...prev, currentPage: number }))}
+            onClick={() => updatePage(number)}
             className={`mx-1 px-3 py-1 rounded border ${
               tableState.currentPage === number
                 ? 'bg-brandOrange text-white'
@@ -58,7 +66,7 @@ const ListComponent = () => {
           </button>
         ))}
         <button
-          onClick={() => setTableState((prev) => ({ ...prev, currentPage: prev.currentPage + 1 }))}
+          onClick={() => updatePage(tableState.currentPage + 1)}
           className='mx-1 px-3 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
           disabled={tableState.currentPage === totalPages}
         >
@@ -69,7 +77,7 @@ const ListComponent = () => {
   };
 
   const handleRowClick = (productId) => {
-    navigate(`/product/${productId}?page=${tableState.currentPage}`);
+    navigate(`/product/${productId}?fromPage=${tableState.currentPage}`);
   };
 
   return (
@@ -85,10 +93,7 @@ const ListComponent = () => {
             data={data}
             totalDataCount={totalDataCount}
             tableState={tableState}
-            setTableState={(newState) => {
-              setTableState(newState);
-              fetchProducts(); // tableState가 변경될 때마다 fetchProducts 호출
-            }}
+            setTableState={setTableState}
             handleRowEvent={handleRowEvent}
             handleSelectAll={handleSelectAll}
             handleSelectRow={handleSelectRow}

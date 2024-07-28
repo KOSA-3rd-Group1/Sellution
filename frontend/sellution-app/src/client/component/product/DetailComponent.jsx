@@ -8,9 +8,11 @@ import ImageUploader2 from '@/client/layout/common/ImageUploader2';
 const DetailComponent = () => {
   const { productId } = useParams();
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const currentPage = queryParams.get('page') || 1;
   const navigate = useNavigate();
+
+  // URL에서 fromPage 파라미터를 가져옵니다.
+  const searchParams = new URLSearchParams(location.search);
+  const fromPage = searchParams.get('fromPage') || '1';
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -120,7 +122,7 @@ const DetailComponent = () => {
       });
 
       alert('상품 정보가 성공적으로 업데이트되었습니다.');
-      navigate(`/product?page=${currentPage}`);
+      navigate(`/product?page=${fromPage}`);
     } catch (error) {
       console.error('상품 업데이트 중 오류 발생:', error);
       alert('상품 정보 업데이트에 실패했습니다. 다시 시도해 주세요.');
@@ -165,7 +167,9 @@ const DetailComponent = () => {
 
   const handleEditImage = (updatedImage, index) => window.confirm(`이미지를 변경하시겠습니까?`);
 
-  const moveList = () => navigate(`/product?page=${currentPage}`);
+  const moveList = () => {
+    navigate(`/product?page=${fromPage}`);
+  };
 
   useEffect(() => {
     const fetchProductData = async () => {
