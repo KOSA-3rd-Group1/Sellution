@@ -1,19 +1,30 @@
+import { ResetBtn } from '@/client/layout/common/Button';
 import TablePaymentHistory from '@/client/layout/common/table/TablePaymentHistory';
 import Pagination from '@/client/layout/common/Pagination';
 import DateRange from '@/client/layout/common/DateRange';
+import { useMove } from '@/client/business/common/useMove';
 import { usePaymentHistoryList } from '@/client/business/paymentHistory/usePaymentHistoryList';
+import { HEADERS, ROW_HEIGHT } from '@/client/utility/tableinfo/PaymentHistoryListTableInfo';
 
 const ListComponent = () => {
   const {
-    HEADERS,
-    ROW_HEIGHT,
+    queryParams,
+    page,
+    size,
+    refresh,
+    moveToPathname,
+    moveToPagination,
+    updateQueryParameter,
+  } = useMove();
+  const {
     data,
     totalDataCount,
     tableState,
     dateRangeValue,
     setTableState,
     handleChangeDateRangeValue,
-  } = usePaymentHistoryList();
+    handleFilterReset,
+  } = usePaymentHistoryList({ queryParams, page, size, refresh, updateQueryParameter });
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -32,6 +43,7 @@ const ListComponent = () => {
             totalDataCount={totalDataCount}
             tableState={tableState}
             setTableState={setTableState}
+            ResetBtn={<ResetBtn label={'초기화'} onClick={handleFilterReset} />}
           />
         </div>
         <div className='h-12 flex-none flex justify-end items-end '>
