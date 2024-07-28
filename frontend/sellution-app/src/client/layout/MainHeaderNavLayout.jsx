@@ -1,13 +1,16 @@
 import { NavLink, Outlet } from 'react-router-dom';
+import { useMove } from '@/client/business/common/useMove';
 
 const MainHeaderNavLayout = ({ navMenus, isEnd }) => {
+  const { queryParams } = useMove();
+
   return (
     <div className='w-full h-full flex flex-col'>
       <nav className='h-12 pt-4 flex align-bottom text-base'>
         {navMenus.map((navMenu, index) => (
           <NavLink
             key={index}
-            to={`${navMenu.link}`}
+            to={`${navMenu.link}?${queryParams.toString()}`}
             className={({ isActive }) =>
               ` px-2 ${
                 isActive

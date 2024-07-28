@@ -1,10 +1,36 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import { InfoInput } from '@/client/layout/common/Input';
 import { EventBtn } from '@/client/layout/common/Button';
+import AlertModal from '@/client/layout/common/modal/AlertModal';
+import AutoCloseModal from '@/client/layout/common/modal/AutoCloseModal';
+import { useMove } from '@/client/business/common/useMove';
+import { useModal } from '@/client/business/common/useModal';
 import { useCustomerAddressAdd } from '@/client/business/customer/detail/address/useCustomerAddressAdd';
 
 const AddComponent = () => {
-  const { data, handleChangeInputValue, moveList, handleSaveData } = useCustomerAddressAdd();
+  const { moveToPathname } = useMove();
+  const {
+    alertModalState,
+    autoCloseModalState,
+    openAlertModal,
+    closeAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  } = useModal();
+  const {
+    data,
+    handleChangeInputValue,
+    checkMoveList,
+    checkSaveContent,
+    scuccessCloseAutoCloseModal,
+    handleOnConfirm,
+    handlePostcode,
+  } = useCustomerAddressAdd({
+    moveToPathname,
+    openAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  });
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -31,24 +57,30 @@ const AddComponent = () => {
                   <InfoInput
                     value={data.zipcode || ''}
                     onChange={(e) => handleChangeInputValue('zipcode', e.target.value)}
-                    placeholder={'주소을 입력하세요'}
+                    placeholder={'우편번호를 검색하세요'}
+                    readOnly
                   />
                 </div>
                 <div className='flex-1 min-w-fit flex justify-end items-center'>
-                  <EventBtn label={'우편번호 검색'} onClick={() => alert('테스트')} />
+                  <EventBtn label={'우편번호 검색'} onClick={handlePostcode} />
                 </div>
               </div>
             </li>
             <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
               <div className='flex-1 min-w-32'>주소</div>
               <div className='flex-1 min-w-64'>
-                <InfoInput value={data.address || ''} readOnly />
+                <InfoInput value={data.streetAddress || ''} readOnly />
               </div>
             </li>
             <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
               <div className='flex-1 min-w-32'>상세주소</div>
               <div className='flex-1 min-w-64'>
-                <InfoInput value={data.addressDetail || ''} readOnly />
+                <InfoInput
+                  value={data.addressDetail || ''}
+                  onChange={(e) => handleChangeInputValue('addressDetail', e.target.value)}
+                  placeholder={data.zipcode ? '상세 주소를 입력하세요.' : ''}
+                  readOnly={!data.zipcode}
+                />
               </div>
             </li>
             <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
@@ -57,7 +89,8 @@ const AddComponent = () => {
                 <InfoInput
                   value={data.phoneNumber || ''}
                   onChange={(e) => handleChangeInputValue('phoneNumber', e.target.value)}
-                  placeholder={'"-"없이 숫자만 입력하세요.'}
+                  placeholder={'휴대폰 번호를 입력하세요.'}
+                  maxLength={15}
                 />
               </div>
             </li>
@@ -75,8 +108,25 @@ const AddComponent = () => {
         </div>
       </section>
       <FooterComponent
-        btn1={{ label: '취소', event: moveList }}
-        btn2={{ label: '배송지 등록', event: handleSaveData }}
+        btn1={{ label: '취소', event: checkMoveList }}
+        btn2={{ label: '배송지 등록', event: checkSaveContent }}
+      />
+
+      <AlertModal
+        isOpen={alertModalState.isOpen}
+        onClose={closeAlertModal}
+        onConfirm={handleOnConfirm}
+        type={alertModalState.type}
+        title={alertModalState.title}
+        message={alertModalState.message}
+      />
+
+      <AutoCloseModal
+        isOpen={autoCloseModalState.isOpen}
+        onClose={scuccessCloseAutoCloseModal}
+        title={autoCloseModalState.title}
+        message={autoCloseModalState.message}
+        duration={1500}
       />
     </div>
   );

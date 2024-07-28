@@ -1,19 +1,13 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
-import TableAddress from '@/client/layout/common/TableAddress';
+import TableCustomerAddress from '@/client/layout/common/table/TableCustomerAddress';
 import { EventBtn } from '@/client/layout/common/Button';
+import { useMove } from '@/client/business/common/useMove';
 import { useCustomerAddressList } from '@/client/business/customer/detail/address/useCustomerAddressList';
+import { HEADERS, ROW_HEIGHT } from '@/client/utility/tableinfo/CustomerAddressListTableInfo';
 
 const ListComponent = () => {
-  const {
-    HEADERS,
-    ROW_HEIGHT,
-    data,
-    totalDataCount,
-    defaultAddressObject,
-    handleAddBtn,
-    handleRowEvent,
-    moveList,
-  } = useCustomerAddressList();
+  const { moveToPathname } = useMove();
+  const { data, totalDataCount, defaultAddressObject } = useCustomerAddressList();
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -34,21 +28,21 @@ const ListComponent = () => {
           </div>
         </div>
         <div className='h-3/5 overflow-hidden'>
-          <TableAddress
+          <TableCustomerAddress
             HEADERS={HEADERS}
             ROW_HEIGHT={ROW_HEIGHT}
             data={data}
             totalDataCount={totalDataCount}
-            handleRowEvent={handleRowEvent}
+            handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
-                <EventBtn label={'배송지 등록'} onClick={handleAddBtn} />
+                <EventBtn label={'배송지 등록'} onClick={() => moveToPathname('add')} />
               </div>
             }
           />
         </div>
       </section>
-      <FooterComponent back={{ label: '목록으로', event: moveList }} />
+      <FooterComponent back={{ label: '목록으로', event: () => moveToPathname('/customer') }} />
     </div>
   );
 };

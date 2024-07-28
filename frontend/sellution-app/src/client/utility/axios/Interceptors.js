@@ -52,7 +52,9 @@ export const addAuthInterceptor = (instance, setAccessToken, accessToken = null)
             window.location.href = '/login';
             throw new Error('리프레시 토큰이 유효하지 않습니다. 다시 로그인해 주세요.');
           }
-          throw error;
+          //   throw error;
+          window.location.href = '/login';
+          throw new Error('리프레시 토큰이 유효하지 않습니다. 다시 로그인해 주세요.');
         }
       };
 
