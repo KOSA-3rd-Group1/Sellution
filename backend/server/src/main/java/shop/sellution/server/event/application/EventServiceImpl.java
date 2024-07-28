@@ -36,6 +36,8 @@ public class EventServiceImpl implements EventService {
     private final CompanyRepository companyRepository;
     private final CouponBoxRepository couponBoxRepository;
     private final CustomerRepository customerRepository;
+    //redis
+    private final CouponCountRepository couponCountRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -53,7 +55,7 @@ public class EventServiceImpl implements EventService {
                 .map(FindEventRes::fromEntity);
 
     }
-
+    //이벤트 생성
     @Override
     public void saveEvent(SaveEventReq saveEventReq) {
         CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
@@ -67,8 +69,11 @@ public class EventServiceImpl implements EventService {
         Company company = getCompanyById(companyId);
         CouponEvent event = saveEventReq.toEntity(company);
         eventRepository.save(event);
+        //redis에 초기 쿠폰 수량 설정
+        couponCountRepository.setInitialQuantity(event.getId(), event.getInitialQuantity());
     }
 
+    //TODO: 삭제된 이벤트면 오류 나도록 추가
     @Override
     public void updateEvent(Long eventId, UpdateEventReq updateEventReq) {
         CouponEvent event = getEventById(eventId);
@@ -83,7 +88,7 @@ public class EventServiceImpl implements EventService {
         event.update(updateEventReq);
 //        eventRepository.save(event); 엔티티 변경사항은 트랜잭션이 끝날 때 자동으로 반영
     }
-
+    //TODO: 삭제된 이벤트면 오류 나도록 추가
     @Override
     public void deleteEvent(Long eventId) {
         //삭제로직
@@ -119,7 +124,7 @@ public class EventServiceImpl implements EventService {
         return eventRepositoryCustom.findCouponsByCustomer(customerId, now, pageable)
                 .map(FindEventRes::fromEntity);
     }
-
+    //쿠폰 다운로드
     @Override
     public void saveCoupon(Long eventId) {
         //쿠폰 다운로드 로직
@@ -129,7 +134,6 @@ public class EventServiceImpl implements EventService {
         //4. 쿠폰 다운로드
         CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
         Long customerId = userDetails.getUserId();
-        System.out.println("customerId >>>>> " + customerId);
         LocalDate now = LocalDate.now();
         CouponEvent event = getEventById(eventId);
         if(now.isAfter(event.getEventEndDate()) || now.isBefore(event.getEventStartDate())){
@@ -138,9 +142,50 @@ public class EventServiceImpl implements EventService {
         if(event.isDeleted()){
             throw new IllegalArgumentException("중단된 이벤트는 쿠폰을 다운로드할 수 없습니다.");
         }
+        //TODO: 수정예정
         if(couponBoxRepository.existsByCustomerIdAndCouponEventId(customerId, eventId)){
             throw new IllegalArgumentException("이미 쿠폰을 다운로드하셨습니다.");
         }
+        //event.decreaseRemainingQuantity(); // 남은 쿠폰 수량 감소
+        //발급 가능한 경우 쿠폰 생성
+        CouponBox couponBox = CouponBox.builder()
+                .id(new CouponBoxId(customerId, eventId))
+                .couponEvent(event)
+                .customer(getCustomerById(customerId))
+                .build();
+        couponBoxRepository.save(couponBox);
+    }
+
+    //쿠폰 다운로드 (동시성 테스트)
+    @Override
+    public void downloadCoupon(Long customerId, Long eventId) {
+        //쿠폰 다운로드 로직
+        //1. 해당 이벤트가 종료되었는지 확인
+        //2. 해당 이벤트가 삭제되었는지 확인
+        //3. 해당 이벤트가 이미 다운로드 되었는지 확인
+        //4. 쿠폰 다운로드
+        LocalDate now = LocalDate.now();
+        CouponEvent event = getEventById(eventId);
+        if(now.isAfter(event.getEventEndDate()) || now.isBefore(event.getEventStartDate())){
+            throw new IllegalArgumentException("이벤트 기간이 아닙니다");
+        }
+        if(event.isDeleted()){
+            throw new IllegalArgumentException("중단된 이벤트는 쿠폰을 다운로드할 수 없습니다.");
+        }
+        //TODO: 수정예정
+        if(couponBoxRepository.existsByCustomerIdAndCouponEventId(customerId, eventId)){
+            throw new IllegalArgumentException("이미 쿠폰을 다운로드하셨습니다.");
+        }
+        //Redis를 사용하여 쿠폰 개수 확인 & 감소
+        //event.decreaseRemainingQuantity(); // 남은 쿠폰 수량 감소
+        if(!event.getInitialQuantity().equals(Integer.MAX_VALUE)){
+            Long remainingQuantity = couponCountRepository.decrement(eventId);
+            if(remainingQuantity < 0){
+                throw new IllegalArgumentException("쿠폰이 모두 소진되었습니다.");
+            }
+        }
+
+        //발급 가능한 경우 쿠폰 생성
         CouponBox couponBox = CouponBox.builder()
                 .id(new CouponBoxId(customerId, eventId))
                 .couponEvent(event)

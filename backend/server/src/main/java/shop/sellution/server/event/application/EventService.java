@@ -24,4 +24,6 @@ public interface EventService {
     Page<FindEventRes> findCoupons(Pageable pageable);
 
     void saveCoupon(Long eventId);
+
+    void downloadCoupon(Long customerId, Long eventId);
 }
