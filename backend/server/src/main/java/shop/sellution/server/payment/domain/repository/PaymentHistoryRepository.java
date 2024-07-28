@@ -1,12 +1,13 @@
 package shop.sellution.server.payment.domain.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import shop.sellution.server.payment.domain.PaymentHistory;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface PaymentHistoryRepository extends
         JpaRepository<PaymentHistory, Long>,
@@ -35,5 +36,8 @@ public interface PaymentHistoryRepository extends
             and ph.createdAt < :endOfDay
             """)
     PaymentHistory findPendingPaymentHistory(Long orderId, LocalDateTime startOfDay,LocalDateTime endOfDay);
+
+    // 해당 주문에 속하는 결제내역 조회
+    Page<PaymentHistory> findAllByOrderId(Long orderId, Pageable pageable);
 
 }

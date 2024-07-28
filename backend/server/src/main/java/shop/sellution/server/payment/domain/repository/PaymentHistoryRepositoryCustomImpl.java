@@ -28,14 +28,14 @@ public class PaymentHistoryRepositoryCustomImpl implements PaymentHistoryReposit
 
     @Override
     public Page<FindPaymentHistoryRes> findPaymentHistoryByConditions(
-            Long customerId,
+            Long companyId,
             FindPaymentHistoryCond findPaymentHistoryCond,
             Pageable pageable
     ) {
         JPAQuery<FindPaymentHistoryRes> query = queryFactory
                 .select(Projections.constructor(FindPaymentHistoryRes.class,
                         paymentHistory.id.as("paymentHistoryId"),
-                        order.customer.id.as("customerId"),
+                        order.customer.id.as("companyId"),
                         paymentHistory.price,
                         paymentHistory.remainingPaymentCount.as("remainingPayCount"),
                         paymentHistory.totalPaymentCount.as("totalCountForPayment"),
@@ -45,7 +45,7 @@ public class PaymentHistoryRepositoryCustomImpl implements PaymentHistoryReposit
                 .join(paymentHistory.order, order)
                 .join(order.customer, customer)
                 .where(
-                        customerIdEq(customerId),
+                        companyIdEq(companyId),
                         orderIdEq(findPaymentHistoryCond.getOrderId()),
                         betweenDates(paymentHistory.createdAt, findPaymentHistoryCond.getStartDate(), findPaymentHistoryCond.getEndDate())
                 );
@@ -56,7 +56,7 @@ public class PaymentHistoryRepositoryCustomImpl implements PaymentHistoryReposit
                 .join(paymentHistory.order, order)
                 .join(order.customer, customer)
                 .where(
-                        customerIdEq(customerId),
+                        companyIdEq(companyId),
                         orderIdEq(findPaymentHistoryCond.getOrderId()),
                         betweenDates(paymentHistory.createdAt, findPaymentHistoryCond.getStartDate(), findPaymentHistoryCond.getEndDate())
                 ).fetchOne();
@@ -70,8 +70,8 @@ public class PaymentHistoryRepositoryCustomImpl implements PaymentHistoryReposit
         return new PageImpl<>(content, pageable, total != null ? total : 0L);
     }
 
-    private BooleanExpression customerIdEq(Long customerId) {
-        return customerId != null ? order.customer.id.eq(customerId) : null;
+    private BooleanExpression companyIdEq(Long companyId) {
+        return companyId != null ? order.company.companyId.eq(companyId) : null;
     }
 
     private BooleanExpression orderIdEq(Long orderId) {

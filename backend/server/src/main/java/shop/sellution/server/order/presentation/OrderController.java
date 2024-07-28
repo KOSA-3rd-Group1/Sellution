@@ -46,7 +46,7 @@ public class OrderController {
     @PostMapping("/customers/{customerId}")
     public ResponseEntity<String> order(@PathVariable Long customerId, @RequestBody SaveOrderReq saveOrderReq) {
         long savedOrderId = orderCreationService.createOrder(customerId, saveOrderReq);
-        return ResponseEntity.ok().body("success, 생성된 아이디 : " + savedOrderId);
+        return ResponseEntity.ok().body("success, 생성된 주문 아이디 : " + savedOrderId);
     }
 
     // 주문 취소하기
