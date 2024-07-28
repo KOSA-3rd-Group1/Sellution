@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import useDebounce from '@/client/business/common/useDebounce';
 
@@ -21,6 +21,7 @@ const mapFilterValues = {
 
 export const useProductList = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [data, setData] = useState([]);
   const [totalDataCount, setTotalDataCount] = useState(0);
   const [categories, setCategories] = useState([]);
@@ -225,9 +226,13 @@ export const useProductList = () => {
 
     if (confirmDelete) {
       try {
-        await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products`, {
-          data: selectedProductIds,
-        });
+        for (const productId of selectedProductIds) {
+          await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}`, {
+            headers: {
+              'Content-Type': 'application/json', // 명시적으로 Content-Type 헤더 설정
+            },
+          });
+        }
         alert('선택한 상품들이 성공적으로 삭제되었습니다.');
         setSelectedRows({});
         fetchProducts();

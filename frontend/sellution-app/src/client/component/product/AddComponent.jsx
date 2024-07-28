@@ -1,33 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react'; // eslint-disable-line no-unused-vars
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { EditIcon, TrashIcon } from '@/client/utility/assets/Icons.jsx';
+import { EditIcon } from '@/client/utility/assets/Icons.jsx';
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import ImageUploader2 from '@/client/layout/common/ImageUploader2';
 
 const AddComponent = () => {
-  // 상태 관리
-  const [productDetailImages, setProductDetailImages] = useState([]);
-  const [productDetailImageNames, setProductDetailImageNames] = useState([]);
-  const [selectedThumbnailImage, setSelectedThumbnailImage] = useState(null);
-  const [productImages, setProductImages] = useState([]);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(null);
-  const [isDiscountApplied, setIsDiscountApplied] = useState(false);
-  const detailImageInputRef = useRef(null);
-  const [categories, setCategories] = useState([]);
-  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
-  const DisplayStatus = {
-    VISIBLE: 'Y',
-    INVISIBLE: 'N',
-  };
+  // 상수
+  const DisplayStatus = { VISIBLE: 'Y', INVISIBLE: 'N' };
+  const DeliveryType = { ONETIME: 'ONETIME', SUBSCRIPTION: 'SUBSCRIPTION', BOTH: 'BOTH' };
 
-  const DeliveryType = {
-    ONETIME: 'ONETIME',
-    SUBSCRIPTION: 'SUBSCRIPTION',
-    BOTH: 'BOTH',
-  };
-
+  // 상태
   const [productInfo, setProductInfo] = useState({
     name: '',
     categoryName: '',
@@ -43,163 +27,135 @@ const AddComponent = () => {
     isVisible: DisplayStatus.VISIBLE,
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    let parsedValue = value;
+  const [images, setImages] = useState({
+    thumbnail: null,
+    product: [],
+    detail: [],
+  });
 
-    if (name === 'stock' || name === 'cost' || name === 'discountRate') {
-      parsedValue = value === '' ? 0 : parseInt(value, 10);
-    }
+  const [categories, setCategories] = useState([]);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [isDiscountApplied, setIsDiscountApplied] = useState(false);
+  const [companyId, setCompanyId] = useState(null);
 
-    if (name === 'isDiscount') {
-      setIsDiscountApplied(value === DisplayStatus.VISIBLE);
-      parsedValue = value === 'Y' ? DisplayStatus.VISIBLE : DisplayStatus.INVISIBLE;
-    }
-
-    if (name === 'deliveryType') {
-      switch (value) {
-        case DeliveryType.ONETIME:
-        case DeliveryType.SUBSCRIPTION:
-        case DeliveryType.BOTH:
-          parsedValue = value;
-          break;
-        default:
-          parsedValue = '';
-      }
-    }
-
-    setProductInfo((prev) => ({
-      ...prev,
-      [name]: parsedValue,
-    }));
-  };
-
+  // 카테고리와 회사 정보 가져오기
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/categories?size=100`)
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/categories?size=100`);
+        const data = await response.json();
         if (data && Array.isArray(data.content)) {
           setCategories(data.content);
         } else {
-          console.error('Unexpected response format for categories');
+          console.error('카테고리 응답 형식이 예상과 다릅니다');
           setCategories([]);
         }
-      })
-      .catch((error) => {
-        console.error('There was an error fetching the categories!', error);
+      } catch (error) {
+        console.error('카테고리를 가져오는 중 오류가 발생했습니다!', error);
         setCategories([]);
-      });
+      }
+    };
+
+    const getCompanyInfo = () => {
+      const shopCompanyStorage = localStorage.getItem('shop-company-storage');
+      if (shopCompanyStorage) {
+        const { state } = JSON.parse(shopCompanyStorage);
+        if (state && state.companyId) {
+          setCompanyId(state.companyId);
+        }
+      }
+    };
+
+    fetchCategories();
+    getCompanyInfo();
   }, []);
 
-  const handleCategorySelect = (categoryName, categoryId) => {
-    setProductInfo((prev) => ({
-      ...prev,
-      categoryName,
-      categoryId,
-    }));
-    setIsCategoryDropdownOpen(false);
-  };
-
-  const handleThumbnailImageChange = (images) => {
-    setSelectedThumbnailImage(images[0]);
-  };
-
-  const handleProductImagesChange = (images) => {
-    setProductImages(images);
-  };
-
-  const handleDetailImagesChange = (images) => {
-    setProductDetailImages(images);
-    setProductDetailImageNames(images.map((_, index) => `상품 설명 이미지 ${index + 1}`));
-  };
-
-  const handleChangePromotionImg = (images) => {
-    console.log('Current images:', images);
-    setPromotionImg(images);
-  };
-
-  const handleChangeLogoImg = (images) => {
-    console.log('Current images:', images);
-    setLogoImg(images);
-  };
-
-  const handleChangeThemeColor = (color) => {
-    console.log('theme clolr:', color);
-    setThemeColor(color);
-  };
-
-  const handleUploadSuccess = (newImages) => {
-    console.log('Uploaded images:', newImages);
-  };
-
-  const handleBeforeRemove = (image, index) => {
-    return window.confirm(`이미지를 제거하시겠습니까?`);
-  };
-
-  const handleEditImage = (updatedImage, index) => {
-    return window.confirm(`이미지를 변경하시겠습니까?`);
-  };
-
-  const handleSaveData = () => {
-    alert('변경사항 적용');
-  };
-
-  const handleRestoreData = () => {};
-
-  const moveList = () => {
-    navigate({
-      pathname: '/product',
-    });
-  };
-
+  // 할인가 계산
   useEffect(() => {
-    if (productInfo.isDiscount === 'Y') {
+    if (productInfo.isDiscount === DisplayStatus.VISIBLE) {
       const discountedPrice =
         productInfo.cost - (productInfo.cost * productInfo.discountRate) / 100;
       setProductInfo((prev) => ({ ...prev, discountedPrice }));
     }
   }, [productInfo.cost, productInfo.discountRate, productInfo.isDiscount]);
 
+  // 핸들러
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    let parsedValue = value;
+
+    if (['stock', 'cost', 'discountRate'].includes(name)) {
+      parsedValue = value === '' ? 0 : parseInt(value, 10);
+    }
+
+    if (name === 'isDiscount') {
+      setIsDiscountApplied(value === DisplayStatus.VISIBLE);
+      parsedValue =
+        value === DisplayStatus.VISIBLE ? DisplayStatus.VISIBLE : DisplayStatus.INVISIBLE;
+    }
+
+    if (name === 'deliveryType') {
+      parsedValue = Object.values(DeliveryType).includes(value) ? value : '';
+    }
+
+    setProductInfo((prev) => ({ ...prev, [name]: parsedValue }));
+  };
+
+  const handleCategorySelect = (categoryName, categoryId) => {
+    setProductInfo((prev) => ({ ...prev, categoryName, categoryId }));
+    setIsCategoryDropdownOpen(false);
+  };
+
+  const handleImageChange = (type) => (newImages) => {
+    setImages((prev) => ({ ...prev, [type]: newImages }));
+  };
+
+  const handleUploadSuccess = (newImages) => {
+    console.log('업로드된 이미지:', newImages);
+  };
+
+  const handleBeforeRemove = () => window.confirm('이미지를 제거하시겠습니까?');
+
+  const handleEditImage = () => window.confirm('이미지를 변경하시겠습니까?');
+
+  const moveList = () => navigate('/product');
+
   const registerProduct = async () => {
+    if (!companyId) {
+      console.error('Company ID를 찾을 수 없습니다');
+      return;
+    }
+
     const formData = new FormData();
 
     const jsonData = {
-      companyId: 1,
-      name: productInfo.name,
-      categoryName: productInfo.categoryName,
-      productInformation: productInfo.productInformation,
-      cost: productInfo.cost,
-      isDiscount: productInfo.isDiscount,
+      companyId: companyId,
+      ...productInfo,
       discountStartDate: productInfo.discountStartDate
         ? `${productInfo.discountStartDate}T00:00:00`
         : null,
       discountEndDate: productInfo.discountEndDate
         ? `${productInfo.discountEndDate}T23:59:59`
         : null,
-      discountRate: productInfo.discountRate,
-      deliveryType: productInfo.deliveryType,
-      stock: productInfo.stock,
-      isVisible: productInfo.isVisible,
     };
 
     formData.append('product', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
 
-    if (selectedThumbnailImage) {
-      const thumbnailBlob = await dataURItoBlob(selectedThumbnailImage);
-      formData.append('thumbnailImage', thumbnailBlob, 'thumbnail.jpg');
+    if (images.thumbnail && images.thumbnail[0] && images.thumbnail[0].file) {
+      formData.append('thumbnailImage', images.thumbnail[0].file, images.thumbnail[0].file.name);
     }
 
-    for (let i = 0; i < productImages.length; i++) {
-      if (productImages[i]) {
-        const imageBlob = await dataURItoBlob(productImages[i]);
-        formData.append('listImages', imageBlob, `list_${i}.jpg`);
+    images.product.forEach((image, index) => {
+      if (image && image.file) {
+        formData.append('listImages', image.file, image.file.name);
       }
-    }
+    });
 
-    for (let i = 0; i < productDetailImages.length; i++) {
-      const imageBlob = await dataURItoBlob(productDetailImages[i]);
-      formData.append('detailImages', imageBlob, `detail_${i}.jpg`);
-    }
+    images.detail.forEach((image, index) => {
+      if (image && image.file) {
+        formData.append('detailImages', image.file, image.file.name);
+      }
+    });
 
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/products`, {
@@ -208,46 +164,27 @@ const AddComponent = () => {
       });
 
       if (response.ok) {
-        console.log('Product registered successfully');
+        console.log('상품이 성공적으로 등록되었습니다');
         moveList();
       } else {
-        console.error('Failed to register product');
+        console.error('상품 등록에 실패했습니다');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('오류:', error);
     }
   };
 
-  function dataURItoBlob(dataURI) {
-    if (dataURI.split(',')[0].indexOf('base64') >= 0) {
-      const byteString = atob(dataURI.split(',')[1]);
-      const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-      const ab = new ArrayBuffer(byteString.length);
-      const ia = new Uint8Array(ab);
-      for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-      }
-      return new Blob([ab], { type: mimeString });
-    }
-
-    // URL인 경우 (예: blob:http://...)
-    if (dataURI.startsWith('blob:') || dataURI.startsWith('http')) {
-      return fetch(dataURI).then((res) => res.blob());
-    }
-
-    // 그 외의 경우, 빈 Blob 반환
-    console.error('Unhandled dataURI format:', dataURI);
-    return new Blob([], { type: 'application/octet-stream' });
-  }
-
+  // 렌더링
   return (
     <div className='relative w-full h-full flex flex-col'>
       <section className='flex-grow overflow-y-auto pb-[58px]'>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+          {/* 상품 정보 */}
           <div className='p-4 rounded bg-white shadow-md'>
             <h2 className='text-xl font-semibold mb-4'>상품 정보</h2>
             <hr className='border-t-2 border-gray-300 mb-4' />
             <div className='space-y-6'>
+              {/* 상품명 */}
               <div className='flex items-center'>
                 <label className='w-1/4 text-sm font-medium'>상품명</label>
                 <div className='flex-1 ml-32'>
@@ -261,6 +198,7 @@ const AddComponent = () => {
                 </div>
               </div>
               <hr className='border-gray-200' />
+              {/* 카테고리 */}
               <div className='flex items-center'>
                 <label className='w-1/4 text-sm font-medium'>카테고리</label>
                 <div className='flex-1 ml-32 relative'>
@@ -291,7 +229,7 @@ const AddComponent = () => {
                 </div>
               </div>
               <hr className='border-gray-200' />
-
+              {/* 상품 설명 */}
               <div className='flex'>
                 <label className='w-1/4 text-sm font-medium pt-2'>상품 설명 문구</label>
                 <div className='flex-1 ml-32'>
@@ -304,6 +242,7 @@ const AddComponent = () => {
                 </div>
               </div>
               <hr className='border-gray-200' />
+              {/* 상품 상세 이미지 */}
               <div className='flex flex-col space-y-2'>
                 <label className='text-sm font-medium'>상품 설명 이미지</label>
                 <div className='w-full'>
@@ -312,27 +251,24 @@ const AddComponent = () => {
                     onUploadSuccess={handleUploadSuccess}
                     onBeforeRemove={handleBeforeRemove}
                     onEditImage={handleEditImage}
-                    onDataChange={handleDetailImagesChange}
+                    onDataChange={handleImageChange('detail')}
                     isMultiImage={true}
                     maxImageCount={5}
                     containerHeight={'min-h-[120px]'}
                     previewSize={'w-28 h-28'}
                     multiple
                   />
-                  {productDetailImageNames && (
-                    <div className='mt-2 text-sm text-gray-600'>
-                      {productDetailImageNames.join(', ')}
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
           </div>
 
+          {/* 상품 이미지 */}
           <div className='p-4 rounded bg-white shadow-md'>
             <h2 className='text-xl font-semibold mb-4'>상품 이미지</h2>
             <hr className='border-t-2 border-gray-300 mb-4' />
             <div className='space-y-6'>
+              {/* 썸네일 이미지 */}
               <div>
                 <h3 className='text-sm font-medium mb-2'>상품 대표 이미지</h3>
                 <ImageUploader2
@@ -340,7 +276,7 @@ const AddComponent = () => {
                   onUploadSuccess={handleUploadSuccess}
                   onBeforeRemove={handleBeforeRemove}
                   onEditImage={handleEditImage}
-                  onDataChange={handleChangeLogoImg}
+                  onDataChange={handleImageChange('thumbnail')}
                   isMultiImage={false}
                   maxImageCount={1}
                   containerHeight={'h-30'}
@@ -348,6 +284,7 @@ const AddComponent = () => {
                 />
               </div>
               <hr />
+              {/* 상품 이미지 */}
               <div>
                 <h3 className='text-sm font-medium mb-2'>상품 이미지</h3>
                 <ImageUploader2
@@ -355,7 +292,7 @@ const AddComponent = () => {
                   onUploadSuccess={handleUploadSuccess}
                   onBeforeRemove={handleBeforeRemove}
                   onEditImage={handleEditImage}
-                  onDataChange={handleProductImagesChange}
+                  onDataChange={handleImageChange('product')}
                   isMultiImage={true}
                   maxImageCount={5}
                   containerHeight={'h-30'}
@@ -365,18 +302,22 @@ const AddComponent = () => {
               </div>
             </div>
           </div>
+
+          {/* 가격 정보 */}
           <div className='p-4 rounded bg-white shadow-md'>
             <h2 className='text-xl font-semibold mb-4'>금액 정보</h2>
             <hr className='border-t-2 border-gray-300 mb-4' />
             <div className='space-y-6'>
+              {/* 가격 */}
               <div className='flex items-center'>
                 <label className='w-1/4 text-sm font-medium'>금액</label>
-                <div className='flex-1 flex items-center ml-32'>
+                <div className='flex-1 flex items-center justify-end ml-4'>
                   <input
                     type='text'
                     name='cost'
+                    value={productInfo.cost}
                     onChange={handleInputChange}
-                    className='flex-grow border p-2 rounded-md'
+                    className='w-full max-w-xs border p-2 rounded-md'
                     placeholder='금액을 입력해주세요.'
                   />
                   <span className='ml-2'>원</span>
@@ -385,12 +326,13 @@ const AddComponent = () => {
               <hr className='border-gray-200' />
               <div className='flex items-center'>
                 <label className='w-1/4 text-sm font-medium'>할인 적용 여부</label>
-                <div className='flex-1 flex items-center space-x-4'>
-                  <label className='flex items-center ml-32'>
+                <div className='flex-1 flex items-center justify-end space-x-4 ml-4'>
+                  <label className='flex items-center'>
                     <input
                       type='radio'
                       name='isDiscount'
                       value={DisplayStatus.VISIBLE}
+                      checked={productInfo.isDiscount === DisplayStatus.VISIBLE}
                       onChange={handleInputChange}
                       className='mr-2'
                     />
@@ -401,6 +343,7 @@ const AddComponent = () => {
                       type='radio'
                       name='isDiscount'
                       value={DisplayStatus.INVISIBLE}
+                      checked={productInfo.isDiscount === DisplayStatus.INVISIBLE}
                       onChange={handleInputChange}
                       className='mr-2'
                     />
@@ -409,12 +352,14 @@ const AddComponent = () => {
                 </div>
               </div>
               <hr className='border-gray-200' />
+              {/* 할인 기간 설정 */}
               <div className='flex items-center'>
                 <label className='w-1/4 text-sm font-medium'>기간 설정</label>
-                <div className='flex-1 flex items-center space-x-2 ml-32'>
+                <div className='flex-1 flex items-center justify-end space-x-2 ml-4'>
                   <input
                     type='date'
                     name='discountStartDate'
+                    value={productInfo.discountStartDate}
                     onChange={handleInputChange}
                     className='border p-2 rounded-md'
                     disabled={!isDiscountApplied}
@@ -423,6 +368,7 @@ const AddComponent = () => {
                   <input
                     type='date'
                     name='discountEndDate'
+                    value={productInfo.discountEndDate}
                     onChange={handleInputChange}
                     className='border p-2 rounded-md'
                     disabled={!isDiscountApplied}
@@ -430,14 +376,16 @@ const AddComponent = () => {
                 </div>
               </div>
               <hr className='border-gray-200' />
+              {/* 할인율 */}
               <div className='flex items-center'>
                 <label className='w-1/4 text-sm font-medium'>할인율</label>
-                <div className='flex-1 flex items-center ml-32'>
+                <div className='flex-1 flex items-center justify-end ml-4'>
                   <input
                     type='text'
                     name='discountRate'
+                    value={productInfo.discountRate}
                     onChange={handleInputChange}
-                    className='flex-grow border p-2 rounded-md'
+                    className='w-full max-w-xs border p-2 rounded-md'
                     placeholder='할인율을 입력해주세요.'
                     disabled={!isDiscountApplied}
                   />
@@ -445,28 +393,30 @@ const AddComponent = () => {
                 </div>
               </div>
               <hr className='border-gray-200' />
+              {/* 할인 후 적용 금액 */}
               <div className='flex items-center'>
                 <label className='w-1/4 text-sm font-medium'>할인 후 적용 금액</label>
-                <div className='flex-1 ml-32'>
+                <div className='flex-1 flex justify-end ml-4'>
                   <span>
-                    {productInfo.isDiscount === 'Y'
-                      ? `${productInfo.cost - (productInfo.cost * productInfo.discountRate) / 100} 원`
+                    {productInfo.isDiscount === DisplayStatus.VISIBLE
+                      ? `${productInfo.discountedPrice} 원`
                       : '- 원'}
                   </span>
                 </div>
               </div>
-              <hr className='border-gray-200' />
             </div>
           </div>
 
+          {/* 판매 정보 */}
           <div className='p-4 rounded bg-white shadow-md'>
             <h2 className='text-xl font-semibold mb-4'>판매 정보</h2>
             <hr className='border-t-2 border-gray-300 mb-4' />
             <div className='space-y-6'>
+              {/* 배송 가능 유형 */}
               <div className='flex items-center'>
                 <label className='w-1/4 text-sm font-medium'>배송 가능 유형</label>
-                <div className='flex-1 flex items-center space-x-4'>
-                  <label className='flex items-center ml-20'>
+                <div className='flex-1 flex items-center space-x-4 justify-end'>
+                  <label className='flex items-center ml-4'>
                     <input
                       type='radio'
                       name='deliveryType'
@@ -499,20 +449,20 @@ const AddComponent = () => {
                 </div>
               </div>
               <hr className='border-gray-200' />
+              {/* 재고 */}
               <div className='flex items-center'>
                 <label className='w-1/4 text-sm font-medium'>재고</label>
-                <div className='flex-1 flex items-center ml-20'>
+                <div className='flex-1 flex items-center justify-end ml-4'>
                   <input
                     type='text'
                     name='stock'
                     onChange={handleInputChange}
-                    className='flex-grow border p-2 rounded-md'
+                    className='w-full max-w-xs border p-2 rounded-md'
                     placeholder='상품 재고를 입력해주세요.'
                   />
                   <span className='ml-2'>건</span>
                 </div>
               </div>
-              <hr className='border-gray-200' />
             </div>
           </div>
         </div>

@@ -141,8 +141,8 @@ public class ProductServiceImpl implements ProductService {
 
 
         saveProductImage(product, thumbnailImage, ProductImageType.THUMBNAIL);
-        saveProductImages(product, listImages, ProductImageType.LIST);
-        saveProductImages(product, detailImages, ProductImageType.DETAILS);
+        saveProductImages(product, listImages, new ArrayList<>(), ProductImageType.LIST);
+        saveProductImages(product, detailImages, new ArrayList<>(), ProductImageType.DETAILS);
     }
 
     @Override
@@ -163,8 +163,8 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
 
         saveProductImage(product, thumbnailImage, ProductImageType.THUMBNAIL);
-        saveProductImages(product, listImages, ProductImageType.LIST);
-        saveProductImages(product, detailImages, ProductImageType.DETAILS);
+        saveProductImages(product, listImages, saveProductReq.getListImages(), ProductImageType.LIST);
+        saveProductImages(product, detailImages, saveProductReq.getDetailImages(), ProductImageType.DETAILS);
     }
 
 
@@ -214,16 +214,19 @@ public class ProductServiceImpl implements ProductService {
             }
         }
     }
+    private void saveProductImages(Product product, List<MultipartFile> imageFiles, List<String> remainingImageUrls, ProductImageType type) throws IOException {
+        List<ProductImage> existingImages = productImageRepository.findAllByProductAndPurposeOfUse(product, type);
 
-
-    private void saveProductImages(Product product, List<MultipartFile> imageFiles, ProductImageType type) throws IOException {
-        if (imageFiles != null && !imageFiles.isEmpty()) {
-            List<ProductImage> existingImages = productImageRepository.findAllByProductAndPurposeOfUse(product, type);
-            for (ProductImage existingImage : existingImages) {
+        // 남아있어야 할 이미지만 유지하고 나머지는 삭제
+        for (ProductImage existingImage : existingImages) {
+            if (!remainingImageUrls.contains(existingImage.getImageUrl())) {
                 s3Service.deleteFile(existingImage.getImageUrl());
+                productImageRepository.delete(existingImage);
             }
-            productImageRepository.deleteAll(existingImages);
+        }
 
+        // 새로운 이미지 추가
+        if (imageFiles != null && !imageFiles.isEmpty()) {
             List<ProductImage> newImages = new ArrayList<>();
             for (MultipartFile imageFile : imageFiles) {
                 String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product");
@@ -237,6 +240,29 @@ public class ProductServiceImpl implements ProductService {
             productImageRepository.saveAll(newImages);
         }
     }
+
+
+//    private void saveProductImages(Product product, List<MultipartFile> imageFiles, ProductImageType type) throws IOException {
+//        if (imageFiles != null && !imageFiles.isEmpty()) {
+//            List<ProductImage> existingImages = productImageRepository.findAllByProductAndPurposeOfUse(product, type);
+//            for (ProductImage existingImage : existingImages) {
+//                s3Service.deleteFile(existingImage.getImageUrl());
+//            }
+//            productImageRepository.deleteAll(existingImages);
+//
+//            List<ProductImage> newImages = new ArrayList<>();
+//            for (MultipartFile imageFile : imageFiles) {
+//                String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product");
+//                ProductImage newImage = ProductImage.builder()
+//                        .product(product)
+//                        .imageUrl(imageUrl)
+//                        .purposeOfUse(type)
+//                        .build();
+//                newImages.add(newImage);
+//            }
+//            productImageRepository.saveAll(newImages);
+//        }
+//    }
 
     private long generateProductCode() {
         String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));

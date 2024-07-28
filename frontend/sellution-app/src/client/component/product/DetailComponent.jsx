@@ -10,7 +10,6 @@ const DetailComponent = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // URL에서 fromPage 파라미터를 가져옵니다.
   const searchParams = new URLSearchParams(location.search);
   const fromPage = searchParams.get('fromPage') || '1';
 
@@ -18,7 +17,7 @@ const DetailComponent = () => {
   const [error, setError] = useState(null);
   const [productDetailImages, setProductDetailImages] = useState([]);
   const [productDetailImageNames, setProductDetailImageNames] = useState([]);
-  const [selectedThumbnailImage, setSelectedThumbnailImage] = useState(null);
+  const [selectedThumbnailImage, setSelectedThumbnailImage] = useState([]);
   const [productImages, setProductImages] = useState([]);
   const [isDiscountApplied, setIsDiscountApplied] = useState(false);
   const detailImageInputRef = useRef(null);
@@ -66,7 +65,11 @@ const DetailComponent = () => {
   const deleteProduct = async () => {
     if (window.confirm('정말로 이 상품을 삭제하시겠습니까?')) {
       try {
-        await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}`);
+        await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
         alert('상품이 성공적으로 삭제되었습니다.');
         navigate('/product');
       } catch (error) {
@@ -76,11 +79,31 @@ const DetailComponent = () => {
     }
   };
 
+  const dataURItoBlob = (dataURI) => {
+    // 데이터 URI가 실제로 유효한지 확인
+    if (!dataURI || typeof dataURI !== 'string' || !dataURI.startsWith('data:')) {
+      console.error('Invalid data URI:', dataURI);
+      return null;
+    }
+
+    const splitDataURI = dataURI.split(',');
+    const byteString = atob(splitDataURI[1]);
+    const mimeString = splitDataURI[0].split(':')[1].split(';')[0];
+
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([ab], { type: mimeString });
+  };
+
   const updateProduct = async () => {
     try {
       const formData = new FormData();
       const jsonData = {
-        companyId: 1,
         name: productInfo.name,
         categoryName: productInfo.categoryName,
         productInformation: productInfo.productInformation,
@@ -103,19 +126,68 @@ const DetailComponent = () => {
         new Blob([JSON.stringify(jsonData)], { type: 'application/json' }),
       );
 
-      if (selectedThumbnailImage) {
-        formData.append('thumbnailImage', dataURItoBlob(selectedThumbnailImage), 'thumbnail.jpg');
+      // if (selectedThumbnailImage.length > 0) {
+      //   const thumbnail = selectedThumbnailImage[0];
+      //   if (thumbnail.preview.startsWith('data:')) {
+      //     const thumbnailBlob = dataURItoBlob(thumbnail.preview);
+      //     if (thumbnailBlob) {
+      //       formData.append('thumbnailImage', thumbnailBlob, 'thumbnail.jpg');
+      //     }
+      //   } else if (thumbnail.file) {
+      //     formData.append('thumbnailImage', thumbnail.file, 'thumbnail.jpg');
+      //   }
+      // }
+
+      // productImages.forEach((image, index) => {
+      //   if (image.preview.startsWith('data:')) {
+      //     const blob = dataURItoBlob(image.preview);
+      //     if (blob) {
+      //       formData.append('listImages', blob, `list_${index}.jpg`);
+      //     }
+      //   } else if (image.file) {
+      //     formData.append('listImages', image.file, `list_${index}.jpg`);
+      //   }
+      // });
+
+      // productDetailImages.forEach((image, index) => {
+      //   if (image.preview.startsWith('data:')) {
+      //     const blob = dataURItoBlob(image.preview);
+      //     if (blob) {
+      //       formData.append('detailImages', blob, `detail_${index}.jpg`);
+      //     }
+      //   } else if (image.file) {
+      //     formData.append('detailImages', image.file, `detail_${index}.jpg`);
+      //   }
+      // });
+      // 썸네일 이미지 처리
+      if (selectedThumbnailImage.length > 0) {
+        const thumbnail = selectedThumbnailImage[0];
+        if (thumbnail.file) {
+          formData.append('thumbnailImage', thumbnail.file, 'thumbnail.jpg');
+        } else {
+          jsonData.thumbnailImage = thumbnail.preview;
+        }
       }
 
+      // 상품 이미지 처리
+      // 상품 이미지 처리
+      jsonData.listImages = productImages.map((image) => image.preview);
       productImages.forEach((image, index) => {
-        if (image) {
-          formData.append('listImages', dataURItoBlob(image), `list_${index}.jpg`);
+        if (image.file) {
+          formData.append('listImages', image.file, `list_${index}.jpg`);
         }
       });
 
+      // 상세 이미지 처리
+      jsonData.detailImages = productDetailImages.map((image) => image.preview);
       productDetailImages.forEach((image, index) => {
-        formData.append('detailImages', dataURItoBlob(image), `detail_${index}.jpg`);
+        if (image.file) {
+          formData.append('detailImages', image.file, `detail_${index}.jpg`);
+        }
       });
+
+      // 업데이트된 jsonData를 formData에 다시 추가
+      formData.set('product', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
 
       await axios.put(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -152,19 +224,15 @@ const DetailComponent = () => {
     setIsCategoryDropdownOpen(false);
   };
 
-  const handleThumbnailImageChange = (images) => setSelectedThumbnailImage(images[0]);
-
+  const handleThumbnailImageChange = (images) => setSelectedThumbnailImage(images);
   const handleProductImagesChange = (images) => setProductImages(images);
-
   const handleDetailImagesChange = (images) => {
     setProductDetailImages(images);
     setProductDetailImageNames(images.map((_, index) => `상품 설명 이미지 ${index + 1}`));
   };
 
   const handleUploadSuccess = (newImages) => console.log('Uploaded images:', newImages);
-
   const handleBeforeRemove = (image, index) => window.confirm(`이미지를 제거하시겠습니까?`);
-
   const handleEditImage = (updatedImage, index) => window.confirm(`이미지를 변경하시겠습니까?`);
 
   const moveList = () => {
@@ -207,7 +275,7 @@ const DetailComponent = () => {
         setSelectedThumbnailImage(
           product.thumbnailImage
             ? [{ id: 'thumbnail', preview: product.thumbnailImage, file: null }]
-            : null,
+            : [],
         );
         setProductImages(
           product.listImages.map((url, index) => ({
@@ -237,22 +305,12 @@ const DetailComponent = () => {
     }
   }, [productInfo.cost, productInfo.discountRate, productInfo.isDiscount]);
 
-  const dataURItoBlob = (dataURI) => {
-    const byteString = atob(dataURI.split(',')[1]);
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([ab], { type: mimeString });
-  };
-
   return (
     <div className='relative w-full h-full flex flex-col'>
       <div className='flex-grow overflow-y-auto pb-[58px]'>
         <section className='p-4'>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            {/* 상품 정보 섹션 */}
             <div className='p-4 rounded bg-white shadow-md'>
               <h2 className='text-xl font-semibold mb-4'>상품 정보</h2>
               <hr className='border-t-2 border-gray-300 mb-4' />
@@ -344,6 +402,7 @@ const DetailComponent = () => {
               </div>
             </div>
 
+            {/* 상품 이미지 섹션 */}
             <div className='p-4 rounded bg-white shadow-md'>
               <h2 className='text-xl font-semibold mb-4'>상품 이미지</h2>
               <hr className='border-t-2 border-gray-300 mb-4' />
@@ -377,12 +436,13 @@ const DetailComponent = () => {
                     containerHeight={'h-30'}
                     previewSize={'w-28 h-28'}
                     multiple
-                    initialImages={productDetailImages}
+                    initialImages={productImages}
                   />
                 </div>
               </div>
             </div>
 
+            {/* 금액 정보 섹션 */}
             <div className='p-4 rounded bg-white shadow-md'>
               <h2 className='text-xl font-semibold mb-4'>금액 정보</h2>
               <hr className='border-t-2 border-gray-300 mb-4' />
@@ -483,6 +543,7 @@ const DetailComponent = () => {
               </div>
             </div>
 
+            {/* 판매 정보 섹션 */}
             <div className='p-4 rounded bg-white shadow-md'>
               <h2 className='text-xl font-semibold mb-4'>판매 정보</h2>
               <hr className='border-t-2 border-gray-300 mb-4' />
@@ -547,7 +608,7 @@ const DetailComponent = () => {
         </section>
       </div>
       <FooterComponent
-        btn1={{ label: '취소', event: deleteProduct }}
+        btn1={{ label: '상품 삭제', event: deleteProduct }}
         btn2={{ label: '변경 사항 저장', event: updateProduct }}
         back={{ label: '목록으로', event: moveList }}
       />

@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { ImageUploadIcon, EditIcon, TrashIcon } from '@/client/utility/assets/Icons';
 
 const ImageUploader2 = ({
@@ -21,15 +21,14 @@ const ImageUploader2 = ({
   const fileInputRef = useRef(null);
   const dragCounter = useRef(0);
 
+  // null 체크를 추가하고 유효한 배열인지 확인
   useEffect(() => {
-    // null 체크를 추가하고 유효한 배열인지 확인
     if (Array.isArray(initialImages) && initialImages.length > 0) {
       setImages(initialImages);
       setSelectedImage(initialImages[0]);
     }
   }, [initialImages]);
 
-  console.log('이미지스', images);
   const handleFiles = useCallback(
     (files) => {
       const newImages = Array.from(files).map((file) => ({
@@ -40,8 +39,8 @@ const ImageUploader2 = ({
       const updatedImages = [...images, ...newImages];
       setImages(updatedImages);
       setSelectedImage(newImages[0] || updatedImages[0]);
-      onUploadSuccess && onUploadSuccess(newImages);
-      onDataChange && onDataChange(updatedImages);
+      if (onUploadSuccess) onUploadSuccess(newImages);
+      if (onDataChange) onDataChange(updatedImages);
     },
     [images, onUploadSuccess, onDataChange],
   );
@@ -76,14 +75,13 @@ const ImageUploader2 = ({
       setIsDragging(false);
       dragCounter.current = 0;
       const { files } = e.dataTransfer;
-      //   console.log('files', files);
       if (images.length + files.length <= maxImageCount) {
         handleFiles(files);
       } else {
         alert(`이미지는 최대 ${maxImageCount}개까지 가능합니다.`);
       }
     },
-    [handleFiles],
+    [handleFiles, images.length, maxImageCount],
   );
 
   const handleImageUpload = useCallback(
@@ -95,7 +93,7 @@ const ImageUploader2 = ({
         alert(`이미지는 최대 ${maxImageCount}개까지 가능합니다.`);
       }
     },
-    [handleFiles],
+    [handleFiles, images.length, maxImageCount],
   );
 
   const removeImage = async (imageToRemove) => {
@@ -107,7 +105,7 @@ const ImageUploader2 = ({
     const updatedImages = images.filter((img) => img.id !== imageToRemove.id);
     setImages(updatedImages);
     setSelectedImage(updatedImages[0] || null);
-    onDataChange && onDataChange(updatedImages);
+    if (onDataChange) onDataChange(updatedImages);
   };
 
   const editImage = (image) => {
@@ -129,12 +127,7 @@ const ImageUploader2 = ({
 
         setImages(updatedImages);
         setSelectedImage(updatedImage);
-        // onEditImage &&
-        //   onEditImage(
-        //     updatedImage,
-        //     images.findIndex((img) => img.id === image.id),
-        //   );
-        onDataChange && onDataChange(updatedImages);
+        if (onDataChange) onDataChange(updatedImages);
       }
     };
   };
@@ -152,7 +145,11 @@ const ImageUploader2 = ({
                 <img
                   src={image.preview}
                   alt={`preview ${image.id}`}
-                  className={`w-12 h-12 object-cover rounded-lg shadow-md cursor-pointer transition-color duration-200 ${selectedImage && selectedImage.id === image.id ? 'ring-2 ring-brandOrange ring-offset-2' : 'hover:shadow-lg'}`}
+                  className={`w-12 h-12 object-cover rounded-lg shadow-md cursor-pointer transition-color duration-200 ${
+                    selectedImage && selectedImage.id === image.id
+                      ? 'ring-2 ring-brandOrange ring-offset-2'
+                      : 'hover:shadow-lg'
+                  }`}
                   onClick={() => setSelectedImage(image)}
                 />
               </div>
@@ -180,7 +177,9 @@ const ImageUploader2 = ({
 
       <div className='w-full md:w-1/2'>
         <div
-          className={`w-full h-full p-2 border-2 border-dashed rounded-lg ${isDragging ? 'border-brandOrange bg-brandOrange-light' : 'border-gray-300 bg-gray-50'}`}
+          className={`w-full h-full p-2 border-2 border-dashed rounded-lg ${
+            isDragging ? 'border-brandOrange bg-brandOrange-light' : 'border-gray-300 bg-gray-50'
+          }`}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
           onDragOver={handleDragOver}
@@ -214,13 +213,12 @@ const ImageUploader2 = ({
               className='h-full flex flex-col justify-center gap-2 cursor-pointer text-center hover:bg-gray-100 transition duration-200 rounded-lg'
             >
               <ImageUploadIcon className='mx-auto h-10 w-10 text-gray-400' />
-
               <p className='text-sm text-gray-600'>Click here or drag and drop</p>
               <input
                 type='file'
                 {...inputAttr}
                 onChange={handleImageUpload}
-                className='hidden '
+                className='hidden'
                 id={inputId}
               />
             </label>
@@ -231,4 +229,5 @@ const ImageUploader2 = ({
     </div>
   );
 };
+
 export default ImageUploader2;
