@@ -6,7 +6,7 @@ import DetailPage from '@/shopping/page/subscriptionDelivery/DetailPage';
 import CartPage from '@/shopping/page/subscriptionDelivery/CartPage';
 import OrderPage from '@/shopping/page/subscriptionDelivery/OrderPage';
 import OrderCompletedPage from '@/shopping/page/subscriptionDelivery/OrderCompletedPage';
-import OrderCompletedPaymentHistoryPage from "@/shopping/page/subscriptionDelivery/OrderCompletedPaymentHistoryPage.jsx";
+import OrderCompletedPaymentHistoryPage from '@/shopping/page/subscriptionDelivery/OrderCompletedPaymentHistoryPage';
 
 const subscriptionDeliveryRouter = () => {
   return [
