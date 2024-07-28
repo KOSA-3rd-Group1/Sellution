@@ -52,7 +52,7 @@ const HomeFooter = () => {
       <Link
         to={
           accessToken === null || accessToken === ''
-            ? `/shopping/${clientName}/login`
+            ? `/shopping/${clientName}/login?redirectUrl=${encodeURIComponent(window.location.pathname)}`
             : `/shopping/${clientName}/subscription/cart`
         }
         className='flex-1 bg-white flex flex-col justify-center items-center relative'

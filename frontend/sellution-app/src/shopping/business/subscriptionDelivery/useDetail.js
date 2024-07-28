@@ -36,7 +36,9 @@ const useDetail = () => {
   const [isDetailPageModalVisible, setIsDetailPageModalVisible] = useState(false);
   const addToSubscriptionCart = () => {
     if (accessToken === null || accessToken === '') {
-      navigate(`/shopping/${clientName}/login`);
+      navigate(
+        `/shopping/${clientName}/login?redirectUrl=${encodeURIComponent(window.location.pathname)}`,
+      );
     } else if (itemCountToAdd > 0) {
       const newItem = {
         id: productToShow.productId,
@@ -59,7 +61,9 @@ const useDetail = () => {
 
   const handleDirectOrder = () => {
     if (accessToken === null || accessToken === '') {
-      navigate(`/shopping/${clientName}/login`);
+      navigate(
+        `/shopping/${clientName}/login?redirectUrl=${encodeURIComponent(window.location.pathname)}`,
+      );
     } else if (itemCountToAdd > 0) {
       const newItem = {
         id: productToShow.productId,
