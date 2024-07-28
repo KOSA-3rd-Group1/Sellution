@@ -1,5 +1,5 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
-import TableOrder from '@/client/layout/common/table/TableOrder';
+import TableCustomerOrder from '@/client/layout/common/table/TableCustomerOrder';
 import { EventBtn } from '@/client/layout/common/Button';
 import { useMove } from '@/client/business/common/useMove';
 import { useCustomerOrderList } from '@/client/business/customer/detail/order/useCustomerOrderList';
@@ -14,7 +14,6 @@ import {
 
 const ListComponent = () => {
   const { moveToPathname } = useMove();
-
   const {
     subscriptionData,
     subscriptionTotalDataCount,
@@ -45,22 +44,23 @@ const ListComponent = () => {
           <div>정기 배송 주문 정보</div>
         </div>
         <div className='h-3/5 overflow-hidden'>
-          <TableOrder
+          <TableCustomerOrder
             HEADERS={SUBSCRIPTION_HEADERS}
             ROW_HEIGHT={SUBSCRIPTION_ROW_HEIGHT}
             data={subscriptionData}
             totalDataCount={subscriptionTotalDataCount}
-            handleApproveSimpleOrderBtn={handleApproveAllSimpleOrderBtn}
+            handleApproveSimpleOrderBtn={handleApproveSimpleOrderBtn}
             handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
                 <EventBtn
                   Icon={SimpleOrderIcon}
                   label={'간편 주문 승인'}
-                  onClick={handleApproveSimpleOrderBtn}
+                  onClick={() => handleApproveAllSimpleOrderBtn('subscription')}
                 />
               </div>
             }
+            tableId={'subscription'}
           />
         </div>
         <div className='h-6'></div>
@@ -68,22 +68,23 @@ const ListComponent = () => {
           <div>단건 배송 주문 정보</div>
         </div>
         <div className='h-3/5 overflow-hidden'>
-          <TableOrder
+          <TableCustomerOrder
             HEADERS={ONETIME_HEADERS}
             ROW_HEIGHT={ONETIME_ROW_HEIGHT}
             data={onetimeData}
             totalDataCount={onetimeTotalDataCount}
-            handleApproveSimpleOrderBtn={handleApproveAllSimpleOrderBtn}
+            handleApproveSimpleOrderBtn={handleApproveSimpleOrderBtn}
             handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
                 <EventBtn
                   Icon={SimpleOrderIcon}
                   label={'간편 주문 승인'}
-                  onClick={handleApproveSimpleOrderBtn}
+                  onClick={() => handleApproveAllSimpleOrderBtn('onetime')}
                 />
               </div>
             }
+            tableId={'onetime'}
           />
         </div>
       </section>

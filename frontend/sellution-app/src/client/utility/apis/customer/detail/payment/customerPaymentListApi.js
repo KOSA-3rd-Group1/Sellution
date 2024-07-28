@@ -12,14 +12,6 @@ export const getCustomerPaymentList = async (customerId, setAccessToken, accessT
   let instance = await BaseInstance();
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
 
-  //   responseData = await instance.get(url);
+  responseData = await instance.get(url);
   return responseData;
 };
-
-// 받는 데이터
-// page
-// private final Long accountId;
-// private final Long customerId;
-// private final String accountNumber;
-// private final String bankCode;
-// private final LocalDateTime createdAt;

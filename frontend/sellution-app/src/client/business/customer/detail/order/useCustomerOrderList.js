@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useAuthStore from '@/client/store/stores/useAuthStore';
+import useTableStore from '@/client/store/stores/useTableStore';
 import { getCustomerOrderList } from '@/client/utility/apis/customer/detail/order/customerOrderListApi';
 
 // 더미 데이터 생성 함수
@@ -55,6 +56,7 @@ const DUMMY_DATA_ONETIME = generateDummyOneTimeOrderData(10);
 export const useCustomerOrderList = () => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const { tables, setSelectedRows, setSelectAll } = useTableStore();
 
   const { customerId } = useParams();
 
@@ -64,10 +66,48 @@ export const useCustomerOrderList = () => {
   const [onetimeData, setOnetimeData] = useState([]); // 단건 배송 테이블 데이터
   const [onetimeTotalDataCount, setOnetimeTotalDataCount] = useState(0); // 단건 배송 데이터 총 개수
 
+  // 수정 필요
+  const formatData = useCallback(
+    (content) => ({
+      ...content,
+      id: content.orderId,
+    }),
+    [],
+  );
+
+  //수정 필요
+  const separateData = async (content) => {
+    const { newOntimeData, newSubscriptionData } = await content.reduce(
+      (acc, item) => {
+        const newItem = formatData(item);
+        if (item.type === 'ONETIME') {
+          acc.newOntimeData.push(newItem);
+        } else {
+          acc.newSubscriptionData.push(newItem);
+        }
+        return acc;
+      },
+      { newOntimeData: [], newSubscriptionData: [] },
+    );
+
+    setSubscriptionData(() => newSubscriptionData);
+    setSubscriptionTotalDataCount(newSubscriptionData.length);
+
+    setOnetimeData(() => newOntimeData);
+    setOnetimeTotalDataCount(newOntimeData.length);
+  };
+
   // api 요청으로 데이터 받아오기
   useEffect(() => {
     const fetch = async (customerId, setAccessToken, accessToken) => {
       const response = await getCustomerOrderList(customerId, setAccessToken, accessToken);
+      const { content, empty, pageable, totalElements, totalPages } = response.data;
+
+      if (!empty) {
+        separateData(content);
+      }
+
+      // 아래 더미데이터 제거 예정
       setSubscriptionData(DUMMY_DATA_SUBSCRIPTION);
       setOnetimeData(DUMMY_DATA_ONETIME);
 
@@ -80,14 +120,21 @@ export const useCustomerOrderList = () => {
 
   // 간편 주문 승인 이벤트
   // 간편 주문 승인 일관 승인 시, 선택한 항목 하나씩 서버로 api 요청, 이후 응답받아서 성공하면 해당하는 데이터만 변경
-  const handleApproveAllSimpleOrderBtn = () => {
+  const handleApproveAllSimpleOrderBtn = (tableId) => {
+    console.log(tables[tableId]);
     alert('간편 주문 일괄 승인');
   };
 
   // 간편 주문 승인 이벤트
   // 간편 주문 승인 시, 서버로 api 요청, 이후 응답 받아서 성공하면 해당 데이터 변경
   const handleApproveSimpleOrderBtn = (orderId) => {
+    console.log('간편주문', orderId);
+
     alert(`간편 주문 승인 ${orderId}`);
+  };
+
+  const handleSelectedRows = (selectedRows) => {
+    console.log(selectedRows);
   };
 
   return {
@@ -97,5 +144,6 @@ export const useCustomerOrderList = () => {
     onetimeTotalDataCount,
     handleApproveAllSimpleOrderBtn,
     handleApproveSimpleOrderBtn,
+    handleSelectedRows,
   };
 };

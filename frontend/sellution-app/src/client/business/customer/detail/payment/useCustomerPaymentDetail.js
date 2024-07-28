@@ -33,7 +33,7 @@ export const useCustomerPaymentDetail = ({
   // 서버에 데이터 요청
   useEffect(() => {
     const fetch = async (paymentId, setAccessToken, accessToken) => {
-      //   const response = await getCustomerPaymentDetail(paymentId, setAccessToken, accessToken);
+      const response = await getCustomerPaymentDetail(paymentId, setAccessToken, accessToken);
       //   setData(() => ({ ...response.data }));
       console.log(customerId, paymentId);
       setData(DUMMY);
@@ -55,7 +55,7 @@ export const useCustomerPaymentDetail = ({
   // 데이터 삭제 수행 요청
   const handleDeleteData = async () => {
     try {
-      //   await deleteCustomerPaymentDetail(paymentId, setAccessToken, accessToken); // 비동기 작업
+      await deleteCustomerPaymentDetail(paymentId, setAccessToken, accessToken); // 비동기 작업
       await openAutoCloseModal('결제 수단 삭제 성공', '작업이 성공적으로 완료되었습니다.');
     } catch (error) {
       openAlertModal('error', '오류', `결제 수단 삭제 작업이 실패하였습니다`);

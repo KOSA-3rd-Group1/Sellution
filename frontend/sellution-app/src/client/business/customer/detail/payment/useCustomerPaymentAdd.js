@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useAuthStore from '@/client/store/stores/useAuthStore';
 import { postCustomerPaymentAdd } from '@/client/utility/apis/customer/detail/payment/customerPaymentAddApi';
-import { accountNumberInServerFormat } from '@/client/utility/functions/formatterFunction';
-import { validateInputAccountNumber } from '@/client/utility/functions/validateFunction';
 import { ValidationError } from '@/client/utility/error/ValidationError';
+import { validateInputAccountNumber } from '@/client/utility/functions/validateFunction';
+import { accountNumberInServerFormat } from '@/client/utility/functions/formatterFunction';
 
 export const useCustomerPaymentAdd = ({
   moveToPathname,
@@ -64,11 +64,13 @@ export const useCustomerPaymentAdd = ({
       if (!data.bank) {
         throw ValidationError('은행 정보가 필요합니다.');
       }
-
+      const newData = {
+        accountNumber: accountNumberInServerFormat(data.accountNumber),
+        bankCode: data.bank,
+      };
       const response = await postCustomerPaymentAdd(
         customerId,
-        accountNumberInServerFormat(data.accountNumber),
-        data.bank,
+        newData,
         setAccessToken,
         accessToken,
       );

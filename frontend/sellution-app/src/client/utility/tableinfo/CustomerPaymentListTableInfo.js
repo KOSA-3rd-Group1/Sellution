@@ -5,7 +5,7 @@ export const HEADERS = [
     width: 'min-w-48 w-48 max-w-48',
   },
   {
-    key: 'bank',
+    key: 'bankCode',
     label: '결제사',
     width: 'min-w-48 w-48 max-w-48',
   },

@@ -1,5 +1,5 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
-import TablePayment from '@/client/layout/common/table/TablePayment';
+import TableCustomerPayment from '@/client/layout/common/table/TableCustomerPayment';
 import { EventBtn } from '@/client/layout/common/Button';
 import { useMove } from '@/client/business/common/useMove';
 import { useCustomerPaymentList } from '@/client/business/customer/detail/payment/useCustomerPaymentList';
@@ -16,7 +16,7 @@ const ListComponent = () => {
           <div>결제 수단 목록</div>
         </div>
         <div className='h-3/5 overflow-hidden'>
-          <TablePayment
+          <TableCustomerPayment
             HEADERS={HEADERS}
             ROW_HEIGHT={ROW_HEIGHT}
             data={data}

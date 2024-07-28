@@ -10,11 +10,26 @@ import paymentHistoryRouter from '@/client/router/paymentHistory/paymentHistoryR
 import eventRouter from '@/client/router/event/eventRouter';
 import shopManagementRouter from '@/client/router/shopManagement/shopManagementRouter';
 import loginRouter from '@/client/router/login/loginRouter';
+import joinRouter from '@/client/router/join/joinRouter';
+import idInquiryRouter from '@/client/router/idInquiry/idInquiryRouter';
+import pwInquiryRouter from '@/client/router/pwInquiry/pwInquiryRouter';
 
 const clientRoot = () => [
   {
     path: 'login',
     children: loginRouter(),
+  },
+  {
+    path: 'join',
+    children: joinRouter(),
+  },
+  {
+    path: 'idInquiry',
+    children: idInquiryRouter(),
+  },
+  {
+    path: 'pwInquiry',
+    children: pwInquiryRouter(),
   },
   {
     path: '/',

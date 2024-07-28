@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useAuthStore from '@/client/store/stores/useAuthStore';
 import { getCustomerPaymentList } from '@/client/utility/apis/customer/detail/payment/customerPaymentListApi';
@@ -9,7 +9,7 @@ const generateDummyData = (count) => {
     id: index + 1,
     no: index + 100,
     paymentMethod: `CMS`,
-    bank: `신한 은행`,
+    bankCode: `신한 은행`,
     accountNumber: `${Math.floor(100000 + Math.random() * 900000)}-01-${Math.floor(100000 + Math.random() * 900000)}`,
     createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
       .toISOString()
@@ -32,14 +32,32 @@ export const useCustomerPaymentList = () => {
   // 데이터 총 개수
   const [totalDataCount, setTotalDataCount] = useState(0);
 
+  // 수정 필요
+  const formatData = useCallback(
+    (content, index) => ({
+      ...content,
+      paymentMethod: `CMS`,
+      id: content.accountId,
+      no: index + 1,
+    }),
+    [],
+  );
+
   // api 요청으로 데이터 받아오기
   useEffect(() => {
     const fetch = async (customerId, setAccessToken, accessToken) => {
-      const responseData = await getCustomerPaymentList(customerId, setAccessToken, accessToken); // API 요청
-      console.log(responseData);
-      // API 받은 요청을 data에 입력
-      setData(DUMMY_DATA);
-      setTotalDataCount(100);
+      const response = await getCustomerPaymentList(customerId, setAccessToken, accessToken); // API 요청
+      const { content, empty, pageable, totalElements, totalPages } = response.data;
+
+      if (!empty) {
+        const formattedContent = content.map((item, index) => {
+          return formatData(item, index);
+        });
+        setData(() => formattedContent);
+        setTotalDataCount(totalElements);
+      }
+      setData(DUMMY_DATA); // 제거 예정
+      //   setTotalDataCount(100);1
     };
 
     fetch(customerId, setAccessToken, accessToken);

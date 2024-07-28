@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import useDebounce from '@/client/business/common/useDebounce';
 import useAuthStore from '@/client/store/stores/useAuthStore';
-import { postCustomerList } from '@/client/utility/apis/customer/customerListApi';
+import { getCustomerList } from '@/client/utility/apis/customer/customerListApi';
 import {
   formatCustomerType,
   formatPhoneNumber,
@@ -136,9 +136,9 @@ export const useCustomerList = ({ queryParams, page, size, refresh, updateQueryP
   useEffect(() => {
     const fetch = async (setAccessToken, accessToken) => {
       const pageParam = prepareSearchParams(tableState, page, size);
-      const responseData = await postCustomerList(pageParam, setAccessToken, accessToken); // API 요청
+      const response = await getCustomerList(pageParam, setAccessToken, accessToken); // API 요청
 
-      const { content, empty, pageable, totalElements, totalPages } = responseData.data;
+      const { content, empty, pageable, totalElements, totalPages } = response.data;
 
       // 필터링 시 현재 페이지에 데이터가 없는 경우 1page로 이동
       if (empty && page > 1) {
@@ -169,6 +169,7 @@ export const useCustomerList = ({ queryParams, page, size, refresh, updateQueryP
     setDateRangeValue(newDataRangeValue);
   };
 
+  // 필터 초기화
   const handleFilterReset = () => {
     setTableState({});
   };

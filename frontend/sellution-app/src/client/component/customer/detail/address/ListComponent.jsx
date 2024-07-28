@@ -1,5 +1,5 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
-import TableAddress from '@/client/layout/common/table/TableAddress';
+import TableCustomerAddress from '@/client/layout/common/table/TableCustomerAddress';
 import { EventBtn } from '@/client/layout/common/Button';
 import { useMove } from '@/client/business/common/useMove';
 import { useCustomerAddressList } from '@/client/business/customer/detail/address/useCustomerAddressList';
@@ -28,7 +28,7 @@ const ListComponent = () => {
           </div>
         </div>
         <div className='h-3/5 overflow-hidden'>
-          <TableAddress
+          <TableCustomerAddress
             HEADERS={HEADERS}
             ROW_HEIGHT={ROW_HEIGHT}
             data={data}

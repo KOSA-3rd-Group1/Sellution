@@ -5,14 +5,15 @@ const API_URL = '/orders/customers';
 
 // 회원의 주문 목록 조회
 export const getCustomerOrderList = async (customerId, setAccessToken, accessToken) => {
-  let responseData = null;
+  let resposne = null;
   let url = `${API_URL}/${customerId}`;
 
   let instance = await BaseInstance();
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
 
-  //   responseData = await instance.get(url);
-  return responseData;
+  resposne = await instance.get(url);
+  console.log(resposne);
+  return resposne;
 };
 
 // 리턴받는 정보
