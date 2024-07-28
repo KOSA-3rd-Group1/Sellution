@@ -11,6 +11,7 @@ import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.account.dto.request.CheckAccountReq;
 import shop.sellution.server.account.dto.request.SaveAccountReq;
 import shop.sellution.server.account.dto.request.UpdateAccountReq;
+import shop.sellution.server.account.dto.response.FindAccountDetailRes;
 import shop.sellution.server.account.dto.response.FindAccountRes;
 import shop.sellution.server.account.infrastructure.AccountAuthService;
 import shop.sellution.server.customer.domain.Customer;
@@ -38,11 +39,14 @@ public class AccountServiceImpl implements AccountService {
     public Page<FindAccountRes> findAllAccountsByCustomerId(Long customerId, Pageable pageable) {
         return accountRepository.findAllByCustomerId(customerId, pageable)
                 .map(FindAccountRes::fromEntity)
-                .map(this::maskAccountNumber);
+                .map((FindAccountRes findAccountRes) -> {
+                    findAccountRes.setAccountNumber(maskAccountNumber(findAccountRes.getAccountNumber()));
+                    return findAccountRes;
+                });
     }
 
     @Override
-    public void saveAccount(Long customerId,SaveAccountReq saveAccountReq) {
+    public Long saveAccount(Long customerId,SaveAccountReq saveAccountReq) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER));
 
@@ -50,10 +54,9 @@ public class AccountServiceImpl implements AccountService {
 
         String accountNumber = saveAccountReq.getAccountNumber();
         StringBuilder sb = new StringBuilder();
-        String encrypt = jasyptEncryptionUtil.encrypt(accountNumber.substring(0, accountNumber.length() - 3));// 뒤 4자리 제외 암호화
+        String encrypt = jasyptEncryptionUtil.encrypt(accountNumber.substring(0, accountNumber.length() - 4));// 뒤 4자리 제외 암호화
         sb.append(encrypt);
         sb.append(accountNumber.substring(accountNumber.length()-4));
-
         Account account = Account.builder()
                 .customer(customer)
                 .accountNumber(sb.toString())
@@ -61,6 +64,7 @@ public class AccountServiceImpl implements AccountService {
                 .build();
 
         accountRepository.save(account);
+        return account.getId();
     }
 
     @Override
@@ -82,13 +86,21 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.delete(account);
     }
 
-    private FindAccountRes maskAccountNumber(FindAccountRes findAccountRes) {
-        String accountNumber = findAccountRes.getAccountNumber();
+    public String maskAccountNumber(String accountNumber) {
         String decryptedAccountNumber = jasyptEncryptionUtil.decrypt(accountNumber.substring(0, accountNumber.length() - 4));
-        String maskedAccountNumber = "*".repeat(decryptedAccountNumber.length()) + accountNumber.substring(accountNumber.length()-4);
-        findAccountRes.setAccountNumber(maskedAccountNumber);
-        return findAccountRes;
+        return "*".repeat(decryptedAccountNumber.length()) + accountNumber.substring(accountNumber.length()-4);
     }
 
+    public String getDecryptedAccountNumber(String accountNumber) {
+        return jasyptEncryptionUtil.decrypt(accountNumber.substring(0, accountNumber.length() - 4)) + accountNumber.substring(accountNumber.length()-4);
+    }
 
+    @Override
+    public FindAccountDetailRes findAccount(Long accountId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACCOUNT));
+        FindAccountDetailRes result = FindAccountDetailRes.fromEntity(account);
+        result.setAccountNumber(maskAccountNumber(result.getAccountNumber()));
+        return result;
+    }
 }
