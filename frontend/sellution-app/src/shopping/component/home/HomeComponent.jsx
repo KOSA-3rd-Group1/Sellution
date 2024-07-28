@@ -27,7 +27,7 @@ const HomeComponent = () => {
 
   return (
     <>
-      <LogoHeaderNav logoImageUrl={data.logoImageUrl} />
+      <LogoHeaderNav />
       <main className='w-full h-full bg-white p-4 flex flex-col justify-center'>
         <div className='flex-[1.3]'>
           <div className='carousel w-full flex flex-col'>

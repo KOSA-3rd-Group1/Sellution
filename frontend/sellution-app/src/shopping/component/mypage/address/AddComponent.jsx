@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
 import axios from 'axios';
-import { Link } from 'react-router-dom'; // Link 추가
+import { Link, useNavigate } from 'react-router-dom'; // Link 추가
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import MenuHeaderNav from '../../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../../layout/OneButtonFooterLayout';
+import LogoHeaderNav from '@/shopping/layout/LogoHeaderNav';
 const AddComponent = () => {
+  const navigate = useNavigate();
   const clientName = useCompanyInfoStore((state) => state.name);
   const customerId = useUserInfoStore((state) => state.id);
   const [addressName, setAddressName] = useState('');
@@ -91,14 +93,21 @@ const AddComponent = () => {
 
   if (isSaved) {
     return (
-      <div className='w-full scroll-box overflow-auto flex-grow p-4'>
-        <h1 className='text-xl font-bold mb-4 text-center'>주소가 성공적으로 저장되었습니다!</h1>
-        <Link
+      <div className='w-full h-full flex justify-center items-center'>
+        <LogoHeaderNav />
+        <h1 className='text-xl font-bold text-center'>주소가 성공적으로 저장되었습니다!</h1>
+        {/* <Link
           to={`/shopping/${clientName}/my/${customerId}/address`}
           className='block w-full text-center bg-brandOrange text-white py-2 rounded-md hover:bg-orange-600'
         >
           배송지 목록으로 이동
-        </Link>
+        </Link> */}
+        <OneButtonFooterLayout
+          footerText={'배송지 목록으로 이동'}
+          onClick={() => {
+            navigate(`/shopping/${clientName}/my/${customerId}/address`);
+          }}
+        />
       </div>
     );
   }
