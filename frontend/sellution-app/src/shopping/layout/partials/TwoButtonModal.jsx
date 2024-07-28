@@ -3,7 +3,7 @@ const TwoButtonModal = ({ isDetailPageModalVisible, onClickLeft, onClickRight })
   return (
     <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10'>
       <div className='bg-white rounded-lg w-80 shadow-lg'>
-        <div className='bg-[#F37021] text-white font-bold text-center rounded-t-lg py-2'>알림</div>
+        <div className='bg-brandOrange text-white font-bold text-center rounded-t-lg py-2'>알림</div>
         <div className='px-4 py-6 text-center'>
           <p className='text-sm'>
             선택하신 상품이

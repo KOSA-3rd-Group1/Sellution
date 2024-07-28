@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   HomeIcon,
   SubscriptionDeliveryIcon,
@@ -28,7 +28,7 @@ const HomeFooter = () => {
         to={`/shopping/${clientName}/subscription`}
         className='flex-1 bg-white flex flex-col justify-center items-center'
       >
-        <SubscriptionDeliveryIcon className='w-7 h-7 fill-current text-[#F37021] stroke-[#F37021] stroke-[10]' />
+        <SubscriptionDeliveryIcon className='w-7 h-7 fill-current text-brandOrange stroke-brandOrange stroke-[10]' />
         <p className='text-brandOrange text-xs font-bold pt-1'>정기배송</p>
       </Link>
       <Link

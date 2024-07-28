@@ -5,6 +5,7 @@ import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import useOrderListStore from './../../store/stores/useOrderListStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
+import { DeleteIcon, MinusIcon, PlusIcon } from '../../utility/assets/Icons';
 
 const CartComponent = () => {
   const {
@@ -28,6 +29,7 @@ const CartComponent = () => {
     updateOrderList(selectedOnetimeItems, onetimeCart);
     navigate(`/shopping/${clientName}/onetime/order/${customerId}`);
   };
+  const isOrderButtonDisabled = selectedOnetimeItems.length === 0;
 
   return (
     <>
@@ -43,7 +45,7 @@ const CartComponent = () => {
             정기 배송
           </div>
           <div
-            className={`font-bold py-2 px-3 text-sm cursor-pointer bg-[#F37021] text-white`}
+            className={`font-bold py-2 px-3 text-sm cursor-pointer bg-brandOrange text-white`}
             onClick={() => {
               navigate(`/shopping/${clientName}/onetime/cart`);
             }}
@@ -51,7 +53,7 @@ const CartComponent = () => {
             단건 배송
           </div>
         </section>
-        <div className='seperator w-full h-[2px] bg-[#F37021]'></div>
+        <div className='seperator w-full h-[2px] bg-brandOrange'></div>
         <section className='w-[92%] h-full mx-auto mt-2 '>
           <div className='flex justify-between py-2 border-b'>
             <div className='flex items-center'>
@@ -113,61 +115,26 @@ const CartComponent = () => {
                   </div>
                   <div className='product-item-2 flex-[5] flex flex-col justify-center px-4'>
                     <div className='product-name font-bold text-sm'>{item.name}</div>
-                    <div className='product-price text-orange-500 my-2'>{item.cost} 원</div>
+                    <div className='product-price text-brandOrange my-2'>{item.cost} 원</div>
                     <div className='quantity-control flex items-center border border-gray-300 w-20'>
                       <button
                         className='quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center'
                         onClick={() => decreaseOnetimeCartQuantity(item.productId)}
                       >
-                        <svg
-                          viewBox='0 0 24 24'
-                          xmlns='http://www.w3.org/2000/svg'
-                          className='minus w-4 h-4 stroke-current text-gray-600'
-                        >
-                          <path
-                            d='M6 12L18 12'
-                            strokeWidth='2'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          ></path>
-                        </svg>
+                        <MinusIcon className={'minus w-4 h-4 stroke-current text-gray-600'} />
                       </button>
                       <div className='quantity flex-1 text-center'>{item.quantity}</div>
                       <button
                         className='quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center'
                         onClick={() => increaseOnetimeCartQuantity(item.productId)}
                       >
-                        <svg
-                          viewBox='0 0 24 24'
-                          xmlns='http://www.w3.org/2000/svg'
-                          className='plus w-4 h-4 stroke-current text-gray-600'
-                        >
-                          <path
-                            d='M6 12H18M12 6V18'
-                            strokeWidth='2'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          ></path>
-                        </svg>
+                        <PlusIcon className={'plus w-4 h-4 stroke-current text-gray-600'} />
                       </button>
                     </div>
                   </div>
                   <div className='product-item-3 flex-[1] flex justify-end items-start'>
                     <button className='' onClick={() => removeFromOnetimeCart(item.productId)}>
-                      <svg
-                        viewBox='0 0 24 24'
-                        fill='none'
-                        xmlns='http://www.w3.org/2000/svg'
-                        className='w-6 h-6'
-                      >
-                        <path
-                          d='M6.75827 17.2426L12.0009 12M17.2435 6.75736L12.0009 12M12.0009 12L6.75827 6.75736M12.0009 12L17.2435 17.2426'
-                          stroke='#000000'
-                          strokeWidth='1.5'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                        ></path>
-                      </svg>
+                      <DeleteIcon className={'w-6 h-6'} />
                     </button>
                   </div>
                 </li>
@@ -177,7 +144,11 @@ const CartComponent = () => {
           {/* 목록 끝 */}
         </section>
       </div>
-      <OneButtonFooterLayout onClick={addToOrderList} footerText={'구매하기'} />
+      <OneButtonFooterLayout
+        onClick={addToOrderList}
+        footerText={'구매하기'}
+        isDisabled={isOrderButtonDisabled}
+      />
     </>
   );
 };

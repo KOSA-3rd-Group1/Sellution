@@ -1,4 +1,4 @@
-const OneButtonFooterLayout = ({ footerText, onClick, isDisabled=false }) => {
+const OneButtonFooterLayout = ({ footerText, onClick, isDisabled = false }) => {
   return (
     <nav className='fixed bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-lg h-16 bg-white flex shadow-footer px-3 py-1.5'>
       <div

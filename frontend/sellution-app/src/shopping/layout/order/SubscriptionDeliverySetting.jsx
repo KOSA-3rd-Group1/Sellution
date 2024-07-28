@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { DownChevronIcon } from '../../utility/assets/Icons';
 
 const SubscriptionDeliverySetting = ({
   selectedDays,
@@ -98,20 +99,7 @@ const SubscriptionDeliverySetting = ({
         >
           {selectedWeek ? `${selectedWeek.value}주마다 배송` : '배송 주기 선택'}
           <div className='flex items-center px-2 pointer-events-none'>
-            <svg
-              className='w-4 h-4 text-gray-400'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth='2'
-                d='M19 9l-7 7-7-7'
-              ></path>
-            </svg>
+            <DownChevronIcon className={'w-4 h-4 text-gray-400'} />
           </div>
         </div>
         {isWeekOpen && (
@@ -140,20 +128,7 @@ const SubscriptionDeliverySetting = ({
           >
             {selectedCount ? `${selectedCount}회` : '배송 횟수 선택'}
             <div className='flex items-center px-2 pointer-events-none'>
-              <svg
-                className='w-4 h-4 text-gray-400'
-                fill='none'
-                stroke='currentColor'
-                viewBox='0 0 24 24'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth='2'
-                  d='M19 9l-7 7-7-7'
-                ></path>
-              </svg>
+              <DownChevronIcon className={'w-4 h-4 text-gray-400'} />
             </div>
           </div>
           {isCountOpen && (
@@ -184,20 +159,7 @@ const SubscriptionDeliverySetting = ({
           >
             {selectedMonth ? `${selectedMonth.value}개월` : '정기배송 기간 선택'}
             <div className='flex items-center px-2 pointer-events-none'>
-              <svg
-                className='w-4 h-4 text-gray-400'
-                fill='none'
-                stroke='currentColor'
-                viewBox='0 0 24 24'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth='2'
-                  d='M19 9l-7 7-7-7'
-                ></path>
-              </svg>
+              <DownChevronIcon className={'w-4 h-4 text-gray-400'} />
             </div>
           </div>
           {isMonthOpen && (

@@ -1,3 +1,5 @@
+import { MinusIcon, PlusIcon, UpChevronIcon } from "../../utility/assets/Icons";
+
 const DetailOptionComponent = ({
   productToShow,
   itemCountToAdd,
@@ -16,13 +18,7 @@ const DetailOptionComponent = ({
         onClick={toggleDetailOption}
       >
         <span className='fold-icon'>
-          <svg
-            viewBox='0 0 1024 1024'
-            xmlns='http://www.w3.org/2000/svg'
-            className='w-5 h-5 fill-gray-500'
-          >
-            <path d='M903.232 256l56.768 50.432L512 768 64 306.432 120.768 256 512 659.072z'></path>
-          </svg>
+          <UpChevronIcon className={'w-5 h-5 fill-gray-500'} />
         </span>
       </button>
       <div className='footer-box-2 option-box flex justify-between bg-gray-200 p-4'>
@@ -33,36 +29,14 @@ const DetailOptionComponent = ({
               className='quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center'
               onClick={decreaseQuantity}
             >
-              <svg
-                viewBox='0 0 24 24'
-                xmlns='http://www.w3.org/2000/svg'
-                className='minus w-4 h-4 stroke-current text-gray-600'
-              >
-                <path
-                  d='M6 12L18 12'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                ></path>
-              </svg>
+              <MinusIcon className={'minus w-4 h-4 stroke-current text-gray-600'} />
             </button>
             <div className='quantity flex-1 text-center bg-white'>{itemCountToAdd}</div>
             <button
               className='quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center'
               onClick={increaseQuantity}
             >
-              <svg
-                viewBox='0 0 24 24'
-                xmlns='http://www.w3.org/2000/svg'
-                className='plus w-4 h-4 stroke-current text-gray-600'
-              >
-                <path
-                  d='M6 12H18M12 6V18'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                ></path>
-              </svg>
+              <PlusIcon className={'plus w-4 h-4 stroke-current text-gray-600'} />
             </button>
           </div>
         </div>
