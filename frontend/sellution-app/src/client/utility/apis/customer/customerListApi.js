@@ -4,7 +4,7 @@ import { addAuthInterceptor } from '@/client/utility/axios/Interceptors';
 const API_URL = '/api/customers';
 
 // 회원 목록 조회
-export const postCustomerList = async (pageParam, accessToken, setAccessToken) => {
+export const getCustomerList = async (pageParam, setAccessToken, accessToken) => {
   let responseData = null;
 
   const url = API_URL;

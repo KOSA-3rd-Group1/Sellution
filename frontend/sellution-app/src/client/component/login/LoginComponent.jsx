@@ -1,6 +1,7 @@
 import { useLogin } from '@/client/business/login/useLogin';
 import { LogoIcon } from '@/client/utility/assets/LoginIcons';
 import { EyeOnIcon, EyeOffIcon } from '@/client/utility/assets/Icons';
+import { Link } from 'react-router-dom';
 
 const LoginComponent = () => {
   const {
@@ -79,11 +80,17 @@ const LoginComponent = () => {
           </form>
         </div>
         <div className='w-full text-center text-sm mt-8 flex justify-center items-center'>
-          <div className='font-medium text-orange-600 hover:text-orange-500'>아이디 찾기</div>
+          <Link to='/idInquiry' className='font-medium text-orange-600 hover:text-orange-500'>
+            아이디 찾기
+          </Link>
           <div className='divider divider-horizontal'></div>
-          <div className='font-medium text-orange-600 hover:text-orange-500'>비밀번호 찾기</div>
+          <Link to='/pwInquiry' className='font-medium text-orange-600 hover:text-orange-500'>
+            비밀번호 찾기
+          </Link>
           <div className='divider divider-horizontal'></div>
-          <div className='font-medium text-orange-600 hover:text-orange-500'>아이디 생성</div>
+          <Link to='/join' className='font-medium text-orange-600 hover:text-orange-500'>
+            아이디 생성
+          </Link>
         </div>
       </div>
     </div>

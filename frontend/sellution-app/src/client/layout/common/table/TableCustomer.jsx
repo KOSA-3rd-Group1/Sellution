@@ -13,11 +13,11 @@ const Table = ({
   handleRowEvent,
 }) => {
   const {
-    selectAll,
-    selectedRows,
+    // selectAll,
+    // selectedRows,
     selectedCount,
-    handleSelectAll,
-    handleSelectRow,
+    // handleSelectAll,
+    // handleSelectRow,
     handleTableStateChange,
     handleSort,
   } = useTable({ data, setTableState });
@@ -36,7 +36,7 @@ const Table = ({
         <table className='relative w-full h-full text-sm text-left text-gray-500 table-fixed '>
           <thead className='sticky top-0 z-30 w-full h-[82px] text-xs text-gray-700 uppercase bg-gray-50 '>
             <tr className='relative'>
-              <th className='sticky min-w-14 w-14 max-w-14 h-full p-3 z-20 left-[0px] bg-gray-50'>
+              {/* <th className='sticky min-w-14 w-14 max-w-14 h-full p-3 z-20 left-[0px] bg-gray-50'>
                 <div className='flex flex-col w-full h-full justify-between items-center gap-1'>
                   <input
                     type='checkbox'
@@ -45,8 +45,8 @@ const Table = ({
                     className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'
                   />
                 </div>
-              </th>
-              <th className='sticky min-w-20 w-20 max-w-20 h-full p-3 z-20 left-[56px] bg-gray-50'>
+              </th> */}
+              <th className='sticky min-w-24 w-24 max-w-24 h-full p-3 z-20 left-[0px] bg-gray-50'>
                 <div className='flex flex-col w-full h-full justify-between items-center gap-3'>
                   <div>No.</div>
                   {ResetBtn}
@@ -100,9 +100,9 @@ const Table = ({
                 <tr
                   key={row.id}
                   className={`relative w-full ${ROW_HEIGHT} border-b border-b-[#F1F1F4] group`}
-                  onClick={handleRowEvent ? () => handleRowEvent(row.id) : undefined}
+                  onClick={handleRowEvent ? () => handleRowEvent(`${row.id}/default`) : undefined}
                 >
-                  <td
+                  {/* <td
                     className='sticky min-w-14 w-14 max-w-14 p-3 z-10 left-[0px] bg-white group-hover:bg-brandOrange-light'
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -114,8 +114,8 @@ const Table = ({
                         className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'
                       />
                     </div>
-                  </td>
-                  <td className='sticky min-w-20 w-20 max-w-20 p-3 z-10 left-[56px] bg-white group-hover:bg-brandOrange-light'>
+                  </td> */}
+                  <td className='sticky min-w-24 w-24 max-w-24 p-3 z-10 left-[0px] bg-white group-hover:bg-brandOrange-light'>
                     <div className='flex flex-col w-full justify-between items-center gap-3'>
                       {row.no}
                     </div>

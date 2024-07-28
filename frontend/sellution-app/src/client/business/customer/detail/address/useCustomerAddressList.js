@@ -1,97 +1,69 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import useAuthStore from '@/client/store/stores/useAuthStore';
+import { getCustomerAddressList } from '@/client/utility/apis/customer/detail/address/customerAddressListApi';
+import { formatPhoneNumber } from '@/client/utility/functions/formatterFunction';
 
 // 더미 데이터 생성 함수
-const generateDummyData = (count) => {
-  return Array.from({ length: count }, (_, index) => ({
-    id: index + 1,
-    name: `홍길동`,
-    addressName: `회사`,
-    address: '서울특별시 서초구 바우뫼로37길 30 (양재동), 1004동 1004호',
-    zipcode: `${Math.floor(10000 + Math.random() * 90000)}`,
-    phoneNumber: `010-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`,
-    isDefaultAddress: ['Y', 'N', 'N', 'N', 'N'][Math.floor(Math.random() * 5)],
-  }));
-};
+// const generateDummyData = (count) => {
+//   return Array.from({ length: count }, (_, index) => ({
+//     id: index + 1,
+//     name: `홍길동`,
+//     addressName: `회사`,
+//     address: '서울특별시 서초구 바우뫼로37길 30 (양재동), 1004동 1004호',
+//     zipcode: `${Math.floor(10000 + Math.random() * 90000)}`,
+//     phoneNumber: `010-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`,
+//     isDefaultAddress: ['Y', 'N', 'N', 'N', 'N'][Math.floor(Math.random() * 5)],
+//   }));
+// };
 
 //더미 데이터
-const DUMMY_DATA = generateDummyData(5);
+// const DUMMY_DATA = generateDummyData(5);
 
 export const useCustomerAddressList = () => {
-  const HEADERS = [
-    {
-      key: 'name',
-      label: '수령인',
-      width: 'min-w-44 w-44 max-w-44',
-    },
-    {
-      key: 'addressName',
-      label: '배송지명',
-      width: 'min-w-44 w-44 max-w-44',
-    },
-    {
-      key: 'address',
-      label: '주소',
-      width: 'min-w-[500px] w-[500px] max-w-[500px]',
-    },
-    {
-      key: 'zipcode',
-      label: '우편번호',
-      width: 'min-w-36 w-36 max-w-36',
-    },
-    {
-      key: 'phoneNumber',
-      label: '휴대폰 번호',
-      width: 'min-w-52 w-52 max-w-52',
-    },
-  ];
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
-  const ROW_HEIGHT = 'min-h-14 h-14 max-h-14';
-
-  const navigate = useNavigate();
+  const { customerId } = useParams();
 
   // 테이블 데이터
   const [data, setData] = useState([]);
-
   const defaultAddressObject = data.find((item) => item.isDefaultAddress === 'Y');
 
   // 데이터 총 개수
   const [totalDataCount, setTotalDataCount] = useState(0);
 
+  const formatData = useCallback(
+    (content) => ({
+      ...content,
+      id: content.addressId,
+      phoneNumber: formatPhoneNumber(content.phoneNumber),
+      address: `${content.streetAddress}, ${content.addressDetail}`,
+    }),
+    [],
+  );
+
   // api 요청으로 데이터 받아오기
   useEffect(() => {
-    setData(DUMMY_DATA);
-    setTotalDataCount(100);
+    const fetch = async (customerId, setAccessToken, accessToken) => {
+      const response = await getCustomerAddressList(customerId, setAccessToken, accessToken); // API 요청
+      console.log(response);
+      // API 받은 요청을 data에 입력
+      if (response && response.data && response.data.length !== 0) {
+        const formattedContent = response.data.map((item) => {
+          return formatData(item);
+        });
+        setData(() => formattedContent);
+        setTotalDataCount(formattedContent.length);
+      }
+    };
+
+    fetch(customerId, setAccessToken, accessToken);
   }, []);
 
-  // 등록 버튼
-  const handleAddBtn = () => {
-    navigate({
-      pathname: 'add',
-    });
-  };
-
-  // 테이블 row onClick 이벤트
-  const handleRowEvent = (e) => {
-    navigate({
-      pathname: `${e}`,
-    });
-  };
-
-  const moveList = () => {
-    navigate({
-      pathname: '/customer',
-    });
-  };
-
   return {
-    HEADERS,
-    ROW_HEIGHT,
     data,
     totalDataCount,
     defaultAddressObject,
-    handleAddBtn,
-    handleRowEvent,
-    moveList,
   };
 };
