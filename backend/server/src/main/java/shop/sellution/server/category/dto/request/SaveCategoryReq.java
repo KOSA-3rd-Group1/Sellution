@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import shop.sellution.server.category.domain.Category;
+import shop.sellution.server.company.domain.Company;
+
+import static shop.sellution.server.company.domain.QCompany.company;
 
 @Data
 @AllArgsConstructor
@@ -13,11 +16,13 @@ import shop.sellution.server.category.domain.Category;
 @Builder
 public class SaveCategoryReq {
 
+    private Long companyId;
     @NotBlank
     private String name;
 
-    public Category toEntity() {
+    public Category toEntity(Company company) {
         return Category.builder()
+                .company(company)
                 .name(name)
                 .build();
     }

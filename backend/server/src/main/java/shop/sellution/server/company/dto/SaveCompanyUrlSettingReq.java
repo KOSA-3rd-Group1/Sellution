@@ -17,7 +17,7 @@ public class SaveCompanyUrlSettingReq {
 
     public Company toEntity(Company company) {
         company.setName(this.name);
-        company.setShopUrl("https://www.sellution.shop/shopping/" + this.name);
+        company.setShopUrl("https://www.sellution.shop/shopping/" + this.name + "/home");
         company.setIsShopVisible(DisplayStatus.valueOf(this.isShopVisible));
         return company;
     }
