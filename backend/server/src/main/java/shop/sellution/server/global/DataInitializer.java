@@ -234,6 +234,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .productInformation("깔끔하고 담백한 닭가슴살과 가볍게 맛있는 갈릭 소이 드레싱, 신선하고 풍성한 채소가 어우러져 가장 깔끔하고 신선한 맛을 느끼실 수 있어요.")
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
+                .discountedPrice(calculateDiscountedPrice(8300, 19))
                 .discountRate(19)
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
@@ -255,6 +256,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(21)
+                .discountedPrice(calculateDiscountedPrice(9000, 21))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -274,6 +276,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(23)
+                .discountedPrice(calculateDiscountedPrice(9000, 23))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -293,6 +296,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(20)
+                .discountedPrice(calculateDiscountedPrice(8100, 20))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -312,6 +316,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.ONETIME)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(19)
+                .discountedPrice(calculateDiscountedPrice(9800, 19))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -330,6 +335,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.SUBSCRIPTION)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(23)
+                .discountedPrice(calculateDiscountedPrice(9000, 23))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -350,6 +356,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(21)
+                .discountedPrice(calculateDiscountedPrice(10700, 21))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -369,6 +376,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(19)
+                .discountedPrice(calculateDiscountedPrice(11000, 19))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -389,6 +397,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(19)
+                .discountedPrice(calculateDiscountedPrice(11000, 19))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -408,6 +417,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(20)
+                .discountedPrice(calculateDiscountedPrice(10200, 20))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -427,6 +437,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.ONETIME)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(21)
+                .discountedPrice(calculateDiscountedPrice(11200 ,21))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -446,6 +457,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.SUBSCRIPTION)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(23)
+                .discountedPrice(calculateDiscountedPrice(11600, 23))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
