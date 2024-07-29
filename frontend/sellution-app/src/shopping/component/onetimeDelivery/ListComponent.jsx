@@ -1,13 +1,13 @@
 import useList from '../../business/onetimeDelivery/useList';
 import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import MenuCategoryHeaderNav from '../../layout/MenuCategoryHeaderNav';
-import useClientName from '../../business/layout/useClientName';
 import { Link, useNavigate } from 'react-router-dom';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 
 const ListComponent = () => {
   const navigate = useNavigate();
   const { onetimeProductList, isLoading, onetimeCategoryList, fetchProducts } = useList();
-  const { clientName } = useClientName();
+  const clientName = useCompanyInfoStore((state) => state.name);
   const moveToOnetimeCartPage = () => {
     navigate(`/shopping/${clientName}/onetime/cart`);
   };

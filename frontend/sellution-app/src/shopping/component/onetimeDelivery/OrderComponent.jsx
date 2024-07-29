@@ -18,7 +18,7 @@ const OrderComponent = () => {
   const clientName = useCompanyInfoStore((state) => state.name);
   const customerId = useUserInfoStore((state) => state.id);
   const location = useLocation();
-
+  const companyId = useCompanyInfoStore((state) => state.companyId);
   // 목록 선택
   const listToShow = orderList;
   // 배송지
@@ -26,11 +26,9 @@ const OrderComponent = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   // 결제정보
   const [paymentMethods, setPaymentMethods] = useState([]);
-
   //쿠폰정보
   const [coupons, setCoupons] = useState([]);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
-
   //결제금액
   const [totalPrice, setTotalPrice] = useState(0);
   const [productDiscountTotal, setProductDiscountTotal] = useState(0); //상품 할인 금액
@@ -109,9 +107,9 @@ const OrderComponent = () => {
     );
     const couponDiscountTotal = selectedCoupon
       ? Math.floor(
-        listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
-        (selectedCoupon.couponDiscountRate / 100),
-      )
+          listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
+            (selectedCoupon.couponDiscountRate / 100),
+        )
       : 0;
 
     console.log('total price', total);
@@ -136,10 +134,45 @@ const OrderComponent = () => {
   const isOrderButtonDisabled = !validateForm();
 
   //주문 데이터 생성 (결제하기 버튼)
-  const handleOrderClick = () => {
+  const handleOrderClick = async () => {
     if (isOrderButtonDisabled) return;
-    // 주문 데이터 생성 및 처리 로직
-    navigate(`/shopping/${clientName}/subscription/order-completed`);
+
+    const orderedProducts = listToShow.map((item) => ({
+      productId: item.id,
+      count: item.quantity,
+      price: item.discountedPrice || item.cost,
+      discountRate: item.discountRate || 0,
+    }));
+
+    const saveOrderReq = {
+      companyId: companyId, // 회사 ID
+      addressId: selectedAddress.addressId, // 주소 ID
+      accountId: paymentMethods.find((method) => method.isChecked).id, // 결제 수단 ID
+      eventId: selectedCoupon ? selectedCoupon.id : null, // 쿠폰 ID (선택 사항)
+      monthOptionId: null, // 월 옵션 ID (선택 사항)
+      weekOptionId: null, // 주 옵션 ID (선택 사항)
+      orderType: 'ONETIME', // 주문 타입
+      totalDeliveryCount: null, // 총 배송 횟수 (선택 사항)
+      deliveryStartDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 현재 날짜로부터 3일 후
+      orderedProducts: orderedProducts, // 주문한 상품들
+      dayOptionIds: null, // 선택된 요일들 ID (선택 사항)
+    };
+
+    console.log('주문 보내는 양식: ', saveOrderReq);
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/orders/customers/${customerId}`,
+        saveOrderReq,
+      );
+      if (response.data.startsWith('success')) {
+        const savedOrderId = response.data.split('생성된 아이디 : ')[1];
+        navigate(`/shopping/${clientName}/subscription/order-completed/${savedOrderId}`);
+      }
+    } catch (error) {
+      console.error('Error creating order:', error);
+      alert('주문 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
   };
 
   //api
@@ -151,9 +184,8 @@ const OrderComponent = () => {
       setAddresses(response.data);
       if (!selectedAddress) {
         const defaultAddress = response.data.find((addr) => addr.isDefaultAddress === 'Y');
-        setSelectedAddress(defaultAddress || null);
+        setSelectedAddress(defaultAddress || response.data[0] || null);
       }
-      console.log('fetch한 주소: ', addresses);
     } catch (error) {
       console.error('Error fetching addresses:', error);
     }
@@ -191,12 +223,14 @@ const OrderComponent = () => {
       console.error('계좌 정보를 가져오는 데 실패했습니다:', error);
     }
   };
+
   //useEffect
   useEffect(() => {
     console.log('OrderComponent mounted');
     const fetchData = async () => {
       await fetchAddresses();
       await fetchCoupons();
+      await fetchAccounts();
       await fetchAccounts();
       checkForSavedAddress();
     };
@@ -254,6 +288,11 @@ const OrderComponent = () => {
           handleAddPaymentMethod={handleAddPaymentMethod}
         />
       </div>
+      <OneButtonFooterLayout
+        footerText={'결제하기'}
+        onClick={handleOrderClick}
+        isDisabled={isOrderButtonDisabled}
+      />
       <OneButtonFooterLayout
         footerText={'결제하기'}
         onClick={handleOrderClick}

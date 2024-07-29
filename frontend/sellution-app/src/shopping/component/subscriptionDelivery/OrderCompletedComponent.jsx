@@ -14,45 +14,43 @@ const OrderCompletedComponent = () => {
 
   const formatDayList = (dayList) => {
     const dayMap = {
-      'MON': '월',
-      'TUE': '화',
-      'WED': '수',
-      'THU': '목',
-      'FRI': '금',
-      'SAT': '토',
-      'SUN': '일'
+      MON: '월',
+      TUE: '화',
+      WED: '수',
+      THU: '목',
+      FRI: '금',
+      SAT: '토',
+      SUN: '일',
     };
-    return dayList.map(day => dayMap[day]).join(', ');
+    return dayList.map((day) => dayMap[day]).join(', ');
   };
-
 
   const getOrderTypeText = (type) => {
     const types = {
-      'ONETIME': '단건 주문',
-      'MONTH_SUBSCRIPTION': '정기 주문(월단위)',
-      'COUNT_SUBSCRIPTION': '정기 주문(횟수 단위)'
+      ONETIME: '단건 주문',
+      MONTH_SUBSCRIPTION: '정기 주문(월단위)',
+      COUNT_SUBSCRIPTION: '정기 주문(횟수 단위)',
     };
     return types[type] || type;
   };
 
   const getOrderStatusText = (type) => {
     const statuses = {
-      'HOLD': '주문 승인 대기중',
-      'APPROVED': '주문 승인 완료',
-      'CANCEL': '주문 취소'
+      HOLD: '주문 승인 대기중',
+      APPROVED: '주문 승인 완료',
+      CANCEL: '주문 취소',
     };
     return statuses[type] || type;
   };
 
   const getDeliveryStatusText = (type) => {
     const statuses = {
-      'BEFORE_DELIVERY': '배송전',
-      'IN_PROGRESS': '남은 배송 진행중',
-      'COMPLETE': '모든 배송 완료'
+      BEFORE_DELIVERY: '배송전',
+      IN_PROGRESS: '남은 배송 진행중',
+      COMPLETE: '모든 배송 완료',
     };
     return statuses[type] || type;
   };
-
 
   const renderSubscriptionInfo = () => {
     if (orderData.type === 'MONTH_SUBSCRIPTION' || orderData.type === 'COUNT_SUBSCRIPTION') {
@@ -152,30 +150,30 @@ const OrderCompletedComponent = () => {
       case 'COUNT_SUBSCRIPTION':
         return (
           <>
-            <p className="flex justify-between">
+            <p className='flex justify-between'>
               <span>총 상품 금액</span>
               <span>{totalProductPrice.toLocaleString()}원</span>
             </p>
-            <p className="flex justify-between text-red-500">
+            <p className='flex justify-between text-red-500'>
               <span>상품 할인 금액</span>
               <span>-{totalDiscountAmount.toLocaleString()}원</span>
             </p>
             {orderData.couponName && (
-              <p className="flex justify-between text-red-500">
+              <p className='flex justify-between text-red-500'>
                 <span>쿠폰 할인 ({orderData.couponName})</span>
                 <span>-{couponDiscountAmount.toLocaleString()}원</span>
               </p>
             )}
-            <p className="flex justify-between font-semibold border-t text-lg">
+            <p className='flex justify-between font-semibold border-t text-lg'>
               <span>배송 1회당 상품 금액</span>
-              <span className="font-semibold text-brandOrange">
+              <span className='font-semibold text-brandOrange'>
                 {orderData.perPrice.toLocaleString()}원
               </span>
             </p>
 
-            <p className="flex justify-between font-semibold text-lg border-t pt-2">
+            <p className='flex justify-between font-semibold text-lg border-t pt-2'>
               <span>총 결제금액</span>
-              <span className="text-brandOrange">
+              <span className='text-brandOrange'>
                 {(orderData.perPrice * orderData.totalDeliveryCount).toLocaleString()}원
               </span>
             </p>
@@ -184,7 +182,7 @@ const OrderCompletedComponent = () => {
             </p>
           </>
         );
-      case "MONTH_SUBSCRIPTION":
+      case 'MONTH_SUBSCRIPTION':
         return (
           <>
             <p className='flex justify-between'>
@@ -279,7 +277,6 @@ const OrderCompletedComponent = () => {
     return newDate;
   };
 
-
   useEffect(() => {
     const fetchOrderData = async () => {
       try {
@@ -294,7 +291,7 @@ const OrderCompletedComponent = () => {
     fetchOrderData();
   }, [orderId]);
 
-  if (!orderData) return <div className="text-center py-10">로딩 중...</div>;
+  if (!orderData) return <div className='text-center py-10'>로딩 중...</div>;
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

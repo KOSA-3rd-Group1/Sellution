@@ -1,13 +1,17 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import useClientName from '../layout/useClientName';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import useOrderListStore from './../../store/stores/useOrderListStore';
 import useOnetimeCartStore from '../../store/stores/useOnetimeCartStore';
+import useAuthStore from '@/shopping/store/stores/useAuthStore';
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 
 const useDetail = () => {
+  const accessToken = useAuthStore((state) => state.accessToken);
   const navigate = useNavigate();
-  const clientName = useClientName();
+  const clientName = useCompanyInfoStore((state) => state.name);
+  const customerId = useUserInfoStore((state) => state.id);
   const { updateOrderListForDirectOrder } = useOrderListStore();
   const { onetimeDeliveryId } = useParams();
   const [activeSlide, setActiveSlide] = useState(1);
@@ -35,9 +39,15 @@ const useDetail = () => {
 
   const { onetimeCart, updateOnetimeCart } = useOnetimeCartStore();
   const [isDetailPageModalVisible, setIsDetailPageModalVisible] = useState(false);
+
   const addToOnetimeCart = () => {
+    if (accessToken === null || accessToken === '') {
+      navigate(
+        `/shopping/${clientName}/login?redirectUrl=${encodeURIComponent(window.location.pathname)}`,
+      );
+    }
     //stock대신 quantity를 가진 newItem 객체 만들어서, 장바구니에 넣기
-    if (itemCountToAdd > 0) {
+    else if (itemCountToAdd > 0) {
       const newItem = {
         id: productToShow.productId,
         productId: productToShow.productId,
@@ -52,14 +62,16 @@ const useDetail = () => {
       updateOnetimeCart(newItem);
       console.log('단건배송 장바구니 목록: ', onetimeCart);
       setItemCountToAdd(0); //장바구니에 넣어준 다음에 수량 0으로 다시 변경 >> 장바구니 버튼 누르면 0으로 초기화 되는 것
-      //modal창 띄우기
       setIsDetailPageModalVisible(true);
-      //navigate(`/shopping/${clientName}/onetime`);
     }
   };
 
   const handleDirectOrder = () => {
-    if (itemCountToAdd > 0) {
+    if (accessToken === null || accessToken === '') {
+      navigate(
+        `/shopping/${clientName}/login?redirectUrl=${encodeURIComponent(window.location.pathname)}`,
+      );
+    } else if (itemCountToAdd > 0) {
       const newItem = {
         id: productToShow.productId,
         productId: productToShow.productId,
@@ -73,7 +85,7 @@ const useDetail = () => {
       };
       updateOrderListForDirectOrder(newItem);
       setItemCountToAdd(0);
-      navigate(`/shopping/${clientName}/onetime/order`);
+      navigate(`/shopping/${clientName}/onetime/order/${customerId}`);
     }
   };
 

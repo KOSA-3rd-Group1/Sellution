@@ -27,6 +27,7 @@ const DetailComponent = () => {
     moveToOnetimeList,
     moveToOnetimeCartPage,
   } = useDetail();
+  const isButtonDisabled = itemCountToAdd === 0;
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -58,6 +59,7 @@ const DetailComponent = () => {
           <TwoButtonFooterLayout
             addToCart={addToOnetimeCart}
             handleDirectOrder={handleDirectOrder}
+            isDisabled={isButtonDisabled}
           />
           <TwoButtonModal
             isDetailPageModalVisible={isDetailPageModalVisible}
