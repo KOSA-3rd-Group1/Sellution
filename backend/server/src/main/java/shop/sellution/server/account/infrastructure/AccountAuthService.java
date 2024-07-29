@@ -43,7 +43,7 @@ public class AccountAuthService {
                 .bodyValue(body)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, error -> {
-                    log.error("4xx error occurred: {}", error.statusCode());
+                    log.warn("4xx error occurred: {}", error.statusCode());
                     throw new BadRequestException(INVALID_ACCOUNT_INFO);
                 })
                 .onStatus(HttpStatusCode::is5xxServerError, error -> {

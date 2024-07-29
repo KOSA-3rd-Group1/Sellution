@@ -3,6 +3,7 @@ package shop.sellution.server.account.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import shop.sellution.server.account.domain.Account;
 
 import java.time.LocalDateTime;
@@ -10,11 +11,12 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @AllArgsConstructor
+@Slf4j
 public class FindAccountRes {
 
     private final Long accountId;
     private final Long customerId;
-    private final String accountNumber;
+    private String accountNumber;
     private final String bankCode;
     private final LocalDateTime createdAt;
 
@@ -27,5 +29,9 @@ public class FindAccountRes {
                 .bankCode(account.getBankCode())
                 .createdAt(account.getCreatedAt())
                 .build();
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 }

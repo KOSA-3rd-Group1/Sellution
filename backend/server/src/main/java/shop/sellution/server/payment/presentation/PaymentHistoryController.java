@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.sellution.server.payment.application.PaymentHistoryService;
 import shop.sellution.server.payment.dto.request.FindPaymentHistoryCond;
+import shop.sellution.server.payment.dto.response.FindPaymentHistoryDetailRes;
 import shop.sellution.server.payment.dto.response.FindPaymentHistoryRes;
 
 @RestController
@@ -25,6 +26,13 @@ public class PaymentHistoryController {
             FindPaymentHistoryCond findPaymentHistoryCond,
             Pageable pageable) {
         return paymentHistoryService.findPaymentHistoryByCompanyId(companyId, findPaymentHistoryCond, pageable);
+    }
+
+    @GetMapping("/orders/{orderId}")
+    public Page<FindPaymentHistoryDetailRes> findPaymentHistoryByOrderId(
+            @PathVariable Long orderId,
+            Pageable pageable) {
+        return paymentHistoryService.findPaymentHistoryByOrderId(orderId, pageable);
     }
 
 

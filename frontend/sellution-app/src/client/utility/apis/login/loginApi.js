@@ -16,6 +16,7 @@ export const login = async (username, password, setAccessToken, setName) => {
     });
 
     const accessToken = response.headers.get('Authorization').split(' ')[1];
+    console.log(accessToken);
     setAccessToken(accessToken);
 
     // 고객 이름 조회

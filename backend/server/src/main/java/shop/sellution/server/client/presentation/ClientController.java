@@ -112,5 +112,7 @@ public class ClientController {
 //        }  catch (Exception e) {
 //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "비밀번호 재설정 오청 중 오류가 발생햇습니다."));
 //        }
+
+
     }
 }

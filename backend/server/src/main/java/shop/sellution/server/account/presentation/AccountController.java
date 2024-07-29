@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import shop.sellution.server.account.application.AccountService;
 import shop.sellution.server.account.dto.request.SaveAccountReq;
 import shop.sellution.server.account.dto.request.UpdateAccountReq;
+import shop.sellution.server.account.dto.response.FindAccountDetailRes;
 import shop.sellution.server.account.dto.response.FindAccountRes;
 
 
@@ -35,9 +36,9 @@ public class AccountController {
             @PathVariable("customerId") @Positive(message = "양수만 가능합니다.") Long customerId,
             @RequestBody @Valid SaveAccountReq saveAccountReq
     ) {
-        accountService.saveAccount(customerId, saveAccountReq);
+        Long savedId = accountService.saveAccount(customerId, saveAccountReq);
 
-        return ResponseEntity.ok("success");
+        return ResponseEntity.ok("success id : " + savedId);
     }
 
     @PutMapping("/{accountId}")
@@ -56,6 +57,15 @@ public class AccountController {
         accountService.deleteAccount(accountId);
         return ResponseEntity.ok("success");
     }
+
+    // 계좌 상세조회
+    @GetMapping("/{accountId}")
+    public ResponseEntity<FindAccountDetailRes> findAccount(
+            @PathVariable("accountId") @Positive(message = "양수만 가능합니다.") Long accountId
+    ) {
+        return ResponseEntity.ok(accountService.findAccount(accountId));
+    }
+
 
 
 }

@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import MenuHeaderNav from '@/shopping/layout/MenuHeaderNav.jsx';
+import { useParams , useNavigate  } from 'react-router-dom';
+import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx";
 
 const OrderCompletedComponent = () => {
   const [orderData, setOrderData] = useState(null);
   const { orderId } = useParams();
+  const navigate = useNavigate();
+
+  const handleViewPaymentHistory = () => {
+    navigate(`/shopping/PocketSalad/onetime/payment-history/${orderId}`);
+  };
+
 
   const formatDayList = (dayList) => {
     const dayMap = {
@@ -171,11 +177,8 @@ const OrderCompletedComponent = () => {
                 {(orderData.perPrice * orderData.totalDeliveryCount).toLocaleString()}원
               </span>
             </p>
-            <p className='text-xs text-gray-500 ml-2'>
-              <span>
-                공식 : (배송 1회당 금액 * 총 배송횟수) [{orderData.perPrice} *{' '}
-                {orderData.totalDeliveryCount}]
-              </span>
+            <p className="text-xs text-gray-500 ml-2">
+              <span>공식 : (배송 1회당 금액 * 총 배송횟수)  [{orderData.perPrice} *{" "} {orderData.totalDeliveryCount}]</span>
             </p>
           </>
         );
@@ -207,32 +210,41 @@ const OrderCompletedComponent = () => {
                 <br />
               </span>
             </p>
-            <p className='font-semibold text-lg'>
-              <span>💸 결제금액 💸 </span>
-            </p>
+            <div className='flex justify-between items-center'>
+              <p className='font-semibold text-lg'>
+                <span>💸 다음 결제정보 💸 </span>
+              </p>
+            </div>
             <p className='flex justify-between'>
-              <span>결제일</span>
-              <span className='font-semibold text-brandOrange'>
+              <span>다음 결제일</span>
+              <span
+                className={`font-semibold ${orderData.status === 'CANCEL' ? 'line-through text-gray-500' : 'text-brandOrange'}`}
+              >
                 {formatDate(orderData.nextPaymentDate)}
               </span>
             </p>
             <p className='flex justify-between'>
               <span>결제금액</span>
-              <span className='font-semibold text-brandOrange'>
+              <span
+                className={`font-semibold ${orderData.status === 'CANCEL' ? 'line-through text-gray-500' : 'text-brandOrange'}`}
+              >
                 {(orderData.thisMonthDeliveryCount * orderData.perPrice).toLocaleString()}원
               </span>
             </p>
-            <p className='text-sm text-gray-500'>
-              [
-              {simpleFormatDate(
-                addMonthsToDate(orderData.deliveryStartDate, orderData.paymentCount),
-              )}{' '}
-              ~
-              {simpleFormatDate(
-                addMonthsToDate(orderData.deliveryStartDate, orderData.paymentCount + 1),
-              )}
-              ] [{orderData.perPrice}원 * {orderData.thisMonthDeliveryCount}회]
-            </p>
+
+            {orderData.status !== 'CANCEL' && (
+              <p className='text-sm text-gray-500'>
+                [
+                {simpleFormatDate(
+                  addMonthsToDate(orderData.deliveryStartDate, orderData.paymentCount),
+                )}{' '}
+                ~
+                {simpleFormatDate(
+                  addMonthsToDate(orderData.deliveryStartDate, orderData.paymentCount + 1),
+                )}
+                ] [{orderData.perPrice}원 * {orderData.thisMonthDeliveryCount}회]
+              </p>
+            )}
             <p>
               <span>
                 <br />
@@ -421,8 +433,22 @@ const OrderCompletedComponent = () => {
       </div>
 
       <div className='bg-gray-100 p-4 rounded-lg'>
-        <h2 className='text-xl font-semibold mb-4'>결제 정보</h2>
-        <div className='space-y-2'>{renderPaymentInfo()}</div>
+        <div className='flex justify-between items-center'>
+          <h2 className='text-xl font-semibold mb-4'>결제 정보{orderData.status === 'CANCEL' && (
+            <p className='text-sm text-red-500 mt-1'>
+              취소된 주문입니다.
+            </p>
+          )}</h2>
+          <button
+            onClick={handleViewPaymentHistory}
+            className='text-sm text-blue-600 hover:text-blue-800'
+          >
+            결제내역보기 &gt;
+          </button>
+        </div>
+        <div className='space-y-2'>
+          {renderPaymentInfo()}
+        </div>
       </div>
     </div>
   );

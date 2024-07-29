@@ -5,6 +5,8 @@ import DetailPage from '@/shopping/page/onetimeDelivery/DetailPage';
 import CartPage from '@/shopping/page/onetimeDelivery/CartPage';
 import OrderPage from '@/shopping/page/onetimeDelivery/OrderPage';
 import OrderCompletedPage from '@/shopping/page/onetimeDelivery/OrderCompletedPage';
+import OrderCompletedPaymentHistoryPage
+  from "@/shopping/page/onetimeDelivery/OrderCompletedPaymentHistoryPage.jsx";
 
 const onetimeDeliveryRouter = () => {
   return [
@@ -32,6 +34,10 @@ const onetimeDeliveryRouter = () => {
       path: '*',
       element: <Navigate replace to='' />,
     },
+    {
+      path: 'payment-history/:orderId',
+      element: <OrderCompletedPaymentHistoryPage />,
+    }
   ];
 };
 

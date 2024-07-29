@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
   KookminBankIcon,
@@ -13,8 +13,9 @@ import {
   HanaBankIcon,
 } from '@/client/utility/assets/BankIcons.jsx';
 import { AccountAuthCheckIcon } from '@/shopping/utility/assets/Icons.jsx';
-import OneButtonFooterLayout from '@/shopping/layout/OneButtonFooterLayout.jsx';
-import MenuHeaderNav from '@/shopping/layout/MenuHeaderNav.jsx';
+import OneButtonFooterLayout from "@/shopping/layout/OneButtonFooterLayout.jsx";
+import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx";
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 
 const BANK_INFO = [
   { code: '004', name: '국민은행', icon: KookminBankIcon },
@@ -29,27 +30,14 @@ const BANK_INFO = [
 ];
 
 const AddComponent = () => {
-  const customerId = useUserInfoStore((state) => state.id);
-  const [selectedBank, setSelectedBank] = useState(null);
   const [accountNumber, setAccountNumber] = useState('');
-  const [customerName, setCustomerName] = useState('');
+  const [selectedBank, setSelectedBank] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authMessage, setAuthMessage] = useState('');
-
-  useEffect(() => {
-    const fetchCustomerName = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/customers/${customerId}`,
-        );
-        setCustomerName(response.data.name);
-      } catch (error) {
-        console.error('Failed to fetch customer name:', error);
-      }
-    };
-
-    fetchCustomerName();
-  }, [customerId]);
+  const [isSaving, setIsSaving] = useState(false);
+  const customerId = useUserInfoStore((state) => state.id);
+  const customerName = useUserInfoStore((state) => state.name);
+  const navigate = useNavigate();
 
   const handleBankSelect = (bankCode) => {
     setSelectedBank(bankCode);
@@ -58,7 +46,8 @@ const AddComponent = () => {
   const handleAccountAuth = async (e) => {
     e.preventDefault();
     if (!selectedBank || !accountNumber) {
-      setAuthMessage('은행과 계좌번호를 모두 입력해주세요.');
+      setAuthMessage('은행을 선택하고 계좌번호를 입력해야 합니다.');
+      setIsAuthenticated(false);
       return;
     }
 
@@ -75,18 +64,46 @@ const AddComponent = () => {
         setIsAuthenticated(true);
         setAuthMessage('계좌 인증에 성공했습니다.');
       } else {
+        setIsAuthenticated(false);
         setAuthMessage('계좌 명의가 일치하지 않습니다.');
       }
     } catch (error) {
       console.error('Account authentication failed:', error);
-      setAuthMessage('계좌 인증에 실패했습니다. 다시 시도해주세요.');
+      setIsAuthenticated(false);
+      setAuthMessage(
+        <>
+          계좌 인증에 실패했습니다.
+          <br />
+          [계좌번호를 확인해주세요.]
+          <br />
+          [본인명의의 계좌만 가능합니다.]
+        </>
+      );
+    }
+  };
+
+  const handleSave = async () => {
+    if (isAuthenticated) {
+      setIsSaving(true);
+      try {
+        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/accounts/customers/${customerId}`, {
+          accountNumber: accountNumber,
+          bankCode: selectedBank
+        });
+        navigate(`/shopping/${customerName}/my/${customerId}/payment`);
+      } catch (error) {
+        console.error('Failed to save account information:', error);
+        setAuthMessage('계좌 정보 저장에 실패했습니다. 다시 시도해주세요.');
+        setIsAuthenticated(false);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
   return (
     <div className='p-4 max-w-md mx-auto'>
       <MenuHeaderNav title={'결제수단 등록'} />
-      {/*<h1 className="text-2xl font-bold mb-4">결제 수단 등록</h1>*/}
 
       <div className='mb-6'>
         <h2 className='text-lg font-semibold mb-2'>
@@ -144,7 +161,7 @@ const AddComponent = () => {
           >
             계좌 인증하기
           </button>
-          {isAuthenticated && <AccountAuthCheckIcon className='text-green-500 w-6 h-6' />}
+          {isAuthenticated && <AccountAuthCheckIcon className="text-green-500 w-8 h-8 ml-2" />}
         </div>
       </form>
 
@@ -154,7 +171,10 @@ const AddComponent = () => {
         </p>
       )}
 
-      <OneButtonFooterLayout footerText='저장' />
+      <OneButtonFooterLayout
+        footerText={isSaving ? "저장 중..." : "저장"}
+        onClick={handleSave}
+      />
     </div>
   );
 };
