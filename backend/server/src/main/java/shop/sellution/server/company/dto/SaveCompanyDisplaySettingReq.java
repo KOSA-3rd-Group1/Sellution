@@ -31,7 +31,7 @@ public class SaveCompanyDisplaySettingReq {
     private String mainPromotion2Content; //deflaut값 있음
 
     public Company toEntity(Company company) {
-        company.setName(this.displayName);
+        company.setDisplayName(this.displayName);
         company.setThemeColor(this.themeColor);
         company.setMainPromotion1Title(this.mainPromotion1Title);
         company.setMainPromotion1Content(this.mainPromotion1Content);

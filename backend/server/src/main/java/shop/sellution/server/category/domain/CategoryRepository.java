@@ -12,6 +12,7 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     //Category findByName(String name);
+    Page<Category> findByCompanyCompanyIdAndIsVisible(Long companyId, DisplayStatus isVisible, Pageable pageable);
     List<Category> findAllById(Iterable<Long> ids);
     Page<Category> findByCompanyCompanyId(Long companyId, Pageable pageable);
     Optional<Category> findByName(String name);

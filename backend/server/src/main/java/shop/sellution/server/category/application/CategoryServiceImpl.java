@@ -27,9 +27,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<FindCategoryRes> getAllCategories(Long companyId, Pageable pageable) {
-
-        return categoryRepository.findByCompanyCompanyId(companyId, pageable)
+    public Page<FindCategoryRes> getAllCategories(Long companyId, DisplayStatus isVisible, Pageable pageable) {
+        return categoryRepository.findByCompanyCompanyIdAndIsVisible(companyId, isVisible, pageable)
                 .map(category -> {
                     int productCount = (int) productRepository.countByCategoryCategoryId(category.getCategoryId());
                     return FindCategoryRes.fromEntity(category, productCount);
