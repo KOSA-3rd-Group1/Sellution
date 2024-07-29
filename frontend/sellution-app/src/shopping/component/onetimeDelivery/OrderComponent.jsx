@@ -39,6 +39,9 @@ const OrderComponent = () => {
   const [couponDiscountTotal, setCouponDiscountTotal] = useState(0); // 쿠폰 할인 금액
   const [finalPrice, setFinalPrice] = useState(0);
 
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+
   const BANK_CODES = {
     '004': '국민은행',
     '090': '카카오뱅크',
@@ -111,9 +114,9 @@ const OrderComponent = () => {
     );
     const couponDiscountTotal = selectedCoupon
       ? Math.floor(
-          listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
-            (selectedCoupon.couponDiscountRate / 100),
-        )
+        listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
+        (selectedCoupon.couponDiscountRate / 100),
+      )
       : 0;
 
     console.log('total price', total);
@@ -170,7 +173,7 @@ const OrderComponent = () => {
         saveOrderReq,
       );
       if (response.data.startsWith('success')) {
-        const savedOrderId = response.data.split('생성된 아이디 : ')[1];
+        const savedOrderId = response.data.split('success, 생성된 주문 아이디 : ')[1];
         navigate(`/shopping/${clientName}/subscription/order-completed/${savedOrderId}`);
       }
     } catch (error) {
@@ -297,11 +300,11 @@ const OrderComponent = () => {
         onClick={handleOrderClick}
         isDisabled={isOrderButtonDisabled}
       />
-      <OneButtonFooterLayout
-        footerText={'결제하기'}
-        onClick={handleOrderClick}
-        isDisabled={isOrderButtonDisabled}
-      />
+      {/*<OneButtonFooterLayout*/}
+      {/*  footerText={'결제하기'}*/}
+      {/*  onClick={handleOrderClick}*/}
+      {/*  isDisabled={isOrderButtonDisabled}*/}
+      {/*/>*/}
     </>
   );
 };

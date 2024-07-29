@@ -3,6 +3,7 @@ package shop.sellution.server.category.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.global.type.DisplayStatus;
 
 @Entity
@@ -18,6 +19,10 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
     private Long categoryId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
     @Column(length = 50,nullable = false )
     private String name;

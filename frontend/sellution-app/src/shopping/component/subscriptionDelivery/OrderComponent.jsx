@@ -23,6 +23,10 @@ const OrderComponent = () => {
   const customerId = useUserInfoStore((state) => state.id);
   const location = useLocation();
   const companyId = useCompanyInfoStore((state) => state.companyId);
+
+  const accessToken =useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+
   //목록 선택
   const listToShow = orderList;
   // 배송지
@@ -105,7 +109,11 @@ const OrderComponent = () => {
   };
 
   const handleAddPaymentMethod = () => {
-    navigate(`/shopping/${clientName}/my/customerId/payment/add`);
+    saveState(); // 현재 상태 저장
+    console.log('이동전 경로 : ', location.pathname);
+    navigate(`/shopping/${clientName}/my/${customerId}/payment/add`, {
+      state: { returnUrl: location.pathname }
+    });
   };
 
   const handleCheckChange = (id) => {
@@ -161,9 +169,9 @@ const OrderComponent = () => {
     );
     const couponDiscountTotal = selectedCoupon
       ? Math.floor(
-          listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
-            (selectedCoupon.couponDiscountRate / 100),
-        )
+        listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
+        (selectedCoupon.couponDiscountRate / 100),
+      )
       : 0;
 
     setTotalPrice(total);
@@ -249,7 +257,8 @@ const OrderComponent = () => {
         saveOrderReq,
       );
       if (response.data.startsWith('success')) {
-        const savedOrderId = response.data.split('생성된 아이디 : ')[1];
+        const savedOrderId = response.data.split('success, 생성된 주문 아이디 : ')[1];
+        localStorage.removeItem('orderState'); // 주문 완료 후 저장된 상태 제거
         navigate(`/shopping/${clientName}/subscription/order-completed/${savedOrderId}`);
       }
     } catch (error) {
@@ -332,6 +341,7 @@ const OrderComponent = () => {
       await fetchSaleSettings();
       await fetchAccounts();
       checkForSavedAddress();
+      restoreState();
       calculateTotalPrice(); // 기본값 설정을 위해 초기 호출
     };
     fetchData();
@@ -351,6 +361,37 @@ const OrderComponent = () => {
     calculateTotalPrice();
     console.log('계산 변경: ', selectedCoupon);
   }, [selectedCoupon, orderList, selectedStartDate, selectedWeek, selectedMonth, selectedDays]);
+
+  // 상태 저장 함수
+  const saveState = () => {
+    const stateToSave = {
+      // selectedAddress,
+      selectedCoupon,
+      selectedStartDate,
+      subscriptionType,
+      selectedDays,
+      selectedWeek,
+      selectedCount,
+      selectedMonth,
+    };
+    localStorage.setItem('orderState', JSON.stringify(stateToSave));
+  };
+
+  // 상태 복원 함수
+  const restoreState = () => {
+    const savedState = localStorage.getItem('orderState');
+    if (savedState) {
+      const parsedState = JSON.parse(savedState);
+      // setSelectedAddress(parsedState.selectedAddress);
+      setSelectedCoupon(parsedState.selectedCoupon);
+      setSelectedStartDate(parsedState.selectedStartDate);
+      setSubscriptionType(parsedState.subscriptionType);
+      setSelectedDays(parsedState.selectedDays);
+      setSelectedWeek(parsedState.selectedWeek);
+      setSelectedCount(parsedState.selectedCount);
+      setSelectedMonth(parsedState.selectedMonth);
+    }
+  };
 
   return (
     <>
@@ -404,6 +445,7 @@ const OrderComponent = () => {
           monthlyPriceData={monthlyPriceData}
           subscriptionType={subscriptionType}
           selectedCount={selectedCount}
+          perPrice={finalPrice}
         />
         <div className='seperator w-full h-4 bg-gray-100'></div>
         {/* 결제 정보 */}

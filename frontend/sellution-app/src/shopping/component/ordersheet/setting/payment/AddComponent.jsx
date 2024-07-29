@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { KookminBankIcon, KakaoBankIcon, ShinhanBankIcon, WooriBankIcon, IBKIcon, TossBankIcon, PostBankIcon, NonghyupBankIcon, HanaBankIcon } from '@/client/utility/assets/BankIcons.jsx';
 import { AccountAuthCheckIcon } from '@/shopping/utility/assets/Icons.jsx';
@@ -28,6 +28,8 @@ const AddComponent = () => {
   const customerId = useUserInfoStore((state) => state.id);
   const customerName = useUserInfoStore((state) => state.name);
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnUrl = location.state?.returnUrl || '/';
 
   const handleBankSelect = (bankCode) => {
     setSelectedBank(bankCode);
@@ -73,11 +75,15 @@ const AddComponent = () => {
     if (isAuthenticated) {
       setIsSaving(true);
       try {
+        console.log('리턴url', returnUrl);
         await axios.post(`${import.meta.env.VITE_BACKEND_URL}/accounts/customers/${customerId}`, {
           accountNumber: accountNumber,
           bankCode: selectedBank
         });
-        navigate(`/shopping/${customerName}/my/${customerId}/payment`);
+        setAuthMessage('계좌 정보가 성공적으로 저장되었습니다.');
+        setTimeout(() => {
+          navigate(returnUrl);
+        }, 1500); // Wait for 1.5 seconds before navigating
       } catch (error) {
         console.error('Failed to save account information:', error);
         setAuthMessage('계좌 정보 저장에 실패했습니다. 다시 시도해주세요.');
@@ -161,6 +167,7 @@ const AddComponent = () => {
       <OneButtonFooterLayout
         footerText={isSaving ? "저장 중..." : "저장"}
         onClick={handleSave}
+        isDisabled={!isAuthenticated}
       />
     </div>
   );

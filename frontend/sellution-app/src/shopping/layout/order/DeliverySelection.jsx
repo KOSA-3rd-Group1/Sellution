@@ -6,7 +6,7 @@ const DeliverySelection = ({ addresses, selectedAddress, handleAddressChange }) 
   const handleDropdownClick = () => {
     setIsOpen(!isOpen);
   };
-
+  console.log('selectedAddress', selectedAddress);
   const handleOptionClick = () => {
     // handleAddressChange 함수를 호출하거나 필요한 작업 수행
     setIsOpen(false);

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.account.application.AccountService;
@@ -68,6 +69,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private final EventRepository eventRepository;
     private final OrderCreationService orderCreationService;
     private final CompanyImageRepository companyImageRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     private Company 포켓샐러드;
@@ -234,6 +236,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .productInformation("깔끔하고 담백한 닭가슴살과 가볍게 맛있는 갈릭 소이 드레싱, 신선하고 풍성한 채소가 어우러져 가장 깔끔하고 신선한 맛을 느끼실 수 있어요.")
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
+                .discountedPrice(calculateDiscountedPrice(8300, 19))
                 .discountRate(19)
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
@@ -255,6 +258,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(21)
+                .discountedPrice(calculateDiscountedPrice(9000, 21))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -274,6 +278,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(23)
+                .discountedPrice(calculateDiscountedPrice(9000, 23))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -293,6 +298,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(20)
+                .discountedPrice(calculateDiscountedPrice(8100, 20))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -312,6 +318,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.ONETIME)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(19)
+                .discountedPrice(calculateDiscountedPrice(9800, 19))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -330,6 +337,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.SUBSCRIPTION)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(23)
+                .discountedPrice(calculateDiscountedPrice(9000, 23))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -350,6 +358,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(21)
+                .discountedPrice(calculateDiscountedPrice(10700, 21))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -369,6 +378,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(19)
+                .discountedPrice(calculateDiscountedPrice(11000, 19))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -389,6 +399,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(19)
+                .discountedPrice(calculateDiscountedPrice(11000, 19))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -408,6 +419,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(20)
+                .discountedPrice(calculateDiscountedPrice(10200, 20))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -427,6 +439,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.ONETIME)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(21)
+                .discountedPrice(calculateDiscountedPrice(11200 ,21))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -446,6 +459,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.SUBSCRIPTION)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(23)
+                .discountedPrice(calculateDiscountedPrice(11600, 23))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -590,10 +604,11 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private void createCustomer() {
 
+
         신규회원 = Customer.builder()
                 .company(포켓샐러드)
                 .username("newCustomer")
-                .password("newCustomer")
+                .password(passwordEncoder.encode("newCustomer"))
                 .name("샐러드뉴비")
                 .phoneNumber("01075985112")
                 .type(CustomerType.NEW)
@@ -605,7 +620,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         휴면회원 = Customer.builder()
                 .company(포켓샐러드)
                 .username("dormantCustomer")
-                .password("dormantCustomer")
+                .password(passwordEncoder.encode("dormantCustomer") )
                 .name("돌아온샐러드귀신")
                 .phoneNumber("01075985112")
                 .type(CustomerType.DORMANT)
@@ -616,7 +631,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         일반회원 = Customer.builder()
                 .company(포켓샐러드)
                 .username("normalCustomer")
-                .password("normalCustomer")
+                .password(passwordEncoder.encode("normalCustomer") )
                 .name("샐러드매니아")
                 .phoneNumber("01075985112")
                 .type(CustomerType.NORMAL)
@@ -631,7 +646,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
             Customer customer = Customer.builder()
                     .company(포켓샐러드)
                     .username("customer" + i)
-                    .password("customer" + i)
+                    .password(passwordEncoder.encode("customer" + i) )
                     .name("샐러드매니아" + i)
                     .phoneNumber("01011111111")
                     .type(CustomerType.values()[random.nextInt(OrderType.values().length)])
@@ -649,12 +664,12 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .build());
 
 
-        for (Customer customer : customers) { // 50명 더미에 같은 계좌[테스트용]
-            accountService.saveAccount(customer.getId(), SaveAccountReq.builder()
-                    .accountNumber("42750204039102")
-                    .bankCode("004")
-                    .build());
-        }
+//        for (Customer customer : customers) { // 50명 더미에 같은 계좌[테스트용]
+//            accountService.saveAccount(customer.getId(), SaveAccountReq.builder()
+//                    .accountNumber("42750204039102")
+//                    .bankCode("004")
+//                    .build());
+//        }
     }
 
     private void createAddress() {

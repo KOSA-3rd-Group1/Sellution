@@ -2,6 +2,7 @@ package shop.sellution.server.event.presentation;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,6 +20,7 @@ import shop.sellution.server.event.dto.response.FindEventRes;
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/events")
@@ -66,6 +68,7 @@ public class EventController {
         //회원 id 받을 예정
         //Long customerId = 1L;
         Page<FindEventRes> result = eventService.findCoupons(pageable);
+        log.info("result: {}", result);
         return ResponseEntity.ok(result);
     }
     //회원이 쿠폰 다운로드

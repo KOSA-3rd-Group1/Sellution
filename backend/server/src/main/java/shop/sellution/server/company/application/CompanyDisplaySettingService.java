@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface CompanyDisplaySettingService {
     FindCompanyDisplaySettingRes getCompanyDisplaySetting(Long companyId);
+    void createCompanyDisplaySetting(SaveCompanyDisplaySettingReq saveCompanyDisplaySettingReq, MultipartFile logoFile, List<MultipartFile> promotionFiles) throws IOException;
     void updateCompanyDisplaySetting(SaveCompanyDisplaySettingReq saveCompanyDisplaySettingReq, MultipartFile logoFile, List<MultipartFile> promotionFiles) throws IOException;
     void saveLogoImage(CompanyImage logoImage);
     void updateLogoImage(Company company, String imageUrl);

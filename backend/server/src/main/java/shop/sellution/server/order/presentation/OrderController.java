@@ -82,5 +82,11 @@ public class OrderController {
         return ResponseEntity.ok(orderService.calculatePrice(calculateReq));
     }
 
+    // 정기주문(횟수)화면에 필요한 정보 조회
+    @PostMapping("/count/info")
+    public ResponseEntity<CalculateRes> getCountOrderDeliveryInfo(@RequestBody CalculateReq calculateReq) {
+        return ResponseEntity.ok(orderService.calculatePrice(calculateReq));
+    }
+
 
 }

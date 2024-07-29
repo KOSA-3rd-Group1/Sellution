@@ -38,6 +38,7 @@ import shop.sellution.server.sms.application.SmsService;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -308,7 +309,7 @@ public class OrderServiceImpl implements OrderService {
 
         while (!currentDate.isAfter(endDate)) {
             if (deliveryDaysSet.contains(currentDate.getDayOfWeek()) &&
-                    (currentDate.getDayOfWeek().getValue() % weekly == 0)) {
+                    (ChronoUnit.WEEKS.between(startDate, currentDate) % weekly == 0)) {
                 totalDeliveryCount++;
                 deliveryEndDate = currentDate;
                 if (nextDeliveryDate == null) {
