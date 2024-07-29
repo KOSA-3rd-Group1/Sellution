@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SaveAddressReq {
-    //private Long addressId;
+//    private Long addressId;
 
     @NotNull
     private Long customerId;
