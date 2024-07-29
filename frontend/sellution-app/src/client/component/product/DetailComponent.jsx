@@ -21,6 +21,7 @@ const DetailComponent = () => {
   const [productImages, setProductImages] = useState([]);
   const [isDiscountApplied, setIsDiscountApplied] = useState(false);
   const detailImageInputRef = useRef(null);
+  const [companyId, setCompanyId] = useState(null);
   const [categories, setCategories] = useState([]);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
 
@@ -41,6 +42,35 @@ const DetailComponent = () => {
     stock: 0,
     isVisible: DisplayStatus.VISIBLE,
   });
+
+  useEffect(() => {
+    const shopCompanyStorage = localStorage.getItem('shop-company-storage');
+    if (shopCompanyStorage) {
+      const { state } = JSON.parse(shopCompanyStorage);
+      if (state && state.companyId) {
+        setCompanyId(state.companyId);
+      }
+    }
+  }, []);
+
+  const fetchCategories = async () => {
+    if (!companyId) return;
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`, {
+        params: { companyId: companyId, size: 100 },
+      });
+      setCategories(Array.isArray(response.data.content) ? response.data.content : []);
+    } catch (error) {
+      console.error('There was an error fetching the categories!', error);
+      setCategories([]);
+    }
+  };
+
+  useEffect(() => {
+    if (companyId) {
+      fetchCategories();
+    }
+  }, [companyId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -126,40 +156,6 @@ const DetailComponent = () => {
         new Blob([JSON.stringify(jsonData)], { type: 'application/json' }),
       );
 
-      // if (selectedThumbnailImage.length > 0) {
-      //   const thumbnail = selectedThumbnailImage[0];
-      //   if (thumbnail.preview.startsWith('data:')) {
-      //     const thumbnailBlob = dataURItoBlob(thumbnail.preview);
-      //     if (thumbnailBlob) {
-      //       formData.append('thumbnailImage', thumbnailBlob, 'thumbnail.jpg');
-      //     }
-      //   } else if (thumbnail.file) {
-      //     formData.append('thumbnailImage', thumbnail.file, 'thumbnail.jpg');
-      //   }
-      // }
-
-      // productImages.forEach((image, index) => {
-      //   if (image.preview.startsWith('data:')) {
-      //     const blob = dataURItoBlob(image.preview);
-      //     if (blob) {
-      //       formData.append('listImages', blob, `list_${index}.jpg`);
-      //     }
-      //   } else if (image.file) {
-      //     formData.append('listImages', image.file, `list_${index}.jpg`);
-      //   }
-      // });
-
-      // productDetailImages.forEach((image, index) => {
-      //   if (image.preview.startsWith('data:')) {
-      //     const blob = dataURItoBlob(image.preview);
-      //     if (blob) {
-      //       formData.append('detailImages', blob, `detail_${index}.jpg`);
-      //     }
-      //   } else if (image.file) {
-      //     formData.append('detailImages', image.file, `detail_${index}.jpg`);
-      //   }
-      // });
-      // 썸네일 이미지 처리
       if (selectedThumbnailImage.length > 0) {
         const thumbnail = selectedThumbnailImage[0];
         if (thumbnail.file) {
@@ -169,7 +165,6 @@ const DetailComponent = () => {
         }
       }
 
-      // 상품 이미지 처리
       // 상품 이미지 처리
       jsonData.listImages = productImages.map((image) => image.preview);
       productImages.forEach((image, index) => {

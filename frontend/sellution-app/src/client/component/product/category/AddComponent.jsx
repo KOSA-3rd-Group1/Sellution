@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; // eslint-disable-line no-unused-vars
+import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
 import { useNavigate } from 'react-router-dom';
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import axios from 'axios';
@@ -8,7 +8,19 @@ const AddComponent = () => {
   const [categoryName, setCategoryName] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
+  const [companyId, setCompanyId] = useState(null);
   //const [isVisible, setIsVisible] = useState('Y'); // 'Y' for 표시, 'N' for 미표시
+
+  useEffect(() => {
+    const shopCompanyStorage = localStorage.getItem('shop-company-storage');
+    if (shopCompanyStorage) {
+      const { state } = JSON.parse(shopCompanyStorage);
+      if (state && state.companyId) {
+        setCompanyId(state.companyId);
+        console.log(state.companyId);
+      }
+    }
+  }, []);
 
   const moveList = () => {
     navigate('/product/category');
@@ -21,9 +33,13 @@ const AddComponent = () => {
   };
 
   const checkDuplicate = async () => {
+    if (!companyId) {
+      alert('Company ID is not available. Please try again later.');
+      return;
+    }
     try {
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories/check`, {
-        params: { name: categoryName },
+        params: { name: categoryName, companyId: companyId },
       });
       setIsChecked(true);
       if (response.data) {
@@ -44,9 +60,16 @@ const AddComponent = () => {
       alert('중복 확인을 먼저 해주세요.');
       return;
     }
+    if (!companyId) {
+      alert('Company ID is not available. Please try again later.');
+      return;
+    }
 
     try {
-      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/categories`, { name: categoryName });
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/categories`, {
+        name: categoryName,
+        companyId: companyId,
+      });
       alert('카테고리가 등록되었습니다.');
       moveList();
     } catch (error) {
