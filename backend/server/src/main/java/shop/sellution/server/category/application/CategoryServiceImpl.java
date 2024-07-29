@@ -1,6 +1,7 @@
 package shop.sellution.server.category.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import shop.sellution.server.product.domain.ProductRepository;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
@@ -28,11 +30,17 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     @Override
     public Page<FindCategoryRes> getAllCategories(Long companyId, DisplayStatus isVisible, Pageable pageable) {
-        return categoryRepository.findByCompanyCompanyIdAndIsVisible(companyId, isVisible, pageable)
-                .map(category -> {
-                    int productCount = (int) productRepository.countByCategoryCategoryId(category.getCategoryId());
-                    return FindCategoryRes.fromEntity(category, productCount);
-                });
+        log.info("Fetching categories for companyId: {}, isVisible: {}, page: {}, size: {}",
+                companyId, isVisible, pageable.getPageNumber(), pageable.getPageSize());
+
+        Page<Category> categories = categoryRepository.findByCompanyCompanyIdAndIsVisible(companyId, isVisible, pageable);
+
+        log.info("Found {} categories for companyId: {}, isVisible: {}", categories.getTotalElements(), companyId, isVisible);
+
+        return categories.map(category -> {
+            int productCount = (int) productRepository.countByCategoryCategoryId(category.getCategoryId());
+            return FindCategoryRes.fromEntity(category, productCount);
+        });
     }
 
     @Transactional(readOnly = true)
