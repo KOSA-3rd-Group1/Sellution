@@ -821,7 +821,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .eventEndDate(LocalDate.now().minusDays(10))
                 .state(EventState.END)
                 .isDeleted(false)
-                .initialQuantity(100)
+                .totalQuantity(100)
                 .build();
 
         CouponEvent pastEvent2 = CouponEvent.builder()
@@ -833,7 +833,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .eventEndDate(LocalDate.now().minusDays(5))
                 .state(EventState.END)
                 .isDeleted(false)
-                .initialQuantity(100)
+                .totalQuantity(100)
                 .build();
 
         // 진행 중인 이벤트 4개
@@ -846,7 +846,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .eventEndDate(LocalDate.now().plusDays(10))
                 .state(EventState.ONGOING)
                 .isDeleted(false)
-                .initialQuantity(100)
+                .totalQuantity(100)
                 .build();
 
         CouponEvent ongoingEvent2 = CouponEvent.builder()
@@ -858,7 +858,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .eventEndDate(LocalDate.now().plusDays(15))
                 .state(EventState.ONGOING)
                 .isDeleted(true)
-                .initialQuantity(100)
+                .totalQuantity(100)
                 .build();
 
         CouponEvent ongoingEvent3 = CouponEvent.builder()
@@ -870,7 +870,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .eventEndDate(LocalDate.now().plusDays(20))
                 .state(EventState.ONGOING)
                 .isDeleted(false)
-                .initialQuantity(100)
+                .totalQuantity(100)
                 .build();
 
         CouponEvent ongoingEvent4 = CouponEvent.builder()
@@ -882,7 +882,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .eventEndDate(LocalDate.now().plusDays(25))
                 .state(EventState.ONGOING)
                 .isDeleted(false)
-                .initialQuantity(100)
+                .totalQuantity(100)
                 .build();
 
         // 끝난 이벤트 3개
@@ -895,7 +895,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .eventEndDate(LocalDate.now().minusDays(1))
                 .state(EventState.END)
                 .isDeleted(false)
-                .initialQuantity(100)
+                .totalQuantity(100)
                 .build();
 
         CouponEvent endedEvent2 = CouponEvent.builder()
@@ -907,7 +907,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .eventEndDate(LocalDate.now().minusDays(1))
                 .state(EventState.END)
                 .isDeleted(false)
-                .initialQuantity(100)
+                .totalQuantity(100)
                 .build();
 
         CouponEvent endedEvent3 = CouponEvent.builder()
@@ -919,7 +919,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .eventEndDate(LocalDate.now().minusDays(1))
                 .state(EventState.END)
                 .isDeleted(false)
-                .initialQuantity(100)
+                .totalQuantity(100)
                 .build();
 
         eventRepository.save(pastEvent1);

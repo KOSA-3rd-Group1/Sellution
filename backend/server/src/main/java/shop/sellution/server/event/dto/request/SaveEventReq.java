@@ -27,7 +27,7 @@ public class SaveEventReq {
     private LocalDate eventEndDate;
 
     @NotNull(message = "이벤트 수량은 필수입니다.")
-    private Integer initialQuantity; //무제한으로 하고싶다면...?
+    private Integer totalQuantity;
 
     public CouponEvent toEntity(Company company) {
         return CouponEvent.builder()
@@ -37,7 +37,7 @@ public class SaveEventReq {
                 .targetCustomerType(targetCustomerType)
                 .eventStartDate(eventStartDate)
                 .eventEndDate(eventEndDate)
-                .initialQuantity(initialQuantity == null ? Integer.MAX_VALUE : initialQuantity)
+                .totalQuantity(totalQuantity)
                 .build();
     }
 
