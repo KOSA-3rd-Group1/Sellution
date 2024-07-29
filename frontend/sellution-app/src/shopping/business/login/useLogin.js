@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useAuthStore from '@/shopping/store/stores/useAuthStore';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
@@ -8,6 +8,7 @@ import { login } from '@/shopping/utility/apis/login/loginApi';
 export const useLogin = () => {
   const navigate = useNavigate();
   const { clientName } = useParams(); // url 상 clientName <- 회사명
+  const location = useLocation();
 
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const setAllUserData = useUserInfoStore((state) => state.setAllUserData);
@@ -43,7 +44,12 @@ export const useLogin = () => {
       try {
         const success = await login(username, password, companyId, setAccessToken, setAllUserData);
         if (success) {
-          navigate(`/shopping/${name}/home`); // 로그인 성공 시 홈으로 이동
+          const redirectUrl = new URLSearchParams(location.search).get('redirectUrl');
+          if (redirectUrl) {
+            navigate(redirectUrl); //로그인 성공 후 저장된 url로 이동
+          } else {
+            navigate(`/shopping/${name}/home`); // 기본적으로 홈으로 이동
+          }
         } else {
           setError('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
         }
@@ -60,7 +66,7 @@ export const useLogin = () => {
     if (clientName !== name) {
       navigate(`/shopping/${clientName}/home`);
     }
-  }, []);
+  }, [clientName, name, navigate]);
 
   return {
     username,

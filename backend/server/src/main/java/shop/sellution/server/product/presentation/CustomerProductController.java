@@ -17,13 +17,11 @@ import java.util.List;
 public class CustomerProductController {
     private final CustomerProductService customerProductService;
     @GetMapping("/{companyId}")
-    public ResponseEntity<Page<FindCustomerProductRes>> findAllProducts(@PathVariable Long companyId, //name에서 companyId 추출
+    public ResponseEntity<Page<FindCustomerProductRes>> findAllProducts(@PathVariable Long companyId,
                                                                         @RequestParam(value="deliveryType", required = true) DeliveryType deliveryType,
                                                                         @RequestParam(value="categoryId", required = false) Long categoryId,
                                                                         Pageable pageable){
         return ResponseEntity.ok(customerProductService.findAllProducts(companyId, deliveryType, categoryId, pageable));
     }
-
-    //상세조회는 다른 ProductController에서 구현
 
 }

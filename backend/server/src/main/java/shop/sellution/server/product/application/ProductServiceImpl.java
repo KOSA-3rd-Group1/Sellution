@@ -1,6 +1,7 @@
 package shop.sellution.server.product.application;
 
 import com.querydsl.core.BooleanBuilder;
+import lombok.extern.slf4j.Slf4j;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,10 +25,7 @@ import shop.sellution.server.product.dto.request.SaveProductReq;
 import shop.sellution.server.product.dto.response.FindAllProductRes;
 import shop.sellution.server.product.dto.response.FindProductRes;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.rmi.server.ExportException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -38,6 +36,7 @@ import java.util.stream.Collectors;
 import static shop.sellution.server.product.domain.QProduct.product;
 
 @Service
+@Slf4j
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
@@ -53,11 +52,16 @@ public class ProductServiceImpl implements ProductService {
         this.companyRepository = companyRepository;
         this.s3Service = s3Service;
     }
-
     @Override
     @Transactional
-    public Page<FindProductRes> getAllProducts(Pageable pageable, String deliveryType, String isDiscount, String categoryName, String isVisible, String productName) {
+    public Page<FindProductRes> getAllProducts(Long companyId, Pageable pageable, String deliveryType, String isDiscount, String categoryName, String isVisible, String productName) {
         BooleanBuilder builder = new BooleanBuilder();
+
+        log.info("Fetching products with parameters - companyId: {}, deliveryType: {}, isDiscount: {}, categoryName: {}, isVisible: {}, productName: {}",
+                companyId, deliveryType, isDiscount, categoryName, isVisible, productName);
+
+        // 회사 ID로 필터링
+        builder.and(product.company.companyId.eq(companyId));
 
         if (deliveryType != null && !deliveryType.equals("전체")) {
             builder.and(product.deliveryType.eq(DeliveryType.valueOf(deliveryType)));
@@ -77,6 +81,8 @@ public class ProductServiceImpl implements ProductService {
 
         Page<Product> products = productRepository.findAll(builder, pageable);
 
+        log.info("Products found: " + products.getTotalElements());
+
         return products.map(product -> {
             String thumbnailImage = productImageRepository.findByProductProductIdAndPurposeOfUse(product.getProductId(), ProductImageType.THUMBNAIL)
                     .stream()
@@ -87,7 +93,6 @@ public class ProductServiceImpl implements ProductService {
             return FindProductRes.fromEntity(product, thumbnailImage);
         });
     }
-
 
 
     @Override
@@ -135,8 +140,8 @@ public class ProductServiceImpl implements ProductService {
 
 
         saveProductImage(product, thumbnailImage, ProductImageType.THUMBNAIL);
-        saveProductImages(product, listImages, ProductImageType.LIST);
-        saveProductImages(product, detailImages, ProductImageType.DETAILS);
+        saveProductImages(product, listImages, new ArrayList<>(), ProductImageType.LIST);
+        saveProductImages(product, detailImages, new ArrayList<>(), ProductImageType.DETAILS);
     }
 
     @Override
@@ -157,8 +162,8 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
 
         saveProductImage(product, thumbnailImage, ProductImageType.THUMBNAIL);
-        saveProductImages(product, listImages, ProductImageType.LIST);
-        saveProductImages(product, detailImages, ProductImageType.DETAILS);
+        saveProductImages(product, listImages, saveProductReq.getListImages(), ProductImageType.LIST);
+        saveProductImages(product, detailImages, saveProductReq.getDetailImages(), ProductImageType.DETAILS);
     }
 
 
@@ -182,9 +187,16 @@ public class ProductServiceImpl implements ProductService {
         productRepository.delete(product);
     }
 
+    @Override
+    public void deleteProducts(List<Long> ids) {
+        for (Long productId : ids) {
+            deleteProduct(productId);
+        }
+    }
+
     private void saveProductImage(Product product, MultipartFile imageFile, ProductImageType type) throws IOException {
         if (imageFile != null && !imageFile.isEmpty()) {
-            String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product");
+            String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product", type);
             Optional<ProductImage> existingImageOpt = productImageRepository.findByProductAndPurposeOfUse(product, type);
             if (existingImageOpt.isPresent()) {
                 ProductImage existingImage = existingImageOpt.get();
@@ -201,19 +213,22 @@ public class ProductServiceImpl implements ProductService {
             }
         }
     }
+    private void saveProductImages(Product product, List<MultipartFile> imageFiles, List<String> remainingImageUrls, ProductImageType type) throws IOException {
+        List<ProductImage> existingImages = productImageRepository.findAllByProductAndPurposeOfUse(product, type);
 
-
-    private void saveProductImages(Product product, List<MultipartFile> imageFiles, ProductImageType type) throws IOException {
-        if (imageFiles != null && !imageFiles.isEmpty()) {
-            List<ProductImage> existingImages = productImageRepository.findAllByProductAndPurposeOfUse(product, type);
-            for (ProductImage existingImage : existingImages) {
+        // 남아있어야 할 이미지만 유지하고 나머지는 삭제
+        for (ProductImage existingImage : existingImages) {
+            if (!remainingImageUrls.contains(existingImage.getImageUrl())) {
                 s3Service.deleteFile(existingImage.getImageUrl());
+                productImageRepository.delete(existingImage);
             }
-            productImageRepository.deleteAll(existingImages);
+        }
 
+        // 새로운 이미지 추가
+        if (imageFiles != null && !imageFiles.isEmpty()) {
             List<ProductImage> newImages = new ArrayList<>();
             for (MultipartFile imageFile : imageFiles) {
-                String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product");
+                String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product",type);
                 ProductImage newImage = ProductImage.builder()
                         .product(product)
                         .imageUrl(imageUrl)
@@ -224,6 +239,29 @@ public class ProductServiceImpl implements ProductService {
             productImageRepository.saveAll(newImages);
         }
     }
+
+
+//    private void saveProductImages(Product product, List<MultipartFile> imageFiles, ProductImageType type) throws IOException {
+//        if (imageFiles != null && !imageFiles.isEmpty()) {
+//            List<ProductImage> existingImages = productImageRepository.findAllByProductAndPurposeOfUse(product, type);
+//            for (ProductImage existingImage : existingImages) {
+//                s3Service.deleteFile(existingImage.getImageUrl());
+//            }
+//            productImageRepository.deleteAll(existingImages);
+//
+//            List<ProductImage> newImages = new ArrayList<>();
+//            for (MultipartFile imageFile : imageFiles) {
+//                String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product");
+//                ProductImage newImage = ProductImage.builder()
+//                        .product(product)
+//                        .imageUrl(imageUrl)
+//                        .purposeOfUse(type)
+//                        .build();
+//                newImages.add(newImage);
+//            }
+//            productImageRepository.saveAll(newImages);
+//        }
+//    }
 
     private long generateProductCode() {
         String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));

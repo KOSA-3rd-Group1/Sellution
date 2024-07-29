@@ -1,5 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
-import useClientName from '../business/layout/useClientName';
+import { Link } from 'react-router-dom';
 import {
   HomeIcon,
   SubscriptionDeliveryIcon,
@@ -8,12 +7,14 @@ import {
   CartIcon,
 } from '../utility/assets/Icons';
 import useAuthStore from '@/shopping/store/stores/useAuthStore';
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 
 const HomeFooter = () => {
   const accessToken = useAuthStore((state) => state.accessToken);
   console.log(accessToken);
-  const { clientName } = useClientName();
-  const { customerId } = useParams();
+  const clientName = useCompanyInfoStore((state) => state.name);
+  const customerId = useUserInfoStore((state) => state.id);
   return (
     <nav className='fixed bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-lg h-16 bg-white flex shadow-footer p-1.5'>
       <Link
@@ -27,7 +28,7 @@ const HomeFooter = () => {
         to={`/shopping/${clientName}/subscription`}
         className='flex-1 bg-white flex flex-col justify-center items-center'
       >
-        <SubscriptionDeliveryIcon className='w-7 h-7 fill-current text-[#F37021] stroke-[#F37021] stroke-[10]' />
+        <SubscriptionDeliveryIcon className='w-7 h-7 fill-current text-brandOrange stroke-brandOrange stroke-[10]' />
         <p className='text-brandOrange text-xs font-bold pt-1'>정기배송</p>
       </Link>
       <Link
@@ -49,7 +50,11 @@ const HomeFooter = () => {
         <p className='text-brandOrange text-xs font-bold pt-1'>마이페이지</p>
       </Link>
       <Link
-        to={`/shopping/${clientName}/subscription/cart`}
+        to={
+          accessToken === null || accessToken === ''
+            ? `/shopping/${clientName}/login?redirectUrl=${encodeURIComponent(window.location.pathname)}`
+            : `/shopping/${clientName}/subscription/cart`
+        }
         className='flex-1 bg-white flex flex-col justify-center items-center relative'
       >
         <CartIcon className='w-7 h-7 fill-current text-brandOrange stroke-brandOrange stroke-[10]' />

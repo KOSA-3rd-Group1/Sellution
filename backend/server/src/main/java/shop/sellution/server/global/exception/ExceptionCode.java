@@ -75,6 +75,7 @@ public enum ExceptionCode {
     NOT_FOUND_CUSTOMER_FOR_ADDRESS(6501, "주소와 연관된 회원을 찾을 수 없습니다."),
     FAILED_TO_RESET_DEFAULT_ADDRESS(6502, "기본 주소 재설정에 실패했습니다."),
     INVALID_ADDRESS_DATA(6503, "유효하지 않은 주소 데이터입니다."),
+    CANNOT_DELETE_DEFAULT_ADDRESS(6504, "기본 배송지는 삭제할 수 없습니다."),
 
     NOT_FOUND_COMPANY(6601, "요청한 ID에 해당하는 회사를 찾을 수 없습니다."),
     FAIL_TO_GENERATE_QR_CODE(6602, "QR 코드 생성에 실패했습니다."),
@@ -83,6 +84,7 @@ public enum ExceptionCode {
 
     FAIL_TO_UPLOAD_IMAGE(6801, "S3에 이미지 등록이 실패했습니다."),
     INVALID_IMAGE(6802, "유효하지 않는 이미지입니다."),
+    FAIL_TO_RESIZE_IMAGE(6803, "이미지 리사이징 실패입니다."),
 //    INVALID_LOGO_IMAGE_SIZE(6803, "로고 이미지는 정사각형이어야 합니다."),
 
     NOT_FOUND_EVENT(6901, "요청한 ID에 해당하는 이벤트를 찾을 수 없습니다."),

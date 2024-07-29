@@ -29,15 +29,17 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<FindProductRes>> getAllProducts(@RequestParam(defaultValue = "0") int page,
-                                                               @RequestParam(defaultValue = "10") int size,
-                                                               @RequestParam(required = false) String deliveryType,
-                                                               @RequestParam(required = false) String isDiscount,
-                                                               @RequestParam(required = false) String categoryName,
-                                                               @RequestParam(required = false) String isVisible,
-                                                               @RequestParam(required = false) String productName) {
+    public ResponseEntity<Page<FindProductRes>> getAllProducts(
+            @RequestParam Long companyId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String deliveryType,
+            @RequestParam(required = false) String isDiscount,
+            @RequestParam(required = false) String categoryName,
+            @RequestParam(required = false) String isVisible,
+            @RequestParam(required = false) String productName) {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(productService.getAllProducts(pageable, deliveryType, isDiscount, categoryName, isVisible, productName));
+        return ResponseEntity.ok(productService.getAllProducts(companyId, pageable, deliveryType, isDiscount, categoryName, isVisible, productName));
     }
 
     @GetMapping("/{productId}")
@@ -80,6 +82,13 @@ public class ProductController {
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
         productService.deleteProduct(productId);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteProducts(@RequestBody List<Long> ids) {
+        productService.deleteProducts(ids);
         return ResponseEntity.noContent().build();
     }
 

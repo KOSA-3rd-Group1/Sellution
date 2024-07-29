@@ -1,16 +1,16 @@
-import { useLocation } from 'react-router-dom';
+// import { useLocation } from 'react-router-dom';
 
-const useClientName = () => {
-  const location = useLocation();
+// const useClientName = () => {
+//   const location = useLocation();
 
-  const getClientName = () => {
-    const pathParts = location.pathname.split('/');
-    return pathParts.length > 2 ? pathParts[2] : 'defaultClient'; // defaultClient는 기본값
-  };
+//   const getClientName = () => {
+//     const pathParts = location.pathname.split('/');
+//     return pathParts.length > 2 ? pathParts[2] : 'defaultClient'; // defaultClient는 기본값
+//   };
 
-  const clientName = getClientName();
+//   const clientName = getClientName();
 
-  return { clientName };
-};
+//   return { clientName };
+// };
 
-export default useClientName;
+// export default useClientName;

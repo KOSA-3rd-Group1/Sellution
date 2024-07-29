@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
+import MenuHeaderNav from './../../../layout/MenuHeaderNav';
+import OneButtonFooterLayout from './../../../layout/OneButtonFooterLayout';
 
 const ListComponent = () => {
   const [addresses, setAddresses] = useState([]);
-  const { customerId } = useParams();
+  const clientName = useCompanyInfoStore((state) => state.name);
+  const customerId = useUserInfoStore((state) => state.id);
+
+  const navigate = useNavigate();
+  const moveToAddPage = () => {
+    navigate(`/shopping/${clientName}/my/${customerId}/address/add`);
+  };
 
   useEffect(() => {
     fetchAddresses();
@@ -61,16 +71,16 @@ const ListComponent = () => {
     // <div>
     //   <div className='flex justify-center h-screen'>
     //     <div className='container-box relative w-full max-w-lg h-full flex justify-center pt-14 pb-14'>
-    <div className='w-full scroll-box overflow-auto flex-grow p-4'>
-      <h1 className='text-xl font-bold mb-4 text-center'>배송지 목록</h1>
-      <div className='mt-4 w-[100%] mx-auto mb-3'>
+    <div className='w-full p-4'>
+      <MenuHeaderNav title={'배송지 목록'} />
+      {/* <div className='mt-4 w-[100%] mx-auto mb-3'>
         <Link
           to='add'
           className='block w-full text-center bg-brandOrange text-white py-2 rounded-md hover:bg-orange-600'
         >
           새 배송지 추가
         </Link>
-      </div>
+      </div> */}
 
       <div className='w-[100%] mx-auto'>
         {addresses.map((address, index) => (
@@ -131,6 +141,7 @@ const ListComponent = () => {
           </div>
         ))}
       </div>
+      <OneButtonFooterLayout footerText={'배송지 추가'} onClick={moveToAddPage} />
     </div>
     //     </div>
     //   </div>

@@ -3,12 +3,12 @@ import { useState, useEffect } from 'react';
 import { getCompanyInfo } from '@/shopping/utility/apis/home/homeApi';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const useHome = () => {
   const [activeSlide, setActiveSlide] = useState(1);
   const [data, setData] = useState(null); // 데이터 상태 추가
-
+  const navigate = useNavigate();
   const { clientName } = useParams(); // url 상 clientName <- 회사명
   console.log("클라이언트 이름 ", clientName);
 
@@ -34,10 +34,11 @@ const useHome = () => {
       }
     };
 
-    if (clientName != name) {
+    if (clientName.toLowerCase() != name.toLowerCase()) {
       fetchData(clientName, setAllCompanyData); // 데이터 요청 함수 호출
     } else {
       setData({ ...getAllCompanyData() });
+      console.log('렌더링된 데이터', getAllCompanyData());
     }
   }, [clientName]); // 빈 배열을 두어 한 번만 실행되도록 설정 -> url의 clientName이 변경될 때마다 재 요청
 
@@ -57,10 +58,40 @@ const useHome = () => {
     setActiveSlide(slide);
   };
 
+  // event
+  const [isPopupOpen, setIsPopupOpen] = useState(true);
+  useEffect(() => {
+    const lastCloseDate = localStorage.getItem('popupClosedDate');
+    const today = new Date().toISOString().split('T')[0];
+
+    if (lastCloseDate === today) {
+      setIsPopupOpen(false);
+    }
+  }, []);
+
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+  };
+
+  const handleClosePopupForToday = () => {
+    const today = new Date().toISOString().split('T')[0];
+    localStorage.setItem('popupClosedDate', today);
+    setIsPopupOpen(false);
+  };
+
+  const moveToEventPage = () => {
+    handleClosePopup();
+    navigate(`/shopping/${clientName}/home/event`); // 이벤트 페이지로 이동
+  };
+
   return {
     activeSlide,
     handleSlideChange,
     data, // 데이터 상태 반환
+    isPopupOpen,
+    handleClosePopup,
+    handleClosePopupForToday,
+    moveToEventPage,
   };
 };
 

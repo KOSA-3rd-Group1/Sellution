@@ -3,6 +3,7 @@ package shop.sellution.server.product.dto.request;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 public class SaveProductReq {
     //private Long productId;
     private Long companyId;
@@ -73,7 +75,6 @@ public class SaveProductReq {
                 .deliveryType(deliveryType)
                 .discountedPrice(discountedPrice) // 알아서 저장되서 계산
                 .stock(stock)
-//                .createdAt(LocalDateTime.now())
                 .code(code) //알아서 만들어줌
                 .isVisible(DisplayStatus.Y)
                 .build();

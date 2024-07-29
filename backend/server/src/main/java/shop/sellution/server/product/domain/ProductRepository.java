@@ -9,6 +9,7 @@ import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import shop.sellution.server.product.dto.response.FindProductRes;
 
 import java.util.List;
 
@@ -26,6 +27,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
 
         bindings.excluding(product.productId, product.createdAt, product.updatedAt);
     }
+
+    //Page<FindProductRes> getProductsByCompanyId(Long companyId, Pageable pageable, String deliveryType, String isDiscount, String categoryName, String isVisible, String productName);
 
     long countByCategoryCategoryId(Long categoryId);
 

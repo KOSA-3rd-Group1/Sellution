@@ -49,11 +49,14 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional
-    public void createAddress(SaveAddressReq saveAddressReq) {
+    public Long createAddress(SaveAddressReq saveAddressReq) {
         Customer customer = customerRepository.findById(saveAddressReq.getCustomerId())
                 .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_CUSTOMER_FOR_ADDRESS));
 
-        if (saveAddressReq.getIsDefaultAddress() == DisplayStatus.Y) {
+        List<Address> existingAddresses = addressRepository.findByCustomer_Id(saveAddressReq.getCustomerId());
+        if (existingAddresses.isEmpty()) {
+            saveAddressReq.setIsDefaultAddress(DisplayStatus.Y);
+        } else if (saveAddressReq.getIsDefaultAddress() == DisplayStatus.Y) {
             resetDefaultAddress(saveAddressReq.getCustomerId());
         }
 
@@ -73,6 +76,7 @@ public class AddressServiceImpl implements AddressService {
         } catch (Exception e) {
             throw new BadRequestException(ExceptionCode.INVALID_ADDRESS_DATA);
         }
+        return address.getId();
     }
 
     @Override
@@ -105,6 +109,10 @@ public class AddressServiceImpl implements AddressService {
     public void deleteAddress(Long addressId) {
         Address address = addressRepository.findById(addressId)
                 .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_ADDRESS));
+
+        if (address.getIsDefaultAddress() == DisplayStatus.Y) {
+            throw new BadRequestException(ExceptionCode.CANNOT_DELETE_DEFAULT_ADDRESS);
+        }
 
         addressRepository.delete(address);
     }

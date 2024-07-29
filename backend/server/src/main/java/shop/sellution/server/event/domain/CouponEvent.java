@@ -43,7 +43,14 @@ public class CouponEvent {
     @Column(nullable = false)
     private LocalDate eventEndDate;
 
-    @Enumerated(EnumType.STRING)
+    //수량 제한
+    @Column(nullable = false)
+    private Integer initialQuantity = Integer.MAX_VALUE;
+
+//    @Column(nullable = false)
+//    private Integer remainingQuantity;
+
+    @Enumerated(EnumType.STRING) //스케줄러로 업데이트
     @Column(nullable = false, columnDefinition = "ENUM('UPCOMING','ONGOING','END') default 'UPCOMING'")
     @Builder.Default
     private EventState state = EventState.UPCOMING;
@@ -67,4 +74,9 @@ public class CouponEvent {
         this.couponName = updateEventReq.getCouponName();
         this.eventEndDate = updateEventReq.getEventEndDate();
     }
+
+    //Remaining quantity 감소 메서드 >> save 전에 확인
+//    public void decreaseRemainingQuantity() {
+//        this.remainingQuantity--;
+//    }
 }

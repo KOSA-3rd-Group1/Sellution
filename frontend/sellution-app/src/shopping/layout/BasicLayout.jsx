@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
-import useClientName from '../business/layout/useClientName';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 const BasicLayout = () => {
-  const { clientName } = useClientName();
+  const clientName = useCompanyInfoStore((state) => state.name);
   return (
     <div className='flex justify-center h-screen' data-theme={'CustomRoseTheme'}>
       <div
