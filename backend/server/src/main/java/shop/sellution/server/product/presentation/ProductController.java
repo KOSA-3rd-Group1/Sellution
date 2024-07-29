@@ -29,7 +29,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<FindProductRes>> getAllProducts(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Page<FindProductRes>> getAllProducts(@PathVariable Long companyId, @RequestParam(defaultValue = "0") int page,
                                                                @RequestParam(defaultValue = "10") int size,
                                                                @RequestParam(required = false) String deliveryType,
                                                                @RequestParam(required = false) String isDiscount,
@@ -37,7 +37,7 @@ public class ProductController {
                                                                @RequestParam(required = false) String isVisible,
                                                                @RequestParam(required = false) String productName) {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(productService.getAllProducts(pageable, deliveryType, isDiscount, categoryName, isVisible, productName));
+        return ResponseEntity.ok(productService.getProductsByCompanyId(companyId,pageable, deliveryType, isDiscount, categoryName, isVisible, productName));
     }
 
     @GetMapping("/{productId}")

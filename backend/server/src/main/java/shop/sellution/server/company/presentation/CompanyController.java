@@ -49,6 +49,7 @@ public class CompanyController {
         return ResponseEntity.ok(findCompanyDisplaySettingRes);
     }
 
+
     // multipart/form-data 요청을 처리
     @PutMapping(value = "/display-setting", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateCompanyDisplaySetting(
@@ -67,6 +68,12 @@ public class CompanyController {
     public ResponseEntity<FindCompanySaleSettingRes> getCompanySaleSetting(@PathVariable Long companyId) {
         FindCompanySaleSettingRes findCompanySaleSettingRes = clientCompanySaleService.getCompanySaleSetting(companyId);
         return ResponseEntity.ok(findCompanySaleSettingRes);
+    }
+
+    @PostMapping("/sale-setting")
+    public ResponseEntity<Void> createCompanySaleSetting(@Valid @RequestBody SaveCompanySaleSettingReq saveCompanySaleSettingReq) {
+        clientCompanySaleService.createCompanySaleSetting(saveCompanySaleSettingReq);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/sale-setting")

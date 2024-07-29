@@ -10,6 +10,7 @@ import shop.sellution.server.product.domain.Product;
 @Setter
 @Builder
 public class FindProductRes {
+    private Long companyId;
     private Long productId;
     private long code;
     private String thumbnailImage;
@@ -28,6 +29,7 @@ public class FindProductRes {
 
     public static FindProductRes fromEntity(Product product, String thumbnailImage) {
         return FindProductRes.builder()
+                .companyId(product.getCompany().getCompanyId())
                 .productId(product.getProductId())
                 .code(product.getCode())
                 .thumbnailImage(thumbnailImage)

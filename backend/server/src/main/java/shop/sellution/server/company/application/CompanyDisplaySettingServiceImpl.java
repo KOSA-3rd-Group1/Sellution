@@ -10,6 +10,7 @@ import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.company.domain.type.ImagePurposeType;
 import shop.sellution.server.company.dto.FindCompanyDisplaySettingRes;
 import shop.sellution.server.company.dto.SaveCompanyDisplaySettingReq;
+import shop.sellution.server.company.dto.SaveCompanySaleSettingReq;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.product.S3Service;
@@ -39,6 +40,42 @@ public class CompanyDisplaySettingServiceImpl implements CompanyDisplaySettingSe
         List<CompanyImage> companyImages = companyImageRepository.findAllByCompany(company);
         return FindCompanyDisplaySettingRes.fromEntity(company, companyImages);
     }
+
+    @Override
+    public void createCompanyDisplaySetting(SaveCompanyDisplaySettingReq saveCompanyDisplaySettingReq, MultipartFile logoFile,
+                                            List<MultipartFile> promotionFiles) throws IOException {
+        Company company = companyRepository.findById(saveCompanyDisplaySettingReq.getCompanyId())
+                .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_COMPANY));
+
+        companyRepository.save(saveCompanyDisplaySettingReq.toEntity(company));
+
+        // Logo Image 처리
+        if (logoFile != null && !logoFile.isEmpty()) {
+            String logoUrl = s3Service.uploadFile(logoFile, company.getCompanyId(), "setting");
+            saveLogoImage(CompanyImage.builder()
+                    .company(company)
+                    .imageUrl(logoUrl)
+                    .purposeOfUse(ImagePurposeType.LOGO)
+                    .build());
+        }
+
+        // Promotion Images 처리
+        if (promotionFiles != null && !promotionFiles.isEmpty()) {
+            List<String> promotionUrls = new ArrayList<>();
+            for (MultipartFile file : promotionFiles) {
+                String url = s3Service.uploadFile(file, company.getCompanyId(), "setting");
+                promotionUrls.add(url);
+            }
+            savePromotionImages(promotionUrls.stream()
+                    .map(url -> CompanyImage.builder()
+                            .company(company)
+                            .imageUrl(url)
+                            .purposeOfUse(ImagePurposeType.PROMOTION)
+                            .build())
+                    .collect(Collectors.toList()));
+        }
+    }
+
 
     @Override
     public void updateCompanyDisplaySetting(SaveCompanyDisplaySettingReq saveCompanyDisplaySettingReq ,MultipartFile logoFile,

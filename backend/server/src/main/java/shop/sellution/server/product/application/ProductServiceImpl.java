@@ -55,14 +55,15 @@ public class ProductServiceImpl implements ProductService {
         this.companyRepository = companyRepository;
         this.s3Service = s3Service;
     }
-
     @Override
     @Transactional
-    public Page<FindProductRes> getAllProducts(Pageable pageable, String deliveryType, String isDiscount, String categoryName, String isVisible, String productName) {
+    public Page<FindProductRes> getProductsByCompanyId(Long companyId, Pageable pageable, String deliveryType, String isDiscount, String categoryName, String isVisible, String productName) {
         BooleanBuilder builder = new BooleanBuilder();
 
-        log.info("Fetching products with parameters - deliveryType: {}, isDiscount: {}, categoryName: {}, isVisible: {}, productName: {}",
-                deliveryType, isDiscount, categoryName, isVisible, productName);
+        log.info("Fetching products with parameters - companyId: {}, deliveryType: {}, isDiscount: {}, categoryName: {}, isVisible: {}, productName: {}",
+                companyId, deliveryType, isDiscount, categoryName, isVisible, productName);
+
+        builder.and(product.company.companyId.eq(companyId));
 
         if (deliveryType != null && !deliveryType.equals("전체")) {
             builder.and(product.deliveryType.eq(DeliveryType.valueOf(deliveryType)));
@@ -94,6 +95,7 @@ public class ProductServiceImpl implements ProductService {
             return FindProductRes.fromEntity(product, thumbnailImage);
         });
     }
+
 
 
     @Override

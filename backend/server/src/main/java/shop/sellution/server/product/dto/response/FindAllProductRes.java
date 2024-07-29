@@ -14,6 +14,7 @@ import java.util.List;
 @Setter
 @Builder
 public class FindAllProductRes {
+    private long companyId;
     private long productId;
     private long code;
     private String name;
@@ -35,6 +36,7 @@ public class FindAllProductRes {
 
     public static FindAllProductRes fromEntity(Product product, String thumbnailImage, List<String> listImages, List<String> detailImages) {
         return FindAllProductRes.builder()
+                .companyId(product.getCompany().getCompanyId())
                 .productId(product.getProductId())
                 .code(product.getCode())
                 .name(product.getName())
