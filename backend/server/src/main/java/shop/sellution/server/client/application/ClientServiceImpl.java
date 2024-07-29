@@ -11,9 +11,12 @@ import shop.sellution.server.auth.dto.CustomUserDetails;
 import shop.sellution.server.client.domain.Client;
 import shop.sellution.server.client.domain.ClientRepository;
 import shop.sellution.server.client.dto.request.*;
+import shop.sellution.server.client.dto.response.FindCurrentClientInfoRes;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 
+import shop.sellution.server.contractcompany.domain.ContractCompany;
+import shop.sellution.server.contractcompany.domain.ContractCompanyRepository;
 import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.sms.application.SmsAuthNumberService;
@@ -32,6 +35,7 @@ import static shop.sellution.server.global.type.SmsAuthType.PASSWORD;
 @Transactional
 public class ClientServiceImpl implements ClientService {
 
+    private final ContractCompanyRepository contractCompanyRepository;
     private final ClientRepository clientRepository;
     private final CompanyRepository companyRepository;
     private final PasswordEncoder passwordEncoder;
@@ -63,10 +67,18 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public String getCurrentUsername() {
+    public FindCurrentClientInfoRes getCurrentUserInfo() {
         CustomUserDetails customUserDetails = getCustomUserDetailsFromSecurityContext();
         Client client = findClientByUsername(customUserDetails.getUsername());
-        return client.getName();
+        ContractCompany contractCompany = contractCompanyRepository.findByCompany_companyId(client.getCompany().getCompanyId())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_COMPANY));
+        return FindCurrentClientInfoRes.builder()
+                .id(client.getId())
+                .companyId(client.getCompany().getCompanyId())
+                .name(client.getName())
+                .userRole(client.getUserRole())
+                .contractCompanyName(contractCompany.getContractCompanyName())
+                .build();
     }
 
     @Override

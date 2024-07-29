@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-const useTableStore = create((set) => ({
+const useSaleSettingStore = create((set) => ({
   serviceType: null,
   sellType: null,
   subscriptionType: null,
@@ -28,4 +28,4 @@ const useTableStore = create((set) => ({
   setSubscriptionTypeCount: (subscriptionTypeCount) => set({ subscriptionTypeCount }),
 }));
 
-export default useTableStore;
+export default useSaleSettingStore;

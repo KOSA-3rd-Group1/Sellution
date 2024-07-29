@@ -85,7 +85,6 @@ export const useShopManagementDisplaySetting = ({
     const fetch = async (companyId, setAccessToken, accessToken) => {
       const response = await getDisplaySetting(companyId, setAccessToken, accessToken);
       setData(() => ({ ...response.data }));
-
       if (response.data.logoImageUrl) {
         const newImages = await convertImageUrlToFileAndBlob(response.data.logoImageUrl);
         setLogoImg(() => [newImages]);
@@ -175,7 +174,6 @@ export const useShopManagementDisplaySetting = ({
       const formData = new FormData();
 
       // requestDTO 데이터 추가
-      console.log(data);
       Object.keys(data).forEach((key) => {
         if (key !== 'logoImageUrl' && key !== 'promotionImageUrls') {
           formData.append(key, data[key]);

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import useAuthStore from '@/client/store/stores/useAuthStore';
+import useUserInfoStore from '@/client/store/stores/useUserInfoStore';
+import useSaleSettingStore from '@/client/store/stores/useSaleSettingStore';
 import {
   getSaleSetting,
   putSaleSetting,
@@ -9,6 +11,10 @@ import {
   getAllCatogory,
   getAllProduct,
 } from '../../utility/apis/shopManagement/shopManagementSaleSettingApi';
+import {
+  formatSellType,
+  formatSubscriptionType,
+} from '../../utility/functions/shopManagementSaleSettingFunction';
 
 // 더미 데이터 생성 함수
 const generateEachProductDummyData = (count) => {
@@ -67,6 +73,23 @@ export const useShopManagementSaleSetting = ({
 }) => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const companyId = useUserInfoStore((state) => state.companyId);
+  const {
+    serviceType,
+    sellType,
+    subscriptionType,
+    sellTypeCategory,
+    sellTypeEach,
+    subscriptionTypeMonth,
+    subscriptionTypeCount,
+    setServiceType,
+    setSellType,
+    setSubscriptionType,
+    setSellTypeCategory,
+    setSellTypeEach,
+    setSubscriptionTypeMonth,
+    setSubscriptionTypeCount,
+  } = useSaleSettingStore();
 
   const [data, setData] = useState({});
   const [isChange, setIsChange] = useState(false); // 변경상태 감지
@@ -75,6 +98,8 @@ export const useShopManagementSaleSetting = ({
 
   const [selectCategoryOptions, setSelectCategoryOptioins] = useState({});
   const [selectedCategoryOptions, setSelectedCategoryOptions] = useState();
+  console.log('selectCategoryOptions', selectCategoryOptions);
+  console.log('selectedCategoryOptions', selectedCategoryOptions);
 
   const [selectEachProductOptions, setSelectEachProductOptions] = useState({});
   const [selectedEachProductOptions, setSelectedEachProductOptions] = useState();
@@ -83,21 +108,31 @@ export const useShopManagementSaleSetting = ({
   // 서버에 데이터 요청
   useEffect(() => {
     const fetch = async (companyId, setAccessToken, accessToken) => {
+      // 카테고리를 먼저 요청해서 selectCategoryOption에 {value: categoryId, label: 이름} 형식으로 넣어줘야 함... (카테고리는 개별 상품에도 쓰이기 때문...)
+      const categoryResponse = await getAllCatogory(companyId, setAccessToken, accessToken);
+      console.log('categoryResponse', categoryResponse);
+
       const response = await getSaleSetting(companyId, setAccessToken, accessToken);
-      console.log(response);
+      console.log('..............', response);
+      console.log(response.data);
+      setServiceType(response.data.serviceType); // 배송 유형
+      setSellType(formatSellType(response.data.sellType)); // 적용 상품
+      //   if (response.data.sellType === 'CATEGORY') {
+      //     response.data.categoryIds?.forEach((categoryId) => {});
+      //   }
+      setSubscriptionType(formatSubscriptionType(response.data.subscriptionType)); // 정기 배송 유형
+
       setData(() => ({
         serviceType: response.data.serviceType,
         // sellType: response.data.sellType,
       }));
       //   setData(...response.data);
 
-      const testResponse = await getAllCatogory(companyId, setAccessToken, accessToken);
+      //   const testResponse = await getAllCatogory(companyId, setAccessToken, accessToken);
       const test2Response = await getAllProduct(companyId, setAccessToken, accessToken);
-      console.log(testResponse);
-      console.log(test2Response);
+      console.log('test2Response', test2Response);
     };
 
-    const companyId = 1;
     fetch(companyId, setAccessToken, accessToken);
     console.log(data);
     if (DUMMY.category != undefined) {

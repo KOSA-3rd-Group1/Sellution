@@ -19,6 +19,7 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
   useEffect(() => {
     const fetch = async (companyId, setAccessToken, accessToken) => {
       const response = await getUrlSetting(companyId, setAccessToken, accessToken);
+      console.log(response);
       setData(() => ({ ...response.data }));
     };
 

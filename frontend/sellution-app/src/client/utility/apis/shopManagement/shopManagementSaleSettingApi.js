@@ -77,7 +77,7 @@ export const getAllCatogory = async (companyId, setAccessToken, accessToken) => 
   let instance = await BaseInstance();
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
 
-  response = await instance.get(url);
+  response = await instance.get(url, { params: { companyId: companyId } });
   console.log('getAllCategory 조회 resposne >>>>', response);
   return response;
 };
@@ -90,7 +90,7 @@ export const getAllProduct = async (companyId, setAccessToken, accessToken) => {
   let instance = await BaseInstance();
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
 
-  response = await instance.get(url);
+  response = await instance.get(url, { params: { companyId: companyId } });
   console.log('getAllProduct 조회 resposne >>>>', response);
   return response;
 };
