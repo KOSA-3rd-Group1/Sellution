@@ -4,7 +4,7 @@ import CheckdayGroup from '@/client/layout/common/CheckdayGroup';
 
 const SubscriptionTypeCount = () => {
   const [data, setData] = useState({
-    subscriptionTypeMonth: { 1: false, 2: false, 3: false, 4: false, 5: false },
+    subscriptionTypeWeek: { 1: false, 2: false, 3: false, 4: false, 5: false },
     subscriptionTypeDayOption: { MON: false, TUE: false, WED: false, THU: false, FRI: false },
   });
 
@@ -89,7 +89,7 @@ const SubscriptionTypeCount = () => {
               { label: '4주마다', selectData: '4' },
               { label: '5주마다', selectData: '5' },
             ]}
-            name='subscriptionTypeMonth'
+            name='subscriptionTypeWeek'
             onChange={handleChangeCheckboxValue}
           />
         </div>

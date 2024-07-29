@@ -6,7 +6,7 @@ import {
   ShoppingCartIcon,
   ImageUploadIcon,
 } from '@/client/utility/assets/Icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const ShoppingMallPreview = ({ data, logoImg, promotionImg, themeColor, serviceType }) => {
   const [activeSlide, setActiveSlide] = useState(1);
@@ -17,8 +17,12 @@ const ShoppingMallPreview = ({ data, logoImg, promotionImg, themeColor, serviceT
   };
 
   const handleSlideChangeToImageClick = () => {
-    setActiveSlide((prevSlide) => (prevSlide === totalSlides ? 1 : prevSlide + 1));
+    setActiveSlide((prevSlide) => (prevSlide >= totalSlides ? 1 : prevSlide + 1));
   };
+
+  //   useEffect(() => {
+  //     setActiveSlide((prevSlide) => (prevSlide >= totalSlides ? 1 : prevSlide + 1));
+  //   }, [promotionImg]);
 
   return (
     <div className='relative w-full h-full bg-white'>
@@ -29,7 +33,7 @@ const ShoppingMallPreview = ({ data, logoImg, promotionImg, themeColor, serviceT
             <img
               src={logoImg[0].preview}
               alt='Shoppingmall Logo'
-              className='w-48 h-12 object-cover rounded-lg'
+              className='w-48 h-12 object-contain rounded-lg'
             />
           ) : data !== undefined && data.displayName !== '' ? (
             <div className='max-w-48 w-48 min-w-48 h-12 flex justify-center items-center text-center overflow-hidden whitespace-nowrap '>

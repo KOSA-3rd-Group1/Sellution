@@ -7,17 +7,10 @@ import { usePaymentHistoryList } from '@/client/business/paymentHistory/usePayme
 import { HEADERS, ROW_HEIGHT } from '@/client/utility/tableinfo/PaymentHistoryListTableInfo';
 
 const ListComponent = () => {
-  const {
-    queryParams,
-    page,
-    size,
-    refresh,
-    moveToPathname,
-    moveToPagination,
-    updateQueryParameter,
-  } = useMove();
+  const { queryParams, page, size, refresh, moveToPagination, updateQueryParameter } = useMove();
   const {
     data,
+    totalPages,
     totalDataCount,
     tableState,
     dateRangeValue,
@@ -47,7 +40,11 @@ const ListComponent = () => {
           />
         </div>
         <div className='h-12 flex-none flex justify-end items-end '>
-          <Pagination totalDataCount={totalDataCount} />
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            moveToPagination={moveToPagination}
+          />
         </div>
       </section>
     </div>

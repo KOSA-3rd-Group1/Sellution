@@ -1,17 +1,32 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import { InfoInput } from '@/client/layout/common/Input';
-import ImageUploader from '@/client/layout/common/ImageUploader';
 import ColorPalette from '@/client/layout/common/ColorPalette';
 import ShoppingMallPreview from '@/client/layout/shopManagement/ShoppingMallPreview';
+import { useModal } from '@/client/business/common/useModal';
 import { useShopManagementDisplaySetting } from '@/client/business/shopManagement/useShopManagementDisplaySetting';
+import ImageBox from '@/client/layout/common/ImageBox';
 
 const DisplaySettingComponent = () => {
   const {
+    alertModalState,
+    autoCloseModalState,
+    openAlertModal,
+    closeAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  } = useModal();
+  const {
     data,
     logoImg,
+    selectedLogoImg,
     promotionImg,
+    selectedPromotionImg,
     themeColor,
     serviceType,
+    setLogoImg,
+    setSelectedLogoImg,
+    setPromotionImg,
+    setSelectedPromotionImg,
     handleChangeInputValue,
     handleChangePromotionImg,
     handleChangeLogoImg,
@@ -21,7 +36,7 @@ const DisplaySettingComponent = () => {
     handleEditImage,
     handleRestoreData,
     handleSaveData,
-  } = useShopManagementDisplaySetting();
+  } = useShopManagementDisplaySetting({ openAlertModal, openAutoCloseModal, closeAutoCloseModal });
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -42,7 +57,7 @@ const DisplaySettingComponent = () => {
                   />
                 </div>
               </li>
-              <ImageUploader
+              <ImageBox
                 TitleTag={<div>로고 이미지 </div>}
                 inputId={'file-upload-logo'}
                 onUploadSuccess={handleUploadSuccess}
@@ -53,9 +68,13 @@ const DisplaySettingComponent = () => {
                 maxImageCount={1}
                 containerHeight={'h-32'}
                 previewSize={'w-64 h-16'}
+                images={logoImg}
+                setImages={setLogoImg}
+                selectedImage={selectedLogoImg}
+                setSelectedImage={setSelectedLogoImg}
                 // multiple
               />
-              <ImageUploader
+              <ImageBox
                 TitleTag={
                   <div className='mb-6'>
                     프로모션 이미지{' '}
@@ -71,6 +90,10 @@ const DisplaySettingComponent = () => {
                 maxImageCount={5}
                 containerHeight={'h-40'}
                 previewSize={'w-28 h-28'}
+                images={promotionImg}
+                setImages={setPromotionImg}
+                selectedImage={selectedPromotionImg}
+                setSelectedImage={setSelectedPromotionImg}
                 multiple
               />
               <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>

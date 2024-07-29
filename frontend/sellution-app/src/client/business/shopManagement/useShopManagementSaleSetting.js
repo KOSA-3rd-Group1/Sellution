@@ -1,5 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import useAuthStore from '@/client/store/stores/useAuthStore';
+import {
+  getSaleSetting,
+  putSaleSetting,
+} from '@/client/utility/apis/shopManagement/shopManagementSaleSettingApi';
+import { ValidationError } from '@/client/utility/error/ValidationError';
+import {
+  getAllCatogory,
+  getAllProduct,
+} from '../../utility/apis/shopManagement/shopManagementSaleSettingApi';
 
 // 더미 데이터 생성 함수
 const generateEachProductDummyData = (count) => {
@@ -51,20 +60,45 @@ const HEADERS = [
   },
 ];
 
-export const useShopManagementSaleSetting = () => {
-  const { customerId } = useParams();
-  const navigate = useNavigate();
+export const useShopManagementSaleSetting = ({
+  openAlertModal,
+  openAutoCloseModal,
+  closeAutoCloseModal,
+}) => {
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   const [data, setData] = useState({});
+  const [isChange, setIsChange] = useState(false); // 변경상태 감지
+  const [refresh, setRefresh] = useState(false);
+  const [confirmType, setConfirmType] = useState('resetContent');
 
   const [selectCategoryOptions, setSelectCategoryOptioins] = useState({});
   const [selectedCategoryOptions, setSelectedCategoryOptions] = useState();
 
   const [selectEachProductOptions, setSelectEachProductOptions] = useState({});
   const [selectedEachProductOptions, setSelectedEachProductOptions] = useState();
+  console.log('selectedEachProductOptions', selectedEachProductOptions);
 
   // 서버에 데이터 요청
   useEffect(() => {
+    const fetch = async (companyId, setAccessToken, accessToken) => {
+      const response = await getSaleSetting(companyId, setAccessToken, accessToken);
+      console.log(response);
+      setData(() => ({
+        serviceType: response.data.serviceType,
+        // sellType: response.data.sellType,
+      }));
+      //   setData(...response.data);
+
+      const testResponse = await getAllCatogory(companyId, setAccessToken, accessToken);
+      const test2Response = await getAllProduct(companyId, setAccessToken, accessToken);
+      console.log(testResponse);
+      console.log(test2Response);
+    };
+
+    const companyId = 1;
+    fetch(companyId, setAccessToken, accessToken);
     console.log(data);
     if (DUMMY.category != undefined) {
       setSelectCategoryOptioins(DUMMY.category);
@@ -94,13 +128,6 @@ export const useShopManagementSaleSetting = () => {
     );
   };
 
-  // 목록으로 이동
-  const moveList = () => {
-    navigate({
-      pathname: `/customer/${customerId}/payment`,
-    });
-  };
-
   // 등록
   const handleSaveData = () => {
     alert('변경사항 적용');
@@ -117,7 +144,6 @@ export const useShopManagementSaleSetting = () => {
     handleChangeSelectedCategoryOptions,
     handleChangeSelectedEachProductOptions,
     handleDeleteSelectedEachProductOption,
-    moveList,
     handleSaveData,
   };
 };

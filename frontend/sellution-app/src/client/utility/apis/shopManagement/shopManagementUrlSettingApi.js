@@ -1,12 +1,12 @@
 import BaseInstance from '@/client/utility/axios/BaseInstance';
 import { addAuthInterceptor } from '@/client/utility/axios/Interceptors';
 
-const API_URL = '/accounts';
+const API_URL = '/url-setting';
 
-// 결제 수단 상세 조회 - 확인 필요
-export const getCustomerPaymentDetail = async (accountId, setAccessToken, accessToken) => {
+// Url Setting 조회
+export const getUrlSetting = async (companyId, setAccessToken, accessToken) => {
   let response = null;
-  let url = `${API_URL}/${accountId}`;
+  const url = `${API_URL}/${companyId}`;
 
   let instance = await BaseInstance();
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
@@ -15,14 +15,14 @@ export const getCustomerPaymentDetail = async (accountId, setAccessToken, access
   return response;
 };
 
-// 결제 수단 삭제
-export const deleteCustomerPaymentDetail = async (accountId, setAccessToken, accessToken) => {
+// Url Setting 변경
+export const putUrlSetting = async (data, setAccessToken, accessToken) => {
   let response = null;
-  let url = `${API_URL}/${accountId}`;
+  const url = API_URL;
 
   let instance = await BaseInstance();
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
 
-  response = await instance.delete(url);
+  response = await instance.put(url, { ...data });
   return response;
 };

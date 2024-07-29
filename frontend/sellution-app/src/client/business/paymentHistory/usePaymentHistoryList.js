@@ -6,6 +6,7 @@ import {
   formatPaymentStatus,
   transformPaymentStatus,
 } from '@/client/utility/functions/paymentListFunction';
+import { getPaymentHistoryList } from '@/client/utility/apis/paymentHistory/paymentHistoryListApi';
 import { HEADERS } from '@/client/utility/tableinfo/PaymentHistoryListTableInfo';
 
 // 더미 데이터 생성 함수
@@ -116,6 +117,31 @@ export const usePaymentHistoryList = ({
   // api 요청으로 데이터 받아오기
   useEffect(() => {
     const fetch = async (setAccesstoken, accessToken) => {
+      const pageParam = prepareSearchParams(tableState, page, size);
+      const response = await getPaymentHistoryList(pageParam, setAccessToken, accessToken); // API 요청
+      console.log(response);
+      //   const { content, empty, pageable, totalElements, totalPages } = response.data;
+
+      // 필터링 시 현재 페이지에 데이터가 없는 경우 1page로 이동
+      //   if (empty && page > 1) {
+      //     updateQueryParameter(pageParam, 1);
+      //   }
+
+      //   if (!empty) {
+      //     const formattedContent = content.map((item, index) => {
+      //       return formatData(item, index, pageable.pageNumber, size);
+      //     });
+      //     setData(() => formattedContent);
+      //     setTotalDataCount(totalElements);
+      //     setTotalPages(totalPages);
+      //     updateQueryParameter(pageParam, page);
+      //   } else {
+      //     setData([]);
+      //     setTotalDataCount(0);
+      //     setTotalPages(1);
+      //     updateQueryParameter(pageParam, 1);
+      //   }
+
       setData(DUMMY_DATA);
       setTotalDataCount(100);
       console.log(tableState);
@@ -136,6 +162,7 @@ export const usePaymentHistoryList = ({
 
   return {
     data,
+    totalPages,
     totalDataCount,
     tableState,
     dateRangeValue,

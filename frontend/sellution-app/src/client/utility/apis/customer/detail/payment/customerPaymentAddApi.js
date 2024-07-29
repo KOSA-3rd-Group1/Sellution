@@ -10,7 +10,7 @@ export const postCustomerPaymentAdd = async (customerId, data, setAccessToken, a
 
   let instance = await BaseInstance();
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
-  //   response = await instance.post(url, { ...data });
+  response = await instance.post(url, { ...data });
   console.log(response);
   return response;
 };
