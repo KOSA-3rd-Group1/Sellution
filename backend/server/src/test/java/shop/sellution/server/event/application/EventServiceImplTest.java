@@ -200,7 +200,7 @@ class EventServiceImplTest {
             }
             return -1L;
         });
-        System.out.println("couponEvent id 있니 없니: " + eventRepository.findByIdAndIsDeletedFalse(couponEvent.getId()));
+        System.out.println("couponEvent id 있니 없니: " + eventRepository.findByIdAndIsDeletedFalse(couponEvent.getId()).get().getId());
 
         int threadCount = 100;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
@@ -216,7 +216,7 @@ class EventServiceImplTest {
                 try {
                     eventServiceImpl.downloadCoupon(customer.getId(), couponEvent.getId());
                 } catch (Exception e) {
-                    System.err.println("Exception occurred for customer ID " + customer.getId() + ": " + e.getMessage());
+                    System.err.println("Exception occurred for customer ID " + customer.getId() + ": " + couponEvent.getId());
                 } finally {
                     latch.countDown();
                 }
