@@ -3,7 +3,7 @@ import useClientName from '../business/layout/useClientName';
 const BasicLayout = () => {
   const { clientName } = useClientName();
   return (
-    <div className='flex justify-center h-screen'>
+    <div className='flex justify-center h-screen' data-theme={'CustomRoseTheme'}>
       <div
         className={`container-box relative w-full max-w-lg h-full flex flex-col ${location.pathname === `/shopping/${clientName}/home` ? 'pt-16' : 'pt-14'} pb-14`}
       >

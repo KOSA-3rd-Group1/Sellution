@@ -30,3 +30,7 @@ export const formatPrice = (price) => {
   const num = parseInt(price, 10);
   return num.toLocaleString('ko-KR') + ' 원';
 };
+
+// 파일 이름 생성 함수
+export const generateShortFileName = (prefix, index) =>
+  `${prefix}_${index}_${Date.now().toString(36)}.jpg`;
