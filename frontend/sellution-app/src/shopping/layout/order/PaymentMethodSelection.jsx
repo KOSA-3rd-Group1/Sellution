@@ -43,10 +43,9 @@ const PaymentMethodSelection = ({
   };
   return (
     <div className='bg-white py-4 w-[90%]'>
-      <span className='block py-2 mb-2 font-bold'>결제 정보</span>
       <div className='flex items-center mb-4'>
         <div className='text-brandOrange mr-2'> * </div>
-        <span className='font-semibold'>CMS</span>
+        <span className='font-semibold'>결제수단</span>
       </div>
 
       <div className='overflow-x-auto'>

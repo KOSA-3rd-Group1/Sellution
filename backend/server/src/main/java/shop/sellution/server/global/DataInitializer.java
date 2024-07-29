@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.account.application.AccountService;
@@ -68,6 +69,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private final EventRepository eventRepository;
     private final OrderCreationService orderCreationService;
     private final CompanyImageRepository companyImageRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     private Company 포켓샐러드;
@@ -602,10 +604,11 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private void createCustomer() {
 
+
         신규회원 = Customer.builder()
                 .company(포켓샐러드)
                 .username("newCustomer")
-                .password("newCustomer")
+                .password(passwordEncoder.encode("newCustomer"))
                 .name("샐러드뉴비")
                 .phoneNumber("01075985112")
                 .type(CustomerType.NEW)
@@ -617,7 +620,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         휴면회원 = Customer.builder()
                 .company(포켓샐러드)
                 .username("dormantCustomer")
-                .password("dormantCustomer")
+                .password(passwordEncoder.encode("dormantCustomer") )
                 .name("돌아온샐러드귀신")
                 .phoneNumber("01075985112")
                 .type(CustomerType.DORMANT)
@@ -628,7 +631,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         일반회원 = Customer.builder()
                 .company(포켓샐러드)
                 .username("normalCustomer")
-                .password("normalCustomer")
+                .password(passwordEncoder.encode("normalCustomer") )
                 .name("샐러드매니아")
                 .phoneNumber("01075985112")
                 .type(CustomerType.NORMAL)
@@ -643,7 +646,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
             Customer customer = Customer.builder()
                     .company(포켓샐러드)
                     .username("customer" + i)
-                    .password("customer" + i)
+                    .password(passwordEncoder.encode("customer" + i) )
                     .name("샐러드매니아" + i)
                     .phoneNumber("01011111111")
                     .type(CustomerType.values()[random.nextInt(OrderType.values().length)])
@@ -661,12 +664,12 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .build());
 
 
-        for (Customer customer : customers) { // 50명 더미에 같은 계좌[테스트용]
-            accountService.saveAccount(customer.getId(), SaveAccountReq.builder()
-                    .accountNumber("42750204039102")
-                    .bankCode("004")
-                    .build());
-        }
+//        for (Customer customer : customers) { // 50명 더미에 같은 계좌[테스트용]
+//            accountService.saveAccount(customer.getId(), SaveAccountReq.builder()
+//                    .accountNumber("42750204039102")
+//                    .bankCode("004")
+//                    .build());
+//        }
     }
 
     private void createAddress() {

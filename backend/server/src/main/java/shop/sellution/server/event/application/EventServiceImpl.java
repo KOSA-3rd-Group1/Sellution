@@ -1,6 +1,7 @@
 package shop.sellution.server.event.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_USE
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final EventRepositoryCustom eventRepositoryCustom;
@@ -119,6 +121,7 @@ public class EventServiceImpl implements EventService {
     public Page<FindEventRes> findCoupons(Pageable pageable) {
         CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
         Long customerId = userDetails.getUserId();
+        log.info("customerId >>>>> " + customerId);
         //event 종료기간이 지나지 않고 isUsed가 N인 쿠폰
         LocalDate now = LocalDate.now();
         return eventRepositoryCustom.findCouponsByCustomer(customerId, now, pageable)

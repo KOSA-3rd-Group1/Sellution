@@ -19,8 +19,10 @@ import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.util.JasyptEncryptionUtil;
 
-import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_ACCOUNT;
-import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_CUSTOMER;
+import java.security.MessageDigest;
+import java.util.Base64;
+
+import static shop.sellution.server.global.exception.ExceptionCode.*;
 
 
 @Transactional
@@ -53,6 +55,12 @@ public class AccountServiceImpl implements AccountService {
         accountAuthService.checkAccount(CheckAccountReq.fromDto(saveAccountReq));
 
         String accountNumber = saveAccountReq.getAccountNumber();
+        String accountHash = generateAccountHash(accountNumber);
+
+        if (accountRepository.existsByAccountHash(accountHash)) {
+            throw new BadRequestException(ALREADY_ACCOUNT);
+        }
+
         StringBuilder sb = new StringBuilder();
         String encrypt = jasyptEncryptionUtil.encrypt(accountNumber.substring(0, accountNumber.length() - 4));// 뒤 4자리 제외 암호화
         sb.append(encrypt);
@@ -60,6 +68,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = Account.builder()
                 .customer(customer)
                 .accountNumber(sb.toString())
+                .accountHash(accountHash)
                 .bankCode(saveAccountReq.getBankCode())
                 .build();
 
@@ -74,8 +83,19 @@ public class AccountServiceImpl implements AccountService {
 
         accountAuthService.checkAccount(CheckAccountReq.fromDto(updateAccountReq));
 
-        account.update(updateAccountReq.getAccountNumber(), updateAccountReq.getBankCode());
+        String newAccountNumber = updateAccountReq.getAccountNumber();
+        String newAccountHash = generateAccountHash(newAccountNumber);
 
+        if (!account.getAccountHash().equals(newAccountHash) && accountRepository.existsByAccountHash(newAccountHash)) {
+            throw new BadRequestException(ALREADY_ACCOUNT);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        String encrypt = jasyptEncryptionUtil.encrypt(newAccountNumber.substring(0, newAccountNumber.length() - 4));
+        sb.append(encrypt);
+        sb.append(newAccountNumber.substring(newAccountNumber.length()-4));
+
+        account.update(sb.toString(), newAccountHash, updateAccountReq.getBankCode());
     }
 
     @Override
@@ -102,5 +122,15 @@ public class AccountServiceImpl implements AccountService {
         FindAccountDetailRes result = FindAccountDetailRes.fromEntity(account);
         result.setAccountNumber(maskAccountNumber(result.getAccountNumber()));
         return result;
+    }
+
+    private String generateAccountHash(String accountNumber) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = md.digest(accountNumber.getBytes());
+            return Base64.getEncoder().encodeToString(hashBytes);
+        } catch (Exception e) {
+            throw new RuntimeException("계좌번호 해시 생성 실패", e);
+        }
     }
 }
