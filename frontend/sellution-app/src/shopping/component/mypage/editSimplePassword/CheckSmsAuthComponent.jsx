@@ -60,8 +60,12 @@ const CheckSmsAuthComponent = () => {
   };
 
   const handleConfirm = () => {
-    navigate(`/shopping/${clientName}/my/${customerId}`);
+    navigate(`/shopping/${clientName}/my/${customerId}/auth/edit`);
   };
+
+  // const handleConfirm = () => {
+  //   navigate(`/shopping/${clientName}/edit-password/${customerId}`);
+  // };
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
