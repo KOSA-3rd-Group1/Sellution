@@ -17,7 +17,7 @@ export default {
           dark: '#000000',
           DEFAULT: '#696A6E',
         },
-        sidebarline: 'D3D6E0',
+        sidebarline: '#D3D6E0',
       },
       boxShadow: {
         header: '2px -1px 5px rgba(0,0,0,0.2)',

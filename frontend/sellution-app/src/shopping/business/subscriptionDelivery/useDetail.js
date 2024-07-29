@@ -1,13 +1,17 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import useClientName from '../layout/useClientName';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import useOrderListStore from '../../store/stores/useOrderListStore';
 import useSubscriptionCartStore from '../../store/stores/useSubscriptionCartStore';
+import useAuthStore from '@/shopping/store/stores/useAuthStore';
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 
 const useDetail = () => {
+  const accessToken = useAuthStore((state) => state.accessToken);
   const navigate = useNavigate();
-  const clientName = useClientName();
+  const clientName = useCompanyInfoStore((state) => state.name);
+  const customerId = useUserInfoStore((state) => state.id);
   const { updateOrderListForDirectOrder } = useOrderListStore();
   const { subscriptionDeliveryId } = useParams();
   const [activeSlide, setActiveSlide] = useState(1);
@@ -31,7 +35,11 @@ const useDetail = () => {
   const { subscriptionCart, updateSubscriptionCart } = useSubscriptionCartStore();
   const [isDetailPageModalVisible, setIsDetailPageModalVisible] = useState(false);
   const addToSubscriptionCart = () => {
-    if (itemCountToAdd > 0) {
+    if (accessToken === null || accessToken === '') {
+      navigate(
+        `/shopping/${clientName}/login?redirectUrl=${encodeURIComponent(window.location.pathname)}`,
+      );
+    } else if (itemCountToAdd > 0) {
       const newItem = {
         id: productToShow.productId,
         productId: productToShow.productId,
@@ -52,7 +60,11 @@ const useDetail = () => {
   };
 
   const handleDirectOrder = () => {
-    if (itemCountToAdd > 0) {
+    if (accessToken === null || accessToken === '') {
+      navigate(
+        `/shopping/${clientName}/login?redirectUrl=${encodeURIComponent(window.location.pathname)}`,
+      );
+    } else if (itemCountToAdd > 0) {
       const newItem = {
         id: productToShow.productId,
         quantity: itemCountToAdd,
@@ -65,7 +77,6 @@ const useDetail = () => {
       };
       updateOrderListForDirectOrder(newItem);
       setItemCountToAdd(0);
-      const customerId = 1;
       navigate(`/shopping/${clientName}/subscription/order/${customerId}`);
     }
   };

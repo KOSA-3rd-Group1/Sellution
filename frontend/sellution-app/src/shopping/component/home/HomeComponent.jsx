@@ -1,14 +1,21 @@
 import useHome from '@/shopping/business/home/useHome.js';
 import LogoHeaderNav from '../../layout/LogoHeaderNav';
 import HomeFooter from '../../layout/HomeFooter';
-import EventComponent from './EventComponent';
-
+import EventModal from '../../layout/EventModal';
 const HomeComponent = () => {
   const defaultImages = [
     'https://wimage.wconcept.co.kr/msa-event/event/section/mo/20240715173744104_4519.png?RS=750',
     'https://wimage.wconcept.co.kr/msa-event/event/section/mo/20240715173812427_5164.png?RS=750',
   ];
-  const { activeSlide, handleSlideChange, data } = useHome();
+  const {
+    activeSlide,
+    handleSlideChange,
+    data,
+    isPopupOpen,
+    handleClosePopup,
+    handleClosePopupForToday,
+    moveToEventPage,
+  } = useHome();
   // themeColor이 제공되지 않았을 경우의 기본 색상 설정
   // const bgColor = data && data.themeColor ? `bg-[#${data.themeColor}]` : 'bg-brandOrange-light';
   if (!data) {
@@ -20,7 +27,7 @@ const HomeComponent = () => {
 
   return (
     <>
-      <LogoHeaderNav logoImageUrl={data.logoImageUrl} />
+      <LogoHeaderNav />
       <main className='w-full h-full bg-white p-4 flex flex-col justify-center'>
         <div className='flex-[1.3]'>
           <div className='carousel w-full flex flex-col'>
@@ -73,8 +80,13 @@ const HomeComponent = () => {
           </div> */}
         </div>
       </main>
-      <EventComponent />
       <HomeFooter></HomeFooter>
+      <EventModal
+        isOpen={isPopupOpen}
+        onClose={handleClosePopup}
+        onClick={moveToEventPage}
+        onCloseForToday={handleClosePopupForToday}
+      />
     </>
   );
 };

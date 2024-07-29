@@ -9,12 +9,14 @@ import {
   SimplePasswordIcon,
 } from '@/shopping/utility/assets/Icons.jsx';
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import MenuHeaderNav from './../../layout/MenuHeaderNav';
 import HomeFooter from './../../layout/HomeFooter';
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
+import { RightChevronIcon } from '../../utility/assets/Icons';
 
 const IndexComponent = () => {
-  const { customerId } = useParams(); // useParams를 사용하여 customerId 가져오기
+  const customerId = useUserInfoStore((state) => state.id);
   const [customerInfo, setCustomerInfo] = useState({ name: '', customerType: '' });
 
   useEffect(() => {
@@ -51,7 +53,7 @@ const IndexComponent = () => {
       <MenuHeaderNav title={'마이페이지'} />
       <div className='space-y-8 px-4'>
         <div className='w-full px-2 py-6'>
-          <div className='bg-[#fff0eb] rounded-lg p-4 mb-6'>
+          <div className='bg-brandOrange-light rounded-lg p-4 mb-6'>
             <div className='flex items-center'>
               <AddCustomerIcon className='w-10 h-10 mr-6' />
               <p className=' text-sm'>
@@ -100,20 +102,7 @@ const IndexComponent = () => {
                   {item.component}
                   <span className='text-sm'>{item.text}</span>
                 </div>
-                <svg
-                  className='w-4 h-4 text-gray-400'
-                  fill='none'
-                  stroke='currentColor'
-                  viewBox='0 0 24 24'
-                  xmlns='http://www.w3.org/2000/svg'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    d='M9 5l7 7-7 7'
-                  ></path>
-                </svg>
+                <RightChevronIcon className={'w-4 h-4 text-gray-400'} />
               </div>
             </Link>
           ))}
