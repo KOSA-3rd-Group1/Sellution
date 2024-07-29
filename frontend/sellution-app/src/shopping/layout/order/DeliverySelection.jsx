@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { DownChevronIcon } from "../../utility/assets/Icons";
+import { useState } from 'react';
+import { DownChevronIcon } from '../../utility/assets/Icons';
 
 const DeliverySelection = ({ addresses, selectedAddress, handleAddressChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +27,7 @@ const DeliverySelection = ({ addresses, selectedAddress, handleAddressChange }) 
         </span>
         <button
           onClick={handleAddressChange}
-          className='text-gray-500 border border-gray-300 rounded px-2 py-1 text-sm'
+          className='text-gray-500 border border-gray-300 rounded px-2 py-1 text-sm hover:bg-gray-100'
         >
           {addresses.length > 0 ? '변경' : '추가'}
         </button>
@@ -47,7 +47,9 @@ const DeliverySelection = ({ addresses, selectedAddress, handleAddressChange }) 
           </div>
         </div>
       ) : (
-        <div className='text-gray-500'>등록된 배송지가 없습니다. 배송지를 추가해주세요.</div>
+        <div className='flex justify-center'>
+          <div className='text-gray-500 py-3'>등록된 배송지가 없습니다. 배송지를 추가해주세요.</div>
+        </div>
       )}
       <div className='relative mt-2'>
         <div

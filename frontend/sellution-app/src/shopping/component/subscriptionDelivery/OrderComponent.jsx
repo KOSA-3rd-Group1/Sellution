@@ -12,8 +12,11 @@ import PaymentEstimation from '../../layout/order/PaymentEstimation';
 import PaymentMethodSelection from '../../layout/order/PaymentMethodSelection';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
-
+import { getMyCouponList } from '@/shopping/utility/apis/mypage/coupon/couponApi';
+import useAuthStore from '@/shopping/store/stores/useAuthStore';
 const OrderComponent = () => {
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const accessToken = useAuthStore((state) => state.accessToken);
   const navigate = useNavigate();
   const { orderList } = useOrderListStore();
   const clientName = useCompanyInfoStore((state) => state.name);
@@ -41,7 +44,7 @@ const OrderComponent = () => {
     totalDeliveryCount: 0,
     totalPrice: 0,
     deliveryNextDate: '',
-    deliveryEndDate: ''
+    deliveryEndDate: '',
   });
 
   const [selectedWeek, setSelectedWeek] = useState('');
@@ -273,9 +276,9 @@ const OrderComponent = () => {
 
   const fetchCoupons = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/events/coupons`);
-      setCoupons(response.data.content);
-      console.log('fetch한 쿠폰: ', response.data.content);
+      const response = await getMyCouponList(accessToken, setAccessToken);
+      setCoupons(response.data.content || []); // 페이지 응답에서 내용 추출
+      console.log('fetch한 쿠폰: ', response.data);
     } catch (error) {
       console.error('Error fetching coupons:', error);
     }

@@ -11,8 +11,12 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
+import { getMyCouponList } from '@/shopping/utility/apis/mypage/coupon/couponApi';
+import useAuthStore from '@/shopping/store/stores/useAuthStore';
 
 const OrderComponent = () => {
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const accessToken = useAuthStore((state) => state.accessToken);
   const navigate = useNavigate();
   const { orderList } = useOrderListStore();
   const clientName = useCompanyInfoStore((state) => state.name);
@@ -192,8 +196,8 @@ const OrderComponent = () => {
   };
   const fetchCoupons = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/events/coupons`);
-      setCoupons(response.data.content);
+      const response = await getMyCouponList(accessToken, setAccessToken);
+      setCoupons(response.data.content || []); // 페이지 응답에서 내용 추출
       console.log('fetch한 쿠폰: ', coupons);
     } catch (error) {
       console.error('Error fetching coupons:', error);

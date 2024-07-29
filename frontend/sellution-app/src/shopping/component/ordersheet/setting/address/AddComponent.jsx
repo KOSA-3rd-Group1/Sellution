@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom'; // Link 추가
-
+import { Link, useNavigate } from 'react-router-dom'; // Link 추가
+import MenuHeaderNav from '../../../../layout/MenuHeaderNav';
+import OneButtonFooterLayout from '../../../../layout/OneButtonFooterLayout';
+import LogoHeaderNav from '@/shopping/layout/LogoHeaderNav';
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore'
 const AddComponent = () => {
-  const { clientName, customerId } = useParams();
+  const navigate = useNavigate();
+  const clientName = useCompanyInfoStore((state) => state.name);
+  const customerId = useUserInfoStore((state) => state.id);
   const [addressName, setAddressName] = useState('');
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -87,143 +93,137 @@ const AddComponent = () => {
 
   if (isSaved) {
     return (
-      <div className='flex justify-center h-screen'>
-        <div className='container-box relative w-full max-w-lg h-full flex justify-center pt-14 pb-14'>
-          <div className='w-full scroll-box overflow-auto flex-grow p-4'>
-            <h1 className='text-xl font-bold mb-4 text-center'>
-              주소가 성공적으로 저장되었습니다!
-            </h1>
-            <Link
-              to={`/shopping/${clientName}/my/${customerId}/address`}
-              className='block w-full text-center bg-brandOrange text-white py-2 rounded-md hover:bg-orange-600'
-            >
-              배송지 목록으로 이동
-            </Link>
-          </div>
+      <>
+        <LogoHeaderNav />
+        <div className='w-full h-full flex justify-center items-center'>
+          <p className='text-gray-500 text-lg font-bold'>주소가 성공적으로 저장되었습니다!</p>
         </div>
-      </div>
+        <OneButtonFooterLayout
+          footerText={'배송지 목록으로 이동'}
+          onClick={() => {
+            navigate(`/shopping/${clientName}/my/${customerId}/address`);
+          }}
+        />
+      </>
     );
   }
 
   return (
-    <div className='flex justify-center h-screen'>
-      <div className='container-box relative w-full max-w-lg h-full flex justify-center pt-14 pb-14'>
-        <div className='w-full scroll-box overflow-auto flex-grow p-4'>
-          <h1 className='text-xl font-bold mb-4 text-center'>배송지 등록</h1>
-          {error && (
-            <div
-              className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4'
-              role='alert'
-            >
-              <span className='block sm:inline'>{error}</span>
-            </div>
-          )}
-          <form className='space-y-4' onSubmit={handleSubmit}>
-            <div className='flex items-center'>
-              <label className='block text-sm font-medium w-24'>
-                <span className='text-brandOrange'>*</span> 배송지명
-              </label>
-              <input
-                type='text'
-                value={addressName}
-                onChange={(e) => setAddressName(e.target.value)}
-                className='flex-grow border rounded-md p-2'
-                required
-              />
-            </div>
-            <div className='flex items-center'>
-              <label className='block text-sm font-medium w-24'>
-                <span className='text-brandOrange'>*</span> 수령인
-              </label>
-              <input
-                type='text'
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className='flex-grow border rounded-md p-2'
-                required
-              />
-            </div>
-            <div className='flex items-center'>
-              <label className='block text-sm font-medium w-24'>
-                <span className='text-brandOrange'>*</span> 휴대폰
-              </label>
-              <input
-                type='tel'
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className='flex-grow border rounded-md p-2'
-                placeholder='010********'
-                required
-              />
-            </div>
-            <div className='flex items-center'>
-              <label className='block text-sm font-medium w-24'>
-                <span className='text-brandOrange'>*</span> 우편번호
-              </label>
-              <input
-                type='text'
-                value={zipcode}
-                className='flex-grow border rounded-md p-2 bg-gray-100'
-                readOnly
-                required
-              />
-              <button
-                type='button'
-                className='ml-2 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white px-4 py-2 text-sm'
-                onClick={handlePostcode}
-              >
-                우편번호 찾기
-              </button>
-            </div>
-            <div className='flex items-center'>
-              <label className='block text-sm font-medium w-24'>
-                <span className='text-brandOrange'>*</span> 주소지
-              </label>
-              <input
-                type='text'
-                value={streetAddress}
-                className='flex-grow border rounded-md p-2 bg-gray-100'
-                readOnly
-                required
-              />
-            </div>
-            <div className='flex items-center'>
-              <label className='block text-sm font-medium w-24'>
-                <span className='text-brandOrange'>*</span> 상세주소
-              </label>
-              <input
-                type='text'
-                value={addressDetail}
-                onChange={(e) => setAddressDetail(e.target.value)}
-                className='flex-grow border rounded-md p-2'
-                required
-              />
-            </div>
-            <div className='flex items-center mt-4'>
-              <input
-                type='checkbox'
-                id='defaultAddress'
-                checked={isDefaultAddress === DisplayStatus.Y}
-                onChange={(e) =>
-                  setIsDefaultAddress(e.target.checked ? DisplayStatus.Y : DisplayStatus.N)
-                }
-                className='mr-2'
-              />
-              <label htmlFor='defaultAddress' className='text-sm'>
-                기본 배송지로 설정
-              </label>
-            </div>
-            <div className='mt-6'>
-              <button
-                type='submit'
-                className='w-full bg-brandOrange text-white py-2 rounded-md hover:bg-orange-600'
-              >
-                저장하기
-              </button>
-            </div>
-          </form>
+    <div className='w-full h-full flex items-center justify-center'>
+      <MenuHeaderNav title={'배송지 등록'} />
+      {error && (
+        <div
+          className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4'
+          role='alert'
+        >
+          <span className='block sm:inline'>{error}</span>
         </div>
-      </div>
+      )}
+      <form className='space-y-4 w-[90%]'>
+        <div className='flex items-center'>
+          <label className='block text-sm font-medium w-24'>
+            <span className='text-brandOrange'>*</span> 배송지명
+          </label>
+          <input
+            type='text'
+            value={addressName}
+            onChange={(e) => setAddressName(e.target.value)}
+            className='flex-grow border rounded-md p-2'
+            required
+          />
+        </div>
+        <div className='flex items-center'>
+          <label className='block text-sm font-medium w-24'>
+            <span className='text-brandOrange'>*</span> 수령인
+          </label>
+          <input
+            type='text'
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className='flex-grow border rounded-md p-2'
+            required
+          />
+        </div>
+        <div className='flex items-center'>
+          <label className='block text-sm font-medium w-24'>
+            <span className='text-brandOrange'>*</span> 휴대폰
+          </label>
+          <input
+            type='tel'
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            className='flex-grow border rounded-md p-2'
+            placeholder='010********'
+            required
+          />
+        </div>
+        <div className='flex items-center'>
+          <label className='block text-sm font-medium w-24'>
+            <span className='text-brandOrange'>*</span> 우편번호
+          </label>
+          <input
+            type='text'
+            value={zipcode}
+            className='flex-grow border rounded-md p-2 bg-gray-100'
+            readOnly
+            required
+          />
+          <button
+            type='button'
+            className='ml-2 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white px-4 py-2 text-sm'
+            onClick={handlePostcode}
+          >
+            우편번호 찾기
+          </button>
+        </div>
+        <div className='flex items-center'>
+          <label className='block text-sm font-medium w-24'>
+            <span className='text-brandOrange'>*</span> 주소지
+          </label>
+          <input
+            type='text'
+            value={streetAddress}
+            className='flex-grow border rounded-md p-2 bg-gray-100'
+            readOnly
+            required
+          />
+        </div>
+        <div className='flex items-center'>
+          <label className='block text-sm font-medium w-24'>
+            <span className='text-brandOrange'>*</span> 상세주소
+          </label>
+          <input
+            type='text'
+            value={addressDetail}
+            onChange={(e) => setAddressDetail(e.target.value)}
+            className='flex-grow border rounded-md p-2'
+            required
+          />
+        </div>
+        <div className='flex items-center mt-4'>
+          <input
+            type='checkbox'
+            id='defaultAddress'
+            checked={isDefaultAddress === DisplayStatus.Y}
+            onChange={(e) =>
+              setIsDefaultAddress(e.target.checked ? DisplayStatus.Y : DisplayStatus.N)
+            }
+            className='mr-2'
+          />
+          <label htmlFor='defaultAddress' className='text-sm'>
+            기본 배송지로 설정
+          </label>
+        </div>
+        {/* <div className='mt-6'>
+          <button
+            type='submit'
+            className='w-full bg-brandOrange text-white py-2 rounded-md hover:bg-orange-600'
+          >
+            저장하기
+          </button>
+        </div> */}
+      </form>
+      <OneButtonFooterLayout footerText={'저장하기'} onClick={handleSubmit} />
     </div>
   );
 };
