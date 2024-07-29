@@ -29,6 +29,9 @@ public class Account {
     @Column(nullable = false, length = 100) // 더미데이터를 위해 unique 제약 제거
     private String accountNumber;
 
+    @Column(nullable = false, length = 64, unique = true)
+    private String accountHash;
+
     @Column(nullable = false, length = 20)
     private String bankCode;
 
@@ -37,15 +40,17 @@ public class Account {
     private LocalDateTime createdAt;
 
     @Builder
-    public Account(Customer customer, String accountNumber, String bankCode) {
+    public Account(Customer customer, String accountNumber, String accountHash, String bankCode) {
         this.customer = customer;
         this.accountNumber = accountNumber;
+        this.accountHash = accountHash;
         this.bankCode = bankCode;
     }
 
     // 수정 메소드
-    public void update(String accountNumber, String bankCode) {
+    public void update(String accountNumber, String accountHash, String bankCode) {
         this.accountNumber = accountNumber;
+        this.accountHash = accountHash;
         this.bankCode = bankCode;
     }
 

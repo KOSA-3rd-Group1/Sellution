@@ -68,6 +68,7 @@ public enum ExceptionCode {
     FAIL_TO_PAY_CANCEL(5017,"결제취소에 실패하였습니다." ),
     INVALID_ORDER_INFO_FOR_ONETIME(5018,"단건 주문에 유효하지않은 정보값입니다." ),
     INVALID_ORDER_INFO_FOR_SUB(5018,"정기 주문에 유효하지않은 정보값입니다." ),
+    ALREADY_ACCOUNT(5019,"이미 등록된 계좌입니다." ),
 
 
     // ---------------------------- Product, Address, category, event 6501 ~ 7000 ---------------------------------------

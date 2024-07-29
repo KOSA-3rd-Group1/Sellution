@@ -28,8 +28,9 @@ const SubscriptionDeliverySetting = ({
   const getNextMonday = () => {
     const today = new Date();
     const dayOfWeek = today.getDay();
+    const daysUntilNextMonday = (8 - dayOfWeek) % 7 || 7;
     const nextMonday = new Date(today);
-    nextMonday.setDate(today.getDate() + ((8 - dayOfWeek) % 7));
+    nextMonday.setDate(today.getDate() + daysUntilNextMonday);
     return nextMonday.toISOString().split('T')[0];
   };
 
@@ -74,14 +75,16 @@ const SubscriptionDeliverySetting = ({
       <div>
         <h3 className='text-brandOrange mb-2'>* 배송 요일</h3>
         <div className='flex justify-between'>
-        {weekDays.map((day) => (
+          {weekDays.map((day) => (
             <button
               key={day}
-              onClick={() => toggleDay(day)}
+              onClick={() => isDaySelectable(day) && toggleDay(day)}
               className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                selectedDays.includes(day)
+                selectedDays && selectedDays.includes(day)
                   ? 'bg-orange-500 text-white'
-                  : 'border border-gray-300 text-gray-500'
+                  : isDaySelectable(day)
+                    ? 'border border-gray-300 text-gray-500'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
               disabled={!isDaySelectable(day)}
             >
