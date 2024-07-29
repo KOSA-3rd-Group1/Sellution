@@ -17,4 +17,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
             where a.id = :accountId
             """)
     Optional<Account> findById(Long accountId);
+
+    boolean existsByAccountHash(String accountHash);
+
 }

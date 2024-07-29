@@ -11,6 +11,8 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
+import useAuthStore from "@/shopping/store/stores/useAuthStore.js";
+import { getMyCouponList } from "@/shopping/utility/apis/mypage/coupon/couponApi.js";
 
 const OrderComponent = () => {
   const navigate = useNavigate();
@@ -34,6 +36,9 @@ const OrderComponent = () => {
   const [productDiscountTotal, setProductDiscountTotal] = useState(0); //상품 할인 금액
   const [couponDiscountTotal, setCouponDiscountTotal] = useState(0); // 쿠폰 할인 금액
   const [finalPrice, setFinalPrice] = useState(0);
+
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   const BANK_CODES = {
     '004': '국민은행',
@@ -107,9 +112,9 @@ const OrderComponent = () => {
     );
     const couponDiscountTotal = selectedCoupon
       ? Math.floor(
-          listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
-            (selectedCoupon.couponDiscountRate / 100),
-        )
+        listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
+        (selectedCoupon.couponDiscountRate / 100),
+      )
       : 0;
 
     console.log('total price', total);
@@ -166,7 +171,7 @@ const OrderComponent = () => {
         saveOrderReq,
       );
       if (response.data.startsWith('success')) {
-        const savedOrderId = response.data.split('생성된 아이디 : ')[1];
+        const savedOrderId = response.data.split('success, 생성된 주문 아이디 : ')[1];
         navigate(`/shopping/${clientName}/subscription/order-completed/${savedOrderId}`);
       }
     } catch (error) {
@@ -192,9 +197,10 @@ const OrderComponent = () => {
   };
   const fetchCoupons = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/events/coupons`);
+      const response = await getMyCouponList(setAccessToken,accessToken);
       setCoupons(response.data.content);
-      console.log('fetch한 쿠폰: ', coupons);
+      console.log('fetch한 쿠폰1: ', coupons);
+      console.log('fetch한 쿠폰2: ', response);
     } catch (error) {
       console.error('Error fetching coupons:', error);
     }
@@ -293,11 +299,11 @@ const OrderComponent = () => {
         onClick={handleOrderClick}
         isDisabled={isOrderButtonDisabled}
       />
-      <OneButtonFooterLayout
-        footerText={'결제하기'}
-        onClick={handleOrderClick}
-        isDisabled={isOrderButtonDisabled}
-      />
+      {/*<OneButtonFooterLayout*/}
+      {/*  footerText={'결제하기'}*/}
+      {/*  onClick={handleOrderClick}*/}
+      {/*  isDisabled={isOrderButtonDisabled}*/}
+      {/*/>*/}
     </>
   );
 };

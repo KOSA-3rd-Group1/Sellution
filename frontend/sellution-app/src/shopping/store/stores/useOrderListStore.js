@@ -1,30 +1,25 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-const useOrderListStore = create((set) => ({
-  orderList: [],
-
-  updateOrderList: (selectedItemsIndexList, cart) => {
-    // selectedItemsIndexList에는 체크한 product의 productId들만 있음
-    const selectedProducts = cart.filter((item) => selectedItemsIndexList.includes(item.productId));
-    set((state) => ({
-      ...state,
-      orderList: selectedProducts,
-    }));
-  },
-
-  resetOrderList: () => {
-    set((state) => ({
-      ...state,
+const useOrderListStore = create(
+  persist(
+    (set) => ({
       orderList: [],
-    }));
-  },
 
-  updateOrderListForDirectOrder: (product) => {
-    set((state) => ({
-      ...state,
-      orderList: [product],
-    }));
-  },
-}));
+      updateOrderList: (selectedItemsIndexList, cart) => {
+        const selectedProducts = cart.filter((item) => selectedItemsIndexList.includes(item.productId));
+        set({ orderList: selectedProducts });
+      },
+
+      resetOrderList: () => set({ orderList: [] }),
+
+      updateOrderListForDirectOrder: (product) => set({ orderList: [product] }),
+    }),
+    {
+      name: 'order-list-storage',
+      getStorage: () => localStorage,
+    }
+  )
+);
 
 export default useOrderListStore;

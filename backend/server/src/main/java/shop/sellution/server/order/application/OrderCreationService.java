@@ -28,6 +28,7 @@ import shop.sellution.server.order.dto.request.FindOrderedProductSimpleReq;
 import shop.sellution.server.order.dto.request.SaveOrderReq;
 import shop.sellution.server.payment.application.PaymentService;
 import shop.sellution.server.payment.dto.request.PaymentReq;
+import shop.sellution.server.payment.util.PayInfo;
 import shop.sellution.server.payment.util.PaymentUtil;
 import shop.sellution.server.product.domain.Product;
 import shop.sellution.server.product.domain.ProductRepository;
@@ -62,6 +63,7 @@ public class OrderCreationService {
     private final PaymentService paymentService;
     private final SmsServiceImpl smsService;
     private final EventRepository eventRepository;
+    private final PaymentUtil paymentUtil;
 
 
     private static final int ONETIME = 1;
@@ -166,6 +168,9 @@ public class OrderCreationService {
         // SelectedDay 엔티티 생성 및 연결
         List<SelectedDay> selectedDays = createSelectedDays(order, saveOrderReq.getDayOptionIds());
         order.setSelectedDays(selectedDays);
+
+        PayInfo payInfo = paymentUtil.calculatePayCost(order, order.getDeliveryStartDate());
+        order.setThisMonthDeliveryCount(payInfo.getDeliveryCount());
 
         String orderedProductInfo = orderedProducts.stream()
                 .map(orderedProduct -> "   " + orderedProduct.getProduct().getName() + " : " + orderedProduct.getCount() + "개\n")

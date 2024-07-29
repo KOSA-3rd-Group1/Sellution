@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams , useNavigate  } from 'react-router-dom';
-import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx";
+import LogoHeaderNav from "@/shopping/layout/LogoHeaderNav.jsx";
 
 const OrderCompletedComponent = () => {
   const [orderData, setOrderData] = useState(null);
@@ -57,17 +57,17 @@ const OrderCompletedComponent = () => {
       return (
         <>
           <div className=''>
-            <p className='text-sm font-semibold'>배송 주기</p>
-            <p className='text-base'>{orderData.selectedWeekOption}주마다</p>
+            <p className='text-sm font-semibold text-brandOrange'>배송 주기</p>
+            <p className='text-base font-semibold'>{orderData.selectedWeekOption}주마다</p>
           </div>
           <div className=''>
-            <p className='text-sm font-semibold'>배송 요일</p>
-            <p className='text-base'>{formatDayList(orderData.selectedDayList)}</p>
+            <p className='text-sm font-semibold text-brandOrange'>배송 요일</p>
+            <p className='text-base font-semibold'>{formatDayList(orderData.selectedDayList)}</p>
           </div>
           {orderData.type === 'MONTH_SUBSCRIPTION' && (
             <div className='mt-2 col-span-2'>
-              <p className='text-sm font-semibold'>구독 기간</p>
-              <div className='text-base flex items-center space-x-1'>
+              <p className='text-sm font-semibold text-brandOrange'>구독 기간</p>
+              <div className='text-base flex items-center space-x-1 font-semibold'>
                 <span>{simpleFormatDate(orderData.deliveryStartDate)}</span>
                 <span>~</span>
                 <span>
@@ -89,8 +89,8 @@ const OrderCompletedComponent = () => {
     if (orderData.type === 'ONETIME') {
       return (
         <div>
-          <p className='text-sm font-semibold'>배송 예정일</p>
-          <p className='text-base'>{formatDate(orderData.deliveryEndDate)}</p>
+          <p className='text-sm font-semibold text-brandOrange'>배송 예정일</p>
+          <p className='text-base font-semibold'>{formatDate(orderData.deliveryEndDate)}</p>
         </div>
       );
     } else {
@@ -98,24 +98,24 @@ const OrderCompletedComponent = () => {
         <>
           {renderSubscriptionInfo()}
           <div className='col-span-2'>
-            <p className='text-sm font-semibold '>선택된 배송 시작일</p>
-            <p className='text-base'>{formatDate(orderData.deliveryStartDate)}</p>
+            <p className='text-sm font-semibold text-brandOrange'>선택된 배송 시작일</p>
+            <p className='text-base font-semibold'>{formatDate(orderData.deliveryStartDate)}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold'>다음 배송 예정일</p>
-            <p className='text-base'>{formatDate(orderData.nextDeliveryDate)}</p>
+            <p className='text-sm font-semibold text-brandOrange'>다음 배송 예정일</p>
+            <p className='text-base font-semibold'>{formatDate(orderData.nextDeliveryDate)}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold'>마지막 배송 예정일</p>
-            <p className='text-base'>{formatDate(orderData.deliveryEndDate)}</p>
+            <p className='text-sm font-semibold text-brandOrange'>마지막 배송 예정일</p>
+            <p className='text-base font-semibold'>{formatDate(orderData.deliveryEndDate)}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold'>잔여 배송 횟수</p>
-            <p className='text-base'>{orderData.remainingDeliveryCount}</p>
+            <p className='text-sm font-semibold text-brandOrange'>잔여 배송 횟수</p>
+            <p className='text-base font-semibold'>{orderData.remainingDeliveryCount}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold'>총 배송 횟수</p>
-            <p className='text-base'>{orderData.totalDeliveryCount}</p>
+            <p className='text-sm font-semibold text-brandOrange'>총 배송 횟수</p>
+            <p className='text-base font-semibold'>{orderData.totalDeliveryCount}</p>
           </div>
         </>
       );
@@ -220,7 +220,9 @@ const OrderCompletedComponent = () => {
               <span
                 className={`font-semibold ${orderData.status === 'CANCEL' ? 'line-through text-gray-500' : 'text-brandOrange'}`}
               >
-                {formatDate(orderData.nextPaymentDate)}
+                {orderData.nextPaymentDate === null
+                  ? '주문이 승인될 때 결제됩니다.'
+                  : formatDate(orderData.nextPaymentDate)}
               </span>
             </p>
             <p className='flex justify-between'>
@@ -338,7 +340,7 @@ const OrderCompletedComponent = () => {
 
   return (
     <div className='max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg'>
-      <MenuHeaderNav title={'주문 완료'} />
+      <LogoHeaderNav title={'주문 완료'} />
       <h1 className='text-xl font-bold text-center mb-8 text-brandOrange'>
         고객님의 주문이 완료되었습니다
       </h1>
@@ -347,28 +349,28 @@ const OrderCompletedComponent = () => {
         <h2 className='text-lg font-semibold mb-4'>주문 정보</h2>
         <div className='bg-gray-100 p-4 rounded-lg grid grid-cols-2 gap-4'>
           <div>
-            <p className='text-sm font-semibold'>주문번호</p>
+            <p className='text-sm font-semibold text-brandOrange'>주문번호</p>
             <p className='text-base'>{orderData.orderCode}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold'>주문일시</p>
+            <p className='text-sm font-semibold text-brandOrange'>주문일시</p>
             <p className='text-base'>{formatDate(orderData.orderCreatedAt)}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold'>주문타입</p>
-            <p className='text-base '>{getOrderTypeText(orderData.type)}</p>
-          </div>
-          <div>
-            <p className='text-sm font-semibold'>주문 고객</p>
+            <p className='text-sm font-semibold text-brandOrange'>주문 고객</p>
             <p className='text-base'>{orderData.customer.name}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold'>연락처</p>
+            <p className='text-sm font-semibold text-brandOrange'>연락처</p>
             <p className='text-base'>{formatPhoneNumber(orderData.customer.phoneNumber)}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold'>주문 상태</p>
-            <p className='text-base'>{getOrderStatusText(orderData.status)}</p>
+            <p className='text-sm font-semibold text-brandOrange'>주문타입</p>
+            <p className='text-base font-semibold'>{getOrderTypeText(orderData.type)}</p>
+          </div>
+          <div>
+            <p className='text-sm font-semibold text-brandOrange'>주문 상태</p>
+            <p className='text-base font-semibold'>{getOrderStatusText(orderData.status)}</p>
           </div>
         </div>
       </div>
@@ -377,23 +379,25 @@ const OrderCompletedComponent = () => {
         <h2 className='text-lg font-semibold mb-4'>배송 정보</h2>
         <div className=' bg-gray-100 p-4 rounded-lg grid grid-cols-2 gap-4'>
           <div className='col-span-2'>
-            <p className='text-sm font-semibold'>배송지</p>
-            <p className='text-base break-words'>
+            <p className='text-sm font-semibold text-brandOrange'>배송지</p>
+            <p className='text-base break-words '>
               {orderData.address.address} {orderData.address.addressDetail} (
               {orderData.address.zipcode})
             </p>
           </div>
           <div>
-            <p className='text-sm font-semibold'>수령인</p>
-            <p className='text-base'>{orderData.address.name}</p>
+            <p className='text-sm font-semibold text-brandOrange'>수령인</p>
+            <p className='text-base '>{orderData.address.name}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold'>수령인 전화번호</p>
-            <p className='text-base'>{formatPhoneNumber(orderData.address.phoneNumber)}</p>
+            <p className='text-sm font-semibold text-brandOrange'>수령인 전화번호</p>
+            <p className='text-base '>{formatPhoneNumber(orderData.address.phoneNumber)}</p>
           </div>
           <div className='col-span-2'>
-            <p className='text-sm font-semibold'>배송 상태</p>
-            <p className='text-base'>{getDeliveryStatusText(orderData.deliveryStatus)}</p>
+            <p className='text-sm font-semibold text-brandOrange'>배송 상태</p>
+            <p className='text-base font-semibold'>
+              {getDeliveryStatusText(orderData.deliveryStatus)}
+            </p>
           </div>
           {renderDeliveryInfo()}
         </div>
@@ -434,11 +438,12 @@ const OrderCompletedComponent = () => {
 
       <div className='bg-gray-100 p-4 rounded-lg'>
         <div className='flex justify-between items-center'>
-          <h2 className='text-xl font-semibold mb-4'>결제 정보{orderData.status === 'CANCEL' && (
-            <p className='text-sm text-red-500 mt-1'>
-              취소된 주문입니다.
-            </p>
-          )}</h2>
+          <h2 className='text-xl font-semibold mb-4'>
+            결제 정보
+            {orderData.status === 'CANCEL' && (
+              <p className='text-sm text-red-500 mt-1'>취소된 주문입니다.</p>
+            )}
+          </h2>
           <button
             onClick={handleViewPaymentHistory}
             className='text-sm text-blue-600 hover:text-blue-800'
@@ -446,9 +451,7 @@ const OrderCompletedComponent = () => {
             결제내역보기 &gt;
           </button>
         </div>
-        <div className='space-y-2'>
-          {renderPaymentInfo()}
-        </div>
+        <div className='space-y-2'>{renderPaymentInfo()}</div>
       </div>
     </div>
   );

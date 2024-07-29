@@ -109,6 +109,7 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private int remainingDeliveryCount; // 남은 배송횟수
 
+    @Setter
     @Column(nullable = true)
     private Integer thisMonthDeliveryCount; // 이번달 배송횟수
 
