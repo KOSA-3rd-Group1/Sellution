@@ -62,7 +62,7 @@ public class EventRepositoryImpl implements EventRepositoryCustom{
 
         return new PageImpl<>(res, pageable, total != null ? total : 0L );
     }
-
+    //기간으로 필터링
     @Override
     public Page<CouponEvent> findEventsByCompanyAndDate(Company company, LocalDate startDate, LocalDate endDate, Pageable pageable) {
         QCouponEvent couponEvent = QCouponEvent.couponEvent;

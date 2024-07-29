@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.sellution.server.auth.dto.CustomUserDetails;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.customer.domain.Customer;
@@ -15,12 +17,15 @@ import shop.sellution.server.event.domain.type.EventState;
 import shop.sellution.server.event.dto.request.SaveEventReq;
 import shop.sellution.server.event.dto.request.UpdateEventReq;
 import shop.sellution.server.event.dto.response.FindEventRes;
+import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -31,10 +36,14 @@ public class EventServiceImpl implements EventService {
     private final CompanyRepository companyRepository;
     private final CouponBoxRepository couponBoxRepository;
     private final CustomerRepository customerRepository;
+    //redis
+    private final CouponCountRepository couponCountRepository;
 
     @Transactional(readOnly = true)
     @Override
-    public Page<FindEventRes> findAllEvents(Long companyId, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+    public Page<FindEventRes> findAllEvents(LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
+        Long companyId = userDetails.getCompanyId();
         Company company = getCompanyById(companyId);
         // 필터링 x
         if(startDate == null && endDate == null){
@@ -46,9 +55,11 @@ public class EventServiceImpl implements EventService {
                 .map(FindEventRes::fromEntity);
 
     }
-
+    //이벤트 생성
     @Override
-    public void saveEvent(Long companyId, SaveEventReq saveEventReq) {
+    public void saveEvent(SaveEventReq saveEventReq) {
+        CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
+        Long companyId = userDetails.getCompanyId();
         //당일은 startdate가 불가능하게
         LocalDate now = LocalDate.now();
         LocalDate tomorrow = now.plusDays(1);
@@ -58,8 +69,11 @@ public class EventServiceImpl implements EventService {
         Company company = getCompanyById(companyId);
         CouponEvent event = saveEventReq.toEntity(company);
         eventRepository.save(event);
+        //redis에 초기 쿠폰 수량 설정
+        couponCountRepository.setInitialQuantity(event.getId(), event.getInitialQuantity());
     }
 
+    //TODO: 삭제된 이벤트면 오류 나도록 추가
     @Override
     public void updateEvent(Long eventId, UpdateEventReq updateEventReq) {
         CouponEvent event = getEventById(eventId);
@@ -74,7 +88,7 @@ public class EventServiceImpl implements EventService {
         event.update(updateEventReq);
 //        eventRepository.save(event); 엔티티 변경사항은 트랜잭션이 끝날 때 자동으로 반영
     }
-
+    //TODO: 삭제된 이벤트면 오류 나도록 추가
     @Override
     public void deleteEvent(Long eventId) {
         //삭제로직
@@ -102,15 +116,49 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Page<FindEventRes> findCoupons(Long customerId, Pageable pageable) {
+    public Page<FindEventRes> findCoupons(Pageable pageable) {
+        CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
+        Long customerId = userDetails.getUserId();
         //event 종료기간이 지나지 않고 isUsed가 N인 쿠폰
         LocalDate now = LocalDate.now();
         return eventRepositoryCustom.findCouponsByCustomer(customerId, now, pageable)
                 .map(FindEventRes::fromEntity);
     }
-
+    //쿠폰 다운로드
     @Override
-    public void saveCoupon(Long customerId, Long eventId) {
+    public void saveCoupon(Long eventId) {
+        //쿠폰 다운로드 로직
+        //1. 해당 이벤트가 종료되었는지 확인
+        //2. 해당 이벤트가 삭제되었는지 확인
+        //3. 해당 이벤트가 이미 다운로드 되었는지 확인
+        //4. 쿠폰 다운로드
+        CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
+        Long customerId = userDetails.getUserId();
+        LocalDate now = LocalDate.now();
+        CouponEvent event = getEventById(eventId);
+        if(now.isAfter(event.getEventEndDate()) || now.isBefore(event.getEventStartDate())){
+            throw new IllegalArgumentException("이벤트 기간이 아닙니다");
+        }
+        if(event.isDeleted()){
+            throw new IllegalArgumentException("중단된 이벤트는 쿠폰을 다운로드할 수 없습니다.");
+        }
+        //TODO: 수정예정
+        if(couponBoxRepository.existsByCustomerIdAndCouponEventId(customerId, eventId)){
+            throw new IllegalArgumentException("이미 쿠폰을 다운로드하셨습니다.");
+        }
+        //event.decreaseRemainingQuantity(); // 남은 쿠폰 수량 감소
+        //발급 가능한 경우 쿠폰 생성
+        CouponBox couponBox = CouponBox.builder()
+                .id(new CouponBoxId(customerId, eventId))
+                .couponEvent(event)
+                .customer(getCustomerById(customerId))
+                .build();
+        couponBoxRepository.save(couponBox);
+    }
+
+    //쿠폰 다운로드 (동시성 테스트)
+    @Override
+    public void downloadCoupon(Long customerId, Long eventId) {
         //쿠폰 다운로드 로직
         //1. 해당 이벤트가 종료되었는지 확인
         //2. 해당 이벤트가 삭제되었는지 확인
@@ -124,9 +172,20 @@ public class EventServiceImpl implements EventService {
         if(event.isDeleted()){
             throw new IllegalArgumentException("중단된 이벤트는 쿠폰을 다운로드할 수 없습니다.");
         }
+        //TODO: 수정예정
         if(couponBoxRepository.existsByCustomerIdAndCouponEventId(customerId, eventId)){
             throw new IllegalArgumentException("이미 쿠폰을 다운로드하셨습니다.");
         }
+        //Redis를 사용하여 쿠폰 개수 확인 & 감소
+        //event.decreaseRemainingQuantity(); // 남은 쿠폰 수량 감소
+        if(!event.getInitialQuantity().equals(Integer.MAX_VALUE)){
+            Long remainingQuantity = couponCountRepository.decrement(eventId);
+            if(remainingQuantity < 0){
+                throw new IllegalArgumentException("쿠폰이 모두 소진되었습니다.");
+            }
+        }
+
+        //발급 가능한 경우 쿠폰 생성
         CouponBox couponBox = CouponBox.builder()
                 .id(new CouponBoxId(customerId, eventId))
                 .couponEvent(event)
@@ -149,6 +208,16 @@ public class EventServiceImpl implements EventService {
     private Customer getCustomerById(Long customerId) {
         return customerRepository.findById(customerId)
                 .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_CUSTOMER));
+    }
+
+    private CustomUserDetails getCustomUserDetailsFromSecurityContext() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("principal >>>>> " + principal);
+        if (principal instanceof CustomUserDetails) {
+            return (CustomUserDetails) principal;
+        } else {
+            throw new AuthException(NOT_FOUND_USER);
+        }
     }
 }
 

@@ -11,9 +11,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface EventService {
-    Page<FindEventRes> findAllEvents(Long companyId, LocalDate startDate, LocalDate endDate, Pageable pageable);
+    Page<FindEventRes> findAllEvents(LocalDate startDate, LocalDate endDate, Pageable pageable);
 
-    void saveEvent(Long companyId, SaveEventReq saveEventReq);
+    void saveEvent(SaveEventReq saveEventReq);
 
     void updateEvent(Long eventId, UpdateEventReq updateEventReq);
 
@@ -21,7 +21,9 @@ public interface EventService {
 
     List<FindEventRes> findAllOngoingEvents(Long companyId);
 
-    Page<FindEventRes> findCoupons(Long customerId, Pageable pageable);
+    Page<FindEventRes> findCoupons(Pageable pageable);
 
-    void saveCoupon(Long customerId, Long eventId);
+    void saveCoupon(Long eventId);
+
+    void downloadCoupon(Long customerId, Long eventId);
 }
