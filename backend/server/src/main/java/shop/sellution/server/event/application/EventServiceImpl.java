@@ -2,6 +2,7 @@ package shop.sellution.server.event.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_USER;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
