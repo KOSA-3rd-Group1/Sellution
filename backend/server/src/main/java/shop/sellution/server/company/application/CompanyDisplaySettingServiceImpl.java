@@ -41,7 +41,6 @@ public class CompanyDisplaySettingServiceImpl implements CompanyDisplaySettingSe
         return FindCompanyDisplaySettingRes.fromEntity(company, companyImages);
     }
 
-    @Override
     public void createCompanyDisplaySetting(SaveCompanyDisplaySettingReq saveCompanyDisplaySettingReq, MultipartFile logoFile,
                                             List<MultipartFile> promotionFiles) throws IOException {
         Company company = companyRepository.findById(saveCompanyDisplaySettingReq.getCompanyId())
@@ -51,34 +50,42 @@ public class CompanyDisplaySettingServiceImpl implements CompanyDisplaySettingSe
 
         // Logo Image 처리
         if (logoFile != null && !logoFile.isEmpty()) {
-            String logoUrl = s3Service.uploadFile(logoFile, company.getCompanyId(), "setting");
+            String logoUrl = s3Service.uploadFile(logoFile, company.getCompanyId(), "setting", ImagePurposeType.LOGO);
+            saveCompanyDisplaySettingReq.setLogoImageUrl(logoUrl);
             saveLogoImage(CompanyImage.builder()
                     .company(company)
                     .imageUrl(logoUrl)
                     .purposeOfUse(ImagePurposeType.LOGO)
                     .build());
+        } else if (saveCompanyDisplaySettingReq.getLogoImageUrl() != null) {
+            saveLogoImage(CompanyImage.builder()
+                    .company(company)
+                    .imageUrl(saveCompanyDisplaySettingReq.getLogoImageUrl())
+                    .purposeOfUse(ImagePurposeType.LOGO)
+                    .build());
         }
 
-        // Promotion Images 처리
+        List<String> promotionUrls = new ArrayList<>();
         if (promotionFiles != null && !promotionFiles.isEmpty()) {
-            List<String> promotionUrls = new ArrayList<>();
             for (MultipartFile file : promotionFiles) {
-                String url = s3Service.uploadFile(file, company.getCompanyId(), "setting");
+                String url = s3Service.uploadFile(file, company.getCompanyId(), "setting", ImagePurposeType.PROMOTION);
                 promotionUrls.add(url);
             }
-            savePromotionImages(promotionUrls.stream()
-                    .map(url -> CompanyImage.builder()
-                            .company(company)
-                            .imageUrl(url)
-                            .purposeOfUse(ImagePurposeType.PROMOTION)
-                            .build())
-                    .collect(Collectors.toList()));
         }
+        if (saveCompanyDisplaySettingReq.getPromotionImageUrls() != null) {
+            promotionUrls.addAll(saveCompanyDisplaySettingReq.getPromotionImageUrls());
+        }
+        savePromotionImages(promotionUrls.stream()
+                .map(url -> CompanyImage.builder()
+                        .company(company)
+                        .imageUrl(url)
+                        .purposeOfUse(ImagePurposeType.PROMOTION)
+                        .build())
+                .collect(Collectors.toList()));
+
     }
 
-
-    @Override
-    public void updateCompanyDisplaySetting(SaveCompanyDisplaySettingReq saveCompanyDisplaySettingReq ,MultipartFile logoFile,
+    public void updateCompanyDisplaySetting(SaveCompanyDisplaySettingReq saveCompanyDisplaySettingReq, MultipartFile logoFile,
                                             List<MultipartFile> promotionFiles) throws IOException {
         Company company = companyRepository.findById(saveCompanyDisplaySettingReq.getCompanyId())
                 .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_COMPANY));
@@ -87,19 +94,24 @@ public class CompanyDisplaySettingServiceImpl implements CompanyDisplaySettingSe
         // Logo Image 처리
         if (logoFile != null && !logoFile.isEmpty()) {
             String logoUrl = s3Service.uploadFile(logoFile, company.getCompanyId(), "setting", ImagePurposeType.LOGO);
+            saveCompanyDisplaySettingReq.setLogoImageUrl(logoUrl);
             updateLogoImage(company, logoUrl);
+        } else if (saveCompanyDisplaySettingReq.getLogoImageUrl() != null) {
+            updateLogoImage(company, saveCompanyDisplaySettingReq.getLogoImageUrl());
         }
 
         // Promotion Images 처리
+        List<String> promotionUrls = new ArrayList<>();
         if (promotionFiles != null && !promotionFiles.isEmpty()) {
-            List<String> promotionUrls = new ArrayList<>();
             for (MultipartFile file : promotionFiles) {
-                String url = s3Service.uploadFile(file, company.getCompanyId(), "setting",ImagePurposeType.PROMOTION);
+                String url = s3Service.uploadFile(file, company.getCompanyId(), "setting", ImagePurposeType.PROMOTION);
                 promotionUrls.add(url);
             }
-            updatePromotionImages(company, promotionUrls);
         }
-
+        if (saveCompanyDisplaySettingReq.getPromotionImageUrls() != null) {
+            promotionUrls.addAll(saveCompanyDisplaySettingReq.getPromotionImageUrls());
+        }
+        updatePromotionImages(company, promotionUrls);
     }
 
     public void saveLogoImage(CompanyImage logoImage) {

@@ -28,7 +28,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
         bindings.excluding(product.productId, product.createdAt, product.updatedAt);
     }
 
-    Page<FindProductRes> getProductsByCompanyId(Long companyId, Pageable pageable, String deliveryType, String isDiscount, String categoryName, String isVisible, String productName);
+    //Page<FindProductRes> getProductsByCompanyId(Long companyId, Pageable pageable, String deliveryType, String isDiscount, String categoryName, String isVisible, String productName);
 
     long countByCategoryCategoryId(Long categoryId);
 

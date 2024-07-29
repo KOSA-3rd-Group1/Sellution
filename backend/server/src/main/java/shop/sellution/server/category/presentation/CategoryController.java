@@ -21,8 +21,8 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<FindCategoryRes>> getAllCategories(Pageable pageable) {
-        return ResponseEntity.ok(categoryService.getAllCategories(pageable));
+    public ResponseEntity<Page<FindCategoryRes>> getAllCategories(@RequestParam Long companyId, Pageable pageable) {
+        return ResponseEntity.ok(categoryService.getAllCategories(companyId,pageable));
     }
 
     @GetMapping("/{categoryId}")

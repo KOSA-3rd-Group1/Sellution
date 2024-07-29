@@ -9,6 +9,8 @@ import shop.sellution.server.category.domain.Category;
 import shop.sellution.server.category.domain.CategoryRepository;
 import shop.sellution.server.category.dto.request.SaveCategoryReq;
 import shop.sellution.server.category.dto.response.FindCategoryRes;
+import shop.sellution.server.company.domain.Company;
+import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.global.type.DisplayStatus;
@@ -21,11 +23,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
+    private final CompanyRepository companyRepository;
 
     @Transactional(readOnly = true)
     @Override
-    public Page<FindCategoryRes> getAllCategories(Pageable pageable) {
-        return categoryRepository.findAll(pageable)
+    public Page<FindCategoryRes> getAllCategories(Long companyId, Pageable pageable) {
+
+        return categoryRepository.findByCompanyCompanyId(companyId, pageable)
                 .map(category -> {
                     int productCount = (int) productRepository.countByCategoryCategoryId(category.getCategoryId());
                     return FindCategoryRes.fromEntity(category, productCount);
@@ -47,7 +51,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void createCategory(SaveCategoryReq saveCategoryReq) {
-        Category category = saveCategoryReq.toEntity();
+        Company company = companyRepository.findById(saveCategoryReq.getCompanyId())
+                .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_COMPANY));
+        Category category = saveCategoryReq.toEntity(company);
         category.setIsVisible(DisplayStatus.Y);
         category.setProductCount(0);
         categoryRepository.save(category);

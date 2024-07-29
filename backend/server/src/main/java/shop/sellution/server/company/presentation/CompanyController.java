@@ -49,6 +49,19 @@ public class CompanyController {
         return ResponseEntity.ok(findCompanyDisplaySettingRes);
     }
 
+    @PostMapping(value = "/display-setting", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> createCompanyDisplaySetting(
+            @Valid @ModelAttribute SaveCompanyDisplaySettingReq saveCompanyDisplaySettingReq,
+            @RequestParam(value = "logoFile", required = false) MultipartFile logoFile,
+            @RequestParam(value = "promotionFiles", required = false) List<MultipartFile> promotionFiles) {
+        try {
+            clientCompanyDisplayService.createCompanyDisplaySetting(saveCompanyDisplaySettingReq, logoFile, promotionFiles);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     // multipart/form-data 요청을 처리
     @PutMapping(value = "/display-setting", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

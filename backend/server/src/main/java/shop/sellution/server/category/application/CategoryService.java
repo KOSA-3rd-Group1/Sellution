@@ -9,7 +9,7 @@ import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
 
 public interface CategoryService {
-    Page<FindCategoryRes> getAllCategories(Pageable pageable);
+    Page<FindCategoryRes> getAllCategories(Long companyId, Pageable pageable);
     FindCategoryRes getCategoryById(Long categoryId);
     void createCategory(SaveCategoryReq saveCategoryRequestDTO);
     void updateCategory(Long categoryId, SaveCategoryReq saveCategoryRequestDTO);

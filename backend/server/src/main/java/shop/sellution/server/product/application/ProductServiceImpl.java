@@ -25,10 +25,7 @@ import shop.sellution.server.product.dto.request.SaveProductReq;
 import shop.sellution.server.product.dto.response.FindAllProductRes;
 import shop.sellution.server.product.dto.response.FindProductRes;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.rmi.server.ExportException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -57,12 +54,13 @@ public class ProductServiceImpl implements ProductService {
     }
     @Override
     @Transactional
-    public Page<FindProductRes> getProductsByCompanyId(Long companyId, Pageable pageable, String deliveryType, String isDiscount, String categoryName, String isVisible, String productName) {
+    public Page<FindProductRes> getAllProducts(Long companyId, Pageable pageable, String deliveryType, String isDiscount, String categoryName, String isVisible, String productName) {
         BooleanBuilder builder = new BooleanBuilder();
 
         log.info("Fetching products with parameters - companyId: {}, deliveryType: {}, isDiscount: {}, categoryName: {}, isVisible: {}, productName: {}",
                 companyId, deliveryType, isDiscount, categoryName, isVisible, productName);
 
+        // 회사 ID로 필터링
         builder.and(product.company.companyId.eq(companyId));
 
         if (deliveryType != null && !deliveryType.equals("전체")) {
@@ -95,7 +93,6 @@ public class ProductServiceImpl implements ProductService {
             return FindProductRes.fromEntity(product, thumbnailImage);
         });
     }
-
 
 
     @Override
