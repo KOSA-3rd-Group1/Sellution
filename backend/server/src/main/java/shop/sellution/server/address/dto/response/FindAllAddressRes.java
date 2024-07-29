@@ -14,6 +14,7 @@ public class FindAllAddressRes { //배송지 상세보기 했을 때
     private String addressName;
     private DisplayStatus isDefaultAddress;
     private String name;
+    private String zipcode;
     private String phoneNumber;
     private String streetAddress;
     private String addressDetail;
@@ -25,6 +26,7 @@ public class FindAllAddressRes { //배송지 상세보기 했을 때
                 .streetAddress(address.getAddress())
                 .addressDetail(address.getAddressDetail())
                 .name(address.getName())
+                .zipcode(address.getZipcode())
                 .phoneNumber(address.getPhoneNumber())
                 .isDefaultAddress(address.getIsDefaultAddress())
                 .addressName(address.getAddressName())
