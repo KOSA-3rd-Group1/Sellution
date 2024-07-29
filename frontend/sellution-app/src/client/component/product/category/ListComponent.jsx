@@ -1,53 +1,27 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import useCategoryList from '@/client/business/product/category/useCategoryList';
 
 const ListComponent = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);
-  const itemsPerPage = 5; // 카테고리는 페이지당 5개
-  const navigate = useNavigate();
-  const [categories, setCategories] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalElements, setTotalElements] = useState(0);
+  const {
+    currentPage,
+    selectedItems,
+    selectAll,
+    categories,
+    totalPages,
+    totalElements,
+    isVisibleFilter,
+    error,
+    handleIsVisibleFilterChange,
+    paginate,
+    handleSelectAll,
+    handleSelectItem,
+    handleDeleteSelectedCategories,
+    handleRowClick,
+  } = useCategoryList();
 
-  const handleRowClick = (id) => {
-    navigate(`/product/category/${id}`);
-  };
-
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/categories`, {
-        params: {
-          page: currentPage - 1,
-          size: itemsPerPage,
-        },
-      })
-      .then((response) => {
-        console.log('API Response:', response.data);
-        setCategories(response.data.content);
-        setTotalPages(response.data.totalPages);
-        setTotalElements(response.data.totalElements);
-      })
-      .catch((error) => {
-        console.error('There was an error fetching the categories!', error);
-      });
-  }, [currentPage]);
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [currentPage]);
-
-  const paginate = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
-  };
+  const itemsPerPage = 5;
 
   const renderPageNumbers = () => {
     let startPage = Math.max(1, currentPage - 2);
@@ -90,23 +64,6 @@ const ListComponent = () => {
     );
   };
 
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedItems([]);
-    } else {
-      setSelectedItems(categories.map((category) => category.categoryId));
-    }
-    setSelectAll(!selectAll);
-  };
-
-  const handleSelectItem = (id) => {
-    if (selectedItems.includes(id)) {
-      setSelectedItems(selectedItems.filter((item) => item !== id));
-    } else {
-      setSelectedItems([...selectedItems, id]);
-    }
-  };
-
   return (
     <div className='relative w-full h-full justify-between'>
       <section className='absolute w-full h-full flex flex-col'>
@@ -115,17 +72,17 @@ const ListComponent = () => {
             총 {totalElements}건 / 선택 {selectedItems.length}건
           </div>
           <div className='flex items-center'>
+            <button
+              onClick={handleDeleteSelectedCategories}
+              className='mx-1 px-4 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
+            >
+              선택 삭제
+            </button>
             <Link
               to='add'
               className='mx-1 px-4 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
             >
               카테고리 추가
-            </Link>
-            <Link
-              to='edit'
-              className='mx-1 px-4 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
-            >
-              카테고리 수정
             </Link>
           </div>
         </div>
@@ -143,10 +100,14 @@ const ListComponent = () => {
                 <th className='p-2 text-center'>
                   쇼핑몰 표시 여부
                   <div className='mt-1'>
-                    <select className='border p-1 text-sm rounded'>
-                      <option value=''>전체</option>
-                      <option value='Y'>표시</option>
-                      <option value='N'>미표시</option>
+                    <select
+                      className='border p-1 text-sm rounded'
+                      value={isVisibleFilter}
+                      onChange={handleIsVisibleFilterChange}
+                    >
+                      <option value='전체'>전체</option>
+                      <option value='표시'>표시</option>
+                      <option value='미표시'>미표시</option>
                     </select>
                   </div>
                 </th>
@@ -167,7 +128,9 @@ const ListComponent = () => {
                       onClick={(e) => e.stopPropagation()}
                     />
                   </td>
-                  <td className='p-2 text-center'>{indexOfFirstItem + index + 1}</td>
+                  <td className='p-2 text-center'>
+                    {(currentPage - 1) * itemsPerPage + index + 1}
+                  </td>
                   <td className='p-2 text-center'>{category.name}</td>
                   <td className='p-2 text-center'>{category.productCount}</td>
                   <td className='p-2 text-center text-brandOrange'>
