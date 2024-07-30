@@ -214,9 +214,11 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private void createCategory() {
         데일리샐러드 = Category.builder()
                 .name("데일리샐러드")
+                .company(포켓샐러드)
                 .build();
         테이스티샐러드 = Category.builder()
                 .name("테이스티샐러드")
+                .company(포켓샐러드)
                 .build();
 
         categoryRepository.save(데일리샐러드);
@@ -609,7 +611,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .company(포켓샐러드)
                 .username("newCustomer")
                 .password(passwordEncoder.encode("newCustomer"))
-                .name("샐러드뉴비")
+                .name("길재현")
                 .phoneNumber("01075985112")
                 .type(CustomerType.NEW)
                 .build();

@@ -30,4 +30,12 @@ public class EasyPwdServiceImpl implements EasyPwdService {
                 .verifyEasyPwd(easyPwdReq.getPassword());
 
     }
+
+    @Override
+    public boolean checkEasyPwd(Long customerId) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_CUSTOMER));
+        return customer.getEasyPwd() != null && !customer.getEasyPwd().isEmpty();
+
+    }
 }

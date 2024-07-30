@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { SetPasswordIcon } from '@/shopping/utility/assets/Icons.jsx';
 import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx";
@@ -13,6 +13,7 @@ const EditComponent = () => {
   const [shuffledNumbers, setShuffledNumbers] = useState([]);
   const navigate = useNavigate();
   const { clientName, customerId } = useParams();
+  const location = useLocation();
 
   useEffect(() => {
     shuffleNumbers();
@@ -99,8 +100,13 @@ const EditComponent = () => {
           <button
             className='bg-brandOrange text-white px-4 py-2 rounded-full w-full max-w-sm'
             onClick={() => {
-              console.log('Navigating to:', `/shopping/${clientName}/my/${customerId}`);
-              navigate(`/shopping/${clientName}/my/${customerId}`);
+              if (location.state?.returnTo) {
+                navigate(location.state.returnTo, {
+                  state: { orderData: location.state?.orderData }
+                });
+              } else {
+                navigate(`/shopping/${clientName}/my/${customerId}`);
+              }
             }}
           >
             확인

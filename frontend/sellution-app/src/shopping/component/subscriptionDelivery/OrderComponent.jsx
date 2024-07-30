@@ -66,6 +66,9 @@ const OrderComponent = () => {
   const [couponDiscountTotal, setCouponDiscountTotal] = useState(0); // 쿠폰 할인 금액
   const [finalPrice, setFinalPrice] = useState(0);
 
+  const [isPasswordVerified, setIsPasswordVerified] = useState(false);
+  const [orderData, setOrderData] = useState(null);
+
   const BANK_CODES = {
     '004': '국민은행',
     '090': '카카오뱅크',
@@ -242,29 +245,48 @@ const OrderComponent = () => {
     };
 
     console.log('주문 보내는 양식: ', saveOrderReq);
-    if (subscriptionType === 'MONTH' && monthlyPriceData) {
-      saveOrderReq.thisMonthDeliveryCount = monthlyPriceData.thisMonthDeliveryCount;
-      saveOrderReq.thisMonthPrice = monthlyPriceData.thisMonthPrice;
-      saveOrderReq.totalDeliveryCount = monthlyPriceData.totalDeliveryCount;
-      saveOrderReq.totalPrice = monthlyPriceData.totalPrice;
-      saveOrderReq.deliveryNextDate = monthlyPriceData.deliveryNextDate;
-      saveOrderReq.deliveryEndDate = monthlyPriceData.deliveryEndDate;
-    }
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/orders/customers/${customerId}`,
-        saveOrderReq,
-      );
-      if (response.data.startsWith('success')) {
-        const savedOrderId = response.data.split('success, 생성된 주문 아이디 : ')[1];
-        localStorage.removeItem('orderState'); // 주문 완료 후 저장된 상태 제거
-        navigate(`/shopping/${clientName}/subscription/order-completed/${savedOrderId}`);
-      }
-    } catch (error) {
-      console.error('Error creating order:', error);
-      alert('주문 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
-    }
+
+    setOrderData(saveOrderReq);
+
+    // 비밀번호 인증 페이지로 이동하면서 주문 데이터 전달
+    navigate(`/shopping/${clientName}/ordersheet/auth/${customerId}`, {
+      state: { orderData: saveOrderReq }
+    });
   };
+
+  // const completeOrder = async () => {
+  //   if (!orderData) return;
+  //
+  //   try {
+  //     const response = await axios.post(
+  //       `${import.meta.env.VITE_BACKEND_URL}/orders/customers/${customerId}`,
+  //       orderData
+  //     );
+  //     if (response.data.startsWith('success')) {
+  //       const savedOrderId = response.data.split('success, 생성된 주문 아이디 : ')[1];
+  //       localStorage.removeItem('orderState'); // 주문 완료 후 저장된 상태 제거
+  //       navigate(`/shopping/${clientName}/subscription/order-completed/${savedOrderId}`);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error creating order:', error);
+  //     alert('주문 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+  //   }
+  //
+  //
+  // };
+  //
+  // useEffect(() => {
+  //   if (isPasswordVerified && orderData) {
+  //     completeOrder();
+  //   }
+  // }, [isPasswordVerified, orderData]);
+
+  useEffect(() => {
+    if (location.state && location.state.passwordVerified) {
+      setIsPasswordVerified(true);
+    }
+  }, [location]);
+
 
   //api
   const fetchAddresses = async () => {
