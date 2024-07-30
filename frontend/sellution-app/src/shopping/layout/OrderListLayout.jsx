@@ -22,12 +22,21 @@ const OrderListLayout = ({ listToShow }) => {
                 ></div>
               </div>
               <div className='flex-[2.5] flex justify-start px-2'>
-                <div className='flex flex-col justify-center h-full font-bold text-sm'>
+                <div className='flex flex-col justify-center h-full font-bold text-sm w-full'>
                   <div>{item.name}</div>
-                  <div className='flex items-center mt-4'>
-                    <span className='text-gray-600 text-xs'>수량: {item.quantity} 팩</span>
-                    <span className='mx-2 text-gray-600 text-xs'>|</span>
-                    <span className='text-dark-orange text-xs'>{item.cost} 원</span>
+                  <div className='text-[14px] text-gray-400 flex-[2] flex items-center justify-between gap-1 mt-2'>
+                    <div>
+                      <div className='flex gap-2'>
+                        <span className='text-red-400 text-xs'>{item.discountRate}%</span>
+                        <span className='text-gray-400 line-through text-xs'>{item.cost}원</span>
+                      </div>
+                      <div className='mt-1'>
+                        <span className='text-black text-sm'>{item.discountedPrice} 원</span>
+                      </div>
+                    </div>
+                    <div>
+                      <span className='text-gray-600 text-xs'>수량: {item.quantity} 팩</span>
+                    </div>
                   </div>
                 </div>
               </div>

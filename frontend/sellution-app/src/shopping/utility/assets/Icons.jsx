@@ -487,3 +487,50 @@ export const MenuIcon = (props) => (
     <line x1='3' y1='18' x2='21' y2='18'></line>
   </svg>
 );
+
+//error page
+//alertTriangle
+export const AlertTriangle = (props) => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox='0 0 24 24'
+    width='24'
+    height='24'
+    className={props.className}
+  >
+    <path d='M12 2L1 21h22L12 2zm-1 16h2v2h-2v-2zm0-10h2v6h-2v-6z' />
+  </svg>
+);
+export const RefreshCw = (props) => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox='0 0 24 24'
+    width='24'
+    height='24'
+    className={props.className}
+  >
+    <path d='M16.242 7.758A7 7 0 1 0 19 12h-2a5 5 0 1 1-1.243-4.242l-4.636 4.636L12 12.071l6-6-1.758-1.758z' />
+  </svg>
+);
+export const Home2 = (props) => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox='0 0 24 24'
+    width='24'
+    height='24'
+    className={props.className}
+  >
+    <path d='M12 2L2 9v11a1 1 0 0 0 1 1h7v-7h4v7h7a1 1 0 0 0 1-1V9l-10-7z' />
+  </svg>
+);
+export const ShoppingBag = (props) => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox='0 0 24 24'
+    width='24'
+    height='24'
+    className={props.className}
+  >
+    <path d='M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2h2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8h2V6zm6 0v2h4V6h-4zm-2 4h12v8H8v-8z' />
+  </svg>
+);

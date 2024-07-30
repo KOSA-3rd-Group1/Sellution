@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import useOrderListStore from '../../store/stores/useOrderListStore';
 import useSubscriptionCartStore from '../../store/stores/useSubscriptionCartStore';
@@ -21,7 +21,7 @@ const useDetail = () => {
   const [error, setError] = useState(null);
   const [itemCountToAdd, setItemCountToAdd] = useState(0);
   const [isDetailOptionVisible, setDetailOptionVisible] = useState(false);
-
+  const location = useLocation();
   const toggleDetailOption = () => {
     setDetailOptionVisible(!isDetailOptionVisible);
   };
@@ -36,9 +36,9 @@ const useDetail = () => {
   const [isDetailPageModalVisible, setIsDetailPageModalVisible] = useState(false);
   const addToSubscriptionCart = () => {
     if (accessToken === null || accessToken === '') {
-      navigate(
-        `/shopping/${clientName}/login?redirectUrl=${encodeURIComponent(window.location.pathname)}`,
-      );
+      navigate(`/shopping/${clientName}/login`, {
+        state: { from: location.pathname },
+      });
     } else if (itemCountToAdd > 0) {
       const newItem = {
         id: productToShow.productId,
@@ -61,9 +61,9 @@ const useDetail = () => {
 
   const handleDirectOrder = () => {
     if (accessToken === null || accessToken === '') {
-      navigate(
-        `/shopping/${clientName}/login?redirectUrl=${encodeURIComponent(window.location.pathname)}`,
-      );
+      navigate(`/shopping/${clientName}/login`, {
+        state: { from: location.pathname },
+      });
     } else if (itemCountToAdd > 0) {
       const newItem = {
         id: productToShow.productId,
