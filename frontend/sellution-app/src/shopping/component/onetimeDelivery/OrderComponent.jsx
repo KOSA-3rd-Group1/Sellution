@@ -39,9 +39,6 @@ const OrderComponent = () => {
   const [couponDiscountTotal, setCouponDiscountTotal] = useState(0); // 쿠폰 할인 금액
   const [finalPrice, setFinalPrice] = useState(0);
 
-  const accessToken = useAuthStore((state) => state.accessToken);
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
-
   const BANK_CODES = {
     '004': '국민은행',
     '090': '카카오뱅크',

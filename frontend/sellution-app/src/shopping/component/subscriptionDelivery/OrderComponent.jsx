@@ -24,9 +24,6 @@ const OrderComponent = () => {
   const location = useLocation();
   const companyId = useCompanyInfoStore((state) => state.companyId);
 
-  const accessToken =useAuthStore((state) => state.accessToken);
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
-
   //목록 선택
   const listToShow = orderList;
   // 배송지
@@ -112,7 +109,7 @@ const OrderComponent = () => {
     saveState(); // 현재 상태 저장
     console.log('이동전 경로 : ', location.pathname);
     navigate(`/shopping/${clientName}/my/${customerId}/payment/add`, {
-      state: { returnUrl: location.pathname }
+      state: { returnUrl: location.pathname },
     });
   };
 
@@ -169,9 +166,9 @@ const OrderComponent = () => {
     );
     const couponDiscountTotal = selectedCoupon
       ? Math.floor(
-        listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
-        (selectedCoupon.couponDiscountRate / 100),
-      )
+          listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
+            (selectedCoupon.couponDiscountRate / 100),
+        )
       : 0;
 
     setTotalPrice(total);
@@ -179,7 +176,13 @@ const OrderComponent = () => {
     setCouponDiscountTotal(couponDiscountTotal);
     setFinalPrice(total - productDiscountTotal - couponDiscountTotal);
 
-    if (subscriptionType === 'MONTH' && selectedStartDate && selectedWeek && selectedMonth && selectedDays.length > 0) {
+    if (
+      subscriptionType === 'MONTH' &&
+      selectedStartDate &&
+      selectedWeek &&
+      selectedMonth &&
+      selectedDays.length > 0
+    ) {
       const monthlyPriceData = await calculateMonthlyPrice();
       if (monthlyPriceData) {
         setMonthlyPriceData(monthlyPriceData);
@@ -191,7 +194,7 @@ const OrderComponent = () => {
         totalDeliveryCount: 0,
         totalPrice: 0,
         deliveryNextDate: '',
-        deliveryEndDate: ''
+        deliveryEndDate: '',
       });
     }
   };

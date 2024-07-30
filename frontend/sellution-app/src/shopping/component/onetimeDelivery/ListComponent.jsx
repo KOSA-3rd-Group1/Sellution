@@ -38,11 +38,15 @@ const ListComponent = () => {
                     ></div>
                   </div>
                   <div className='product-item-2 flex-[7] flex flex-col justify-center px-4'>
-                    <div className='product-name font-bold text-sm my-1 flex-[1] flex items-end'>
+                    <div className='product-name font-bold text-[14px] flex-[3] flex items-end'>
                       {product.name}
                     </div>
-                    <div className='product-price text-orange-500 my-1 flex-[1] flex items-start'>
-                      {product.cost}원
+                    <div className='text-[14px] text-gray-400 flex-[2] flex items-center gap-1'>
+                      <span className='text-gray-400 font-bold'>{product.discountRate}%</span>
+                      <span className='line-through'>{product.cost}원</span>
+                    </div>
+                    <div className='product-price text-brandOrange flex-[3] flex items-start font-bold'>
+                      {product.discountedPrice}원
                     </div>
                   </div>
                 </li>
