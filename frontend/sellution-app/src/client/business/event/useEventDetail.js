@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import useAuthStore from '@/client/store/stores/useAuthStore';
+import {
+  deleteEventDetail,
+  getEventDetail,
+  putEventDetail,
+} from '../../utility/apis/event/eventDetailApi';
 
 // 더미 데이터 생성 함수
 const generateDummyData = (count) => {
@@ -22,23 +29,35 @@ const generateDummyData = (count) => {
 
 export const useEventDetail = () => {
   const navigate = useNavigate();
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+
+  const { eventId } = useParams();
 
   const [data, setData] = useState({});
 
   // 서버에 데이터 요청
   useEffect(() => {
-    const DUMMY_DATA = generateDummyData(1)[0];
-    setData((prev) => ({
-      ...prev,
-      id: DUMMY_DATA.id,
-      couponName: DUMMY_DATA.couponName,
-      targetCustomerType: DUMMY_DATA.targetCustomerType,
-      couponDiscountRate: DUMMY_DATA.couponDiscountRate,
-      maxDownloadCountCheck: DUMMY_DATA.maxDownloadCount == null ? 0 : 1,
-      maxDownloadCount: DUMMY_DATA.maxDownloadCount != null ? DUMMY_DATA.maxDownloadCount : '',
-      startDate: DUMMY_DATA.startDate,
-      endDate: DUMMY_DATA.endDate,
-    }));
+    const fetch = async (eventId, setAccessToken, accessToken) => {
+      const response = await getEventDetail(eventId, setAccessToken, accessToken);
+      console.log(response);
+      setData(response.data);
+    };
+
+    fetch(eventId, setAccessToken, accessToken);
+
+    // const DUMMY_DATA = generateDummyData(1)[0];
+    // setData((prev) => ({
+    //   ...prev,
+    //   id: DUMMY_DATA.id,
+    //   couponName: DUMMY_DATA.couponName,
+    //   targetCustomerType: DUMMY_DATA.targetCustomerType,
+    //   couponDiscountRate: DUMMY_DATA.couponDiscountRate,
+    //   maxDownloadCountCheck: DUMMY_DATA.maxDownloadCount == null ? 0 : 1,
+    //   maxDownloadCount: DUMMY_DATA.maxDownloadCount != null ? DUMMY_DATA.maxDownloadCount : '',
+    //   startDate: DUMMY_DATA.startDate,
+    //   endDate: DUMMY_DATA.endDate,
+    // }));
   }, []);
 
   // 변경 가능한 값 변경 handler
@@ -54,12 +73,18 @@ export const useEventDetail = () => {
   };
 
   // 변경사항 적용
-  const handleSaveData = () => {
+  const handleSaveData = async () => {
+    const updateData = {
+      couponName: data.couponName,
+      eventEndDate: data.eventEndDate,
+    };
+    await putEventDetail(eventId, updateData, setAccessToken, accessToken);
     alert('변경사항 적용');
   };
 
   // 이벤트 삭제
-  const handleDeleteData = () => {
+  const handleDeleteData = async () => {
+    await deleteEventDetail(eventId, setAccessToken, accessToken);
     alert('이벤트 삭제');
     moveList();
   };

@@ -6,7 +6,7 @@ import {
   ShoppingCartIcon,
   ImageUploadIcon,
 } from '@/client/utility/assets/Icons';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const ShoppingMallPreview = ({ data, logoImg, promotionImg, themeColor, serviceType }) => {
   const [activeSlide, setActiveSlide] = useState(1);

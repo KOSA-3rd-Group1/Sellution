@@ -1,9 +1,7 @@
 package shop.sellution.server.event.application;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.connection.ReturnType;
@@ -28,7 +26,6 @@ import shop.sellution.server.global.exception.ExceptionCode;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_USER;
@@ -61,6 +58,12 @@ public class EventServiceImpl implements EventService {
                 .map(FindEventRes::fromEntity);
 
     }
+    @Transactional(readOnly = true)
+    @Override
+    public FindEventRes findEvent(Long eventId) {
+        return FindEventRes.fromEntity(eventRepository.findById(eventId).orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_EVENT)));
+    }
+
     //이벤트 생성
     @Override
     public void saveEvent(SaveEventReq saveEventReq) {
@@ -332,6 +335,8 @@ public class EventServiceImpl implements EventService {
             throw new RuntimeException("Redis 설정 중 오류가 발생했습니다. 이벤트 생성이 취소되었습니다.", e);
         }
     }
+
+
 
 }
 

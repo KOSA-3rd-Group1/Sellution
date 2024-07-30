@@ -36,6 +36,11 @@ public class EventController {
         Page<FindEventRes> result = eventService.findAllEvents(startDate, endDate, pageable);
         return ResponseEntity.ok(result);
     }
+    @GetMapping("/{eventId}")
+    public ResponseEntity<FindEventRes> findEvent(@PathVariable Long eventId) {
+        FindEventRes result = eventService.findEvent(eventId);
+        return ResponseEntity.ok(result);
+    }
 
     @PostMapping
     public ResponseEntity<String> saveEvent(@Valid @RequestBody SaveEventReq saveEventReq) {

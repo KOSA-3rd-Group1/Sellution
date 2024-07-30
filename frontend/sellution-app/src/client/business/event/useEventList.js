@@ -138,7 +138,7 @@ export const useEventList = ({ queryParams, page, size, refresh, updateQueryPara
     const fetch = async (setAccessToken, accessToken) => {
       const pageParam = prepareSearchParams(tableState, page, size);
       const response = await getEventList(pageParam, setAccessToken, accessToken);
-
+      console.log(response);
       const { content, empty, pageable, totalElements, totalPages } = response.data;
 
       // 필터링 시 현재 페이지에 데이터가 없는 경우 1page로 이동
@@ -161,8 +161,8 @@ export const useEventList = ({ queryParams, page, size, refresh, updateQueryPara
         updateQueryParameter(pageParam, 1);
       }
 
-      console.log(response);
-      setData(DUMMY_DATA);
+      //   console.log(response);
+      //   setData(DUMMY_DATA);
       //   setTotalDataCount(100);
     };
 

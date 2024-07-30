@@ -1,22 +1,28 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { transformOrderType } from '../../utility/functions/eventAddFunction';
+import { postEventAdd } from '../../utility/apis/event/eventAddApi';
+import useAuthStore from '@/client/store/stores/useAuthStore';
 
 const selectTargetCustomerType = [
-  { value: '0', label: '신규' },
-  { value: '1', label: '일반' },
-  { value: '2', label: '휴면' },
+  { value: '0', label: '전체' },
+  { value: '1', label: '신규' },
+  { value: '2', label: '일반' },
+  { value: '3', label: '휴면' },
 ];
 
 export const useEventAdd = () => {
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const navigate = useNavigate();
 
   const [data, setData] = useState({});
   const [selectedTargetCustomerType, setSelectedTargetCustomerType] = useState();
 
-  // 서버에 데이터 요청
-  useEffect(() => {
-    console.log(data);
-  }, []);
+  //   // 서버에 데이터 요청
+  //   useEffect(() => {
+  //     console.log(data);
+  //   }, []);
 
   // 변경 가능한 값 변경 handler
   const handleChangeInputValue = (key, value) => {
@@ -31,7 +37,13 @@ export const useEventAdd = () => {
   };
 
   // 변경사항 적용
-  const handleSaveData = () => {
+  const handleSaveData = async () => {
+    const addData = {
+      ...data,
+      targetCustomerType: transformOrderType(selectedTargetCustomerType),
+    };
+    console.log(addData);
+    await postEventAdd(addData, setAccessToken, accessToken);
     alert('변경사항 적용');
   };
 
