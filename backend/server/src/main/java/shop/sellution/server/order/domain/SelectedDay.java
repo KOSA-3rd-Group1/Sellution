@@ -2,7 +2,7 @@ package shop.sellution.server.order.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import shop.sellution.server.company.domain.DayOption;
+import shop.sellution.server.company.domain.type.DayValueType;
 
 @Entity
 @Table(name = "selected_day")
@@ -12,20 +12,16 @@ import shop.sellution.server.company.domain.DayOption;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SelectedDay {
 
-    @EmbeddedId
-    private SelectedDayId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "selected_day_id")
+    private Long id;
 
     @Setter
-    @MapsId("orderId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @Setter
-    @MapsId("dayOptionId")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "day_option_id")
-    private DayOption dayOption;
-
-
+    @Column(nullable = false)
+    private DayValueType dayValueType;
 }
