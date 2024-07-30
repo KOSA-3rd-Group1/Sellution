@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import useAuthStore from '@/client/store/stores/useAuthStore';
 import {
   getUrlSetting,
@@ -96,7 +96,8 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
     }
   };
 
-  const handleDownload = (imageUrl) => {
+  const handleDownload = async (imageUrl) => {
+    imageUrl = await convertImageUrlToFileAndBlob(imageUrl);
     const fileName = imageUrl.split('/').pop(); // 파일 이름 추출 (URL의 마지막 부분)
 
     const link = document.createElement('a'); // a 태그를 생성하고 설정
@@ -108,6 +109,23 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
     link.click();
     document.body.removeChild(link);
   };
+
+  const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
+    try {
+      // S3 버킷 URL을 프록시 URL로 변경
+      const proxyUrl = `/s3-bucket${imageUrl}`;
+      const response = await fetch(proxyUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      return URL.createObjectURL(blob);
+    } catch (error) {
+      //   console.error('Error converting image:', error);
+      return null;
+    }
+  }, []);
 
   return {
     data,

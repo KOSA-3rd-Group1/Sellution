@@ -39,10 +39,10 @@ export const useShopManagementDisplaySetting = ({
   const [promotionImg, setPromotionImg] = useState([]); // 프로모션 이미지
   const [selectedPromotionImg, setSelectedPromotionImg] = useState(null);
 
-  console.log('logoImg>>>>', logoImg);
-  console.log('slelctedlogoImg>>>>', selectedLogoImg);
-  console.log('promotionImg>>>>', promotionImg);
-  console.log('selectedPromotionImg>>>>', selectedPromotionImg);
+  //   console.log('logoImg>>>>', logoImg);
+  //   console.log('slelctedlogoImg>>>>', selectedLogoImg);
+  //   console.log('promotionImg>>>>', promotionImg);
+  //   console.log('selectedPromotionImg>>>>', selectedPromotionImg);
 
   const [themeColor, setThemeColor] = useState({
     name: 'orange',
@@ -120,7 +120,7 @@ export const useShopManagementDisplaySetting = ({
     setPromotionImg(images);
   };
 
-  //   logoImg 변경 시 사항
+  // logoImg 변경 시 사항
   const handleChangeLogoImg = (images) => {
     console.log('Current images:', images);
     setLogoImg(images);

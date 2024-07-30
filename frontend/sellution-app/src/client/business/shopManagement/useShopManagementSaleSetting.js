@@ -19,14 +19,12 @@ import {
   formatSellType,
   formatSubscriptionType,
   formatWeekValues,
-} from '@/client/utility/functions/shopManagementSaleSettingFunction';
-import {
   tranformSelectedOptions,
   transformDayValues,
   transformSellType,
   transformSubscriptionType,
   transformWeekValues,
-} from '../../utility/functions/shopManagementSaleSettingFunction';
+} from '@/client/utility/functions/shopManagementSaleSettingFunction';
 
 // 더미 데이터 생성 함수
 // const generateEachProductDummyData = (count) => {
@@ -53,38 +51,18 @@ import {
 //     { value: '5', label: '동결건조' },
 //   ],
 // };
-
-// 개별 상품 테이블
-// const HEADERS = [
-//   {
-//     key: 'code',
-//     label: '상품 코드',
-//     width: 'min-w-28 w-28 max-w-28',
-//   },
-//   {
-//     key: 'label',
-//     label: '상품명',
-//     width: 'min-w-32 w-32 max-w-32',
-//   },
-//   {
-//     key: 'categoryName',
-//     label: '카테고리명',
-//     width: 'min-w-36 w-36 max-w-36',
-//   },
-//   {
-//     key: 'cost',
-//     label: '가격',
-//     width: 'min-w-32 w-32 max-w-32',
-//   },
-// ];
-
 export const useShopManagementSaleSetting = ({
   openAlertModal,
   openAutoCloseModal,
   closeAutoCloseModal,
 }) => {
-  const accessToken = useAuthStore((state) => state.accessToken);
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const { accessToken, setAccessToken } = useAuthStore((state) => ({
+    accessToken: state.accessToken,
+    setAccessToken: state.setAccessToken,
+  }));
+  //   const accessToken = useAuthStore((state) => state.accessToken);
+  //   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+
   const companyId = useUserInfoStore((state) => state.companyId);
   const {
     saleTypes,
@@ -98,8 +76,6 @@ export const useShopManagementSaleSetting = ({
     setSubscriptionTypeMonth,
     setSubscriptionTypeCount,
   } = useSaleSettingStore();
-  console.log(saleTypes);
-  //   const [data, setData] = useState({});
   const [isChange, setIsChange] = useState(false); // 변경상태 감지
   const [refresh, setRefresh] = useState(false);
   const [confirmType, setConfirmType] = useState('resetContent');
@@ -124,7 +100,7 @@ export const useShopManagementSaleSetting = ({
         selectOnetimeOptions: newSelectEachProductOptions.ONETIME,
         selectSubscriptionOptions: newSelectEachProductOptions.SUBSCRIPTION,
       });
-      console.log('ProductREsponse', productResponse);
+
       // 판매 설정 데이터 조회
       const response = await getSaleSetting(companyId, setAccessToken, accessToken);
 
@@ -137,7 +113,7 @@ export const useShopManagementSaleSetting = ({
       // 정기 배송 유형 (MONTH: 0, COUNT: 1)
       setSaleTypes({ subscriptionType: formatSubscriptionType(response.data.subscriptionType) });
 
-      console.log('..............', response);
+      //   console.log('..............', response);
 
       // 적용 상품이 카테고리이고, 적용된 카테고리가 있는 경우,
       if (response.data.categoryIds !== null) {
@@ -217,7 +193,6 @@ export const useShopManagementSaleSetting = ({
 
     if (updateData.sellType === 'CATEGORY') {
       //카테고리 미선택시 예외처리
-      console.log(sellTypeCategory.selectedOptions);
       updateData.categories = tranformSelectedOptions(sellTypeCategory.selectedOptions);
     } else if (updateData.sellType === 'EACH') {
       updateData.products = tranformSelectedOptions(sellTypeEach.selectedOptions);

@@ -1,28 +1,17 @@
-import { useState } from 'react';
 import CheckboxGroup from '@/client/layout/common/CheckboxGroup';
 import CheckdayGroup from '@/client/layout/common/CheckdayGroup';
-import useSaleSettingStore from '../../store/stores/useSaleSettingStore';
+import useSaleSettingStore from '@/client/store/stores/useSaleSettingStore';
 
 const SubscriptionTypeCount = () => {
-  //   const { data, setData } = useSaleSettingStore((state) => ({
-  //     data: state.subscriptionTypeCount,
-  //     setData: state.setSubscriptionTypeCount,
-  //   }));
   const { data, setData } = useSaleSettingStore((state) => ({
     data: state.subscriptionTypeCount,
     setData: state.setSubscriptionTypeCount,
   }));
-  //   const [data, setData] = useState({
-  //     weekValues: { 1: false, 2: false, 3: false, 4: false, 5: false },
-  //     dayValues: { MON: false, TUE: false, WED: false, THU: false, FRI: false },
-  //   });
-  console.log('COUNTTTTTTTTTTTTTTTTTTTTTTTT', data);
 
   const handleChangeValue = (key, value) => {
     if ((key === 'minDeliveryCount' || key === 'maxDeliveryCount') && !/^\d*$/.test(value)) {
       return;
     }
-    console.log(key, value);
     setData({ [key]: value });
   };
 
@@ -31,8 +20,6 @@ const SubscriptionTypeCount = () => {
     updateData[selectData] = !updateData[selectData];
     setData({ [key]: updateData });
   };
-
-  console.log(data);
 
   return (
     <div>
