@@ -71,10 +71,12 @@ public class EventServiceImpl implements EventService {
         LocalDate now = LocalDate.now();
         LocalDate tomorrow = now.plusDays(1);
         if(saveEventReq.getEventStartDate().isBefore(tomorrow)){
-            throw new IllegalArgumentException("이벤트 시작일은 다음날부터 설정 가능합니다.");
+            throw new BadRequestException(ExceptionCode.INVALID_EVENT_SAVE_EVENTSTARTDATE);
+            //throw new IllegalArgumentException("이벤트 시작일은 다음날부터 설정 가능합니다.");
         }
         if(saveEventReq.getEventEndDate().isBefore(tomorrow)){
-            throw new IllegalArgumentException("이벤트 종료일 설정이 잘못되었습니다.");
+            //throw new IllegalArgumentException("이벤트 종료일 설정이 잘못되었습니다.");
+            throw new BadRequestException(ExceptionCode.INVALID_EVENT_SAVE_EVENTENDDATE);
         }
         Company company = getCompanyById(companyId);
         CouponEvent event = saveEventReq.toEntity(company);
@@ -98,11 +100,13 @@ public class EventServiceImpl implements EventService {
         CouponEvent event = getEventById(eventId);
         //이벤트는 이름 수정과 종료일 연장만 가능
         if(updateEventReq.getEventEndDate().isBefore(event.getEventEndDate())){
-            throw new IllegalArgumentException("이벤트 종료일은 이전 종료일보다 늦어야 합니다."); //잘못된 인수 오류
+            //throw new IllegalArgumentException("이벤트 종료일은 이전 종료일보다 늦어야 합니다."); //잘못된 인수 오류
+            throw new BadRequestException(ExceptionCode.INVALID_EVENT_UPDATE_EVENTENDDATE);
         }
         //종료일이 지난 이벤트는 수정불가
         if(event.getState()== EventState.END){
-            throw new IllegalArgumentException("종료된 이벤트는 수정할 수 없습니다.");
+            //throw new IllegalArgumentException("종료된 이벤트는 수정할 수 없습니다.");
+            throw new BadRequestException(ExceptionCode.INVALID_EVENT_UPDATE_ENDED_EVENT);
         }
         event.update(updateEventReq);
 //        eventRepository.save(event); 엔티티 변경사항은 트랜잭션이 끝날 때 자동으로 반영
@@ -124,7 +128,8 @@ public class EventServiceImpl implements EventService {
         CouponEvent event = getEventById(eventId);
         LocalDate now = LocalDate.now();
         if(now.isAfter(event.getEventStartDate())|| event.getEventEndDate().isBefore(now.plusDays(1))){
-            throw new IllegalArgumentException("진행중인 이벤트는 삭제할 수 없습니다.");
+            //throw new IllegalArgumentException("진행중인 이벤트는 삭제할 수 없습니다.");
+            throw new BadRequestException(ExceptionCode.INVALID_EVENT_DELETE_ONGOING_EVENT);
         }
         event.markAsDeleted();
         eventRepository.save(event); //없어도 됨
@@ -169,7 +174,8 @@ public class EventServiceImpl implements EventService {
         //3. 쿠폰 발급량 증가 API 호출
         boolean success = tryIncreaseCouponCount(eventId, event.getTotalQuantity(), customerId);
         if(!success){
-            throw new IllegalArgumentException("쿠폰이 모두 소진되었습니다.");
+            //throw new IllegalArgumentException("쿠폰이 모두 소진되었습니다.");
+            throw new BadRequestException(ExceptionCode.COUPON_EXHAUSTED);
         }
         //4. 발급 가능한 경우 쿠폰 생성(rdb save)
         try{
@@ -230,14 +236,17 @@ public class EventServiceImpl implements EventService {
         //2. 해당 이벤트가 삭제되었는지 확인
         //3. 사용자가 이미 발급했는지 확인
         if(now.isAfter(event.getEventEndDate()) || now.isBefore(event.getEventStartDate())){
-            throw new IllegalArgumentException("이벤트 기간이 아닙니다");
+            //throw new IllegalArgumentException("이벤트 기간이 아닙니다");
+            throw new BadRequestException(ExceptionCode.INVALID_DOWNLOAD_EVENT_DATE);
         }
         if(event.isDeleted()){
-            throw new IllegalArgumentException("중단된 이벤트는 쿠폰을 다운로드할 수 없습니다.");
+            //throw new IllegalArgumentException("중단된 이벤트는 쿠폰을 다운로드할 수 없습니다.");
+            throw new BadRequestException(ExceptionCode.INVALID_DOWNLOAD_EVENT_DELETED);
         }
         //TODO: (redis로도 확인 가능)
         if(couponBoxRepository.existsByCustomerIdAndCouponEventId(customerId, event.getId())){
-            throw new IllegalArgumentException("이미 쿠폰을 다운로드하셨습니다.");
+            //throw new IllegalArgumentException("이미 쿠폰을 다운로드하셨습니다.");
+            throw new BadRequestException(ExceptionCode.INVALID_DOWNLOAD_COUPON_ALREADY_DOWNLOADED);
         }
     }
     //쿠폰 다운로드 (동시성 테스트)
