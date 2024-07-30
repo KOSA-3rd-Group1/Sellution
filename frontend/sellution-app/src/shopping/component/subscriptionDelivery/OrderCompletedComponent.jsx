@@ -145,47 +145,51 @@ const OrderCompletedComponent = () => {
               <span>총 결제금액</span>
               <span className='text-brandOrange'>{finalTotalPrice.toLocaleString()}원</span>
             </p>
+            <p className='font-semibold underline text-right'>{orderData.paymentCount === 0
+              ? '주문이 승인될 때 결제됩니다.': ''}</p>
           </>
         );
       case 'COUNT_SUBSCRIPTION':
         return (
           <>
-            <p className='flex justify-between'>
+            <p className="flex justify-between">
               <span>총 상품 금액</span>
               <span>{totalProductPrice.toLocaleString()}원</span>
             </p>
-            <p className='flex justify-between text-red-500'>
+            <p className="flex justify-between text-red-500">
               <span>상품 할인 금액</span>
               <span>-{totalDiscountAmount.toLocaleString()}원</span>
             </p>
             {orderData.couponName && (
-              <p className='flex justify-between text-red-500'>
+              <p className="flex justify-between text-red-500">
                 <span>쿠폰 할인 ({orderData.couponName})</span>
                 <span>-{couponDiscountAmount.toLocaleString()}원</span>
               </p>
             )}
-            <p className='flex justify-between font-semibold border-t text-lg'>
+            <p className="flex justify-between font-semibold border-t text-lg">
               <span>배송 1회당 상품 금액</span>
-              <span className='font-semibold text-brandOrange'>
+              <span className="font-semibold text-brandOrange">
                 {orderData.perPrice.toLocaleString()}원
               </span>
             </p>
 
-            <p className='flex justify-between font-semibold text-lg border-t pt-2'>
+            <p className="flex justify-between font-semibold text-lg border-t pt-2">
               <span>총 결제금액</span>
-              <span className='text-brandOrange'>
+              <span className="text-brandOrange">
                 {(orderData.perPrice * orderData.totalDeliveryCount).toLocaleString()}원
               </span>
             </p>
             <p className="text-xs text-gray-500 ml-2">
               <span>공식 : (배송 1회당 금액 * 총 배송횟수)  [{orderData.perPrice} *{" "} {orderData.totalDeliveryCount}]</span>
             </p>
+            <p className="font-semibold underline text-right">{orderData.paymentCount === 0
+              ? "주문이 승인될 때 결제됩니다." : ""}</p>
           </>
         );
-      case 'MONTH_SUBSCRIPTION':
+      case "MONTH_SUBSCRIPTION":
         return (
           <>
-            <p className='flex justify-between'>
+            <p className="flex justify-between">
               <span>총 상품 금액</span>
               <span>{totalProductPrice.toLocaleString()}원</span>
             </p>

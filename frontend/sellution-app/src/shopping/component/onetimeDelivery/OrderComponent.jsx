@@ -40,6 +40,9 @@ const OrderComponent = () => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
+  const [isPasswordVerified, setIsPasswordVerified] = useState(false);
+  const [orderData, setOrderData] = useState(null);
+
   const BANK_CODES = {
     '004': '국민은행',
     '090': '카카오뱅크',
@@ -74,7 +77,9 @@ const OrderComponent = () => {
   };
 
   const handleAddPaymentMethod = () => {
-    navigate(`/shopping/${clientName}/my/customerId/payment/add`);
+    navigate(`/shopping/${clientName}/my/customerId/payment/add`, {
+      state: { returnUrl: `/shopping/${clientName}/onetime/order/${customerId}` }
+    });
   };
 
   const handleCheckChange = (id) => {
@@ -138,7 +143,6 @@ const OrderComponent = () => {
 
   const isOrderButtonDisabled = !validateForm();
 
-  //주문 데이터 생성 (결제하기 버튼)
   const handleOrderClick = async () => {
     if (isOrderButtonDisabled) return;
 
@@ -149,36 +153,32 @@ const OrderComponent = () => {
       discountRate: item.discountRate || 0,
     }));
 
-    const saveOrderReq = {
-      companyId: companyId, // 회사 ID
-      addressId: selectedAddress.addressId, // 주소 ID
-      accountId: paymentMethods.find((method) => method.isChecked).id, // 결제 수단 ID
-      eventId: selectedCoupon ? selectedCoupon.id : null, // 쿠폰 ID (선택 사항)
-      monthOptionId: null, // 월 옵션 ID (선택 사항)
-      weekOptionId: null, // 주 옵션 ID (선택 사항)
-      orderType: 'ONETIME', // 주문 타입
-      totalDeliveryCount: null, // 총 배송 횟수 (선택 사항)
-      deliveryStartDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 현재 날짜로부터 3일 후
-      orderedProducts: orderedProducts, // 주문한 상품들
-      dayOptionIds: null, // 선택된 요일들 ID (선택 사항)
+    const orderData = {
+      companyId: companyId,
+      addressId: selectedAddress.addressId,
+      accountId: paymentMethods.find((method) => method.isChecked).id,
+      eventId: selectedCoupon ? selectedCoupon.id : null,
+      monthOptionId: null,
+      weekOptionId: null,
+      orderType: 'ONETIME',
+      totalDeliveryCount: null,
+      deliveryStartDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      orderedProducts: orderedProducts,
+      dayOptionIds: null,
     };
 
-    console.log('주문 보내는 양식: ', saveOrderReq);
-
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/orders/customers/${customerId}`,
-        saveOrderReq,
-      );
-      if (response.data.startsWith('success')) {
-        const savedOrderId = response.data.split('success, 생성된 주문 아이디 : ')[1];
-        navigate(`/shopping/${clientName}/subscription/order-completed/${savedOrderId}`);
-      }
-    } catch (error) {
-      console.error('Error creating order:', error);
-      alert('주문 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
-    }
+    // 비밀번호 인증 페이지로 이동하면서 주문 데이터 전달
+    navigate(`/shopping/${clientName}/ordersheet/auth/${customerId}`, {
+      state: { orderData: orderData }
+    });
   };
+
+
+  useEffect(() => {
+    if (location.state && location.state.passwordVerified) {
+      setIsPasswordVerified(true);
+    }
+  }, [location]);
 
   //api
   const fetchAddresses = async () => {
