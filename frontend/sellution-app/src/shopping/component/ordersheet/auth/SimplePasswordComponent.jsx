@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
-import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios'; // API 호출을 위해 axios 사용
+import { useNavigate, useParams , useLocation  } from 'react-router-dom';
+import axios from 'axios';
+import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx"; // API 호출을 위해 axios 사용
 
 const SimplePasswordComponent = () => {
   const [password, setPassword] = useState('');
@@ -9,6 +10,9 @@ const SimplePasswordComponent = () => {
   const [shuffledNumbers, setShuffledNumbers] = useState([]);
   const navigate = useNavigate();
   const { customerId } = useParams(); // URL에서 customerId 가져오기
+  const location = useLocation();
+  const { clientName } = useParams();
+
 
   useEffect(() => {
     shuffleNumbers();
@@ -47,7 +51,7 @@ const SimplePasswordComponent = () => {
   };
 
   const handleReregister = () => {
-    navigate('/shopping/page/my/auth/edit');
+    navigate(`/shopping/${clientName}/my/${customerId}/auth/sms`);
   };
 
   const verifyPassword = async () => {
@@ -59,11 +63,15 @@ const SimplePasswordComponent = () => {
         },
       );
       if (response.data === 'success') {
-        alert('인증되었습니다.');
-        navigate('/shopping/page/subscription/order-completed');
+        if (location.state && location.state.orderData) {
+          completeOrder(location.state.orderData);
+        } else {
+          alert('인증되었습니다.');
+          navigate(`/shopping/${clientName}/onetime/order/${customerId}`);
+        }
       }
     } catch (error) {
-      shuffleNumbers(); // 비밀번호가 틀렸을 때 숫자를 섞음
+      shuffleNumbers();
       setErrorCount((prevCount) => {
         const newCount = prevCount + 1;
         if (newCount >= 3) {
@@ -80,12 +88,33 @@ const SimplePasswordComponent = () => {
     }
   };
 
+  const completeOrder = async (orderData) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/orders/customers/${customerId}`,
+        orderData
+      );
+      if (response.data.startsWith('success')) {
+        const savedOrderId = response.data.split('success, 생성된 주문 아이디 : ')[1];
+        navigate(`/shopping/${clientName}/onetime/order-completed/${savedOrderId}`);
+      } else {
+        throw new Error('주문 생성 실패');
+      }
+    } catch (error) {
+      console.error('Error creating order:', error);
+      alert('주문 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+      navigate(`/shopping/${clientName}/onetime/order/${customerId}`);
+    }
+  };
+
+
   return (
-    <div className='container mx-auto max-w-lg p-4 bg-white h-screen flex flex-col justify-between'>
+    <div className='container mx-auto h-full max-w-lg p-4 bg-white flex flex-col justify-between'>
+      <MenuHeaderNav title='간편비밀번호'/>
       <div className='space-y-8'>
         <h1 className='text-2xl font-bold text-center mt-8 mb-6'>간편 비밀번호 입력</h1>
 
-        <div className='flex justify-center space-x-4 mb-10'>
+        <div className='flex justify-center space-x-4 mb-2'>
           {[...Array(6)].map((_, index) => (
             <div
               key={index}

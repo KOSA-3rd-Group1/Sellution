@@ -66,6 +66,9 @@ const OrderComponent = () => {
   const [couponDiscountTotal, setCouponDiscountTotal] = useState(0); // 쿠폰 할인 금액
   const [finalPrice, setFinalPrice] = useState(0);
 
+  const [isPasswordVerified, setIsPasswordVerified] = useState(false);
+  const [orderData, setOrderData] = useState(null);
+
   const BANK_CODES = {
     '004': '국민은행',
     '090': '카카오뱅크',
@@ -228,32 +231,34 @@ const OrderComponent = () => {
     }));
 
     const saveOrderReq = {
-      companyId: companyId, // 회사 ID
-      addressId: selectedAddress.addressId, // 주소 ID
-      accountId: paymentMethods.find((method) => method.isChecked).id, // 결제 수단 ID
-      eventId: selectedCoupon ? selectedCoupon.id : null, // 쿠폰 ID (선택 사항)
-      monthOptionId: selectedMonth ? selectedMonth.id : null, // 월 옵션 ID (선택 사항)
-      weekOptionId: selectedWeek ? selectedWeek.id : null, // 주 옵션 ID (선택 사항)
-      orderType: subscriptionType === 'COUNT' ? 'COUNT_SUBSCRIPTION' : 'MONTH_SUBSCRIPTION', // 주문 타입
-      totalDeliveryCount: selectedCount, // 총 배송 횟수 (선택 사항)
-      deliveryStartDate: selectedStartDate, // 배송 시작일
-      orderedProducts: orderedProducts, // 주문한 상품들
-      dayOptionIds: selectedDays.map((day) => dayValues.find((d) => d.value === day).id), // 선택된 요일들 ID
+      companyId: companyId,
+      addressId: selectedAddress.addressId,
+      accountId: paymentMethods.find((method) => method.isChecked).id,
+      eventId: selectedCoupon ? selectedCoupon.id : null,
+      monthOptionId: null,
+      weekOptionId: null,
+      orderType: 'ONETIME',
+      totalDeliveryCount: null,
+      deliveryStartDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      orderedProducts: orderedProducts,
+      dayOptionIds: null,
     };
 
-    console.log('주문 보내는 양식: ', saveOrderReq);
-    if (subscriptionType === 'MONTH' && monthlyPriceData) {
-      saveOrderReq.thisMonthDeliveryCount = monthlyPriceData.thisMonthDeliveryCount;
-      saveOrderReq.thisMonthPrice = monthlyPriceData.thisMonthPrice;
-      saveOrderReq.totalDeliveryCount = monthlyPriceData.totalDeliveryCount;
-      saveOrderReq.totalPrice = monthlyPriceData.totalPrice;
-      saveOrderReq.deliveryNextDate = monthlyPriceData.deliveryNextDate;
-      saveOrderReq.deliveryEndDate = monthlyPriceData.deliveryEndDate;
-    }
+    setOrderData(saveOrderReq);
+
+    // 비밀번호 인증 페이지로 이동
+    navigate(`/shopping/${clientName}/simple-password/${customerId}`, {
+      state: { returnToOrder: true }
+    });
+  };
+
+  const completeOrder = async () => {
+    if (!orderData) return;
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/orders/customers/${customerId}`,
-        saveOrderReq,
+        orderData
       );
       if (response.data.startsWith('success')) {
         const savedOrderId = response.data.split('success, 생성된 주문 아이디 : ')[1];
@@ -264,7 +269,22 @@ const OrderComponent = () => {
       console.error('Error creating order:', error);
       alert('주문 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
     }
+
+
   };
+
+  useEffect(() => {
+    if (isPasswordVerified && orderData) {
+      completeOrder();
+    }
+  }, [isPasswordVerified, orderData]);
+
+  useEffect(() => {
+    if (location.state && location.state.passwordVerified) {
+      setIsPasswordVerified(true);
+    }
+  }, [location]);
+
 
   //api
   const fetchAddresses = async () => {
