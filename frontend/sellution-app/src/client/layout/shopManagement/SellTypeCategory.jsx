@@ -1,30 +1,38 @@
 import Select from 'react-select';
+import useSaleSettingStore from '../../store/stores/useSaleSettingStore';
 // const selectOptions = [
 //   { value: 'use', label: '사용' },
 //   { value: 'unused', label: '미사용' },
 //   { value: 'pending', label: '대기중' },
 //   { value: 'archived', label: '보관됨' },
 // ];
-const SellTypeCategory = ({ selectOptions, selectedOptions, handleChange }) => {
+const SellTypeCategory = () => {
   //   const [selectedValues, setSelectedValues] = useState([]);
 
   //   const handleChange = (selectedOptions) => {
   //     setSelectedValues(selectedOptions);
   //   };
-  console.log(selectOptions, Object.keys(selectOptions).length);
+  //   console.log(selectOptions, Object.keys(selectOptions).length);
+  const { data, setData } = useSaleSettingStore((state) => ({
+    data: state.sellTypeCategory,
+    setData: state.setSellTypeCategory,
+  }));
 
+  const handleChange = (selectedOptions) => {
+    setData({ selectedOptions: selectedOptions });
+  };
   return (
     <div className='w-full'>
       <Select
         isMulti
-        isSearchable={Object.keys(selectOptions).length != 0}
+        isSearchable={Object.keys(data.selectOptions).length != 0}
         closeMenuOnSelect={false}
         className='selectItem'
         classNamePrefix='select'
         onChange={handleChange}
-        options={selectOptions}
+        options={data.selectOptions}
         placeholder='카테고리 선택'
-        value={selectedOptions}
+        value={data.selectedOptions}
         theme={(theme) => ({
           ...theme,
           borderRadius: 5,

@@ -78,7 +78,6 @@ export const getAllCatogory = async (companyId, setAccessToken, accessToken) => 
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
 
   response = await instance.get(url, { params: { companyId: companyId } });
-  console.log('getAllCategory 조회 resposne >>>>', response);
   return response;
 };
 

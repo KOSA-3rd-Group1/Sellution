@@ -1,53 +1,45 @@
 import { useState } from 'react';
+import Select from 'react-select';
 import CheckboxGroup from '@/client/layout/common/CheckboxGroup';
 import CheckdayGroup from '@/client/layout/common/CheckdayGroup';
-import Select from 'react-select';
+import useSaleSettingStore from '@/client/store/stores/useSaleSettingStore';
+
+const selectMonthOptions = [
+  { value: '1', label: '1개월' },
+  { value: '2', label: '2개월' },
+  { value: '3', label: '3개월' },
+  { value: '4', label: '4개월' },
+  { value: '5', label: '5개월' },
+  { value: '6', label: '6개월' },
+  { value: '7', label: '7개월' },
+  { value: '8', label: '8개월' },
+  { value: '9', label: '9개월' },
+  { value: '10', label: '10개월' },
+  { value: '11', label: '11개월' },
+  { value: '12', label: '12개월' },
+];
 
 const SubscriptionTypeMonth = () => {
-  const [selectMonthOptions, setSelectMonthOptions] = useState([
-    { value: '1', label: '1개월' },
-    { value: '2', label: '2개월' },
-    { value: '3', label: '3개월' },
-    { value: '4', label: '4개월' },
-    { value: '5', label: '5개월' },
-    { value: '6', label: '6개월' },
-    { value: '7', label: '7개월' },
-    { value: '8', label: '8개월' },
-    { value: '9', label: '9개월' },
-    { value: '10', label: '10개월' },
-    { value: '11', label: '11개월' },
-    { value: '12', label: '12개월' },
-  ]);
-  const [selectedMonthOptions, setSelectedMonthOptions] = useState();
-  const [data, setData] = useState({
-    subscriptionTypeWeek: { 1: false, 2: false, 3: false, 4: false, 5: false },
-    subscriptionTypeDayOption: { MON: false, TUE: false, WED: false, THU: false, FRI: false },
-  });
+  const { data, setData } = useSaleSettingStore((state) => ({
+    data: state.subscriptionTypeMonth,
+    setData: state.setSubscriptionTypeMonth,
+  }));
+
+  console.log('subscriptionTypeMonth>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', data);
 
   // 정기 배송 개월 옵션 변경
   const handleChangeSelectedMonthOptions = (selectedOptions) => {
     const sortedOptions = selectedOptions
       ? [...selectedOptions].sort((a, b) => a.value - b.value)
       : [];
-
-    setSelectedMonthOptions(sortedOptions);
+    setData({ selectedMonthOptions: sortedOptions });
   };
-
-  //   const handleChangeValue = (key, value) => {
-  //     // if ((key === 'minCount' || key === 'maxCount') && !/^\d*$/.test(value)) {
-  //     //   return;
-  //     // }
-  //     setData((prev) => ({ ...prev, [key]: value }));
-  //   };
 
   const handleChangeCheckboxValue = (key, selectData) => {
     const updateData = data[key];
     updateData[selectData] = !updateData[selectData];
-    setData((prev) => ({ ...prev, [key]: updateData }));
+    setData({ [key]: updateData });
   };
-
-  console.log(data);
-  console.log(selectedMonthOptions);
 
   return (
     <div>
@@ -62,7 +54,7 @@ const SubscriptionTypeMonth = () => {
             onChange={handleChangeSelectedMonthOptions}
             options={selectMonthOptions}
             placeholder='개월 선택'
-            value={selectedMonthOptions}
+            value={data.selectedMonthOptions}
             theme={(theme) => ({
               ...theme,
               borderRadius: 5,
@@ -99,7 +91,7 @@ const SubscriptionTypeMonth = () => {
               { label: '4주마다', selectData: '4' },
               { label: '5주마다', selectData: '5' },
             ]}
-            name='subscriptionTypeWeek'
+            name='weekValues'
             onChange={handleChangeCheckboxValue}
           />
         </div>
@@ -121,7 +113,7 @@ const SubscriptionTypeMonth = () => {
               { label: '목요일', selectData: 'THU' },
               { label: '금요일', selectData: 'FRI' },
             ]}
-            name='subscriptionTypeDayOption'
+            name='dayValues'
             onChange={handleChangeCheckboxValue}
           />
         </div>

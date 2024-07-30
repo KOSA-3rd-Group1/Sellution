@@ -19,7 +19,7 @@ const SaleSettingComponent = () => {
   } = useModal();
   const {
     HEADERS,
-    data,
+    saleTypes,
     selectCategoryOptions,
     selectedCategoryOptions,
     selectEachProductOptions,
@@ -34,7 +34,7 @@ const SaleSettingComponent = () => {
     openAutoCloseModal,
     closeAutoCloseModal,
   });
-  console.log(data);
+  console.log('saleTypes>>>>>>>>>>>>', saleTypes);
 
   const accordionItems = [
     {
@@ -74,13 +74,13 @@ const SaleSettingComponent = () => {
       title: '월 단위 결제',
       content: <SubscriptionTypeMonth />,
       guidance: '* 첫 결제 이후 매 월 결제가 진행됩니다.',
-      disabled: data.serviceType == 'ONETIME',
+      disabled: saleTypes.serviceType == 'ONETIME',
     },
     {
       title: '횟수 단위 결제',
       content: <SubscriptionTypeCount />,
       guidance: ' * 전체 횟수에 대한 결제가 진행됩니다.',
-      disabled: data.serviceType == 'ONETIME',
+      disabled: saleTypes.serviceType == 'ONETIME',
     },
   ];
   return (
@@ -97,7 +97,7 @@ const SaleSettingComponent = () => {
                 <div className='flex-1 min-w-[600px]'>
                   <RadioButtonGroup
                     className='w-full flex justify-start items-center gap-6 px-4'
-                    data={data}
+                    data={saleTypes}
                     options={[
                       { label: '단건', selectData: 'ONETIME' },
                       { label: '정기', selectData: 'SUBSCRIPTION' },
@@ -114,7 +114,7 @@ const SaleSettingComponent = () => {
                   <Accordion
                     items={accordionItems}
                     groupName={'sellType'}
-                    openIndexNumber={data.sellType}
+                    openIndexNumber={saleTypes.sellType}
                   />
                 </div>
               </li>
@@ -124,7 +124,7 @@ const SaleSettingComponent = () => {
                   <Accordion
                     items={accordionItems2}
                     groupName={'subscriptionType'}
-                    openIndexNumber={data.subscriptionType}
+                    openIndexNumber={saleTypes.subscriptionType}
                   />
                 </div>
               </li>

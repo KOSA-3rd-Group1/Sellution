@@ -12,8 +12,15 @@ import {
   getAllProduct,
 } from '../../utility/apis/shopManagement/shopManagementSaleSettingApi';
 import {
+  formatDayValues,
+  formatSelectCategoryOptions,
+  formatSelectEachProductOptions,
+  formatSelectedCategoryOptions,
+  formatSelectedEachProductOptions,
+  formatSelectedMonthOptions,
   formatSellType,
   formatSubscriptionType,
+  formatWeekValues,
 } from '../../utility/functions/shopManagementSaleSettingFunction';
 
 // 더미 데이터 생성 함수
@@ -75,16 +82,17 @@ export const useShopManagementSaleSetting = ({
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const companyId = useUserInfoStore((state) => state.companyId);
   const {
-    serviceType,
-    sellType,
-    subscriptionType,
+    saleTypes,
+    // sellType,
+    // subscriptionType,
     sellTypeCategory,
     sellTypeEach,
     subscriptionTypeMonth,
     subscriptionTypeCount,
-    setServiceType,
-    setSellType,
-    setSubscriptionType,
+    // setServiceType,
+    // setSellType,
+    // setSubscriptionType,
+    setSaleTypes,
     setSellTypeCategory,
     setSellTypeEach,
     setSubscriptionTypeMonth,
@@ -98,52 +106,104 @@ export const useShopManagementSaleSetting = ({
 
   const [selectCategoryOptions, setSelectCategoryOptioins] = useState({});
   const [selectedCategoryOptions, setSelectedCategoryOptions] = useState();
-  console.log('selectCategoryOptions', selectCategoryOptions);
-  console.log('selectedCategoryOptions', selectedCategoryOptions);
 
   const [selectEachProductOptions, setSelectEachProductOptions] = useState({});
   const [selectedEachProductOptions, setSelectedEachProductOptions] = useState();
+  console.log('selectEachProductOptions', selectEachProductOptions);
   console.log('selectedEachProductOptions', selectedEachProductOptions);
 
   // 서버에 데이터 요청
   useEffect(() => {
     const fetch = async (companyId, setAccessToken, accessToken) => {
-      // 카테고리를 먼저 요청해서 selectCategoryOption에 {value: categoryId, label: 이름} 형식으로 넣어줘야 함... (카테고리는 개별 상품에도 쓰이기 때문...)
+      // 선택 가능한 카테고리 조회
       const categoryResponse = await getAllCatogory(companyId, setAccessToken, accessToken);
-      console.log('categoryResponse', categoryResponse);
+      const newSelectCategoryOptions = await formatSelectCategoryOptions(
+        categoryResponse.data.content,
+      );
+      setSellTypeCategory({ selectOptions: newSelectCategoryOptions });
 
+      // 선택 가능한 개별 상품 조회
+      const productResponse = await getAllProduct(companyId, setAccessToken, accessToken);
+      const newSelectEachProductOptions = await formatSelectEachProductOptions(
+        productResponse.data.content,
+      );
+      setSellTypeEach({ selectOptions: newSelectEachProductOptions });
+      setSelectEachProductOptions(newSelectEachProductOptions);
+
+      // 판매 설정 데이터 조회
       const response = await getSaleSetting(companyId, setAccessToken, accessToken);
+
+      // 배송 유형 (ONETIME, SUBSCRIPTION, BOTH)
+      setSaleTypes({ serviceType: response.data.serviceType });
+
+      // 적용 상품 (ALL: 0, CATEGORY: 1, EACH: 2)
+      setSaleTypes({ sellType: formatSellType(response.data.sellType) });
+
+      // 정기 배송 유형 (MONTH: 0, COUNT: 1)
+      setSaleTypes({ subscriptionType: formatSubscriptionType(response.data.subscriptionType) });
+
       console.log('..............', response);
-      console.log(response.data);
-      setServiceType(response.data.serviceType); // 배송 유형
-      setSellType(formatSellType(response.data.sellType)); // 적용 상품
-      //   if (response.data.sellType === 'CATEGORY') {
-      //     response.data.categoryIds?.forEach((categoryId) => {});
-      //   }
-      setSubscriptionType(formatSubscriptionType(response.data.subscriptionType)); // 정기 배송 유형
 
-      setData(() => ({
-        serviceType: response.data.serviceType,
-        // sellType: response.data.sellType,
-      }));
-      //   setData(...response.data);
+      // 적용 상품이 카테고리이고, 적용된 카테고리가 있는 경우,
+      if (response.data.categoryIds !== null) {
+        const newSelectedCateogryOptions = await formatSelectedCategoryOptions(
+          response.data.categoryIds,
+          newSelectCategoryOptions,
+        );
+        setSellTypeCategory({ selectedOptions: newSelectedCateogryOptions });
+      }
 
-      //   const testResponse = await getAllCatogory(companyId, setAccessToken, accessToken);
-      const test2Response = await getAllProduct(companyId, setAccessToken, accessToken);
-      console.log('test2Response', test2Response);
+      // 적용 상품이 개별 상품이고, 적용된 개별 상품이 있는 경우,
+      if (response.data.productIds !== null) {
+        const newSelectedEachProductOptions = await formatSelectedEachProductOptions(
+          //   response.data.productIds,
+          ['1', '2', '4'],
+          newSelectEachProductOptions,
+        );
+        setSellTypeEach({ selectedOptions: newSelectedEachProductOptions });
+        // setSelectedEachProductOptions(newSelectedEachProductOptions);
+      }
+
+      // 정기 배송 유형 - 월단위 결제 - 이용기간
+      setSubscriptionTypeMonth({
+        selectedMonthOptions: formatSelectedMonthOptions(response.data.monthValues),
+      });
+
+      // 정기 배송 유형 - 월 단위 결제인 경우
+      if (response.data.subscriptionType === 'MONTH') {
+        // 배송주기
+        const newWeekValues = formatWeekValues(response.data.weekValues);
+        setSubscriptionTypeMonth({ weekValues: newWeekValues });
+        // 배송가능 요일
+        const newDayValues = formatDayValues(response.data.dayValues);
+        setSubscriptionTypeMonth({ dayValues: newDayValues });
+      }
+
+      // 정기 배송 유형 - 횟수단위 결제 -이용 횟수
+      setSubscriptionTypeCount({
+        maxDeliveryCount: response.data.maxDeliveryCount,
+        minDeliveryCount: response.data.minDeliveryCount,
+      });
+
+      // 정기 배송 유형이 횟수 단위 결제인 경우
+      if (response.data.subscriptionType === 'COUNT') {
+        // 배송주기
+        const newWeekValues = formatWeekValues(response.data.weekValues);
+        setSubscriptionTypeCount({ weekValues: newWeekValues });
+        // 배송가능 요일
+        const newDayValues = formatDayValues(response.data.dayValues);
+        setSubscriptionTypeCount({ dayValues: newDayValues });
+      }
     };
 
     fetch(companyId, setAccessToken, accessToken);
-    console.log(data);
-    if (DUMMY.category != undefined) {
-      setSelectCategoryOptioins(DUMMY.category);
-    }
-    setSelectEachProductOptions(generateEachProductDummyData(10));
   }, []);
 
   // 변경 가능한 값 변경 handler
   const handleChangeInputValue = (key, value) => {
-    setData((prev) => ({ ...prev, [key]: value }));
+    setSaleTypes({ [key]: value });
+    // setData((prev) => ({ ...prev, [key]: value }));
+    // setRefresh(!refresh);
   };
 
   // 카테고리 옵션 변경 handler
@@ -170,7 +230,8 @@ export const useShopManagementSaleSetting = ({
 
   return {
     HEADERS,
-    data,
+    saleTypes,
+    setSaleTypes,
     selectCategoryOptions,
     selectedCategoryOptions,
     selectEachProductOptions,

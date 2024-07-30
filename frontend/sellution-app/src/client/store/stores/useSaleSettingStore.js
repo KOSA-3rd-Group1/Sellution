@@ -1,13 +1,21 @@
 import { create } from 'zustand';
 
 const useSaleSettingStore = create((set) => ({
-  serviceType: null,
-  sellType: null,
-  subscriptionType: null,
-  sellTypeCategory: {},
-  sellTypeEach: {},
+  saleTypes: {
+    serviceType: null,
+    sellType: null,
+    subscriptionType: null,
+  },
+  sellTypeCategory: {
+    selectOptions: [],
+    selectedOptions: [],
+  },
+  sellTypeEach: {
+    selectOptions: [],
+    selectedOptions: [],
+  },
   subscriptionTypeMonth: {
-    monthValues: [],
+    selectedMonthOptions: [],
     weekValues: { 1: false, 2: false, 3: false, 4: false, 5: false },
     dayValues: { MON: false, TUE: false, WED: false, THU: false, FRI: false },
   },
@@ -19,13 +27,41 @@ const useSaleSettingStore = create((set) => ({
   },
 
   // 상태 업데이트 함수들
-  setServiceType: (serviceType) => set({ serviceType }),
-  setSellType: (sellType) => set({ sellType }),
-  setSubscriptionType: (subscriptionType) => set({ subscriptionType }),
-  setSellTypeCategory: (sellTypeCategory) => set({ sellTypeCategory }),
-  setSellTypeEach: (sellTypeEach) => set({ sellTypeEach }),
-  setSubscriptionTypeMonth: (subscriptionTypeMonth) => set({ subscriptionTypeMonth }),
-  setSubscriptionTypeCount: (subscriptionTypeCount) => set({ subscriptionTypeCount }),
+  setSaleTypes: (newSaleTypes) =>
+    set((state) => ({
+      saleTypes: {
+        ...state.saleTypes,
+        ...newSaleTypes,
+      },
+    })),
+  setSellTypeCategory: (newSellTypeCategory) =>
+    set((state) => ({
+      sellTypeCategory: {
+        ...state.sellTypeCategory,
+        ...newSellTypeCategory,
+      },
+    })),
+  setSellTypeEach: (newSellTypeEach) =>
+    set((state) => ({
+      sellTypeEach: {
+        ...state.sellTypeEach,
+        ...newSellTypeEach,
+      },
+    })),
+  setSubscriptionTypeMonth: (newSubscriptionTypeMonth) =>
+    set((state) => ({
+      subscriptionTypeMonth: {
+        ...state.subscriptionTypeMonth,
+        ...newSubscriptionTypeMonth,
+      },
+    })),
+  setSubscriptionTypeCount: (newSubscriptionTypeCount) =>
+    set((state) => ({
+      subscriptionTypeCount: {
+        ...state.subscriptionTypeCount,
+        ...newSubscriptionTypeCount,
+      },
+    })),
 }));
 
 export default useSaleSettingStore;

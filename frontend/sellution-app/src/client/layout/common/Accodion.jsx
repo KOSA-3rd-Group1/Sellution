@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ChevronUpIcon } from '@/client/utility/assets/Icons';
 
 const Accordion = ({ items, groupName, openIndexNumber }) => {
@@ -17,6 +17,10 @@ const Accordion = ({ items, groupName, openIndexNumber }) => {
     }
     return content != null && content !== false;
   };
+
+  useEffect(() => {
+    setOpenIndex(openIndexNumber);
+  }, [openIndexNumber]);
 
   return (
     <div className='w-full mx-auto'>
