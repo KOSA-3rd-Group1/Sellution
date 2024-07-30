@@ -24,9 +24,14 @@ const useProductDetail = () => {
   const DisplayStatus = { VISIBLE: 'Y', INVISIBLE: 'N' };
   const DeliveryType = { ONETIME: 'ONETIME', SUBSCRIPTION: 'SUBSCRIPTION', BOTH: 'BOTH' };
 
+  const formatPrice = (price) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
   const [productInfo, setProductInfo] = useState({
     name: '',
-    categoryName: '',
+    categoryId: 'null',
+    categoryName: 'null',
     productInformation: '',
     cost: 0,
     isDiscount: DisplayStatus.INVISIBLE,
@@ -37,6 +42,14 @@ const useProductDetail = () => {
     deliveryType: '',
     stock: 0,
     isVisible: DisplayStatus.VISIBLE,
+  });
+
+  const [alertModal, setAlertModal] = useState({
+    isOpen: false,
+    type: '',
+    title: '',
+    message: '',
+    onConfirm: null,
   });
 
   useEffect(() => {
@@ -72,7 +85,14 @@ const useProductDetail = () => {
     const { name, value } = e.target;
     let parsedValue = value;
 
-    if (['stock', 'cost', 'discountRate'].includes(name)) {
+    if (name === 'cost') {
+      // 숫자와 콤마만 허용
+      parsedValue = value.replace(/[^\d,]/g, '');
+      // 콤마 제거 후 숫자로 변환
+      const numericValue = parseInt(parsedValue.replace(/,/g, ''), 10);
+      // 숫자를 다시 콤마가 포함된 문자열로 변환
+      parsedValue = isNaN(numericValue) ? '' : formatPrice(numericValue);
+    } else if (['stock', 'discountRate'].includes(name)) {
       parsedValue = value === '' ? 0 : parseInt(value, 10);
     }
 
@@ -88,21 +108,35 @@ const useProductDetail = () => {
     setProductInfo((prev) => ({ ...prev, [name]: parsedValue }));
   };
 
+  const openAlertModal = (type, title, message, onConfirm = null) => {
+    setAlertModal({ isOpen: true, type, title, message, onConfirm });
+  };
+
+  const closeAlertModal = () => {
+    setAlertModal({ isOpen: false, type: '', title: '', message: '', onConfirm: null });
+  };
+
+  const handleAlertConfirm = async () => {
+    if (alertModal.onConfirm) {
+      await alertModal.onConfirm();
+    }
+    closeAlertModal();
+  };
+
   const deleteProduct = async () => {
-    if (window.confirm('정말로 이 상품을 삭제하시겠습니까?')) {
+    openAlertModal('warning', '상품 삭제 확인', '정말로 이 상품을 삭제하시겠습니까?', async () => {
       try {
         await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}`, {
           headers: {
             'Content-Type': 'application/json',
           },
         });
-        alert('상품이 성공적으로 삭제되었습니다.');
-        navigate('/product');
+        openAlertModal('success', '상품 삭제 완료', '상품이 성공적으로 삭제되었습니다.', moveList);
       } catch (error) {
         console.error('상품 삭제 중 오류 발생:', error);
-        alert('상품 삭제에 실패했습니다. 다시 시도해 주세요.');
+        openAlertModal('error', '상품 삭제 실패', '상품 삭제 중 오류가 발생했습니다.');
       }
-    }
+    });
   };
 
   const dataURItoBlob = (dataURI) => {
@@ -126,66 +160,67 @@ const useProductDetail = () => {
   };
 
   const updateProduct = async () => {
-    try {
-      const formData = new FormData();
-      const jsonData = {
-        name: productInfo.name,
-        categoryName: productInfo.categoryName,
-        productInformation: productInfo.productInformation,
-        cost: productInfo.cost,
-        isDiscount: productInfo.isDiscount,
-        discountStartDate: productInfo.discountStartDate
-          ? `${productInfo.discountStartDate}T00:00:00`
-          : null,
-        discountEndDate: productInfo.discountEndDate
-          ? `${productInfo.discountEndDate}T23:59:59`
-          : null,
-        discountRate: productInfo.discountRate,
-        deliveryType: productInfo.deliveryType,
-        stock: productInfo.stock,
-        isVisible: productInfo.isVisible,
-      };
+    openAlertModal('warning', '상품 수정 확인', '변경사항을 저장하시겠습니까?', async () => {
+      try {
+        const formData = new FormData();
+        const jsonData = {
+          name: productInfo.name,
+          categoryName: productInfo.categoryName,
+          productInformation: productInfo.productInformation,
+          cost: productInfo.cost,
+          isDiscount: productInfo.isDiscount,
+          discountStartDate: productInfo.discountStartDate
+            ? `${productInfo.discountStartDate}T00:00:00`
+            : null,
+          discountEndDate: productInfo.discountEndDate
+            ? `${productInfo.discountEndDate}T23:59:59`
+            : null,
+          discountRate: productInfo.discountRate,
+          deliveryType: productInfo.deliveryType,
+          stock: productInfo.stock,
+          isVisible: productInfo.isVisible,
+        };
 
-      formData.append(
-        'product',
-        new Blob([JSON.stringify(jsonData)], { type: 'application/json' }),
-      );
+        formData.append(
+          'product',
+          new Blob([JSON.stringify(jsonData)], { type: 'application/json' }),
+        );
 
-      if (selectedThumbnailImage.length > 0) {
-        const thumbnail = selectedThumbnailImage[0];
-        if (thumbnail.file) {
-          formData.append('thumbnailImage', thumbnail.file, 'thumbnail.jpg');
-        } else {
-          jsonData.thumbnailImage = thumbnail.preview;
+        if (selectedThumbnailImage.length > 0) {
+          const thumbnail = selectedThumbnailImage[0];
+          if (thumbnail.file) {
+            formData.append('thumbnailImage', thumbnail.file, 'thumbnail.jpg');
+          } else {
+            jsonData.thumbnailImage = thumbnail.preview;
+          }
         }
+
+        jsonData.listImages = productImages.map((image) => image.preview);
+        productImages.forEach((image, index) => {
+          if (image.file) {
+            formData.append('listImages', image.file, `list_${index}.jpg`);
+          }
+        });
+
+        jsonData.detailImages = productDetailImages.map((image) => image.preview);
+        productDetailImages.forEach((image, index) => {
+          if (image.file) {
+            formData.append('detailImages', image.file, `detail_${index}.jpg`);
+          }
+        });
+
+        formData.set('product', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
+
+        await axios.put(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        openAlertModal('success', '상품 수정 완료', '상품이 성공적으로 수정되었습니다.', moveList);
+      } catch (error) {
+        console.error('상품 업데이트 중 오류 발생:', error);
+        openAlertModal('error', '상품 수정 실패', '상품 수정 중 오류가 발생했습니다.');
       }
-
-      jsonData.listImages = productImages.map((image) => image.preview);
-      productImages.forEach((image, index) => {
-        if (image.file) {
-          formData.append('listImages', image.file, `list_${index}.jpg`);
-        }
-      });
-
-      jsonData.detailImages = productDetailImages.map((image) => image.preview);
-      productDetailImages.forEach((image, index) => {
-        if (image.file) {
-          formData.append('detailImages', image.file, `detail_${index}.jpg`);
-        }
-      });
-
-      formData.set('product', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
-
-      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      alert('상품 정보가 성공적으로 업데이트되었습니다.');
-      navigate(`/product?page=${fromPage}`);
-    } catch (error) {
-      console.error('상품 업데이트 중 오류 발생:', error);
-      alert('상품 정보 업데이트에 실패했습니다. 다시 시도해 주세요.');
-    }
+    });
   };
 
   const handleCategorySelect = (categoryName, categoryId) => {
@@ -289,6 +324,7 @@ const useProductDetail = () => {
     isCategoryDropdownOpen,
     isLoading,
     error,
+    alertModal,
     handleInputChange,
     deleteProduct,
     updateProduct,
@@ -303,6 +339,10 @@ const useProductDetail = () => {
     setIsCategoryDropdownOpen,
     DisplayStatus,
     DeliveryType,
+    formatPrice,
+    openAlertModal,
+    closeAlertModal,
+    handleAlertConfirm,
   };
 };
 
