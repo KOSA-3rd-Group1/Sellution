@@ -254,7 +254,7 @@ const OrderComponent = () => {
 
     // 비밀번호 인증 페이지로 이동하면서 주문 데이터 전달
     navigate(`/shopping/${clientName}/ordersheet/auth/${customerId}`, {
-      state: { orderData: saveOrderReq }
+      state: { orderData: saveOrderReq },
     });
   };
 
@@ -290,7 +290,6 @@ const OrderComponent = () => {
       setIsPasswordVerified(true);
     }
   }, [location]);
-
 
   //api
   const fetchAddresses = async () => {

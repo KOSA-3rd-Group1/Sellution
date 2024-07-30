@@ -39,9 +39,6 @@ const OrderComponent = () => {
   const [couponDiscountTotal, setCouponDiscountTotal] = useState(0); // 쿠폰 할인 금액
   const [finalPrice, setFinalPrice] = useState(0);
 
-  const accessToken = useAuthStore((state) => state.accessToken);
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
-
   const [isPasswordVerified, setIsPasswordVerified] = useState(false);
   const [orderData, setOrderData] = useState(null);
 
@@ -80,7 +77,7 @@ const OrderComponent = () => {
 
   const handleAddPaymentMethod = () => {
     navigate(`/shopping/${clientName}/my/customerId/payment/add`, {
-      state: { returnUrl: `/shopping/${clientName}/onetime/order/${customerId}` }
+      state: { returnUrl: `/shopping/${clientName}/onetime/order/${customerId}` },
     });
   };
 
@@ -119,9 +116,9 @@ const OrderComponent = () => {
     );
     const couponDiscountTotal = selectedCoupon
       ? Math.floor(
-        listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
-        (selectedCoupon.couponDiscountRate / 100),
-      )
+          listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
+            (selectedCoupon.couponDiscountRate / 100),
+        )
       : 0;
 
     console.log('total price', total);
@@ -171,10 +168,9 @@ const OrderComponent = () => {
 
     // 비밀번호 인증 페이지로 이동하면서 주문 데이터 전달
     navigate(`/shopping/${clientName}/ordersheet/auth/${customerId}`, {
-      state: { orderData: orderData }
+      state: { orderData: orderData },
     });
   };
-
 
   useEffect(() => {
     if (location.state && location.state.passwordVerified) {

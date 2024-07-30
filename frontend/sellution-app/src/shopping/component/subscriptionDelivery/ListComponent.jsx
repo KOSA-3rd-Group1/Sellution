@@ -3,6 +3,7 @@ import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import MenuCategoryHeaderNav from '../../layout/MenuCategoryHeaderNav';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import { Link, useNavigate } from 'react-router-dom';
+import LoadingSpinner from '../../layout/LoadingSpinner';
 const ListComponent = () => {
   const navigate = useNavigate();
   const { subscriptionProductList, isLoading, subscriptionCategoryList, fetchProducts } = useList();
@@ -20,7 +21,7 @@ const ListComponent = () => {
       />
       <main className={`main-box w-full`}>
         {isLoading ? (
-          <p>Loading...</p>
+          <LoadingSpinner />
         ) : (
           <ul className='product-list w-[90%] mx-auto bg-white list-none p-0'>
             {subscriptionProductList.map((product) => (
@@ -40,14 +41,14 @@ const ListComponent = () => {
                     ></div>
                   </div>
                   <div className='product-item-2 flex-[7] flex flex-col justify-center px-4'>
-                    <div className='product-name font-bold text-[14px] flex-[3] flex items-end'>
+                    <div className='product-name font-bold text-[13px] flex-[3] flex items-end'>
                       {product.name}
                     </div>
                     <div className='text-[14px] text-gray-400 flex-[2] flex items-center gap-2'>
                       <span className='text-red-400 font-bold'>{product.discountRate}%</span>
                       <span className='line-through'>{product.cost}원</span>
                     </div>
-                    <div className='product-price text-black flex-[3] flex items-start font-bold'>
+                    <div className='product-price text-black flex-[3] flex items-start font-bold text-[14px]'>
                       {product.discountedPrice}원
                     </div>
                   </div>

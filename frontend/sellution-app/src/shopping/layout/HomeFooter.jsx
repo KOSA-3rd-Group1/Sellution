@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   HomeIcon,
   SubscriptionDeliveryIcon,
@@ -13,6 +13,8 @@ import useSubscriptionCartStore from './../store/stores/useSubscriptionCartStore
 import useOnetimeCartStore from './../store/stores/useOnetimeCartStore';
 
 const HomeFooter = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const accessToken = useAuthStore((state) => state.accessToken);
   console.log(accessToken);
   const clientName = useCompanyInfoStore((state) => state.name);
@@ -54,13 +56,13 @@ const HomeFooter = () => {
         <MypageIcon className='w-7 h-7 fill-current text-brandOrange stroke-brandOrange stroke-[10]' />
         <p className='text-brandOrange text-xs font-bold pt-1'>마이페이지</p>
       </Link>
-      <Link
-        to={
-          accessToken === null || accessToken === ''
-            ? `/shopping/${clientName}/login?redirectUrl=${encodeURIComponent(window.location.pathname)}`
-            : `/shopping/${clientName}/subscription/cart`
-        }
+      <button
         className='flex-1 bg-white flex flex-col justify-center items-center'
+        onClick={() => {
+          navigate(`/shopping/${clientName}/login`, {
+            state: { from: location.pathname },
+          });
+        }}
       >
         <div className='relative inline-block'>
           <CartIcon className='w-7 h-7 fill-current text-brandOrange stroke-brandOrange stroke-[10]' />
@@ -71,7 +73,7 @@ const HomeFooter = () => {
           )}
         </div>
         <p className='text-brandOrange text-xs font-bold pt-1'>장바구니</p>
-      </Link>
+      </button>
     </nav>
   );
 };
