@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx";
 
 const CheckSmsAuthComponent = () => {
   const { clientName, customerId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -61,7 +62,12 @@ const CheckSmsAuthComponent = () => {
   };
 
   const handleConfirm = () => {
-    navigate(`/shopping/${clientName}/my/${customerId}/auth/edit`);
+    navigate(`/shopping/${clientName}/my/${customerId}/auth/edit`, {
+      state: {
+        returnTo: location.state?.returnTo,
+        orderData: location.state?.orderData
+      }
+    });
   };
 
   const formatTime = (seconds) => {

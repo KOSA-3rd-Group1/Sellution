@@ -77,7 +77,9 @@ const OrderComponent = () => {
   };
 
   const handleAddPaymentMethod = () => {
-    navigate(`/shopping/${clientName}/my/customerId/payment/add`);
+    navigate(`/shopping/${clientName}/my/customerId/payment/add`, {
+      state: { returnUrl: `/shopping/${clientName}/onetime/order/${customerId}` }
+    });
   };
 
   const handleCheckChange = (id) => {
@@ -171,12 +173,6 @@ const OrderComponent = () => {
     });
   };
 
-
-  useEffect(() => {
-    if (isPasswordVerified && orderData) {
-      completeOrder();
-    }
-  }, [isPasswordVerified, orderData]);
 
   useEffect(() => {
     if (location.state && location.state.passwordVerified) {

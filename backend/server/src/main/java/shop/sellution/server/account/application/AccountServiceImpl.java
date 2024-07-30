@@ -17,10 +17,12 @@ import shop.sellution.server.account.infrastructure.AccountAuthService;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.global.exception.BadRequestException;
+import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.global.util.JasyptEncryptionUtil;
 
 import java.security.MessageDigest;
 import java.util.Base64;
+import java.util.Optional;
 
 import static shop.sellution.server.global.exception.ExceptionCode.*;
 
@@ -52,14 +54,25 @@ public class AccountServiceImpl implements AccountService {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER));
 
-        accountAuthService.checkAccount(CheckAccountReq.fromDto(saveAccountReq));
-
         String accountNumber = saveAccountReq.getAccountNumber();
         String accountHash = generateAccountHash(accountNumber);
 
-        if (accountRepository.existsByAccountHash(accountHash)) {
+        Optional<Account> findAccount = accountRepository.findAccountByAccountHash(customerId, accountHash);
+
+        accountAuthService.checkAccount(CheckAccountReq.fromDto(saveAccountReq));
+
+        // 이미 등록된 계좌가 있으면
+        if (findAccount.isPresent() && findAccount.get().getIsDeleted() == DisplayStatus.N) {
             throw new BadRequestException(ALREADY_ACCOUNT);
         }
+
+        // 삭제되었던 계좌라면 다시 활성화
+        if (findAccount.isPresent() && findAccount.get().getIsDeleted() == DisplayStatus.Y) {
+            findAccount.get().restore();
+            return findAccount.get().getId();
+        }
+
+
 
         StringBuilder sb = new StringBuilder();
         String encrypt = jasyptEncryptionUtil.encrypt(accountNumber.substring(0, accountNumber.length() - 4));// 뒤 4자리 제외 암호화
@@ -81,14 +94,18 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACCOUNT));
 
-        accountAuthService.checkAccount(CheckAccountReq.fromDto(updateAccountReq));
 
         String newAccountNumber = updateAccountReq.getAccountNumber();
         String newAccountHash = generateAccountHash(newAccountNumber);
 
-        if (!account.getAccountHash().equals(newAccountHash) && accountRepository.existsByAccountHash(newAccountHash)) {
-            throw new BadRequestException(ALREADY_ACCOUNT);
+        Optional<Account> findAccount = accountRepository.findAccountByAccountHash(account.getCustomer().getId(), newAccountHash);
+
+        if (findAccount.isPresent() && findAccount.get().getIsDeleted() == DisplayStatus.Y) {
+            throw new BadRequestException(NOT_FOUND_ACCOUNT);
         }
+
+        accountAuthService.checkAccount(CheckAccountReq.fromDto(updateAccountReq));
+
 
         StringBuilder sb = new StringBuilder();
         String encrypt = jasyptEncryptionUtil.encrypt(newAccountNumber.substring(0, newAccountNumber.length() - 4));
@@ -103,7 +120,13 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACCOUNT));
 
-        accountRepository.delete(account);
+        Optional<Account> findAccount = accountRepository.findAccountByAccountHash(account.getCustomer().getId(), account.getAccountHash());
+
+        if (findAccount.isPresent() && findAccount.get().getIsDeleted() == DisplayStatus.Y) {
+            throw new BadRequestException(NOT_FOUND_ACCOUNT);
+        }
+
+        account.delete();
     }
 
     public String maskAccountNumber(String accountNumber) {
