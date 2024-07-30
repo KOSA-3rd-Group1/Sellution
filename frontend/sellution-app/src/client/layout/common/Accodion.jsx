@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ChevronUpIcon } from '@/client/utility/assets/Icons';
+import useSaleSettingStore from '../../store/stores/useSaleSettingStore';
 
-const Accordion = ({ items, groupName, openIndexNumber }) => {
-  const [openIndex, setOpenIndex] = useState(openIndexNumber);
-  console.log(openIndex);
+const Accordion = ({ items, groupName }) => {
+  const saleTypes = useSaleSettingStore((state) => state.saleTypes);
+  const setSaleTypes = useSaleSettingStore((state) => state.setSaleTypes);
+
+  //   const [openIndex, setOpenIndex] = useState(openIndexNumber);
   const handleItemClick = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
+    // setOpenIndex(openIndex === index ? null : index);
+    setSaleTypes({ [groupName]: index });
   };
 
   const hasContent = (content) => {
@@ -18,14 +22,15 @@ const Accordion = ({ items, groupName, openIndexNumber }) => {
     return content != null && content !== false;
   };
 
-  useEffect(() => {
-    setOpenIndex(openIndexNumber);
-  }, [openIndexNumber]);
+  //   useEffect(() => {
+  //     setOpenIndex(openIndexNumber);
+  //   }, [openIndexNumber]);
 
   return (
     <div className='w-full mx-auto'>
       {items.map((item, index) => {
-        const isOpen = openIndex === index;
+        // const isOpen = openIndex === index;
+        const isOpen = saleTypes[groupName] === index;
         const { title, content, guidance, disabled } = item;
         const contentExists = hasContent(content);
 

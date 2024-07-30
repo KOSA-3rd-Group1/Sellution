@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import Select from 'react-select';
-import TableEachProduct from '../common/table/TableEachProduct';
-import useSaleSettingStore from '../../store/stores/useSaleSettingStore';
+import TableEachProduct from '@/client/layout/common/table/TableEachProduct';
+import useSaleSettingStore from '@/client/store/stores/useSaleSettingStore';
+import { HEADERS } from '@/client/utility/tableinfo/ShopManagementSaleSettingEachProductTableInfo';
 
 const formatGroupLabel = (data) => (
   <div className='flex justify-between items-center'>
@@ -12,7 +13,8 @@ const formatGroupLabel = (data) => (
   </div>
 );
 
-const SellTypeEach = ({ HEADERS }) => {
+const SellTypeEach = () => {
+  const serviceType = useSaleSettingStore((state) => state.saleTypes.serviceType);
   const { data, setData } = useSaleSettingStore((state) => ({
     data: state.sellTypeEach,
     setData: state.setSellTypeEach,
@@ -28,14 +30,24 @@ const SellTypeEach = ({ HEADERS }) => {
       (selectedOption) => selectedOption.product.code != removeProductCode,
     );
     setData({ selectedOptions: updateSelectedOptions });
-    // setSelectedEachProductOptions((prev) =>
-    //   prev.filter((selectedOption) => selectedOption.product.code != removeProductCode),
-    // );
   };
 
   const groupedOptions = useMemo(() => {
-    if (data.selectOptions == undefined || Object.keys(data.selectOptions).length == 0) return;
-    const groups = data.selectOptions.reduce((acc, product) => {
+    let currentSelectOptions = null;
+    switch (serviceType) {
+      case 'ONETIME':
+        currentSelectOptions = data.selectOnetimeOptions;
+        break;
+      case 'SUBSCRIPTION':
+        currentSelectOptions = data.selectSubscriptionOptions;
+        break;
+      default:
+        currentSelectOptions = data.selectBothOptions;
+        break;
+    }
+
+    if (currentSelectOptions == undefined || Object.keys(currentSelectOptions).length == 0) return;
+    const groups = currentSelectOptions.reduce((acc, product) => {
       if (!acc[product.categoryName]) {
         acc[product.categoryName] = [];
       }
@@ -51,7 +63,12 @@ const SellTypeEach = ({ HEADERS }) => {
         product: product, // 전체 제품 정보를 저장
       })),
     }));
-  }, [data.selectOptions]);
+  }, [
+    data.selectBothOptions,
+    data.selectOnetimeOptions,
+    data.selectSubscriptionOptions,
+    serviceType,
+  ]);
 
   return (
     <div className='w-full'>

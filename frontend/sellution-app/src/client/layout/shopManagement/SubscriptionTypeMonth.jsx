@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Select from 'react-select';
 import CheckboxGroup from '@/client/layout/common/CheckboxGroup';
 import CheckdayGroup from '@/client/layout/common/CheckdayGroup';
@@ -24,8 +23,6 @@ const SubscriptionTypeMonth = () => {
     data: state.subscriptionTypeMonth,
     setData: state.setSubscriptionTypeMonth,
   }));
-
-  console.log('subscriptionTypeMonth>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', data);
 
   // 정기 배송 개월 옵션 변경
   const handleChangeSelectedMonthOptions = (selectedOptions) => {

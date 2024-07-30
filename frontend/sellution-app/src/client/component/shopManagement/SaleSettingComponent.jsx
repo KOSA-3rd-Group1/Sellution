@@ -17,24 +17,11 @@ const SaleSettingComponent = () => {
     openAutoCloseModal,
     closeAutoCloseModal,
   } = useModal();
-  const {
-    HEADERS,
-    saleTypes,
-    selectCategoryOptions,
-    selectedCategoryOptions,
-    selectEachProductOptions,
-    selectedEachProductOptions,
-    handleChangeInputValue,
-    handleChangeSelectedCategoryOptions,
-    handleChangeSelectedEachProductOptions,
-    handleDeleteSelectedEachProductOption,
-    handleSaveData,
-  } = useShopManagementSaleSetting({
+  const { saleTypes, handleChangeInputValue, handleSaveData } = useShopManagementSaleSetting({
     openAlertModal,
     openAutoCloseModal,
     closeAutoCloseModal,
   });
-  console.log('saleTypes>>>>>>>>>>>>', saleTypes);
 
   const accordionItems = [
     {
@@ -44,27 +31,13 @@ const SaleSettingComponent = () => {
     },
     {
       title: '카테고리',
-      content: (
-        <SellTypeCategory
-          selectOptions={selectCategoryOptions}
-          selectedOptions={selectedCategoryOptions}
-          handleChange={handleChangeSelectedCategoryOptions}
-        />
-      ),
+      content: <SellTypeCategory />,
       guidance: ' *카테고리에 해당하는 상품들에 대해 적용합니다',
       disabled: false,
     },
     {
       title: '개별 상품',
-      content: (
-        <SellTypeEach
-          selectOptions={selectEachProductOptions}
-          selectedOptions={selectedEachProductOptions}
-          handleChange={handleChangeSelectedEachProductOptions}
-          handleDelete={handleDeleteSelectedEachProductOption}
-          HEADERS={HEADERS}
-        />
-      ),
+      content: <SellTypeEach />,
       guidance: '* 사용자가 원하는 상품들을 직접 선택하여 적용합니다.',
       disabled: false,
     },
@@ -111,21 +84,13 @@ const SaleSettingComponent = () => {
               <li className='relative pl-4 py-4 h-fit flex justify-between items-start gap-10 border-b'>
                 <div className='flex-1 min-w-32'>적용 상품</div>
                 <div className='flex-1 min-w-[600px]'>
-                  <Accordion
-                    items={accordionItems}
-                    groupName={'sellType'}
-                    openIndexNumber={saleTypes.sellType}
-                  />
+                  <Accordion items={accordionItems} groupName={'sellType'} />
                 </div>
               </li>
               <li className='relative pl-4 py-4 h-fit flex justify-between items-start gap-10 border-b'>
                 <div className='flex-1 min-w-32'>정기 배송 유형</div>
                 <div className='flex-1 min-w-[600px]'>
-                  <Accordion
-                    items={accordionItems2}
-                    groupName={'subscriptionType'}
-                    openIndexNumber={saleTypes.subscriptionType}
-                  />
+                  <Accordion items={accordionItems2} groupName={'subscriptionType'} />
                 </div>
               </li>
             </ul>
