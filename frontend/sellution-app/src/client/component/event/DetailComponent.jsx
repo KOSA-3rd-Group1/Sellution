@@ -47,6 +47,21 @@ const DetailComponent = () => {
               </div>
             </li>
             <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
+              <div className='flex-1 min-w-32'>{'수량'}</div>
+              <div className='flex-1 min-w-[430px]'>
+                <div className='flex items-center gap-2 text-right'>
+                  <InfoInputRight
+                    value={data.totalQuantity || ''}
+                    onChange={(e) => handleChangeInputValue('totalQuantity', e.target.value)}
+                    placeholder='수량을 입력해주세요.'
+                    disabled
+                    textDefault={true}
+                  />
+                  <div className='pr-4 text-lg font-semibold'>%</div>
+                </div>
+              </div>
+            </li>
+            {/* <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
               <div className='flex-1 min-w-32'>수량</div>
               <div className='flex-1 min-w-[430px]'>
                 <div className='flex'>
@@ -70,22 +85,23 @@ const DetailComponent = () => {
                   </div>
                 </div>
               </div>
-            </li>
+            </li> */}
             <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
               <div className='flex-1 min-w-32'>이벤트 적용 기간</div>
               <div className='flex-1 min-w-96'>
                 <div className='flex items-center gap-2'>
                   <InfoInput
                     type='date'
-                    value={data.startDate || ''}
-                    onChange={(e) => handleChangeInputValue('startDate', e.target.value)}
+                    value={data.eventStartDate || ''}
+                    onChange={(e) => handleChangeInputValue('eventStartDate', e.target.value)}
                     placeholder='시작일을 선택하세요.'
+                    readOnly
                   />
                   <div className='text-lg font-bold'>~</div>
                   <InfoInput
                     type='date'
-                    value={data.endDate || ''}
-                    onChange={(e) => handleChangeInputValue('endDate', e.target.value)}
+                    value={data.eventEndDate || ''}
+                    onChange={(e) => handleChangeInputValue('eventEndDate', e.target.value)}
                     placeholder='종료일을 선택하세요.'
                   />
                 </div>

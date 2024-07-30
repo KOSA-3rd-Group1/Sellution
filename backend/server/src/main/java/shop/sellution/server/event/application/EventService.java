@@ -1,8 +1,8 @@
 package shop.sellution.server.event.application;
 
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import shop.sellution.server.event.domain.CouponEvent;
 import shop.sellution.server.event.dto.request.SaveEventReq;
 import shop.sellution.server.event.dto.request.UpdateEventReq;
 import shop.sellution.server.event.dto.response.FindEventRes;
@@ -28,4 +28,6 @@ public interface EventService {
     //void downloadCoupon(Long customerId, Long eventId);
 
     void createDummyEvent(SaveEventReq saveEventReq);
+
+    FindEventRes findEvent(Long eventId);
 }
