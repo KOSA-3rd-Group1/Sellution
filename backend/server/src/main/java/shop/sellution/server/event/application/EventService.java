@@ -26,4 +26,6 @@ public interface EventService {
     void saveCoupon(Long eventId);
 
     //void downloadCoupon(Long customerId, Long eventId);
+
+    void createDummyEvent(SaveEventReq saveEventReq);
 }

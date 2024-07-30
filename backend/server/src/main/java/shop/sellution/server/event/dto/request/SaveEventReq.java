@@ -2,6 +2,7 @@ package shop.sellution.server.event.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.event.domain.CouponEvent;
@@ -9,6 +10,7 @@ import shop.sellution.server.event.domain.type.TargetCustomerType;
 
 import java.time.LocalDate;
 
+@Builder
 @Getter
 public class SaveEventReq {
     @NotBlank(message = "쿠폰 이름은 필수입니다.")

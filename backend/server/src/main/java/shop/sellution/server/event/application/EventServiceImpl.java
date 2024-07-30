@@ -26,6 +26,7 @@ import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -65,23 +66,33 @@ public class EventServiceImpl implements EventService {
     public void saveEvent(SaveEventReq saveEventReq) {
         CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
         Long companyId = userDetails.getCompanyId();
+        //Long companyId = 1L;
         //당일은 startdate가 불가능하게
         LocalDate now = LocalDate.now();
         LocalDate tomorrow = now.plusDays(1);
         if(saveEventReq.getEventStartDate().isBefore(tomorrow)){
             throw new IllegalArgumentException("이벤트 시작일은 다음날부터 설정 가능합니다.");
         }
+        if(saveEventReq.getEventEndDate().isBefore(tomorrow)){
+            throw new IllegalArgumentException("이벤트 종료일 설정이 잘못되었습니다.");
+        }
         Company company = getCompanyById(companyId);
         CouponEvent event = saveEventReq.toEntity(company);
         eventRepository.save(event);
-
-        // Redis에 초기 set 생성
+        //redis
         String key = "event:" + event.getId();
-        redisTemplate.delete(key); // 기존 키 삭제 (다시 create 할 때 중복 방지)
-        redisTemplate.opsForSet().add(key, new String[0]); // 빈 set 생성
+        try {
+            // Redis에 초기 set 생성 및 TTL 설정
+            redisTemplate.delete(key);  // 기존 키 삭제 (다시 create 할 때 중복 방지)
+            redisTemplate.opsForSet().add(key, "INIT");  // 빈 set 생성 + TTL 설정 위한 더미데이터 추가
+            redisTemplate.expireAt(key, Date.valueOf(event.getEventEndDate().plusDays(1))); // 종료일 자정으로 TTL 설정
+        } catch (Exception e) {
+            // Redis 설정 중 예외 발생 시 RDB 트랜잭션 롤백
+            eventRepository.delete(event);
+            throw new RuntimeException("Redis 설정 중 오류가 발생했습니다. 이벤트 생성이 취소되었습니다.", e);
+        }
     }
 
-    //TODO: 삭제된 이벤트면 오류 나도록 추가
     @Override
     public void updateEvent(Long eventId, UpdateEventReq updateEventReq) {
         CouponEvent event = getEventById(eventId);
@@ -95,8 +106,16 @@ public class EventServiceImpl implements EventService {
         }
         event.update(updateEventReq);
 //        eventRepository.save(event); 엔티티 변경사항은 트랜잭션이 끝날 때 자동으로 반영
+
+        // Redis TTL 갱신
+        String key = "event:" + event.getId();
+        try {
+            redisTemplate.expireAt(key, Date.valueOf(updateEventReq.getEventEndDate().plusDays(1)));
+        } catch (Exception e) {
+            throw new RuntimeException("Redis TTL 설정 중 오류가 발생했습니다. 이벤트 업데이트가 취소되었습니다.", e);
+        }
     }
-    //TODO: 삭제된 이벤트면 오류 나도록 추가
+
     @Override
     public void deleteEvent(Long eventId) {
         //삭제로직
@@ -109,6 +128,9 @@ public class EventServiceImpl implements EventService {
         }
         event.markAsDeleted();
         eventRepository.save(event); //없어도 됨
+        //redis는 삭제
+        String key = "event:" + event.getId();
+        redisTemplate.delete(key); // 키 삭제
     }
 
     @Transactional(readOnly = true)
@@ -150,14 +172,22 @@ public class EventServiceImpl implements EventService {
             throw new IllegalArgumentException("쿠폰이 모두 소진되었습니다.");
         }
         //4. 발급 가능한 경우 쿠폰 생성(rdb save)
-        CouponBox couponBox = CouponBox.builder()
-                .id(new CouponBoxId(customerId, eventId))
-                .couponEvent(event)
-                .customer(getCustomerById(customerId))
-                .build();
-        couponBoxRepository.save(couponBox);
+        try{
+            CouponBox couponBox = CouponBox.builder()
+                    .id(new CouponBoxId(customerId, eventId))
+                    .couponEvent(event)
+                    .customer(getCustomerById(customerId))
+                    .build();
+            couponBoxRepository.save(couponBox);
+        }catch(Exception e){
+            //redis 롤백
+            rollbackCouponCount(eventId, customerId);
+            throw new RuntimeException("쿠폰 발급 중 오류가 발생했습니다. 트랜잭션이 롤백됩니다.", e);
+        }
+
         //5. 트랜잭션 commit (rdb)
     }
+
     //쿠폰 발급량 증가 API
     private boolean tryIncreaseCouponCount(Long eventId, int totalQuantity, Long customerId){
         //1. 현재 발급 가능한 상태인지 쿠폰 유효성 검증 (개수를 확인하는 연산 SCARD)
@@ -167,7 +197,7 @@ public class EventServiceImpl implements EventService {
         String customerKey = customerId.toString();
 
         String script =
-                "local currentCount = redis.call('SCARD', KEYS[1]) " +
+                "local currentCount = redis.call('SCARD', KEYS[1]) - 1 " + // currentCount에서 더미수량 1을 뺌
                         "if tonumber(currentCount) < tonumber(ARGV[1]) then " +
                         "   redis.call('SADD', KEYS[1], ARGV[2]) " +
                         "   return 1 " +
@@ -187,7 +217,14 @@ public class EventServiceImpl implements EventService {
             return result != null && (Long) result == 1;
         }));
     }
+    //쿠폰 발급량 감소 API
+    private void rollbackCouponCount(Long eventId, Long customerId) {
+        String key = "event:" + eventId;
+        String customerKey = customerId.toString();
 
+        redisTemplate.opsForSet().remove(key, customerKey);
+    }
+    //쿠폰 다운로드 유효성 검증
     private void validateEvent(LocalDate now, CouponEvent event, Long customerId){
         //1. 해당 이벤트가 종료되었는지 확인
         //2. 해당 이벤트가 삭제되었는지 확인
@@ -198,7 +235,7 @@ public class EventServiceImpl implements EventService {
         if(event.isDeleted()){
             throw new IllegalArgumentException("중단된 이벤트는 쿠폰을 다운로드할 수 없습니다.");
         }
-        //TODO: 수정예정
+        //TODO: (redis로도 확인 가능)
         if(couponBoxRepository.existsByCustomerIdAndCouponEventId(customerId, event.getId())){
             throw new IllegalArgumentException("이미 쿠폰을 다운로드하셨습니다.");
         }
@@ -219,7 +256,7 @@ public class EventServiceImpl implements EventService {
 //        if(event.isDeleted()){
 //            throw new IllegalArgumentException("중단된 이벤트는 쿠폰을 다운로드할 수 없습니다.");
 //        }
-//        //TODO: 수정예정
+//
 //        if(couponBoxRepository.existsByCustomerIdAndCouponEventId(customerId, eventId)){
 //            throw new IllegalArgumentException("이미 쿠폰을 다운로드하셨습니다.");
 //        }
@@ -266,6 +303,27 @@ public class EventServiceImpl implements EventService {
             throw new AuthException(NOT_FOUND_USER);
         }
     }
+    @Override
+    public void createDummyEvent(SaveEventReq saveEventReq) {
+        Long companyId = 1L;
+        //유효성 조건 없이 더미 데이터 생성
+        Company company = getCompanyById(companyId);
+        CouponEvent event = saveEventReq.toEntity(company);
+        eventRepository.save(event);
+        //redis
+        String key = "event:" + event.getId();
+        try {
+            // Redis에 초기 set 생성 및 TTL 설정
+            redisTemplate.delete(key);  // 기존 키 삭제 (다시 create 할 때 중복 방지)
+            redisTemplate.opsForSet().add(key, "INIT");  // 빈 set 생성 + TTL 설정 위한 더미데이터 추가
+            redisTemplate.expireAt(key, Date.valueOf(event.getEventEndDate().plusDays(1))); // 종료일 자정으로 TTL 설정
+        } catch (Exception e) {
+            // Redis 설정 중 예외 발생 시 RDB 트랜잭션 롤백
+            eventRepository.delete(event);
+            throw new RuntimeException("Redis 설정 중 오류가 발생했습니다. 이벤트 생성이 취소되었습니다.", e);
+        }
+    }
+
 }
 
 
