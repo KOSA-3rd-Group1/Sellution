@@ -11,7 +11,9 @@ const useSaleSettingStore = create((set) => ({
     selectedOptions: [],
   },
   sellTypeEach: {
-    selectOptions: [],
+    selectBothOptions: [],
+    selectOnetimeOptions: [],
+    selectSubscriptionOptions: [],
     selectedOptions: [],
   },
   subscriptionTypeMonth: {
@@ -20,8 +22,8 @@ const useSaleSettingStore = create((set) => ({
     dayValues: { MON: false, TUE: false, WED: false, THU: false, FRI: false },
   },
   subscriptionTypeCount: {
-    maxDeliveryCount: null,
-    minDeliveryCount: null,
+    maxDeliveryCount: 30,
+    minDeliveryCount: 5,
     weekValues: { 1: false, 2: false, 3: false, 4: false, 5: false },
     dayValues: { MON: false, TUE: false, WED: false, THU: false, FRI: false },
   },

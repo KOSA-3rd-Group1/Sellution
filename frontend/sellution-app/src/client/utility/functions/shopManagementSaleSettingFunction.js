@@ -14,12 +14,12 @@ export const formatSellType = (type) => {
 export const transformSellType = (type) => {
   switch (type) {
     case 1:
-      return '개별상품';
+      return 'CATEGORY';
     case 2:
-      return '카테고리';
+      return 'EACH';
     case 0:
     default:
-      return '전체상품';
+      return 'ALL';
   }
 };
 
@@ -40,9 +40,9 @@ export const formatSubscriptionType = (type) => {
 export const transformSubscriptionType = (type) => {
   switch (type) {
     case 1:
-      return 'MONTH';
-    case 0:
       return 'COUNT';
+    case 0:
+      return 'MONTH';
     default:
       return null;
   }
@@ -82,11 +82,11 @@ export const formatWeekValues = (weekValues) => {
 export const transformWeekValues = (dayOption) => {
   const weekValues = Object.entries(dayOption)
     .filter(([key, value]) => value)
-    .map(([key, value]) => key);
+    .map(([key, value]) => parseInt(key, 10));
   return weekValues;
 };
 
-// category데이터를 selectCategoryOptions로 변환 (서버 -> useState)
+// 선택한 category데이터를 selectCategoryOptions로 변환 (서버 -> 전역변수)
 export const formatSelectCategoryOptions = (content) => {
   const selectCategoryOptions = content.map((item) => {
     return { value: item.categoryId, label: item.name };
@@ -94,27 +94,64 @@ export const formatSelectCategoryOptions = (content) => {
   return selectCategoryOptions;
 };
 
-// 선택한 categoryIds -> selectedCategoryOptions에 넣는 형식으로 변환 (서버 -> useState)
+// 선택한 categoryIds -> selectedCategoryOptions에 넣는 형식으로 변환 (서버 -> 전역변수)
 export const formatSelectedCategoryOptions = (data, selectCategoryOptions) => {
   return selectCategoryOptions.filter((categoryOption) => data.includes(categoryOption.value));
 };
 
-// product 데이터를 selectEachProductOptions로 변환 (서버 -> useState)
-export const formatSelectEachProductOptions = (content) => {
-  const selectEachProductOptions = content.map((item) => {
-    return {
-      categoryName: item.categoryName, // 카테고리 이름
-      code: item.code, // 상품 코드
-      cost: formatPrice(item.cost), //상품금액
-      group: item.categoryName, // 상품 그룹 (= 카테고리)
-      label: item.name, // 상품 명
-      value: item.productId, // 상품 Id
-    };
-  });
-  return selectEachProductOptions;
+// selectedCategoryOptions 형식 변환 (전역변수 -> 서버)
+export const transformSelectedCategoryOptions = (selectedCategoryOptions) => {
+  return selectedCategoryOptions.map((option) => parseInt(option.value, 10));
 };
 
-// 선택한 productIds -> selectedEachProductOptions에 넣는 형식으로 변환 (서버 -> useState)
+// product 데이터를 selectEachProductOptions로 변환 (서버 -> 전역변수)
+export const formatSelectEachProductOptions = (content) => {
+  const options = {
+    ONETIME: [],
+    SUBSCRIPTION: [],
+    BOTH: [],
+  };
+
+  content.forEach((item) => {
+    const newItem = selctedOptionFormat(item);
+    if (item.deliveryType !== 'ONETIME') {
+      options.SUBSCRIPTION.push(newItem);
+      options.BOTH.push(newItem);
+    } else if (item.deliveryType !== 'SUBSCRIPTION') {
+      options.ONETIME.push(newItem);
+      options.BOTH.push(newItem);
+    }
+  });
+
+  return options;
+};
+
+const selctedOptionFormat = (item) => {
+  return {
+    categoryName: item.categoryName, // 카테고리 이름
+    code: item.code, // 상품 코드
+    cost: formatPrice(item.cost), //상품금액
+    group: item.categoryName, // 상품 그룹 (= 카테고리)
+    label: item.name, // 상품 명
+    value: item.productId, // 상품 Id
+  };
+};
+// // product 데이터를 selectEachProductOptions로 변환 (서버 -> 전역변수)
+// export const formatSelectEachProductOptions = (content) => {
+//   const selectEachProductOptions = content.map((item) => {
+//     return {
+//       categoryName: item.categoryName, // 카테고리 이름
+//       code: item.code, // 상품 코드
+//       cost: formatPrice(item.cost), //상품금액
+//       group: item.categoryName, // 상품 그룹 (= 카테고리)
+//       label: item.name, // 상품 명
+//       value: item.productId, // 상품 Id
+//     };
+//   });
+//   return selectEachProductOptions;
+// };
+
+// 선택한 productIds -> selectedEachProductOptions에 넣는 형식으로 변환 (서버 -> 전역변수)
 export const formatSelectedEachProductOptions = (productIds, selectEachProductOptions) => {
   const newSelectedEachProductOptions = productIds.map((productId) => {
     const matchedOption = selectEachProductOptions.find((option) => option.value === productId);
@@ -130,9 +167,19 @@ export const formatSelectedEachProductOptions = (productIds, selectEachProductOp
   return newSelectedEachProductOptions;
 };
 
-// 선택한 MonthValues를 setSelectedMonthOptions에 넣는 형식으로 변환 (서버 -> useState)
+// selectedProductOptions 형식 변환 (전역변수 -> 서버)
+export const transformSelectedProductOptions = (selectedProductOptions) => {
+  return selectedProductOptions.map((option) => parseInt(option.value, 10));
+};
+
+// 선택한 MonthValues를 setSelectedMonthOptions에 넣는 형식으로 변환 (서버 -> 전역변수)
 export const formatSelectedMonthOptions = (data) => {
   return data.map((item) => {
     return { value: item.value, label: `${item.value}개월` };
   });
+};
+
+// 선택한 MonthValues 형식 변환 (전역변수 -> 서버)
+export const tranformSelectedOptions = (selectedOptions) => {
+  return selectedOptions.map((option) => parseInt(option.value, 10));
 };
