@@ -2,11 +2,14 @@ import NavbarComponent from '@/client/layout/partials/NavbarComponent';
 import SidebarCompoent from '@/client/layout/partials/SidebarComponent';
 import { Outlet } from 'react-router-dom';
 import useSidebarStore from '../store/stores/useSidebarStore';
+import useUserInfoStore from '../store/stores/useUserInfoStore';
 
 const BasicLayout = () => {
   const { isSidebarOpen, toggleSidebar } = useSidebarStore();
-  const userName = '테스트 관리자';
-  const companyName = '테스트 회사';
+  const { name, contractCompanyName } = useUserInfoStore((state) => ({
+    name: state.name,
+    contractCompanyName: state.contractCompanyName,
+  }));
 
   return (
     <div className='w-dvw h-dvh flex flex-col overflow-auto'>
@@ -14,14 +17,14 @@ const BasicLayout = () => {
         <NavbarComponent
           isSidebarOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}
-          userName={userName}
+          userName={name}
         />
       </div>
       <div className='w-full flex-auto flex'>
         <div
           className={`w-[250px] h-[calc(100%-64px)] lg:h-full absolute lg:relative ${isSidebarOpen ? 'block' : 'hidden'} lg:block flex-shrink-0 z-50`}
         >
-          <SidebarCompoent companyName={companyName} />
+          <SidebarCompoent companyName={contractCompanyName} />
         </div>
 
         {/* Overlay */}

@@ -17,4 +17,7 @@ public interface ContractCompanyRepository extends JpaRepository<ContractCompany
 
     //사업자 등록번호 중복 조회
     boolean existsByBusinessRegistrationNumber(String businessRegistrationNumber);
+
+    // 사업체 아이디로 조회
+    Optional<ContractCompany> findByCompany_companyId(Long companyId);
 }

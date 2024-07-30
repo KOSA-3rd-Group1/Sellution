@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-export const useBankSelector = (onSelect) => {
+export const useBankSelector = ({ onSelect, bank }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedBank, setSelectedBank] = useState(null);
   const dropdownRef = useRef(null);
@@ -11,12 +11,13 @@ export const useBankSelector = (onSelect) => {
         setIsOpen(false);
       }
     };
+    if (bank) setSelectedBank(bank);
 
     document.addEventListener('mousedown', handleOutsideClick);
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick);
     };
-  }, []);
+  }, [bank]);
 
   // 드롭다운 모달 토글
   const toggleDropdown = () => setIsOpen(!isOpen);

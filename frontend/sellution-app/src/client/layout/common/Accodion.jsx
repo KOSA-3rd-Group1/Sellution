@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ChevronUpIcon } from '@/client/utility/assets/Icons';
 
-const Accordion = ({ items, groupName }) => {
-  const [openIndex, setOpenIndex] = useState(null);
-
+const Accordion = ({ items, groupName, openIndexNumber }) => {
+  const [openIndex, setOpenIndex] = useState(openIndexNumber);
+  console.log(openIndex);
   const handleItemClick = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
@@ -17,6 +17,10 @@ const Accordion = ({ items, groupName }) => {
     }
     return content != null && content !== false;
   };
+
+  useEffect(() => {
+    setOpenIndex(openIndexNumber);
+  }, [openIndexNumber]);
 
   return (
     <div className='w-full mx-auto'>
@@ -40,7 +44,6 @@ const Accordion = ({ items, groupName }) => {
                   id={`accordion-${groupName}-${index}`}
                   name={`accordion-${groupName}-group`}
                   className='radio checked:bg-brandOrange mr-2 h-5 w-5 '
-                  //   className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300'
                   checked={isOpen}
                   onChange={() => {}}
                   onClick={(e) => e.stopPropagation()}

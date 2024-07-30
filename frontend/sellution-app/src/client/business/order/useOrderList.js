@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import useDebounce from '@/client/business/common/useDebounce';
 import useAuthStore from '@/client/store/stores/useAuthStore';
 import useTableStore from '@/client/store/stores/useTableStore';
-
 import { formatPhoneNumber } from '@/client/utility/functions/formatterFunction';
 import {
   formatOrderType,
@@ -198,6 +197,7 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
 
   return {
     data,
+    totalPages,
     totalDataCount,
     tableState,
     dateRangeValue,

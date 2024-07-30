@@ -100,7 +100,7 @@ public class Company{
     }
 
     private String generateShopUrl(String name) {
-        return "https://www.sellution.shop/shopping/" + name;
+        return "https://www.sellution.shop/shopping/" + name + "/home";
     }
 
     // 주문 자동 승인 토글
