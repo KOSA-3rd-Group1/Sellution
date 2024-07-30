@@ -71,6 +71,7 @@ public enum ExceptionCode {
     ALREADY_ACCOUNT(5019,"이미 등록된 계좌입니다." ),
 
 
+
     // ---------------------------- Product, Address, category, event 6501 ~ 7000 ---------------------------------------
 
     NOT_FOUND_CUSTOMER_FOR_ADDRESS(6501, "주소와 연관된 회원을 찾을 수 없습니다."),

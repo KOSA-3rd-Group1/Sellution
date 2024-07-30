@@ -615,7 +615,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .company(포켓샐러드)
                 .username("newCustomer")
                 .password(passwordEncoder.encode("newCustomer"))
-                .name("샐러드뉴비")
+                .name("길재현")
                 .phoneNumber("01075985112")
                 .type(CustomerType.NEW)
                 .build();

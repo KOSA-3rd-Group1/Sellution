@@ -29,4 +29,10 @@ public class EasyPwdController {
         easyPwdService.verifyEasyPwd(customerId, easyPwdReq);
         return ResponseEntity.ok().body("success");
     }
+
+    // 해당 회원이 간편비밀번호 있는지 확인
+    @GetMapping("/customer/{customerId}/check")
+    public ResponseEntity<String> checkEasyPwd(@PathVariable Long customerId) {
+        return ResponseEntity.ok().body(easyPwdService.checkEasyPwd(customerId) ? "true" : "false");
+    }
 }
