@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
+import useSaleSettingStore from '@/client/store/stores/useSaleSettingStore';
 import { ChevronUpIcon } from '@/client/utility/assets/Icons';
 
 const Accordion = ({ items, groupName }) => {
-  const [openIndex, setOpenIndex] = useState(null);
+  const saleTypes = useSaleSettingStore((state) => state.saleTypes);
+  const setSaleTypes = useSaleSettingStore((state) => state.setSaleTypes);
 
   const handleItemClick = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
+    setSaleTypes({ [groupName]: index });
   };
 
   const hasContent = (content) => {
@@ -21,7 +23,7 @@ const Accordion = ({ items, groupName }) => {
   return (
     <div className='w-full mx-auto'>
       {items.map((item, index) => {
-        const isOpen = openIndex === index;
+        const isOpen = saleTypes[groupName] === index;
         const { title, content, guidance, disabled } = item;
         const contentExists = hasContent(content);
 
@@ -40,7 +42,6 @@ const Accordion = ({ items, groupName }) => {
                   id={`accordion-${groupName}-${index}`}
                   name={`accordion-${groupName}-group`}
                   className='radio checked:bg-brandOrange mr-2 h-5 w-5 '
-                  //   className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300'
                   checked={isOpen}
                   onChange={() => {}}
                   onClick={(e) => e.stopPropagation()}

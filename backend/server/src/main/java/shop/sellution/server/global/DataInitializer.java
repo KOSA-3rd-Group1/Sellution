@@ -8,8 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.account.application.AccountService;
-import shop.sellution.server.account.domain.Account;
-import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.account.dto.request.SaveAccountReq;
 import shop.sellution.server.address.domain.Address;
 import shop.sellution.server.address.domain.AddressRepository;
@@ -34,7 +32,6 @@ import shop.sellution.server.event.domain.type.TargetCustomerType;
 import shop.sellution.server.event.dto.request.SaveEventReq;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
-import shop.sellution.server.global.util.JasyptEncryptionUtil;
 import shop.sellution.server.order.application.OrderCreationService;
 import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.order.dto.request.FindOrderedProductSimpleReq;
@@ -648,7 +645,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         customerRepository.save(휴면회원);
 
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 31; i++) {
             Customer customer = Customer.builder()
                     .company(포켓샐러드)
                     .username("customer" + i)
@@ -753,7 +750,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private void createOrder() {
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 12; i++) {
             Customer customer = customers.get(random.nextInt(customers.size()));
             OrderType orderType = OrderType.values()[random.nextInt(OrderType.values().length)];
 
@@ -793,27 +790,27 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
             }
 
             if (orderType == OrderType.MONTH_SUBSCRIPTION) { // 정기[월] 주문이면 월, 주,요일 옵션 필수
-                orderReqBuilder.monthOptionId(monthOptions.get(random.nextInt(monthOptions.size())).getId())
-                        .weekOptionId(weekOptions.get(random.nextInt(weekOptions.size())).getId())
+                orderReqBuilder.monthOptionValue(monthOptions.get(random.nextInt(monthOptions.size())).getMonthValue())
+                        .weekOptionValue(weekOptions.get(random.nextInt(weekOptions.size())).getWeekValue())
                         .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(14)).with(TemporalAdjusters.next(DayOfWeek.MONDAY)));
             }
             if (orderType == OrderType.COUNT_SUBSCRIPTION) { // 정기[횟수] 주문이면
                 int minDeliveryCount = 포켓샐러드.getMinDeliveryCount();
                 int maxDeliveryCount = 포켓샐러드.getMaxDeliveryCount();
 
-                orderReqBuilder.weekOptionId(weekOptions.get(random.nextInt(weekOptions.size())).getId())
+                orderReqBuilder.weekOptionValue(weekOptions.get(random.nextInt(weekOptions.size())).getWeekValue())
                         .totalDeliveryCount((random.nextInt(maxDeliveryCount - minDeliveryCount + 1) + minDeliveryCount))
                         .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(14)).with(TemporalAdjusters.next(DayOfWeek.MONDAY)));
             }
             int numberOfDayOptions = random.nextInt(dayOptions.size()) + 1;
-            List<Long> selectedDayOptionIds = new ArrayList<>();
+            List<DayValueType> selectedDayValueType = new ArrayList<>();
             for (int j = 0; j < numberOfDayOptions; j++) {
                 DayOption dayOption = dayOptions.get(random.nextInt(dayOptions.size()));
-                if (!selectedDayOptionIds.contains(dayOption.getId())) {
-                    selectedDayOptionIds.add(dayOption.getId());
+                if (!selectedDayValueType.contains(dayOption.getDayValue())) {
+                    selectedDayValueType.add(dayOption.getDayValue());
                 }
             }
-            orderReqBuilder.dayOptionIds(selectedDayOptionIds);
+            orderReqBuilder.dayValueTypeList(selectedDayValueType);
             orderReqBuilder.eventId(random.nextLong(9)+1); // 이벤트 랜덤지정
 
             orderCreationService.createOrder(customer.getId(), orderReqBuilder.build());

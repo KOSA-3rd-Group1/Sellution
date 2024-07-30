@@ -34,6 +34,7 @@ const OrderComponent = () => {
   const [subscriptionType, setSubscriptionType] = useState('');
   const [selectedDays, setSelectedDays] = useState([]);
   const [dayValues, setDayValues] = useState([]);
+  const [dayValueTypeList, setDayValueTypeList] = useState([]);
   const [weekValues, setWeekValues] = useState([]);
   const [monthValues, setMonthValues] = useState([]);
   const [minDeliveryCount, setMinDeliveryCount] = useState(0);
@@ -239,13 +240,14 @@ const OrderComponent = () => {
       addressId: selectedAddress.addressId, // 주소 ID
       accountId: paymentMethods.find((method) => method.isChecked).id, // 결제 수단 ID
       eventId: selectedCoupon ? selectedCoupon.id : null, // 쿠폰 ID (선택 사항)
-      monthOptionId: selectedMonth ? selectedMonth.id : null, // 월 옵션 ID (선택 사항)
-      weekOptionId: selectedWeek ? selectedWeek.id : null, // 주 옵션 ID (선택 사항)
+      monthOptionValue: selectedMonth ? Number(selectedMonth.value) : null, // 월 옵션 ID (선택 사항)
+      weekOptionValue: selectedWeek ? Number(selectedWeek.value) : null, // 주 옵션 ID (선택 사항)
       orderType: subscriptionType === 'COUNT' ? 'COUNT_SUBSCRIPTION' : 'MONTH_SUBSCRIPTION', // 주문 타입
       totalDeliveryCount: selectedCount, // 총 배송 횟수 (선택 사항)
       deliveryStartDate: selectedStartDate, // 배송 시작일
       orderedProducts: orderedProducts, // 주문한 상품들
-      dayOptionIds: selectedDays.map((day) => dayValues.find((d) => d.value === day).id), // 선택된 요일들 ID
+      dayValueTypeList: selectedDays.map((day) => dayValues.find((d) => d.value === day).value), // 선택된 요일들 값
+      // dayValueTypeList: selectedDays.map((day) => dayValues.find((d) => d.value === day).id), // 선택된 요일들 ID
     };
 
     console.log('주문 보내는 양식: ', saveOrderReq);
@@ -257,33 +259,6 @@ const OrderComponent = () => {
       state: { orderData: saveOrderReq },
     });
   };
-
-  // const completeOrder = async () => {
-  //   if (!orderData) return;
-  //
-  //   try {
-  //     const response = await axios.post(
-  //       `${import.meta.env.VITE_BACKEND_URL}/orders/customers/${customerId}`,
-  //       orderData
-  //     );
-  //     if (response.data.startsWith('success')) {
-  //       const savedOrderId = response.data.split('success, 생성된 주문 아이디 : ')[1];
-  //       localStorage.removeItem('orderState'); // 주문 완료 후 저장된 상태 제거
-  //       navigate(`/shopping/${clientName}/subscription/order-completed/${savedOrderId}`);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error creating order:', error);
-  //     alert('주문 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
-  //   }
-  //
-  //
-  // };
-  //
-  // useEffect(() => {
-  //   if (isPasswordVerified && orderData) {
-  //     completeOrder();
-  //   }
-  // }, [isPasswordVerified, orderData]);
 
   useEffect(() => {
     if (location.state && location.state.passwordVerified) {
@@ -322,6 +297,7 @@ const OrderComponent = () => {
       console.log('여기', response.data);
       setSubscriptionType(response.data.subscriptionType);
       setDayValues(response.data.dayValues || []);
+      setDayValueTypeList(response.data.dayValues || []);
       setWeekValues(response.data.weekValues || []);
       setMonthValues(response.data.monthValues || []);
       setMinDeliveryCount(response.data.minDeliveryCount || 0);
@@ -397,6 +373,8 @@ const OrderComponent = () => {
       selectedWeek,
       selectedCount,
       selectedMonth,
+      dayValues,
+      dayValueTypeList,
     };
     localStorage.setItem('orderState', JSON.stringify(stateToSave));
   };
@@ -414,6 +392,8 @@ const OrderComponent = () => {
       setSelectedWeek(parsedState.selectedWeek);
       setSelectedCount(parsedState.selectedCount);
       setSelectedMonth(parsedState.selectedMonth);
+      setDayValueTypeList(parsedState.dayValueTypeList);
+      setDayValues(parsedState.dayValues);
     }
   };
 

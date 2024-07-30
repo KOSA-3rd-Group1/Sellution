@@ -1,6 +1,7 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import Accordion from '@/client/layout/common/Accodion';
 import RadioButtonGroup from '@/client/layout/common/RadioButtonGroup';
+import { useModal } from '@/client/business/common/useModal';
 import { useShopManagementSaleSetting } from '@/client/business/shopManagement/useShopManagementSaleSetting';
 import SellTypeCategory from '@/client/layout/shopManagement/SellTypeCategory';
 import SellTypeEach from '@/client/layout/shopManagement/SellTypeEach';
@@ -9,19 +10,18 @@ import SubscriptionTypeMonth from '@/client/layout/shopManagement/SubscriptionTy
 
 const SaleSettingComponent = () => {
   const {
-    HEADERS,
-    data,
-    selectCategoryOptions,
-    selectedCategoryOptions,
-    selectEachProductOptions,
-    selectedEachProductOptions,
-    handleChangeInputValue,
-    handleChangeSelectedCategoryOptions,
-    handleChangeSelectedEachProductOptions,
-    handleDeleteSelectedEachProductOption,
-    handleSaveData,
-  } = useShopManagementSaleSetting();
-  console.log(data);
+    alertModalState,
+    autoCloseModalState,
+    openAlertModal,
+    closeAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  } = useModal();
+  const { saleTypes, handleChangeInputValue, handleSaveData } = useShopManagementSaleSetting({
+    openAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  });
 
   const accordionItems = [
     {
@@ -31,27 +31,13 @@ const SaleSettingComponent = () => {
     },
     {
       title: '카테고리',
-      content: (
-        <SellTypeCategory
-          selectOptions={selectCategoryOptions}
-          selectedOptions={selectedCategoryOptions}
-          handleChange={handleChangeSelectedCategoryOptions}
-        />
-      ),
+      content: <SellTypeCategory />,
       guidance: ' *카테고리에 해당하는 상품들에 대해 적용합니다',
       disabled: false,
     },
     {
       title: '개별 상품',
-      content: (
-        <SellTypeEach
-          selectOptions={selectEachProductOptions}
-          selectedOptions={selectedEachProductOptions}
-          handleChange={handleChangeSelectedEachProductOptions}
-          handleDelete={handleDeleteSelectedEachProductOption}
-          HEADERS={HEADERS}
-        />
-      ),
+      content: <SellTypeEach />,
       guidance: '* 사용자가 원하는 상품들을 직접 선택하여 적용합니다.',
       disabled: false,
     },
@@ -61,13 +47,13 @@ const SaleSettingComponent = () => {
       title: '월 단위 결제',
       content: <SubscriptionTypeMonth />,
       guidance: '* 첫 결제 이후 매 월 결제가 진행됩니다.',
-      disabled: data.serviceType == 'ONETIME',
+      disabled: saleTypes.serviceType == 'ONETIME',
     },
     {
       title: '횟수 단위 결제',
       content: <SubscriptionTypeCount />,
       guidance: ' * 전체 횟수에 대한 결제가 진행됩니다.',
-      disabled: data.serviceType == 'ONETIME',
+      disabled: saleTypes.serviceType == 'ONETIME',
     },
   ];
   return (
@@ -84,7 +70,7 @@ const SaleSettingComponent = () => {
                 <div className='flex-1 min-w-[600px]'>
                   <RadioButtonGroup
                     className='w-full flex justify-start items-center gap-6 px-4'
-                    data={data}
+                    data={saleTypes}
                     options={[
                       { label: '단건', selectData: 'ONETIME' },
                       { label: '정기', selectData: 'SUBSCRIPTION' },
@@ -115,10 +101,14 @@ const SaleSettingComponent = () => {
         btn1={{ label: '취소', event: handleSaveData }}
         btn2={{ label: '변경사항 적용', event: handleSaveData }}
       />
-      {/* <FooterComponent
-        // btn1={{ label: '결제 수단 삭제', event: handleDeleteData }}
-        btn2={{ label: '결제 수단 삭제', event: handleSaveData }}
-        back={{ label: '목록으로', event: moveList }}
+
+      {/* <AlertModal
+        isOpen={alertModalState.isOpen}
+        onClose={closeAlertModal}
+        onConfirm={handleOnConfirm}
+        type={alertModalState.type}
+        title={alertModalState.title}
+        message={alertModalState.message}
       /> */}
     </div>
   );

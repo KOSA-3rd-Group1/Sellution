@@ -1,5 +1,6 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import { InfoInput } from '@/client/layout/common/Input';
+import BankSelector from '@/client/layout/common/BankSelector';
 import AlertModal from '@/client/layout/common/modal/AlertModal';
 import AutoCloseModal from '@/client/layout/common/modal/AutoCloseModal';
 import { useMove } from '@/client/business/common/useMove';
@@ -16,13 +17,19 @@ const DetailComponent = () => {
     openAutoCloseModal,
     closeAutoCloseModal,
   } = useModal();
-  const { data, checkMoveList, checkDeleteContent, scuccessCloseAutoCloseModal, handleOnConfirm } =
-    useCustomerPaymentDetail({
-      moveToPathname,
-      openAlertModal,
-      openAutoCloseModal,
-      closeAutoCloseModal,
-    });
+  const {
+    data,
+    bankCodeIndex,
+    checkMoveList,
+    checkDeleteContent,
+    scuccessCloseAutoCloseModal,
+    handleOnConfirm,
+  } = useCustomerPaymentDetail({
+    moveToPathname,
+    openAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  });
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -58,13 +65,13 @@ const DetailComponent = () => {
               <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
                 <div className='flex-1 min-w-32'>은행</div>
                 <div className='flex-1 min-w-64'>
-                  <InfoInput value={data.bank || ''} readOnly />
+                  <BankSelector bankCodeIndex={bankCodeIndex} isDisabled={true} />
                 </div>
               </li>
               <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
                 <div className='flex-1 min-w-32'>예금주명</div>
                 <div className='flex-1 min-w-64'>
-                  <InfoInput value={data.name || ''} readOnly />
+                  <InfoInput value={data.customerName || ''} readOnly />
                 </div>
               </li>
               <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>

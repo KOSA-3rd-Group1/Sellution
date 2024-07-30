@@ -2,6 +2,7 @@ package shop.sellution.server.client.application;
 
 import jakarta.servlet.http.HttpServletRequest;
 import shop.sellution.server.client.dto.request.*;
+import shop.sellution.server.client.dto.response.FindCurrentClientInfoRes;
 
 public interface ClientService {
 
@@ -12,7 +13,7 @@ public interface ClientService {
     void checkClientUsername(CheckClientUsernameReq request);
 
     // 현재 고객 이름 가져오기
-    String getCurrentUsername();
+    FindCurrentClientInfoRes getCurrentUserInfo();
 
     // 고객 아이디 찾기
     String findClientId(FindClientIdReq request);

@@ -5,7 +5,11 @@ const useUserInfoStore = create(
   persist(
     (set) => ({
       name: null,
-      setName: (newName) => set({ name: newName }),
+      conmapyId: null,
+      contractCompanyName: null,
+      id: null,
+      userRole: null,
+      setUserInfo: (userInfo) => set(userInfo),
     }),
     {
       name: 'userInfo', // 로컬 스토리지에 저장될 키 이름

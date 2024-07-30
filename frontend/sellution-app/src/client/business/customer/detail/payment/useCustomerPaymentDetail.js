@@ -1,20 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useAuthStore from '@/client/store/stores/useAuthStore';
 import {
   getCustomerPaymentDetail,
   deleteCustomerPaymentDetail,
 } from '@/client/utility/apis/customer/detail/payment/customerPaymentDetailApi';
-
-const DUMMY = {
-  paymentMethod: 'CMS',
-  bank: '신한 은행',
-  accountNumber: `${Math.floor(100000 + Math.random() * 900000)}-01-${Math.floor(100000 + Math.random() * 900000)}`,
-  createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
-    .toISOString()
-    .split('T')[0],
-  name: '홍길동',
-};
+import { bankCodeIndexInfo } from '@/client/utility/bank/bankInfo';
 
 export const useCustomerPaymentDetail = ({
   moveToPathname,
@@ -28,16 +19,28 @@ export const useCustomerPaymentDetail = ({
   const { customerId, paymentId } = useParams();
 
   const [data, setData] = useState({});
+  const [bankCodeIndex, setBankCodeIndex] = useState();
   const [confirmType, setConfirmType] = useState('moveList');
+
+  const formatData = useCallback(
+    (content) => ({
+      ...content,
+      paymentMethod: `CMS`,
+      id: content.accountId,
+      createdAt: content.createdAt.split('T')[0],
+    }),
+    [],
+  );
 
   // 서버에 데이터 요청
   useEffect(() => {
     const fetch = async (paymentId, setAccessToken, accessToken) => {
       const response = await getCustomerPaymentDetail(paymentId, setAccessToken, accessToken);
-      //   setData(() => ({ ...response.data }));
-      console.log(customerId, paymentId);
-      setData(DUMMY);
+      const formattedContent = formatData(response.data);
+      setData(() => formattedContent);
+      setBankCodeIndex(bankCodeIndexInfo[response.data.bankCode].index);
     };
+
     fetch(paymentId, setAccessToken, accessToken);
   }, []);
 
@@ -87,6 +90,7 @@ export const useCustomerPaymentDetail = ({
 
   return {
     data,
+    bankCodeIndex,
     checkMoveList,
     checkDeleteContent,
     scuccessCloseAutoCloseModal,

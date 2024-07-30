@@ -157,13 +157,13 @@ const OrderComponent = () => {
       addressId: selectedAddress.addressId,
       accountId: paymentMethods.find((method) => method.isChecked).id,
       eventId: selectedCoupon ? selectedCoupon.id : null,
-      monthOptionId: null,
-      weekOptionId: null,
+      monthOptionValue: null,
+      weekOptionValue: null,
       orderType: 'ONETIME',
       totalDeliveryCount: null,
       deliveryStartDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       orderedProducts: orderedProducts,
-      dayOptionIds: null,
+      dayValueTypeList: null,
     };
 
     // 비밀번호 인증 페이지로 이동하면서 주문 데이터 전달

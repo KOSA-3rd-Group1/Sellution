@@ -1,14 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '@/client/store/stores/useAuthStore';
-import useUserInfoStore from '@/client/store/stores/useUserInfoStore';
 import { logout } from '@/client/utility/apis/layout/logoutApi';
 
 export const useNavbar = () => {
   const navigate = useNavigate();
 
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
-  const name = useUserInfoStore((state) => state.name);
 
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -34,5 +32,5 @@ export const useNavbar = () => {
     navigate('/login');
   };
 
-  return { name, isOpen, dropdownRef, toggleDropdown, selectLogoutBtn };
+  return { isOpen, dropdownRef, toggleDropdown, selectLogoutBtn };
 };
