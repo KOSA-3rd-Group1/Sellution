@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.sellution.server.client.application.ClientService;
 import shop.sellution.server.client.dto.request.*;
+import shop.sellution.server.client.dto.response.FindCurrentClientInfoRes;
 import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
 
@@ -39,9 +40,9 @@ public class ClientController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<Map<String, String>> getCurrentUser() {
-        String name = clientService.getCurrentUsername();
-        return ResponseEntity.status(HttpStatus.OK).body(Map.of("name", name));
+    public ResponseEntity<Map<String, FindCurrentClientInfoRes>> getCurrentUser() {
+        FindCurrentClientInfoRes response = clientService.getCurrentUserInfo();
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("data", response));
     }
 
     @PostMapping("/find-id")

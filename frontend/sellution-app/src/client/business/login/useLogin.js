@@ -7,7 +7,7 @@ import { login } from '@/client/utility/apis/login/loginApi';
 export const useLogin = () => {
   const navigate = useNavigate();
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
-  const setName = useUserInfoStore((state) => state.setName);
+  const setUserInfo = useUserInfoStore((state) => state.setUserInfo);
 
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
@@ -33,7 +33,7 @@ export const useLogin = () => {
       setError('');
       setIsLoading(true);
       try {
-        const success = await login(username, password, setAccessToken, setName);
+        const success = await login(username, password, setAccessToken, setUserInfo);
         if (success) {
           navigate('/home'); // 로그인 성공 시 홈으로 이동
         } else {

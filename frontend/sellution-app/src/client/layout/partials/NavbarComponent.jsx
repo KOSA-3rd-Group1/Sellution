@@ -9,7 +9,7 @@ import {
 } from '@/client/utility/assets/Icons';
 
 const NavbarComponent = (props) => {
-  const { name, isOpen, dropdownRef, toggleDropdown, selectLogoutBtn } = useNavbar();
+  const { isOpen, dropdownRef, toggleDropdown, selectLogoutBtn } = useNavbar();
 
   return (
     <nav className='w-full h-full flex justify-between items-center bg-navbarBackground'>
@@ -45,7 +45,7 @@ const NavbarComponent = (props) => {
                 onClick={toggleDropdown}
                 className='w-full h-full px-2 truncate text-xs bg-gray-500 hover:bg-gray-400 focus:ring-2 focus:ring-gray-200 rounded-lg'
               >
-                {name}
+                {props.userName}
               </button>
               {isOpen && (
                 <div className='absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg text-center'>

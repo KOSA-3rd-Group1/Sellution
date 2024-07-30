@@ -5,7 +5,7 @@ const API_URL_1 = '/login';
 const API_URL_2 = '/clients/me';
 
 // 로그인 기능
-export const login = async (username, password, setAccessToken, setName) => {
+export const login = async (username, password, setAccessToken, setUserInfo) => {
   try {
     // 로그인
     let instance = await BaseInstance('FORM');
@@ -24,7 +24,7 @@ export const login = async (username, password, setAccessToken, setName) => {
     instance = await addAuthInterceptor(newInstance, setAccessToken, accessToken);
     const newResponse = await instance.get(API_URL_2);
 
-    setName(newResponse.data.name);
+    setUserInfo(newResponse.data.data);
     return true;
   } catch (error) {
     console.error('Login faild:', error);

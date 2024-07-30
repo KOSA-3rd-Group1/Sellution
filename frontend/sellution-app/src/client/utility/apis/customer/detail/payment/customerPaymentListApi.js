@@ -5,13 +5,12 @@ const API_URL = '/accounts';
 
 // 회원의 결제수단 목록 조회
 export const getCustomerPaymentList = async (customerId, setAccessToken, accessToken) => {
-  let responseData = null;
-
+  let response = null;
   const url = `${API_URL}/customers/${customerId}`;
 
   let instance = await BaseInstance();
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
 
-  responseData = await instance.get(url);
-  return responseData;
+  response = await instance.get(url);
+  return response;
 };

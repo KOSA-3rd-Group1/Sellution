@@ -20,6 +20,7 @@ const ListComponent = () => {
   } = useMove();
   const {
     data,
+    totalPages,
     totalDataCount,
     tableState,
     dateRangeValue,
@@ -29,7 +30,6 @@ const ListComponent = () => {
     handleFilterReset,
     handleToggleAutoOrderApproved,
     handleApproveAllSimpleOrderBtn,
-    // handleRowEvent,
   } = useOrderList({ queryParams, page, size, refresh, updateQueryParameter });
 
   return (
@@ -72,7 +72,11 @@ const ListComponent = () => {
           />
         </div>
         <div className='h-12 flex-none flex justify-end items-end '>
-          <Pagination totalDataCount={totalDataCount} />
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            moveToPagination={moveToPagination}
+          />
         </div>
       </section>
     </div>

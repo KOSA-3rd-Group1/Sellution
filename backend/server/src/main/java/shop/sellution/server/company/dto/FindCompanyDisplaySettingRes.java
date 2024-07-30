@@ -41,7 +41,7 @@ public class FindCompanyDisplaySettingRes {
 
         return FindCompanyDisplaySettingRes.builder()
                 .companyId(company.getCompanyId())
-                .displayName(company.getName())
+                .displayName(company.getDisplayName())
                 .themeColor(company.getThemeColor())
                 .serviceType(company.getServiceType())
                 .mainPromotion1Title(company.getMainPromotion1Title())
