@@ -8,6 +8,7 @@ import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.WeekOption;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WeekOptionRepository extends JpaRepository<WeekOption, Long> {
     List<WeekOption> findByCompany(Company company);
@@ -18,4 +19,13 @@ public interface WeekOptionRepository extends JpaRepository<WeekOption, Long> {
     void deleteByCompany(Company company);
 
     List<WeekOption> findAllByCompany(Company company);
+
+    @Query(
+            """
+                    select w from WeekOption w
+                    where w.company = :company
+                    and w.weekValue = :weekValue
+                    """
+    )
+    Optional<WeekOption> findByCompanyAndDayValue(Company company, Integer weekValue);
 }

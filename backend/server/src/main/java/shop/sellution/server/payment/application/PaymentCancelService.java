@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import shop.sellution.server.account.application.AccountServiceImpl;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.customer.domain.Customer;
@@ -48,6 +49,7 @@ public class PaymentCancelService {
     private final PaymentUtil paymentUtil;
     private final SmsService smsService;
     private final CustomerRepository customerRepository;
+    private final AccountServiceImpl accountService;
     private final Duration TIMEOUT = Duration.ofSeconds(2);
 
 
@@ -69,6 +71,8 @@ public class PaymentCancelService {
         }
         int payCost = paymentUtil.calculateRefundCost(order);
         String token = pgTokenClient.getApiAccessToken(payCost, TokenType.PAYMENT_CANCEL);
+        String decryptedAccountNumber = accountService.getDecryptedAccountNumber(account.getAccountNumber());
+        log.info("결제 계좌번호 복호화 완료 {}",decryptedAccountNumber);
 
         ResponseEntity<Void> response = webClient.post()
                 .uri("/pay/cancel")
@@ -76,7 +80,7 @@ public class PaymentCancelService {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(Map.of(
                         "bankCode", account.getBankCode(),
-                        "accountNumber", account.getAccountNumber(),
+                        "accountNumber", decryptedAccountNumber,
                         "price", Integer.toString(payCost)
                 ))
                 .retrieve()

@@ -24,8 +24,6 @@ public interface OrderRepository extends
             select o from Order o
             left join fetch o.customer
             left join fetch o.address
-            left join fetch o.monthOption
-            left join fetch o.weekOption
             left join fetch o.couponEvent
             where o.customer.id = :customerId
             """)

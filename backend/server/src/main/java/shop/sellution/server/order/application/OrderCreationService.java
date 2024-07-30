@@ -15,6 +15,7 @@ import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.company.domain.repository.DayOptionRepository;
 import shop.sellution.server.company.domain.repository.MonthOptionRepository;
 import shop.sellution.server.company.domain.repository.WeekOptionRepository;
+import shop.sellution.server.company.domain.type.DayValueType;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.event.domain.CouponEvent;
@@ -38,7 +39,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -75,19 +75,19 @@ public class OrderCreationService {
 
         // 단건주문 생성시 예외처리
         if (saveOrderReq.getOrderType().isOnetime()) {
-            if (saveOrderReq.getMonthOptionId() != null || saveOrderReq.getWeekOptionId() != null) {
+            if (saveOrderReq.getMonthOptionValue() != null || saveOrderReq.getWeekOptionValue() != null) {
                 throw new BadRequestException(INVALID_ORDER_INFO_FOR_ONETIME);
             }
         }
         // 정기주문[월] 생성시 예외처리
         if (saveOrderReq.getOrderType().isMonthSubscription()) {
-            if (saveOrderReq.getMonthOptionId() == null || saveOrderReq.getWeekOptionId() == null) {
+            if (saveOrderReq.getMonthOptionValue() == null || saveOrderReq.getWeekOptionValue() == null) {
                 throw new BadRequestException(INVALID_ORDER_INFO_FOR_SUB);
             }
         }
         // 정기주문[횟수] 생성시 예외처리
         if (saveOrderReq.getOrderType().isCountSubscription()) {
-            if (saveOrderReq.getWeekOptionId() == null || saveOrderReq.getTotalDeliveryCount() == null) {
+            if (saveOrderReq.getWeekOptionValue() == null || saveOrderReq.getTotalDeliveryCount() == null) {
                 throw new BadRequestException(INVALID_ORDER_INFO_FOR_SUB);
             }
         }
@@ -114,12 +114,12 @@ public class OrderCreationService {
         WeekOption weekOption = null;
 
 
-        if (saveOrderReq.getMonthOptionId() != null) {
-            monthOption = monthOptionRepository.findById(saveOrderReq.getMonthOptionId())
+        if (saveOrderReq.getMonthOptionValue() != null) {
+            monthOption = monthOptionRepository.findByCompanyAndDayValue(company,saveOrderReq.getMonthOptionValue())
                     .orElseThrow(() -> new BadRequestException(NOT_FOUND_MONTH_OPTION));
         }
-        if (saveOrderReq.getWeekOptionId() != null) {
-            weekOption = weekOptionRepository.findById(saveOrderReq.getWeekOptionId())
+        if (saveOrderReq.getWeekOptionValue() != null) {
+            weekOption = weekOptionRepository.findByCompanyAndDayValue(company,saveOrderReq.getWeekOptionValue())
                     .orElseThrow(() -> new BadRequestException(NOT_FOUND_WEEK_OPTION));
         }
 
@@ -129,7 +129,7 @@ public class OrderCreationService {
                 saveOrderReq.getOrderType(),
                 monthOption,
                 weekOption,
-                saveOrderReq.getDayOptionIds(),
+                saveOrderReq.getDayValueTypeList(),
                 saveOrderReq.getTotalDeliveryCount()
         );
 
@@ -144,8 +144,8 @@ public class OrderCreationService {
                 .account(account)
                 .address(address)
                 .couponEvent(couponEvent)
-                .monthOption(monthOption)
-                .weekOption(weekOption)
+                .monthOptionValue(monthOption == null ? null : monthOption.getMonthValue())
+                .weekOptionValue(weekOption == null ? null : weekOption.getWeekValue())
                 .code(orderCodeMaker())
                 .type(saveOrderReq.getOrderType())
                 .status(company.getIsAutoApproved().name().equals("Y")? OrderStatus.APPROVED : OrderStatus.HOLD)
@@ -165,9 +165,15 @@ public class OrderCreationService {
         List<OrderedProduct> orderedProducts = createOrderedProducts(order, products, saveOrderReq.getOrderedProducts());
         order.setOrderedProducts(orderedProducts);
 
-        // SelectedDay 엔티티 생성 및 연결
-        List<SelectedDay> selectedDays = createSelectedDays(order, saveOrderReq.getDayOptionIds());
-        order.setSelectedDays(selectedDays);
+        if (saveOrderReq.getDayValueTypeList() != null && !saveOrderReq.getDayValueTypeList().isEmpty()) {
+            // SelectedDay 엔티티 생성 및 연결
+            List<SelectedDay> selectedDays = createSelectedDays(order, saveOrderReq.getDayValueTypeList());
+            order.setSelectedDays(selectedDays);
+        }
+        else{
+            order.setSelectedDays(null);
+        }
+
 
         PayInfo payInfo = paymentUtil.calculatePayCost(order, order.getDeliveryStartDate());
         order.setThisMonthDeliveryCount(payInfo.getDeliveryCount());
@@ -224,13 +230,11 @@ public class OrderCreationService {
 
     }
 
-    private List<SelectedDay> createSelectedDays(Order order, List<Long> dayOptionIds) {
-        List<DayOption> dayOptions = dayOptionRepository.findByIdIn(dayOptionIds);
-        return dayOptions.stream()
-                .map(dayOption -> {
+    private List<SelectedDay> createSelectedDays(Order order, List<DayValueType> dayValueTypeList) {
+        return dayValueTypeList.stream()
+                .map(dayValueType -> {
                     return SelectedDay.builder()
-                            .id(new SelectedDayId(order.getId(), dayOption.getId()))
-                            .dayOption(dayOption)
+                            .dayValueType(dayValueType)
                             .order(order)
                             .build();
                 })
@@ -305,7 +309,7 @@ public class OrderCreationService {
             OrderType orderType,
             MonthOption monthOption,
             WeekOption weekOption,
-            List<Long> dayOptionIds,
+            List<DayValueType> dayValueTypeList,
             Integer totalDeliveryCount
     ) {
 
@@ -318,15 +322,14 @@ public class OrderCreationService {
             return new DeliveryInfo(ONETIME, deliveryStartDate, deliveryStartDate.plusDays(3)); // 단건주문은 3일 후 배송
         }
 
-        if (weekOption == null || dayOptionIds.isEmpty()) {
+        if (weekOption == null || dayValueTypeList.isEmpty()) {
             throw new BadRequestException(INVALID_ORDER_TYPE);
         }
 
         int weekly = weekOption.getWeekValue(); // n 주 마다 배송
         // 선택된 요일값 [월,화,수 ... ]
-        List<DayOption> dayOptions = dayOptionRepository.findByIdIn(dayOptionIds);
-        List<DayOfWeek> deliveryDays = dayOptions.stream()
-                .map((dayOption -> dayOption.getDayValue().changeToDayOfWeek()))
+        List<DayOfWeek> deliveryDays = dayValueTypeList.stream()
+                .map((DayValueType::changeToDayOfWeek))
                 .sorted()
                 .toList();
 
