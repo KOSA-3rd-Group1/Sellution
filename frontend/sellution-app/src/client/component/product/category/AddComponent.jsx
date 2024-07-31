@@ -5,16 +5,8 @@ import useCategoryAdd from '@/client/business/product/category/useCategoryAdd';
 import AlertModal from '@/client/layout/common/modal/AlertModal';
 
 const AddComponent = () => {
-  const AddComponent = () => {
-    const {
-      categoryName,
-      handleCategoryNameChange,
-      checkDuplicate,
-      handleSubmit,
-      moveList,
-      isChecked,
-      isAvailable,
-    } = useCategoryAdd();
+  const { categoryName, handleCategoryNameChange, checkDuplicate, handleSubmit, moveList } =
+    useCategoryAdd();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({});
@@ -37,47 +29,16 @@ const AddComponent = () => {
     setIsModalOpen(true);
   };
 
- 
-
   const handleCategorySubmit = async () => {
-    if (!isChecked) {
-      setModalConfig({
-        type: 'warning',
-        title: '중복 확인 필요',
-        message: '중복 확인을 한 후 카테고리 등록을 해주세요.',
-      });
-      setIsModalOpen(true);
-      return;
-    }
-
-    if (!isAvailable) {
-      setModalConfig({
-        type: 'error',
-        title: '등록 실패',
-        message: '중복된 카테고리 이름입니다. 카테고리 이름을 다시 입력해주세요.',
-      });
-      setIsModalOpen(true);
-      return;
-    }
-
-    const isSuccess = await handleSubmit();
-    if (isSuccess) {
-      setModalConfig({
-        type: 'success',
-        title: '등록 완료',
-        message: '카테고리가 성공적으로 등록되었습니다.',
-        onClose: moveList,
-      });
-    } else {
-      setModalConfig({
-        type: 'error',
-        title: '등록 실패',
-        message: '카테고리 등록 중 오류가 발생했습니다. 다시 시도해주세요.',
-      });
-    }
+    const result = await handleSubmit();
+    setModalConfig({
+      type: result.type,
+      title: result.type === 'success' ? '등록 완료' : '등록 실패',
+      message: result.message,
+      onClose: result.type === 'success' ? moveList : () => setIsModalOpen(false),
+    });
     setIsModalOpen(true);
   };
-
 
   return (
     <div className='relative w-full h-full flex flex-col'>

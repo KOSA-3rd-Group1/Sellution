@@ -68,12 +68,11 @@ const SubscriptionDeliverySetting = ({
   const isDaySelectable = (day) => dayValues.some((dayValue) => dayValue.value === day);
   const weekDays = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
 
-
   return (
     <div className='mb-6 bg-white py-4 w-[90%] space-y-5'>
       <span className='block py-2 mb-2 font-bold'>정기 배송 설정</span>
       <div>
-        <h3 className='text-brandOrange mb-2'>* 배송 요일</h3>
+        <h3 className='text-primary mb-2'>* 배송 요일</h3>
         <div className='flex justify-between'>
           {weekDays.map((day) => (
             <button
@@ -81,7 +80,7 @@ const SubscriptionDeliverySetting = ({
               onClick={() => isDaySelectable(day) && toggleDay(day)}
               className={`w-12 h-12 rounded-lg flex items-center justify-center ${
                 selectedDays && selectedDays.includes(day)
-                  ? 'bg-orange-500 text-white'
+                  ? 'bg-primary text-white'
                   : isDaySelectable(day)
                     ? 'border border-gray-300 text-gray-500'
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
@@ -95,7 +94,7 @@ const SubscriptionDeliverySetting = ({
       </div>
 
       <div className='mb-4 relative'>
-        <h3 className='text-brandOrange mb-2'>* 배송 주기</h3>
+        <h3 className='text-primary mb-2'>* 배송 주기</h3>
         <div
           className='w-full p-2 border border-gray-300 rounded cursor-pointer bg-white flex items-center justify-between'
           onClick={() => handleDropdownClick(setIsWeekOpen)}
@@ -124,7 +123,7 @@ const SubscriptionDeliverySetting = ({
 
       {subscriptionType === 'COUNT' ? (
         <div className='mb-4 relative'>
-          <h3 className='text-brandOrange mb-2'>* 배송 횟수</h3>
+          <h3 className='text-primary mb-2'>* 배송 횟수</h3>
           <div
             className='w-full p-2 border border-gray-300 rounded cursor-pointer bg-white flex items-center justify-between'
             onClick={() => handleDropdownClick(setIsCountOpen)}
@@ -155,7 +154,7 @@ const SubscriptionDeliverySetting = ({
         </div>
       ) : (
         <div className='mb-4 relative'>
-          <h3 className='text-brandOrange mb-2'>* 정기배송 기간</h3>
+          <h3 className='text-primary mb-2'>* 정기배송 기간</h3>
           <div
             className='w-full p-2 border border-gray-300 rounded cursor-pointer bg-white flex items-center justify-between'
             onClick={() => handleDropdownClick(setIsMonthOpen)}
@@ -184,7 +183,7 @@ const SubscriptionDeliverySetting = ({
       )}
 
       <div>
-        <h3 className='text-brandOrange mb-2'>* 배송 시작일</h3>
+        <h3 className='text-primary mb-2'>* 배송 시작일</h3>
         <input
           type='date'
           className='w-full p-2 border rounded'

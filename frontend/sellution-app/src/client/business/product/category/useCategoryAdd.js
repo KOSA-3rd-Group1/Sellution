@@ -28,33 +28,49 @@ const useCategoryAdd = () => {
 
   const checkDuplicate = async () => {
     if (!companyId) {
-      setErrorMessage('Company ID is not available. Please try again later.');
-      return;
+      setErrorMessage('회사 ID를 사용할 수 없습니다. 나중에 다시 시도해주세요.');
+      return { type: 'error', message: '회사 ID를 사용할 수 없습니다. 나중에 다시 시도해주세요.' };
+    }
+    if (!categoryName.trim()) {
+      return { type: 'error', message: '카테고리명을 입력해주세요.' };
     }
     try {
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories/check`, {
         params: { name: categoryName, companyId: companyId },
       });
       setIsChecked(true);
-      if (response.data) {
+      if (response.data.exists) {
+        // 서버 응답 구조에 따라 수정
         setIsAvailable(false);
-        setErrorMessage('이미 존재하는 카테고리입니다.');
+        return {
+          type: 'error',
+          message: '이미 존재하는 카테고리입니다. 다른 이름을 사용해주세요.',
+        };
       } else {
         setIsAvailable(true);
-        setErrorMessage('');
+        return { type: 'success', message: '사용 가능한 카테고리 이름입니다.' };
       }
     } catch (error) {
       console.error('중복 확인 중 오류 발생:', error);
+      return { type: 'error', message: '중복 확인 중 오류가 발생했습니다.' };
     }
   };
 
   const handleSubmit = async () => {
-    if (!isChecked || !isAvailable) {
-      return;
+    if (!categoryName.trim()) {
+      return { type: 'error', message: '카테고리명을 입력해주세요.' };
+    }
+    if (!isChecked) {
+      return { type: 'warning', message: '중복 확인을 한 후 카테고리 등록을 해주세요.' };
+    }
+    if (!isAvailable) {
+      return {
+        type: 'error',
+        message: '중복된 카테고리 이름입니다. 카테고리 이름을 다시 입력해주세요.',
+      };
     }
     if (!companyId) {
-      alert('Company ID is not available. Please try again later.');
-      return;
+      return { type: 'error', message: 'Company ID is not available. Please try again later.' };
     }
 
     try {
@@ -62,14 +78,12 @@ const useCategoryAdd = () => {
         name: categoryName,
         companyId: companyId,
       });
-      return true;
-      // moveList();
+      return { type: 'success', message: '카테고리가 성공적으로 등록되었습니다.' };
     } catch (error) {
       console.error('카테고리 등록 중 오류 발생:', error);
-      setErrorMessage('카테고리 등록에 실패했습니다.');
+      return { type: 'error', message: '카테고리 등록에 실패했습니다.' };
     }
   };
-
   const moveList = () => {
     navigate('/product/category');
   };
@@ -81,6 +95,8 @@ const useCategoryAdd = () => {
     handleSubmit,
     moveList,
     errorMessage,
+    isChecked,
+    isAvailable,
   };
 };
 

@@ -405,13 +405,13 @@ const DetailComponent = () => {
                 {/* 재고 입력 */}
                 <div className='flex items-center'>
                   <label className='w-1/4 text-sm font-medium'>재고</label>
-                  <div className='flex-1 flex items-center ml-4'>
+                  <div className='flex-1 flex items-center justify-end ml-4'>
                     <input
                       type='text'
                       name='stock'
                       value={productInfo.stock}
                       onChange={handleInputChange}
-                      className='flex-grow border p-2 rounded-md'
+                      className='w-full max-w-xs border p-2 rounded-md text-right'
                       placeholder='상품 재고를 입력해주세요.'
                     />
                     <span className='ml-2'>건</span>

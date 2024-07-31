@@ -291,7 +291,6 @@ const AddComponent = () => {
                           productInfo.cost - (productInfo.cost * productInfo.discountRate) / 100,
                         )
                       : '- 원'}
-                    원
                   </span>
                 </div>
               </div>
