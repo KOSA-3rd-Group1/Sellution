@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { getMyCouponList } from './../../../utility/apis/mypage/coupon/couponApi';
 import useAuthStore from '@/shopping/store/stores/useAuthStore';

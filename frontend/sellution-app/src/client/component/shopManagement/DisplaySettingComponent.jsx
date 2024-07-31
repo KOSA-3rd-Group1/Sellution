@@ -21,8 +21,6 @@ const DisplaySettingComponent = () => {
     selectedLogoImg,
     promotionImg,
     selectedPromotionImg,
-    themeColor,
-    serviceType,
     setLogoImg,
     setSelectedLogoImg,
     setPromotionImg,
@@ -30,7 +28,6 @@ const DisplaySettingComponent = () => {
     handleChangeInputValue,
     handleChangePromotionImg,
     handleChangeLogoImg,
-    handleChangeThemeColor,
     handleUploadSuccess,
     handleBeforeRemove,
     handleEditImage,
@@ -39,7 +36,10 @@ const DisplaySettingComponent = () => {
   } = useShopManagementDisplaySetting({ openAlertModal, openAutoCloseModal, closeAutoCloseModal });
 
   return (
-    <div className='relative w-full h-full justify-between'>
+    <div
+      className='relative w-full h-full justify-between'
+      data-theme={`Custom${data.themeColor}Theme`}
+    >
       <section className='absolute w-full h-[calc(100%-58px)] p-2 flex flex-col overflow-y-auto'>
         <div className='flex gap-10 px-4'>
           <div className='w-1/2 min-w-fit'>
@@ -143,7 +143,7 @@ const DisplaySettingComponent = () => {
               <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
                 <div className='flex-1 min-w-32'>포인트 컬러</div>
                 <div className='flex-1 min-w-64'>
-                  <ColorPalette data={themeColor} onDataChange={handleChangeThemeColor} />
+                  <ColorPalette data={data.themeColor} onDataChange={handleChangeInputValue} />
                 </div>
               </li>
             </ul>
@@ -154,8 +154,7 @@ const DisplaySettingComponent = () => {
                 data={data}
                 logoImg={logoImg}
                 promotionImg={promotionImg}
-                themeColor={themeColor}
-                serviceType={serviceType}
+                serviceType={data.serviceType}
               />
             </div>
           </div>

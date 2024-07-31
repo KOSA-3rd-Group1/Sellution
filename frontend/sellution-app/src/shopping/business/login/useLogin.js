@@ -44,12 +44,8 @@ export const useLogin = () => {
       try {
         const success = await login(username, password, companyId, setAccessToken, setAllUserData);
         if (success) {
-          const redirectUrl = new URLSearchParams(location.search).get('redirectUrl');
-          if (redirectUrl) {
-            navigate(redirectUrl); //로그인 성공 후 저장된 url로 이동
-          } else {
-            navigate(`/shopping/${name}/home`); // 기본적으로 홈으로 이동
-          }
+          const from = location.state?.from || `/shopping/${name}/home`;
+          navigate(from); // 로그인 성공 후 저장된 url로 이동
         } else {
           setError('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
         }

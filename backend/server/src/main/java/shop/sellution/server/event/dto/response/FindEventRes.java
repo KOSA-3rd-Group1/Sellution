@@ -17,6 +17,7 @@ public class FindEventRes { //회원의 이벤트 목록 조회
     private LocalDate eventStartDate;
     private LocalDate eventEndDate;
     private EventState state;
+    private Integer totalQuantity;
 
     public static FindEventRes fromEntity(CouponEvent couponEvent) {
         return FindEventRes.builder()
@@ -27,6 +28,7 @@ public class FindEventRes { //회원의 이벤트 목록 조회
                 .eventStartDate(couponEvent.getEventStartDate())
                 .eventEndDate(couponEvent.getEventEndDate())
                 .state(couponEvent.getState())
-                .build();
+                .totalQuantity(couponEvent.getTotalQuantity()
+                ).build();
     }
 }

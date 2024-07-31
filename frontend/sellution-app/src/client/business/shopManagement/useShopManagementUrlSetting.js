@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import useAuthStore from '@/client/store/stores/useAuthStore';
+import useUserInfoStore from '@/client/store/stores/useUserInfoStore';
 import {
   getUrlSetting,
   putUrlSetting,
@@ -9,6 +10,7 @@ import { ValidationError } from '@/client/utility/error/ValidationError';
 export const useShopManagementUrlSetting = ({ openAlertModal }) => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const companyId = useUserInfoStore((state) => state.companyId);
 
   const [data, setData] = useState({});
   const [isChange, setIsChange] = useState(false); // 변경상태 감지
@@ -23,7 +25,6 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
       setData(() => ({ ...response.data }));
     };
 
-    const companyId = 1;
     fetch(companyId, setAccessToken, accessToken);
   }, [refresh]);
 

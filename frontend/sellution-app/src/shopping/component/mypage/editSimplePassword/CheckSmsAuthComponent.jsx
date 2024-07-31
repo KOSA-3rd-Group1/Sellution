@@ -77,11 +77,12 @@ const CheckSmsAuthComponent = () => {
   };
 
   return (
-    <div className='flex flex-col  '>
-      <MenuHeaderNav title='휴대폰 인증' />
-      <div className='flex-grow flex items-center justify-center px-4 py-8'>
-        <div className='w-full max-w-md bg-white p-8 rounded-lg shadow-md'>
-          <h1 className='text-2xl font-bold text-center mb-6'>휴대폰 인증</h1>
+    <>
+      <MenuHeaderNav title='간편 비밀번호 설정' />
+      <div className='w-full flex justify-center'>
+        <div className='w-[90%] bg-white p-8 rounded-lg shadow-md mt-8'>
+          <h1 className='text-xl font-bold text-center mb-6'>휴대폰 인증</h1>
+
           <div className='space-y-4'>
             <div>
               <label className='block text-sm font-medium text-gray-700 mb-1'>
@@ -110,7 +111,7 @@ const CheckSmsAuthComponent = () => {
                 />
                 <button
                   onClick={handleRequestAuth}
-                  className='bg-brandOrange text-white px-4 py-2 rounded-r hover:bg-orange-600 transition duration-300'
+                  className='bg-brandOrange text-white px-4 py-2 rounded-r hover:bg-orange-600 transition duration-300 text-sm'
                 >
                   {step === 1 ? '인증번호 발급' : '인증번호 재발급'}
                 </button>
@@ -133,7 +134,7 @@ const CheckSmsAuthComponent = () => {
                   />
                   <button
                     onClick={handleVerify}
-                    className='bg-brandOrange text-white px-4 py-2 rounded-r hover:bg-orange-600 transition duration-300'
+                    className='bg-brandOrange text-white px-4 py-2 rounded-r hover:bg-orange-600 transition duration-300 text-sm'
                     disabled={isVerified}
                   >
                     인증
@@ -167,7 +168,7 @@ const CheckSmsAuthComponent = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

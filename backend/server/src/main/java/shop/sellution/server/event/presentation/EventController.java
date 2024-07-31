@@ -36,6 +36,11 @@ public class EventController {
         Page<FindEventRes> result = eventService.findAllEvents(startDate, endDate, pageable);
         return ResponseEntity.ok(result);
     }
+    @GetMapping("/{eventId}")
+    public ResponseEntity<FindEventRes> findEvent(@PathVariable Long eventId) {
+        FindEventRes result = eventService.findEvent(eventId);
+        return ResponseEntity.ok(result);
+    }
 
     @PostMapping
     public ResponseEntity<String> saveEvent(@Valid @RequestBody SaveEventReq saveEventReq) {
@@ -55,7 +60,7 @@ public class EventController {
         return ResponseEntity.ok("success");
     }
     //회원 시점~
-    //회원이 사이트에서 현재 진행중인 쿠폰 이벤트 조회
+    //회원이 사이트에서 현재 진행중인 쿠폰 이벤트 조회 (회원 아니어도 조회는 가능)
     @GetMapping("/company/{companyId}")
     public ResponseEntity<List<FindEventRes>> findAllOngoingEvents(@PathVariable Long companyId) {
         List<FindEventRes> result = eventService.findAllOngoingEvents(companyId);
@@ -71,7 +76,7 @@ public class EventController {
         log.info("result: {}", result);
         return ResponseEntity.ok(result);
     }
-    //회원이 쿠폰 다운로드
+    //회원이 쿠폰 다운로드 (회원만 가능)
     @PostMapping("/{eventId}/coupons")
     public ResponseEntity<String> saveCoupon(@PathVariable Long eventId) {
         //회원 id 받을 예정

@@ -11,10 +11,12 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
-import useAuthStore from "@/shopping/store/stores/useAuthStore.js";
-import { getMyCouponList } from "@/shopping/utility/apis/mypage/coupon/couponApi.js";
+import { getMyCouponList } from '@/shopping/utility/apis/mypage/coupon/couponApi';
+import useAuthStore from '@/shopping/store/stores/useAuthStore';
 
 const OrderComponent = () => {
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const accessToken = useAuthStore((state) => state.accessToken);
   const navigate = useNavigate();
   const { orderList } = useOrderListStore();
   const clientName = useCompanyInfoStore((state) => state.name);
@@ -36,9 +38,6 @@ const OrderComponent = () => {
   const [productDiscountTotal, setProductDiscountTotal] = useState(0); //상품 할인 금액
   const [couponDiscountTotal, setCouponDiscountTotal] = useState(0); // 쿠폰 할인 금액
   const [finalPrice, setFinalPrice] = useState(0);
-
-  const accessToken = useAuthStore((state) => state.accessToken);
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   const [isPasswordVerified, setIsPasswordVerified] = useState(false);
   const [orderData, setOrderData] = useState(null);
@@ -78,7 +77,7 @@ const OrderComponent = () => {
 
   const handleAddPaymentMethod = () => {
     navigate(`/shopping/${clientName}/my/customerId/payment/add`, {
-      state: { returnUrl: `/shopping/${clientName}/onetime/order/${customerId}` }
+      state: { returnUrl: `/shopping/${clientName}/onetime/order/${customerId}` },
     });
   };
 
@@ -117,9 +116,9 @@ const OrderComponent = () => {
     );
     const couponDiscountTotal = selectedCoupon
       ? Math.floor(
-        listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
-        (selectedCoupon.couponDiscountRate / 100),
-      )
+          listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
+            (selectedCoupon.couponDiscountRate / 100),
+        )
       : 0;
 
     console.log('total price', total);
@@ -158,21 +157,20 @@ const OrderComponent = () => {
       addressId: selectedAddress.addressId,
       accountId: paymentMethods.find((method) => method.isChecked).id,
       eventId: selectedCoupon ? selectedCoupon.id : null,
-      monthOptionId: null,
-      weekOptionId: null,
+      monthOptionValue: null,
+      weekOptionValue: null,
       orderType: 'ONETIME',
       totalDeliveryCount: null,
       deliveryStartDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       orderedProducts: orderedProducts,
-      dayOptionIds: null,
+      dayValueTypeList: null,
     };
 
     // 비밀번호 인증 페이지로 이동하면서 주문 데이터 전달
     navigate(`/shopping/${clientName}/ordersheet/auth/${customerId}`, {
-      state: { orderData: orderData }
+      state: { orderData: orderData },
     });
   };
-
 
   useEffect(() => {
     if (location.state && location.state.passwordVerified) {
@@ -197,10 +195,9 @@ const OrderComponent = () => {
   };
   const fetchCoupons = async () => {
     try {
-      const response = await getMyCouponList(setAccessToken,accessToken);
-      setCoupons(response.data.content);
-      console.log('fetch한 쿠폰1: ', coupons);
-      console.log('fetch한 쿠폰2: ', response);
+      const response = await getMyCouponList(accessToken, setAccessToken);
+      setCoupons(response.data.content || []); // 페이지 응답에서 내용 추출
+      console.log('fetch한 쿠폰: ', coupons);
     } catch (error) {
       console.error('Error fetching coupons:', error);
     }

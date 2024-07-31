@@ -11,6 +11,7 @@ import {
   phoneNumberInServerFormat,
   formatPhoneNumber,
 } from '@/client/utility/functions/formatterFunction';
+import { formatCustomerType } from '@/client/utility/functions/customerListFunction';
 
 export const useCustomerDefault = ({
   moveToPathname,
@@ -35,6 +36,7 @@ export const useCustomerDefault = ({
       const response = await getCustomerDefault(customerId, setAccessToken, accessToken);
       setData(() => ({
         ...response.data,
+        customerType: formatCustomerType(response.data.customerType),
         customerPhoneNumber: formatPhoneNumber(response.data.customerPhoneNumber),
       }));
     };

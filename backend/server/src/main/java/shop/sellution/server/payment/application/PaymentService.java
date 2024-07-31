@@ -107,7 +107,7 @@ public class PaymentService {
             if(order.getType().isMonthSubscription()) {
                 //이 주문이 월정기주문이고, 이번달 구독기간의 끝이 총 구독기간의 끝이아니라면 결제일 갱신
                 LocalDate thisSubMonthEndDate = order.getDeliveryStartDate().plusMonths(order.getPaymentCount());
-                LocalDate subMonthEndDate = order.getDeliveryStartDate().plusMonths(order.getMonthOption().getMonthValue());
+                LocalDate subMonthEndDate = order.getDeliveryStartDate().plusMonths(order.getMonthOptionValue());
 
                 if (!thisSubMonthEndDate.isEqual(subMonthEndDate)) {
                     order.setNextPaymentDate(thisSubMonthEndDate.minusDays(7)); // 다음 결제일은 (현재결제일 + 1달)의 일주일전으로 설정
@@ -149,8 +149,8 @@ public class PaymentService {
                     .status(PaymentStatus.COMPLETE)
                     .price(payInfo.getPayAmount())
                     .type(order.getType())
-                    .totalPaymentCount(order.getMonthOption().getMonthValue())
-                    .remainingPaymentCount(order.getMonthOption().getMonthValue() - order.getPaymentCount())
+                    .totalPaymentCount(order.getMonthOptionValue())
+                    .remainingPaymentCount(order.getMonthOptionValue() - order.getPaymentCount())
                     .thisSubMonthStartDate(order.getDeliveryStartDate().plusMonths(order.getPaymentCount()-1))
                     .thisSubMonthEndDate(order.getDeliveryStartDate().plusMonths(order.getPaymentCount()))
                     .deliveryPerPrice(order.getPerPrice())

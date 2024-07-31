@@ -17,7 +17,7 @@ export const HEADERS = [
     width: 'min-w-44 w-44 max-w-44',
   },
   {
-    key: 'maxDownloadCount',
+    key: 'totalQuantity',
     label: '수량',
     type: 'none',
     width: 'min-w-44 w-44 max-w-44',

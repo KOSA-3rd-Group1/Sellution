@@ -8,8 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.account.application.AccountService;
-import shop.sellution.server.account.domain.Account;
-import shop.sellution.server.account.domain.AccountRepository;
 import shop.sellution.server.account.dto.request.SaveAccountReq;
 import shop.sellution.server.address.domain.Address;
 import shop.sellution.server.address.domain.AddressRepository;
@@ -26,13 +24,14 @@ import shop.sellution.server.contractcompany.domain.ContractCompanyRepository;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.customer.domain.type.CustomerType;
+import shop.sellution.server.event.application.EventService;
 import shop.sellution.server.event.domain.CouponEvent;
 import shop.sellution.server.event.domain.EventRepository;
 import shop.sellution.server.event.domain.type.EventState;
 import shop.sellution.server.event.domain.type.TargetCustomerType;
+import shop.sellution.server.event.dto.request.SaveEventReq;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
-import shop.sellution.server.global.util.JasyptEncryptionUtil;
 import shop.sellution.server.order.application.OrderCreationService;
 import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.order.dto.request.FindOrderedProductSimpleReq;
@@ -70,6 +69,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private final OrderCreationService orderCreationService;
     private final CompanyImageRepository companyImageRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final EventService eventService;
 
 
     private Company 포켓샐러드;
@@ -789,27 +790,27 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
             }
 
             if (orderType == OrderType.MONTH_SUBSCRIPTION) { // 정기[월] 주문이면 월, 주,요일 옵션 필수
-                orderReqBuilder.monthOptionId(monthOptions.get(random.nextInt(monthOptions.size())).getId())
-                        .weekOptionId(weekOptions.get(random.nextInt(weekOptions.size())).getId())
+                orderReqBuilder.monthOptionValue(monthOptions.get(random.nextInt(monthOptions.size())).getMonthValue())
+                        .weekOptionValue(weekOptions.get(random.nextInt(weekOptions.size())).getWeekValue())
                         .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(14)).with(TemporalAdjusters.next(DayOfWeek.MONDAY)));
             }
             if (orderType == OrderType.COUNT_SUBSCRIPTION) { // 정기[횟수] 주문이면
                 int minDeliveryCount = 포켓샐러드.getMinDeliveryCount();
                 int maxDeliveryCount = 포켓샐러드.getMaxDeliveryCount();
 
-                orderReqBuilder.weekOptionId(weekOptions.get(random.nextInt(weekOptions.size())).getId())
+                orderReqBuilder.weekOptionValue(weekOptions.get(random.nextInt(weekOptions.size())).getWeekValue())
                         .totalDeliveryCount((random.nextInt(maxDeliveryCount - minDeliveryCount + 1) + minDeliveryCount))
                         .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(14)).with(TemporalAdjusters.next(DayOfWeek.MONDAY)));
             }
             int numberOfDayOptions = random.nextInt(dayOptions.size()) + 1;
-            List<Long> selectedDayOptionIds = new ArrayList<>();
+            List<DayValueType> selectedDayValueType = new ArrayList<>();
             for (int j = 0; j < numberOfDayOptions; j++) {
                 DayOption dayOption = dayOptions.get(random.nextInt(dayOptions.size()));
-                if (!selectedDayOptionIds.contains(dayOption.getId())) {
-                    selectedDayOptionIds.add(dayOption.getId());
+                if (!selectedDayValueType.contains(dayOption.getDayValue())) {
+                    selectedDayValueType.add(dayOption.getDayValue());
                 }
             }
-            orderReqBuilder.dayOptionIds(selectedDayOptionIds);
+            orderReqBuilder.dayValueTypeList(selectedDayValueType);
             orderReqBuilder.eventId(random.nextLong(9)+1); // 이벤트 랜덤지정
 
             orderCreationService.createOrder(customer.getId(), orderReqBuilder.build());
@@ -828,125 +829,28 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     }
 
     private void createCouponEvent() {
-        // 기간이 지난 이벤트 2개
-        CouponEvent pastEvent1 = CouponEvent.builder()
-                .company(포켓샐러드)
-                .couponName("Past Event 1")
-                .couponDiscountRate(5)
-                .targetCustomerType(TargetCustomerType.ALL)
-                .eventStartDate(LocalDate.now().minusDays(30))
-                .eventEndDate(LocalDate.now().minusDays(10))
-                .state(EventState.END)
-                .isDeleted(false)
-                .initialQuantity(100)
-                .build();
-
-        CouponEvent pastEvent2 = CouponEvent.builder()
-                .company(포켓샐러드)
-                .couponName("Past Event 2")
-                .couponDiscountRate(10)
-                .targetCustomerType(TargetCustomerType.ALL)
-                .eventStartDate(LocalDate.now().minusDays(20))
-                .eventEndDate(LocalDate.now().minusDays(5))
-                .state(EventState.END)
-                .isDeleted(false)
-                .initialQuantity(100)
-                .build();
-
-        // 진행 중인 이벤트 4개
-        CouponEvent ongoingEvent1 = CouponEvent.builder()
-                .company(포켓샐러드)
-                .couponName("Ongoing Event 1")
-                .couponDiscountRate(15)
-                .targetCustomerType(TargetCustomerType.ALL)
-                .eventStartDate(LocalDate.now().minusDays(5))
-                .eventEndDate(LocalDate.now().plusDays(10))
-                .state(EventState.ONGOING)
-                .isDeleted(false)
-                .initialQuantity(100)
-                .build();
-
-        CouponEvent ongoingEvent2 = CouponEvent.builder()
-                .company(포켓샐러드)
-                .couponName("Ongoing Event 2")
-                .couponDiscountRate(20)
-                .targetCustomerType(TargetCustomerType.ALL)
-                .eventStartDate(LocalDate.now().minusDays(3))
-                .eventEndDate(LocalDate.now().plusDays(15))
-                .state(EventState.ONGOING)
-                .isDeleted(true)
-                .initialQuantity(100)
-                .build();
-
-        CouponEvent ongoingEvent3 = CouponEvent.builder()
-                .company(포켓샐러드)
-                .couponName("Ongoing Event 3")
-                .couponDiscountRate(25)
-                .targetCustomerType(TargetCustomerType.NEW)
-                .eventStartDate(LocalDate.now().minusDays(1))
-                .eventEndDate(LocalDate.now().plusDays(20))
-                .state(EventState.ONGOING)
-                .isDeleted(false)
-                .initialQuantity(100)
-                .build();
-
-        CouponEvent ongoingEvent4 = CouponEvent.builder()
-                .company(포켓샐러드)
-                .couponName("Ongoing Event 4")
-                .couponDiscountRate(30)
-                .targetCustomerType(TargetCustomerType.NORMAL)
-                .eventStartDate(LocalDate.now().minusDays(2))
-                .eventEndDate(LocalDate.now().plusDays(25))
-                .state(EventState.ONGOING)
-                .isDeleted(false)
-                .initialQuantity(100)
-                .build();
-
-        // 끝난 이벤트 3개
-        CouponEvent endedEvent1 = CouponEvent.builder()
-                .company(포켓샐러드)
-                .couponName("Ended Event 1")
-                .couponDiscountRate(10)
-                .targetCustomerType(TargetCustomerType.ALL)
-                .eventStartDate(LocalDate.now().minusDays(25))
-                .eventEndDate(LocalDate.now().minusDays(1))
-                .state(EventState.END)
-                .isDeleted(false)
-                .initialQuantity(100)
-                .build();
-
-        CouponEvent endedEvent2 = CouponEvent.builder()
-                .company(포켓샐러드)
-                .couponName("Ended Event 2")
-                .couponDiscountRate(20)
-                .targetCustomerType(TargetCustomerType.ALL)
-                .eventStartDate(LocalDate.now().minusDays(15))
-                .eventEndDate(LocalDate.now().minusDays(1))
-                .state(EventState.END)
-                .isDeleted(false)
-                .initialQuantity(100)
-                .build();
-
-        CouponEvent endedEvent3 = CouponEvent.builder()
-                .company(포켓샐러드)
-                .couponName("Ended Event 3")
-                .couponDiscountRate(30)
-                .targetCustomerType(TargetCustomerType.ALL)
-                .eventStartDate(LocalDate.now().minusDays(10))
-                .eventEndDate(LocalDate.now().minusDays(1))
-                .state(EventState.END)
-                .isDeleted(false)
-                .initialQuantity(100)
-                .build();
-
-        eventRepository.save(pastEvent1);
-        eventRepository.save(pastEvent2);
-        eventRepository.save(ongoingEvent1);
-        eventRepository.save(ongoingEvent2);
-        eventRepository.save(ongoingEvent3);
-        eventRepository.save(ongoingEvent4);
-        eventRepository.save(endedEvent1);
-        eventRepository.save(endedEvent2);
-        eventRepository.save(endedEvent3);
+        createDummyEvent("Past Event 1", LocalDate.now().plusDays(2), LocalDate.now().plusDays(11), 5, TargetCustomerType.ALL, 100, EventState.END, false);
+        createDummyEvent("Past Event 2", LocalDate.now().plusDays(7), LocalDate.now().plusDays(7), 10, TargetCustomerType.ALL, 100, EventState.END, true);
+        createDummyEvent("Ongoing Event 1", LocalDate.now().minusDays(5), LocalDate.now().plusDays(10), 15, TargetCustomerType.ALL, 2, EventState.ONGOING, false);
+        createDummyEvent("Ongoing Event 2", LocalDate.now().minusDays(3), LocalDate.now().plusDays(15), 20, TargetCustomerType.ALL, 50, EventState.ONGOING, true);
+        createDummyEvent("Ongoing Event 3", LocalDate.now().minusDays(1), LocalDate.now().plusDays(20), 25, TargetCustomerType.NEW, 100, EventState.ONGOING, false);
+        createDummyEvent("Ongoing Event 4", LocalDate.now().minusDays(2), LocalDate.now().plusDays(25), 30, TargetCustomerType.NORMAL, 100, EventState.ONGOING, false);
+        createDummyEvent("Ended Event 1", LocalDate.now().minusDays(25), LocalDate.now().minusDays(1), 10, TargetCustomerType.ALL, 100, EventState.END, true);
+        createDummyEvent("Ended Event 2", LocalDate.now().minusDays(15), LocalDate.now().minusDays(1), 20, TargetCustomerType.ALL, 100, EventState.END, false);
+        createDummyEvent("Ended Event 3", LocalDate.now().minusDays(10), LocalDate.now().minusDays(1), 30, TargetCustomerType.ALL, 100, EventState.END, false);
     }
+
+    private void createDummyEvent(String name, LocalDate startDate, LocalDate endDate, int discountRate, TargetCustomerType targetCustomerType, int totalQuantity, EventState state, boolean isDeleted) {
+        SaveEventReq saveEventReq = SaveEventReq.builder()
+                .couponName(name)
+                .eventStartDate(startDate)
+                .eventEndDate(endDate)
+                .couponDiscountRate(discountRate)
+                .targetCustomerType(targetCustomerType)
+                .totalQuantity(totalQuantity)
+                .build();
+
+        eventService.createDummyEvent(saveEventReq); //redis 데이터 생성 같이 하기위해서 service 메서드 사용
+    }
+
 }

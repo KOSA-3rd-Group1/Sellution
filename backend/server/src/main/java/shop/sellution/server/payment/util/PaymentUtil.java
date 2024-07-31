@@ -36,7 +36,7 @@ public class PaymentUtil {
                     LocalDate monday = order.getDeliveryStartDate();
                     LocalDate endDate = order.getDeliveryStartDate().plusMonths(1);
                     log.info("monday : {}, endDate : {}", monday,endDate);
-                    DeliveryInfo deliveryInfo = calculateDeliveryInfo(monday, endDate, order.getWeekOption().getWeekValue(), getDeliveryDays(order.getSelectedDays()));
+                    DeliveryInfo deliveryInfo = calculateDeliveryInfo(monday, endDate, order.getWeekOptionValue(), getDeliveryDays(order.getSelectedDays()));
                     log.info("deliveryInfo : {}", deliveryInfo);
                     yield PayInfo.builder()
                             .payAmount(order.getPerPrice() * deliveryInfo.getTotalDeliveryCount()) // 이번달 결제금액
@@ -45,7 +45,7 @@ public class PaymentUtil {
                 }else{
                     LocalDate startDate = order.getDeliveryStartDate().plusMonths(order.getPaymentCount()+1).plusDays(1);
                     LocalDate endDate = order.getDeliveryStartDate().plusMonths(order.getPaymentCount()+2);
-                    DeliveryInfo deliveryInfo = calculateDeliveryInfo(startDate, endDate, order.getWeekOption().getWeekValue(), getDeliveryDays(order.getSelectedDays()));
+                    DeliveryInfo deliveryInfo = calculateDeliveryInfo(startDate, endDate, order.getWeekOptionValue(), getDeliveryDays(order.getSelectedDays()));
                     yield PayInfo.builder()
                             .payAmount(order.getPerPrice() * deliveryInfo.getTotalDeliveryCount()) // 이번달 결제금액
                             .deliveryCount(deliveryInfo.getTotalDeliveryCount()) // 이번달 배송횟수
@@ -67,7 +67,7 @@ public class PaymentUtil {
                     startDate = LocalDate.now().plusDays(1);
                 }
                 LocalDate endDate = order.getDeliveryStartDate().plusMonths(order.getPaymentCount());
-                DeliveryInfo deliveryInfo = calculateDeliveryInfo(startDate, endDate, order.getWeekOption().getWeekValue(), getDeliveryDays(order.getSelectedDays()));
+                DeliveryInfo deliveryInfo = calculateDeliveryInfo(startDate, endDate, order.getWeekOptionValue(), getDeliveryDays(order.getSelectedDays()));
                 log.info("환불정보 시작일 : {}, 종료일 : {}, 배송정보 : {}, 배송한건당 가격 :{}", startDate, endDate, deliveryInfo, order.getPerPrice());
                 yield (order.getPerPrice() * deliveryInfo.getTotalDeliveryCount());
             }
@@ -113,7 +113,7 @@ public class PaymentUtil {
 
     public Set<DayOfWeek> getDeliveryDays(List<SelectedDay> selectedDays) {
         return selectedDays.stream()
-                .map(sd -> sd.getDayOption().getDayValue().changeToDayOfWeek())
+                .map(sd -> sd.getDayValueType().changeToDayOfWeek())
                 .collect(Collectors.toCollection(() -> EnumSet.noneOf(DayOfWeek.class)));
     }
 
