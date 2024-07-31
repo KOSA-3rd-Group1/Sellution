@@ -3,7 +3,12 @@ import useDebounce from '@/client/business/common/useDebounce';
 import useAuthStore from '@/client/store/stores/useAuthStore';
 import useUserInfoStore from '@/client/store/stores/useUserInfoStore';
 import useTableStore from '@/client/store/stores/useTableStore';
-import { getOrderList } from '@/client/utility/apis/order/orderListApi';
+import {
+  getOrderList,
+  postApproveOrder,
+  postAutoApproveToggle,
+  postCancleOrder,
+} from '@/client/utility/apis/order/orderListApi';
 import { formatPhoneNumber } from '@/client/utility/functions/formatterFunction';
 import {
   formatOrderType,
@@ -14,42 +19,6 @@ import {
   transformDeliveryStatus,
 } from '@/client/utility/functions/orderListFunction';
 import { HEADERS } from '@/client/utility/tableinfo/CustomerListTableInfo';
-import { postApproveOrder, postAutoApproveToggle } from '../../utility/apis/order/orderListApi';
-
-// 더미 데이터 생성 함수
-// const generateDummyData = (count) => {
-//   return Array.from({ length: count }, (_, index) => ({
-//     id: index + 1,
-//     orderId: `${Math.floor(1000 + Math.random() * 9000)}`,
-//     customerId: `${Math.floor(1000 + Math.random() * 9000)}`,
-//     orderCode: `${Math.floor(10000000000000 + Math.random() * 90000000000000)}`,
-//     username: `User ${index + 1}`,
-//     name: `User ${index + 1}`,
-//     phoneNumber: `010-${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`,
-//     createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
-//       .toISOString()
-//       .split('T')[0],
-//     product: `product items ... ${index + 1}`,
-//     type: ['단건', '정기 (월 단위)', '정기 (횟수 단위)'][Math.floor(Math.random() * 3)],
-//     status: ['주문 취소', '승인 대기', '주문 승인'][Math.floor(Math.random() * 3)],
-//   }));
-// };
-
-//orderId
-//customerId
-// 아래는 테이블에 들어갈 것
-//No
-//code, 주문번호 14자리, 검색 150
-//username 회원 아이디, 검색 180
-//name, 회원명, 검색 150
-//phoneNumber휴대폰번호, 검색 180
-//createdAt, 주문등록일 130
-//product, 상품 260
-//type, 주문유형, [ONETIME, MONTH_SUBSCRIPTION, COUNT_SUBSCRIPTION],선택 130
-//status, 주문상태, [HOLD, APPROVED, CANCEL] 130
-
-//더미 데이터
-// const DUMMY_DATA = generateDummyData(10);
 
 export const useOrderList = ({ queryParams, page, size, refresh, updateQueryParameter }) => {
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -67,12 +36,10 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
     clearTable: state.clearTable,
   }));
 
-  console.log('tables', tables);
-
   const [data, setData] = useState([]); // 테이블 데이터
   const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수
   const [totalDataCount, setTotalDataCount] = useState(0); // 데이터 총 개수
-  const [orderInfo, setOrderInfo] = useState({});
+  const [orderInfo, setOrderInfo] = useState({}); // 주문 취소를 위한 주문 데이터
   const [isDataChange, setIsDataChange] = useState(false);
 
   // 테이블 상태 관리 - 검색, 필터, 정렬 기능
@@ -200,16 +167,14 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
         const formattedContent = content.map((item, index) => {
           return formatData(item, index, pageable.pageNumber, size);
         });
-        // const newOrderInfo = {}
-        // content.forEach((item) => {
-        // 	newOrderInfo[item.orderId] = {
-        // 		customerId: item.customer.id,
-        // 		accountId: item
-        // 	}
-        // })
-        // const data = content.map((item, index) => {
-        // 	return {customerId: item.customerId, accountId}
-        // })
+        const newOrderInfo = {};
+        content.forEach((item) => {
+          newOrderInfo[item.orderId] = {
+            customerId: item.customer.id,
+            accountId: item.accountId,
+          };
+        });
+        setOrderInfo(() => ({ ...newOrderInfo }));
         setData(() => formattedContent);
         setTotalDataCount(totalElements);
         setTotalPages(totalPages);
@@ -251,7 +216,7 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
     }
   };
 
-  // 간편 주문 승인 이벤트 (작업해야 할 부분: 간편 주문 승인 시, 서버로 api 요청, 이후 응답 받아서 성공하면 해당 데이터 변경)
+  // 간편 주문 승인 일괄 처리(수정 필요)
   const handleApproveAllSimpleOrderBtn = async () => {
     if (tables !== undefined) {
       //   total
@@ -260,12 +225,14 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
           await handleApproveSimpleOrder(key);
         }
       });
+      alert('간편 주문 일괄 승인');
     } else {
       alert('없음');
     }
     // 모달로 처리
   };
 
+  // 간편 주문 승인
   const handleApproveSimpleOrder = async (orderId) => {
     try {
       await postApproveOrder(orderId, setAccessToken, accessToken);
@@ -274,11 +241,12 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
     }
   };
 
+  // 주문 승인 일괄 처리
   const handleApproveCancleAll = async () => {
     if (tables !== undefined) {
-      Object.entries(tables.selectedRows).forEach(async ([key, value]) => {
+      Object.entries(tables.selectedRows).forEach(([key, value]) => {
         if (value) {
-          await handleApproveCancle(key);
+          handleApproveCancle(key, orderInfo[key]);
         }
       });
       alert('간편 주문 일괄 승인');
@@ -288,9 +256,9 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
   };
 
   // 주문 승인 취소
-  const handleApproveCancle = async (orderId) => {
+  const handleApproveCancle = async (orderId, data) => {
     try {
-      // await
+      await postCancleOrder(orderId, data, setAccessToken, accessToken);
     } catch (error) {
       console.log(error);
     }
@@ -308,6 +276,6 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
     handleFilterReset,
     handleToggleAutoOrderApproved,
     handleApproveAllSimpleOrderBtn,
-    handleApproveCancle,
+    handleApproveCancleAll,
   };
 };

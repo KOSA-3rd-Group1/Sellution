@@ -5,12 +5,6 @@ export const HEADERS = [
     type: 'search',
     width: 'min-w-48 w-48 max-w-48',
   },
-  //   {
-  //     key: 'username',
-  //     label: '회원 아이디',
-  //     type: 'search',
-  //     width: 'min-w-44 w-44 max-w-44',
-  //   },
   {
     key: 'customerName',
     label: '회원명',

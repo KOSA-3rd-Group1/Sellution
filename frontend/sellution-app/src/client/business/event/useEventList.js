@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import useAuthStore from '@/client/store/stores/useAuthStore';
-import { getEventList } from '@/client/utility/apis/event/eventListApi';
+import useTableStore from '@/client/store/stores/useTableStore';
+import { getEventList, deleteEventList } from '@/client/utility/apis/event/eventListApi';
 import {
   formatEventState,
   formatTargetCustomerType,
@@ -9,6 +10,15 @@ import {
 export const useEventList = ({ page, size, refresh, updateQueryParameter }) => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+
+  const { tables, setSelectedRows, setSelectAll, clearTable } = useTableStore((state) => ({
+    tables: state.tables.eventlist,
+    setSelectedRows: state.setSelectedRows,
+    setSelectAll: state.setSelectAll,
+    clearTable: state.clearTable,
+  }));
+
+  console.log('tables', tables);
 
   const [data, setData] = useState([]); // 테이블 데이터
   const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수
@@ -79,6 +89,10 @@ export const useEventList = ({ page, size, refresh, updateQueryParameter }) => {
         setTotalPages(1);
         updateQueryParameter(pageParam, 1);
       }
+
+      return () => {
+        clearTable('eventlist');
+      };
     };
 
     fetch(setAccessToken, accessToken);
@@ -92,7 +106,17 @@ export const useEventList = ({ page, size, refresh, updateQueryParameter }) => {
 
   // 이벤트 삭제 버튼
   const handleDeleteBtn = () => {
+    console.log(tables);
     alert('이벤트 삭제 버튼 로직 로직');
+  };
+
+  // 이벤트 삭제
+  const handleDeleteEvent = async (eventId) => {
+    try {
+      await deleteEventList(eventId);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return {

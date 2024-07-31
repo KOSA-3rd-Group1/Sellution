@@ -1,14 +1,17 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
-import { useCustomerOrderDetail } from '@/client/business/customer/detail/order/useCustomerOrderDetail';
 import DeliveryInfo from '@/client/layout/order/DeliveryInfo';
 import OrdererInfo from '@/client/layout/order/OrdererInfo';
 import PaymentMethod from '@/client/layout/order/PaymentMethod';
 import AddressInfo from '@/client/layout/order/AddressInfo';
 import PaymentInfo from '@/client/layout/order/PaymentInfo';
 import ProductInfo from '@/client/layout/order/ProductInfo';
+import { useMove } from '@/client/business/common/useMove';
+import { useCustomerOrderDetail } from '@/client/business/customer/detail/order/useCustomerOrderDetail';
+import { HEADERS, ROW_HEIGHT } from '@/client/utility/tableinfo/OrderDetailTableInfo';
 
 const DetailComponent = () => {
-  const { HEADERS, ROW_HEIGHT, orderProductData, data, moveList } = useCustomerOrderDetail();
+  const { moveToPathname } = useMove();
+  const { orderProductData, data, moveList } = useCustomerOrderDetail({ moveToPathname });
 
   return (
     <div className='relative w-full h-full justify-between'>
