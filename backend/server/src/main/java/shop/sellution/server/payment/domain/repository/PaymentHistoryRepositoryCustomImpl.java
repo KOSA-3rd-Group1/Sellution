@@ -14,6 +14,7 @@ import shop.sellution.server.payment.domain.type.PaymentStatus;
 import shop.sellution.server.payment.dto.request.FindPaymentHistoryCond;
 import shop.sellution.server.payment.dto.response.FindPaymentHistoryRes;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class PaymentHistoryRepositoryCustomImpl implements PaymentHistoryReposit
                 .join(paymentHistory.order, order)
                 .join(order.customer, customer)
                 .where(
-                        companyIdEq(companyId),
+                        paymentHistory.order.company.companyId.eq(companyId),
                         orderCodeLike(findPaymentHistoryCond.getOrderCode()),
                         userNameLike(findPaymentHistoryCond.getUserName()),
                         statusEq(findPaymentHistoryCond.getStatus()),
@@ -61,7 +62,7 @@ public class PaymentHistoryRepositoryCustomImpl implements PaymentHistoryReposit
                 .join(paymentHistory.order, order)
                 .join(order.customer, customer)
                 .where(
-                        companyIdEq(companyId),
+                        paymentHistory.order.company.companyId.eq(companyId),
                         orderCodeLike(findPaymentHistoryCond.getOrderCode()),
                         userNameLike(findPaymentHistoryCond.getUserName()),
                         statusEq(findPaymentHistoryCond.getStatus()),
@@ -93,9 +94,11 @@ public class PaymentHistoryRepositoryCustomImpl implements PaymentHistoryReposit
         return status != null ? paymentHistory.status.eq(status) : null;
     }
 
-    private BooleanExpression betweenDates(DateTimePath<LocalDateTime> datePath, LocalDateTime startDate, LocalDateTime endDate) {
+    private BooleanExpression betweenDates(DateTimePath<LocalDateTime> datePath, LocalDate startDate, LocalDate endDate) {
         if (startDate != null && endDate != null) {
-            return datePath.between(startDate, endDate);
+            LocalDateTime startOfDay = startDate.atStartOfDay();
+            LocalDateTime endOfDay = endDate.plusDays(1).atStartOfDay().minusNanos(1);
+            return datePath.between(startOfDay, endOfDay);
         }
         return null;
     }
