@@ -24,6 +24,7 @@ const AddComponent = () => {
     moveList,
     registerProduct,
     setIsCategoryDropdownOpen,
+    formatPrice,
   } = useProductAdd();
 
   const [alertModal, setAlertModal] = useState({ isOpen: false, type: '', title: '', message: '' });
@@ -204,7 +205,7 @@ const AddComponent = () => {
                     name='cost'
                     value={productInfo.cost}
                     onChange={handleInputChange}
-                    className='w-full max-w-xs border p-2 rounded-md'
+                    className='w-full max-w-xs border p-2 rounded-md text-right'
                     placeholder='금액을 입력해주세요.'
                   />
                   <span className='ml-2'>원</span>
@@ -272,7 +273,7 @@ const AddComponent = () => {
                     name='discountRate'
                     value={productInfo.discountRate}
                     onChange={handleInputChange}
-                    className='w-full max-w-xs border p-2 rounded-md'
+                    className='w-full max-w-xs border p-2 rounded-md text-right'
                     placeholder='할인율을 입력해주세요.'
                     disabled={!isDiscountApplied}
                   />
@@ -286,8 +287,11 @@ const AddComponent = () => {
                 <div className='flex-1 flex justify-end ml-4'>
                   <span>
                     {productInfo.isDiscount === DisplayStatus.VISIBLE
-                      ? `${productInfo.discountedPrice} 원`
+                      ? formatPrice(
+                          productInfo.cost - (productInfo.cost * productInfo.discountRate) / 100,
+                        )
                       : '- 원'}
+                    원
                   </span>
                 </div>
               </div>
@@ -348,7 +352,7 @@ const AddComponent = () => {
                     name='stock'
                     value={productInfo.stock}
                     onChange={handleInputChange}
-                    className='w-full max-w-xs border p-2 rounded-md'
+                    className='w-full max-w-xs border p-2 rounded-md text-right'
                     placeholder='상품 재고를 입력해주세요.'
                   />
                   <span className='ml-2'>건</span>

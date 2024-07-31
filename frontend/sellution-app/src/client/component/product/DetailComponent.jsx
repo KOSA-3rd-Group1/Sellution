@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { EditIcon } from '@/client/utility/assets/Icons.jsx';
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import ImageUploader2 from '@/client/layout/common/ImageUploader2';
@@ -36,19 +35,15 @@ const DetailComponent = () => {
   } = useProductDetail();
 
   const [alertModal, setAlertModal] = useState({ isOpen: false, type: '', title: '', message: '' });
-  const [deleteSuccessCallback, setDeleteSuccessCallback] = useState(null);
+  const [isDeleteSuccessful, setIsDeleteSuccessful] = useState(false);
 
-  const openAlertModal = useCallback((type, title, message, callback = null) => {
+  const openAlertModal = (type, title, message) => {
     setAlertModal({ isOpen: true, type, title, message });
-    if (callback) {
-      setDeleteSuccessCallback(() => callback);
-    }
-  }, []);
+  };
 
-  const closeAlertModal = useCallback(() => {
+  const closeAlertModal = () => {
     setAlertModal({ isOpen: false, type: '', title: '', message: '' });
-    setDeleteSuccessCallback(null);
-  }, []);
+  };
 
   const handleSaveChanges = useCallback(() => {
     openAlertModal(
@@ -80,11 +75,12 @@ const DetailComponent = () => {
     closeAlertModal();
     try {
       await deleteProduct();
-      openAlertModal('success', '삭제 완료', '상품이 성공적으로 삭제되었습니다.', moveList);
+      setIsDeleteSuccessful(true);
+      openAlertModal('success', '삭제 완료', '상품이 성공적으로 삭제되었습니다.');
     } catch (error) {
       openAlertModal('error', '삭제 실패', '상품 삭제 중 오류가 발생했습니다.');
     }
-  }, [closeAlertModal, deleteProduct, openAlertModal, moveList]);
+  }, [closeAlertModal, deleteProduct, openAlertModal]);
 
   const handleAlertConfirm = useCallback(() => {
     if (alertModal.type === 'warning') {
@@ -93,13 +89,13 @@ const DetailComponent = () => {
       } else if (alertModal.title === '상품 삭제') {
         handleConfirmDelete();
       }
+    } else if (alertModal.type === 'success') {
+      closeAlertModal();
+      if (isDeleteSuccessful) {
+        moveList();
+      }
     } else {
       closeAlertModal();
-      if (alertModal.type === 'success') {
-        setTimeout(() => {
-          moveList();
-        }, 1500); // 1.5초 후 목록 페이지로 이동
-      }
     }
   }, [
     alertModal.type,
@@ -107,6 +103,7 @@ const DetailComponent = () => {
     handleConfirmSave,
     handleConfirmDelete,
     closeAlertModal,
+    isDeleteSuccessful,
     moveList,
   ]);
 
@@ -268,7 +265,7 @@ const DetailComponent = () => {
                       name='cost'
                       value={productInfo.cost}
                       onChange={handleInputChange}
-                      className='w-full border p-2 rounded-md text-right'
+                      className='flex-grow border p-2 rounded-md text-right'
                       placeholder='금액을 입력해주세요.'
                     />
                     <span className='ml-2'>원</span>
@@ -337,7 +334,7 @@ const DetailComponent = () => {
                       name='discountRate'
                       value={productInfo.discountRate}
                       onChange={handleInputChange}
-                      className='w-full border p-2 rounded-md text-right'
+                      className='flex-grow border p-2 rounded-md text-right'
                       placeholder='할인율을 입력해주세요. '
                       disabled={!isDiscountApplied}
                     />
@@ -348,12 +345,10 @@ const DetailComponent = () => {
                 {/* 할인 후 적용 금액 */}
                 <div className='flex items-center'>
                   <label className='w-1/4 text-sm font-medium'>할인 후 적용 금액</label>
-                  <div className='flex-1 ml-4 text-right'>
+                  <div className='flex-1 flex justify-end ml-4'>
                     <span className='items-right'>
                       {productInfo.isDiscount === DisplayStatus.VISIBLE
-                        ? formatPrice(
-                            productInfo.cost - (productInfo.cost * productInfo.discountRate) / 100,
-                          )
+                        ? `${formatPrice(productInfo.cost - (productInfo.cost * productInfo.discountRate) / 100)} 원`
                         : '- 원'}
                     </span>
                   </div>
@@ -416,7 +411,7 @@ const DetailComponent = () => {
                       name='stock'
                       value={productInfo.stock}
                       onChange={handleInputChange}
-                      className='w-full border p-2 rounded-md text-right'
+                      className='flex-grow border p-2 rounded-md'
                       placeholder='상품 재고를 입력해주세요.'
                     />
                     <span className='ml-2'>건</span>
