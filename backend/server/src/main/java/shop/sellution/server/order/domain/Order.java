@@ -59,7 +59,7 @@ public class Order extends BaseEntity {
     private WeekOption weekOption;
 
     @Column(nullable = false, unique = true)
-    private Long code;
+    private String code;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "ENUM ('ONETIME','MONTH_SUBSCRIPTION','COUNT_SUBSCRIPTION')")

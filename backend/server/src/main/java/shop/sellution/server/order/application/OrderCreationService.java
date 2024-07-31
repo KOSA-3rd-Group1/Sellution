@@ -173,7 +173,7 @@ public class OrderCreationService {
         String message =String.format("""
                 [Sellution] 주문이 완료되었습니다.
                 주문번호
-                %d
+                %s
                 주문하신 상품 내역
                 %s
                 주문하신 상품 총 가격
@@ -203,7 +203,7 @@ public class OrderCreationService {
             String approveMessage = String.format("""
                     [Sellution] 주문이 승인되었습니다. [ 자동 ]
                     승인된 주문번호
-                    %d
+                    %s
                     """,order.getCode());
 //            smsService.sendSms(customer.getPhoneNumber(),approveMessage);
             paymentService.pay(
@@ -255,13 +255,12 @@ public class OrderCreationService {
 
     }
 
-    public Long orderCodeMaker() {
+    public String orderCodeMaker() {
         // 오늘날짜 + 현재 DB에 들어가있는 orderID중 가장 큰값을 합쳐서 코드를 만들어준다.
         LocalDate localDate = LocalDate.now();
         Long maxOrderId = orderRepository.findMaxOrderId();
         maxOrderId = (maxOrderId == null) ? 1L : maxOrderId + 1;
-        String orderCode = localDate.format(DateTimeFormatter.BASIC_ISO_DATE) + String.format("%06d", maxOrderId);
-        return Long.parseLong(orderCode);
+        return localDate.format(DateTimeFormatter.BASIC_ISO_DATE) + String.format("%06d", maxOrderId);
     }
 
     public int totalPrice(List<FindOrderedProductSimpleReq> orderedProducts) {

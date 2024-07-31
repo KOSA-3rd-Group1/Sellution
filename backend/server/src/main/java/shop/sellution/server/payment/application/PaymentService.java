@@ -103,7 +103,7 @@ public class PaymentService {
             String payMessage = String.format("""
                     [Sellution] 결제가 완료되었습니다.
                     결제된 주문번호
-                    %d
+                    %s
                     결제된 금액
                     %d원
                     결제된 계좌 정보

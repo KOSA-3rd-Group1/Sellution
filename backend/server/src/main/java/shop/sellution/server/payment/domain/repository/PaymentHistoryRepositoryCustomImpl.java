@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import shop.sellution.server.payment.domain.type.PaymentStatus;
 import shop.sellution.server.payment.dto.request.FindPaymentHistoryCond;
 import shop.sellution.server.payment.dto.response.FindPaymentHistoryRes;
 
@@ -46,7 +47,9 @@ public class PaymentHistoryRepositoryCustomImpl implements PaymentHistoryReposit
                 .join(order.customer, customer)
                 .where(
                         customerIdEq(customerId),
-                        orderIdEq(findPaymentHistoryCond.getOrderId()),
+                        orderCodeLike(findPaymentHistoryCond.getOrderCode()),
+                        userNameLike(findPaymentHistoryCond.getUserName()),
+                        statusEq(findPaymentHistoryCond.getStatus()),
                         betweenDates(paymentHistory.createdAt, findPaymentHistoryCond.getStartDate(), findPaymentHistoryCond.getEndDate())
                 );
 
@@ -57,7 +60,9 @@ public class PaymentHistoryRepositoryCustomImpl implements PaymentHistoryReposit
                 .join(order.customer, customer)
                 .where(
                         customerIdEq(customerId),
-                        orderIdEq(findPaymentHistoryCond.getOrderId()),
+                        orderCodeLike(findPaymentHistoryCond.getOrderCode()),
+                        userNameLike(findPaymentHistoryCond.getUserName()),
+                        statusEq(findPaymentHistoryCond.getStatus()),
                         betweenDates(paymentHistory.createdAt, findPaymentHistoryCond.getStartDate(), findPaymentHistoryCond.getEndDate())
                 ).fetchOne();
 
@@ -74,8 +79,16 @@ public class PaymentHistoryRepositoryCustomImpl implements PaymentHistoryReposit
         return customerId != null ? order.customer.id.eq(customerId) : null;
     }
 
-    private BooleanExpression orderIdEq(Long orderId) {
-        return orderId != null ? order.id.eq(orderId) : null;
+    private BooleanExpression orderCodeLike(String orderCode) {
+        return orderCode != null ? order.code.like("%"+orderCode+"%") : null;
+    }
+
+    private BooleanExpression userNameLike(String userName) {
+        return userName != null ? customer.name.like("%"+userName+"%") : null;
+    }
+
+    private BooleanExpression statusEq(PaymentStatus status) {
+        return status != null ? paymentHistory.status.eq(status) : null;
     }
 
     private BooleanExpression betweenDates(DateTimePath<LocalDateTime> datePath, LocalDateTime startDate, LocalDateTime endDate) {

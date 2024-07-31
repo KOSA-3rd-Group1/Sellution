@@ -87,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
         String approveMessage = String.format("""
                     [Sellution] 주문이 승인되었습니다. [ 수동 ]
                     승인된 주문번호
-                    %d
+                    %s
                     """,order.getCode());
 //        smsService.sendSms(order.getCustomer().getPhoneNumber(),approveMessage);
 

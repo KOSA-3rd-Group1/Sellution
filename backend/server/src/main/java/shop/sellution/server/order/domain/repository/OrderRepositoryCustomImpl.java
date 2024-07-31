@@ -10,9 +10,11 @@ import org.springframework.stereotype.Repository;
 import shop.sellution.server.order.domain.Order;
 import shop.sellution.server.order.domain.type.DeliveryStatus;
 import shop.sellution.server.order.domain.type.OrderStatus;
+import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.order.dto.OrderSearchCondition;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,7 +34,8 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                 .leftJoin(order.customer, customer).fetchJoin()
                 .where(
                         order.company.companyId.eq(companyId),
-                        orderCodeEq(condition.getOrderCode()),
+                        orderCodeLike(condition.getOrderCode()),
+                        orderTypeEq(condition.getOrderType()),
                         customerIdEq(condition.getCustomerId()),
                         customerNameLike(condition.getCustomerName()),
                         customerPhoneNumberLike(condition.getCustomerPhoneNumber()),
@@ -49,7 +52,8 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                 .from(order)
                 .where(
                         order.company.companyId.eq(companyId),
-                        orderCodeEq(condition.getOrderCode()),
+                        orderCodeLike(condition.getOrderCode()),
+                        orderTypeEq(condition.getOrderType()),
                         customerIdEq(condition.getCustomerId()),
                         customerNameLike(condition.getCustomerName()),
                         customerPhoneNumberLike(condition.getCustomerPhoneNumber()),
@@ -62,12 +66,16 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         return new PageImpl<>(content, pageable, total != null ? total : 0L);
     }
 
-    private BooleanExpression orderCodeEq(Long orderCode) {
-        return orderCode != null ? order.code.eq(orderCode) : null;
+    private BooleanExpression orderCodeLike(String orderCode) {
+        return orderCode != null ? order.code.like("%"+orderCode+"%") : null;
     }
 
     private BooleanExpression customerIdEq(Long customerId) {
         return customerId != null ? order.customer.id.eq(customerId) : null;
+    }
+
+    private BooleanExpression orderTypeEq(OrderType orderType) {
+        return orderType != null ? order.type.eq(orderType) : null;
     }
 
     private BooleanExpression customerNameLike(String customerName) {
@@ -86,9 +94,11 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         return deliveryStatus != null ? order.deliveryStatus.eq(deliveryStatus) : null;
     }
 
-    private BooleanExpression betweenDates(DateTimePath<LocalDateTime> datePath, LocalDateTime startDate, LocalDateTime endDate) {
+    private BooleanExpression betweenDates(DateTimePath<LocalDateTime> datePath, LocalDate startDate, LocalDate endDate) {
         if (startDate != null && endDate != null) {
-            return datePath.between(startDate, endDate);
+            LocalDateTime startOfDay = startDate.atStartOfDay();
+            LocalDateTime endOfDay = endDate.plusDays(1).atStartOfDay().minusNanos(1);
+            return datePath.between(startOfDay, endOfDay);
         }
         return null;
     }
