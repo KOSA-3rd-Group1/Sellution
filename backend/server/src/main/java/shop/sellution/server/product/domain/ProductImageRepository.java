@@ -20,4 +20,6 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Long
     where pi.product.productId in :productIds
     """)
     List<ProductImage> findAllByProductIdIn(@Param("productIds") List<Long> productIds);
+
+    boolean existsByProduct(Product product);
 }

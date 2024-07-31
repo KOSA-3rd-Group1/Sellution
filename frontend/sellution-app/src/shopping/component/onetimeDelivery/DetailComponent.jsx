@@ -56,11 +56,15 @@ const DetailComponent = () => {
             isDetailOptionVisible={isDetailOptionVisible}
             toggleDetailOption={toggleDetailOption}
           />
-          <TwoButtonFooterLayout
-            addToCart={addToOnetimeCart}
-            handleDirectOrder={handleDirectOrder}
-            isDisabled={isButtonDisabled}
-          />
+          {productToShow.stock > 0 ? (
+            <TwoButtonFooterLayout
+              addToCart={addToOnetimeCart}
+              handleDirectOrder={handleDirectOrder}
+              isDisabled={isButtonDisabled}
+            />
+          ) : (
+            <OneButtonFooterLayout footerText={'SOLD OUT'} isDisabled={true} />
+          )}
           <TwoButtonModal
             isDetailPageModalVisible={isDetailPageModalVisible}
             onClickLeft={moveToOnetimeList}

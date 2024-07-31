@@ -133,7 +133,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         createContractCompany();
         createCategory();
         createProduct();
-        createProductImages();
+        createProduct2();
+        //createProductImages();
+        createProductImages2();
         createCustomer();
         createAccount();
         createAddress();
@@ -604,6 +606,174 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     }
 
+    //product 더미 2
+    private void createProduct2() {
+        for (int i = 1; i <= 100; i++) {
+            Product product = Product.builder()
+                    .company(포켓샐러드)
+                    .category(random.nextBoolean() ? 데일리샐러드 : 테이스티샐러드)
+                    .code(generateProductCode())
+                    .name("단건상품 " + i)
+                    .stock(1000)
+                    .cost(random.nextInt(5000) + 5000)
+                    .productInformation("단건상품 " + i + "의 설명입니다.")
+                    .deliveryType(DeliveryType.ONETIME)
+                    .isDiscount(DisplayStatus.Y)
+                    .discountRate(random.nextInt(30) + 10)
+                    .discountedPrice(calculateDiscountedPrice(random.nextInt(5000) + 5000, random.nextInt(30) + 10))
+                    .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
+                    .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
+                    .build();
+            productRepository.save(product);
+            oneTimeProducts.add(product);
+        }
+        for (int i = 1; i <= 20; i++) {
+            int cost = random.nextInt(5000) + 5000;
+            Product product = Product.builder()
+                    .company(포켓샐러드)
+                    .category(random.nextBoolean() ? 데일리샐러드 : 테이스티샐러드)
+                    .code(generateProductCode())
+                    .name("할인 없는 단건상품 " + i)
+                    .stock(1000)
+                    .cost(cost)
+                    .productInformation("할인 없는 단건상품 " + i + "의 설명입니다.")
+                    .deliveryType(DeliveryType.ONETIME)
+                    .isDiscount(DisplayStatus.N)
+                    .discountRate(0)
+                    .discountedPrice(cost)
+                    .build();
+            productRepository.save(product);
+            oneTimeProducts.add(product);
+        }
+        for (int i = 1; i <= 100; i++) {
+            Product product = Product.builder()
+                    .company(포켓샐러드)
+                    .category(random.nextBoolean() ? 데일리샐러드 : 테이스티샐러드)
+                    .code(generateProductCode())
+                    .name("정기상품 " + i)
+                    .stock(1000)
+                    .cost(random.nextInt(5000) + 5000)
+                    .productInformation("정기상품 " + i + "의 설명입니다.")
+                    .deliveryType(DeliveryType.SUBSCRIPTION)
+                    .isDiscount(DisplayStatus.Y)
+                    .discountRate(random.nextInt(30) + 10)
+                    .discountedPrice(calculateDiscountedPrice(random.nextInt(5000) + 5000, random.nextInt(30) + 10))
+                    .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
+                    .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
+                    .build();
+            productRepository.save(product);
+            subProducts.add(product);
+        }
+        for (int i = 1; i <= 30; i++) {
+            int cost = random.nextInt(5000) + 5000;
+            Product product = Product.builder()
+                    .company(포켓샐러드)
+                    .category(random.nextBoolean() ? 데일리샐러드 : 테이스티샐러드)
+                    .code(generateProductCode())
+                    .name("할인 없는 정기상품 " + i)
+                    .stock(1000)
+                    .cost(cost)
+                    .productInformation("할인 없는 정기상품 " + i + "의 설명입니다.")
+                    .deliveryType(DeliveryType.SUBSCRIPTION)
+                    .isDiscount(DisplayStatus.N)
+                    .discountRate(0)
+                    .discountedPrice(cost)
+                    .build();
+            productRepository.save(product);
+            subProducts.add(product);
+        }
+
+        for (int i = 1; i <= 30; i++) {
+            int cost = random.nextInt(5000) + 5000;
+            Product product = Product.builder()
+                    .company(포켓샐러드)
+                    .category(random.nextBoolean() ? 데일리샐러드 : 테이스티샐러드)
+                    .code(generateProductCode())
+                    .name("할인 없는 정기상품 " + i)
+                    .stock(1000)
+                    .cost(cost)
+                    .productInformation("할인 없는 정기상품 " + i + "의 설명입니다.")
+                    .deliveryType(DeliveryType.SUBSCRIPTION)
+                    .isDiscount(DisplayStatus.N)
+                    .discountRate(0)
+                    .discountedPrice(cost)
+                    .build();
+            productRepository.save(product);
+            subProducts.add(product);
+        }
+
+        //품절 상품
+        for (int i = 1; i <= 30; i++) {
+            Product product = Product.builder()
+                    .company(포켓샐러드)
+                    .category(random.nextBoolean() ? 데일리샐러드 : 테이스티샐러드)
+                    .code(generateProductCode())
+                    .name("품절상품 " + i)
+                    .stock(0)
+                    .cost(random.nextInt(5000) + 5000)
+                    .productInformation("품절상품 " + i + "의 설명입니다.")
+                    .deliveryType(random.nextBoolean() ? DeliveryType.ONETIME : DeliveryType.SUBSCRIPTION)
+                    .isDiscount(DisplayStatus.Y)
+                    .discountRate(random.nextInt(30) + 10)
+                    .discountedPrice(calculateDiscountedPrice(random.nextInt(5000) + 5000, random.nextInt(30) + 10))
+                    .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
+                    .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
+                    .build();
+            productRepository.save(product);
+            if (product.getDeliveryType() == DeliveryType.ONETIME) {
+                oneTimeProducts.add(product);
+            } else {
+                subProducts.add(product);
+            }
+        }
+
+        // 전체 상품들
+        allProducts.addAll(oneTimeProducts);
+        allProducts.addAll(subProducts);
+
+        // 중복 제거
+        allProducts = new ArrayList<>(new HashSet<>(allProducts));
+    }
+
+
+    private void createProductImages2() {
+        for (Product product : allProducts) {
+            // 이미 이미지가 있는 상품은 제외
+            if (productImageRepository.existsByProduct(product)) {
+                continue;
+            }
+
+            List<String> imageUrls = Arrays.asList(
+                    "https://picsum.photos/200?random=" + random.nextInt(1000),
+                    "https://picsum.photos/200?random=" + random.nextInt(1000),
+                    "https://picsum.photos/200?random=" + random.nextInt(1000),
+                    "https://picsum.photos/200?random=" + random.nextInt(1000),
+                    "https://picsum.photos/200?random=" + random.nextInt(1000),
+                    "https://picsum.photos/200?random=" + random.nextInt(1000)
+            );
+
+            for (int i = 0; i < imageUrls.size(); i++) {
+                ProductImageType type;
+                if (i == 0) {
+                    type = ProductImageType.THUMBNAIL;
+                } else if (i < 4) {
+                    type = ProductImageType.LIST;
+                } else {
+                    type = ProductImageType.DETAILS;
+                }
+                ProductImage productImage = ProductImage.builder()
+                        .product(product)
+                        .imageUrl(imageUrls.get(i))
+                        .purposeOfUse(type)
+                        .build();
+                productImageRepository.save(productImage);
+            }
+        }
+    }
+
+
+
+
 
     private void createCustomer() {
 
@@ -829,15 +999,31 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     }
 
     private void createCouponEvent() {
-        createDummyEvent("Past Event 1", LocalDate.now().plusDays(2), LocalDate.now().plusDays(11), 5, TargetCustomerType.ALL, 100, EventState.END, false);
-        createDummyEvent("Past Event 2", LocalDate.now().plusDays(7), LocalDate.now().plusDays(7), 10, TargetCustomerType.ALL, 100, EventState.END, true);
-        createDummyEvent("Ongoing Event 1", LocalDate.now().minusDays(5), LocalDate.now().plusDays(10), 15, TargetCustomerType.ALL, 2, EventState.ONGOING, false);
-        createDummyEvent("Ongoing Event 2", LocalDate.now().minusDays(3), LocalDate.now().plusDays(15), 20, TargetCustomerType.ALL, 50, EventState.ONGOING, true);
-        createDummyEvent("Ongoing Event 3", LocalDate.now().minusDays(1), LocalDate.now().plusDays(20), 25, TargetCustomerType.NEW, 100, EventState.ONGOING, false);
-        createDummyEvent("Ongoing Event 4", LocalDate.now().minusDays(2), LocalDate.now().plusDays(25), 30, TargetCustomerType.NORMAL, 100, EventState.ONGOING, false);
-        createDummyEvent("Ended Event 1", LocalDate.now().minusDays(25), LocalDate.now().minusDays(1), 10, TargetCustomerType.ALL, 100, EventState.END, true);
-        createDummyEvent("Ended Event 2", LocalDate.now().minusDays(15), LocalDate.now().minusDays(1), 20, TargetCustomerType.ALL, 100, EventState.END, false);
-        createDummyEvent("Ended Event 3", LocalDate.now().minusDays(10), LocalDate.now().minusDays(1), 30, TargetCustomerType.ALL, 100, EventState.END, false);
+        createDummyEvent("ALL대상 5% 할인 쿠폰", LocalDate.now().plusDays(2), LocalDate.now().plusDays(11), 5, TargetCustomerType.ALL, 100, EventState.UPCOMING, false);
+        createDummyEvent("ALL대상 10% 할인 쿠폰", LocalDate.now().plusDays(7), LocalDate.now().plusDays(7), 10, TargetCustomerType.ALL, 100, EventState.UPCOMING, true);
+        createDummyEvent("ALL대상 11% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(10), 11, TargetCustomerType.ALL, 2, EventState.ONGOING, false);
+        createDummyEvent("ALL대상 12% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(20), 12, TargetCustomerType.ALL, 2, EventState.ONGOING, false);
+        createDummyEvent("NEW대상 13% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(30), 13, TargetCustomerType.NEW, 2, EventState.ONGOING, false);
+        createDummyEvent("NORMAL대상 14% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(40), 14, TargetCustomerType.NORMAL, 2, EventState.ONGOING, false);
+        createDummyEvent("DORMANT대상 15% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(50), 15, TargetCustomerType.DORMANT, 2, EventState.ONGOING, false);
+        createDummyEvent("DORMANT대상 15% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(10), 15, TargetCustomerType.DORMANT, 2, EventState.ONGOING, false);
+        createDummyEvent("DORMANT대상 15% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(20), 15, TargetCustomerType.DORMANT, 2, EventState.ONGOING, false);
+        createDummyEvent("ALL대상 11% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(30), 11, TargetCustomerType.ALL, 2, EventState.ONGOING, false);
+        createDummyEvent("ALL대상 15% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(40), 15, TargetCustomerType.ALL, 2, EventState.ONGOING, false);
+        createDummyEvent("ALL대상 15% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(50), 15, TargetCustomerType.ALL, 2, EventState.ONGOING, false);
+        createDummyEvent("ALL대상 25% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(30), 25, TargetCustomerType.ALL, 2, EventState.ONGOING, false);
+        createDummyEvent("ALL대상 35% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(11), 35, TargetCustomerType.ALL, 2, EventState.ONGOING, false);
+        createDummyEvent("ALL대상 45% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(12), 45, TargetCustomerType.ALL, 2, EventState.ONGOING, false);
+        createDummyEvent("ALL대상 55% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(10), 55, TargetCustomerType.ALL, 2, EventState.ONGOING, false);
+        createDummyEvent("ALL대상 65% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(10), 65, TargetCustomerType.ALL, 2, EventState.ONGOING, false);
+        createDummyEvent("ALL대상 15% 할인 쿠폰", LocalDate.now().minusDays(5), LocalDate.now().plusDays(10), 15, TargetCustomerType.ALL, 2, EventState.ONGOING, false);
+        createDummyEvent("ALL대상 20% 할인 쿠폰", LocalDate.now().minusDays(3), LocalDate.now().plusDays(15), 20, TargetCustomerType.ALL, 50, EventState.ONGOING, true);
+        createDummyEvent("NEW대상 25% 할인 쿠폰", LocalDate.now().minusDays(1), LocalDate.now().plusDays(20), 25, TargetCustomerType.NEW, 100, EventState.ONGOING, false);
+        createDummyEvent("NORMAL대상 30% 할인 쿠폰", LocalDate.now().minusDays(2), LocalDate.now().plusDays(25), 30, TargetCustomerType.NORMAL, 100, EventState.ONGOING, false);
+        createDummyEvent("ALL대상 10% 할인 쿠폰", LocalDate.now().minusDays(25), LocalDate.now().minusDays(1), 10, TargetCustomerType.ALL, 100, EventState.END, true);
+        createDummyEvent("ALL대상 20% 할인 쿠폰", LocalDate.now().minusDays(15), LocalDate.now().minusDays(1), 20, TargetCustomerType.ALL, 100, EventState.END, false);
+        createDummyEvent("ALL대상 30% 할인 쿠폰", LocalDate.now().minusDays(10), LocalDate.now().minusDays(1), 30, TargetCustomerType.ALL, 100, EventState.END, false);
+
     }
 
     private void createDummyEvent(String name, LocalDate startDate, LocalDate endDate, int discountRate, TargetCustomerType targetCustomerType, int totalQuantity, EventState state, boolean isDeleted) {

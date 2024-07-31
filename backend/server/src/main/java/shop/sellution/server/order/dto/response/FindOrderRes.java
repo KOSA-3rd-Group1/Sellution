@@ -31,6 +31,8 @@ public class FindOrderRes {
 
     private Long orderId;
 
+    private Long accountId;
+
     private OrderType type;
 
     private OrderStatus status;
@@ -82,6 +84,7 @@ public class FindOrderRes {
                 .orderId(order.getId())
                 .orderCode(order.getCode())
                 .type(order.getType())
+                .accountId(order.getAccount().getId())
                 .status(order.getStatus())
                 .deliveryStatus(order.getDeliveryStatus())
                 .perPrice(order.getPerPrice())

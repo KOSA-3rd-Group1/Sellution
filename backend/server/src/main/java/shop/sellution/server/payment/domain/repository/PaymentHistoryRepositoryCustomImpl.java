@@ -49,7 +49,7 @@ public class PaymentHistoryRepositoryCustomImpl implements PaymentHistoryReposit
                 .join(paymentHistory.order, order)
                 .join(order.customer, customer)
                 .where(
-                        companyIdEq(companyId),
+                        paymentHistory.order.company.companyId.eq(companyId),
                         orderCodeLike(findPaymentHistoryCond.getOrderCode()),
                         userNameLike(findPaymentHistoryCond.getUserName()),
                         statusEq(findPaymentHistoryCond.getStatus()),
@@ -62,7 +62,7 @@ public class PaymentHistoryRepositoryCustomImpl implements PaymentHistoryReposit
                 .join(paymentHistory.order, order)
                 .join(order.customer, customer)
                 .where(
-                        companyIdEq(companyId),
+                        paymentHistory.order.company.companyId.eq(companyId),
                         orderCodeLike(findPaymentHistoryCond.getOrderCode()),
                         userNameLike(findPaymentHistoryCond.getUserName()),
                         statusEq(findPaymentHistoryCond.getStatus()),
