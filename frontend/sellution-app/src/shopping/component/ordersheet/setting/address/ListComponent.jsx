@@ -80,7 +80,7 @@ const ListComponent = () => {
                 <div className='flex items-center'>
                   <span className='font-semibold'>{address.addressName}</span>
                   {address.isDefaultAddress === DisplayStatus.Y && (
-                    <span className='text-brandOrange border border-brandOrange rounded px-2 py-1 text-xs ml-2'>
+                    <span className='text-primary border border-primary rounded px-2 py-1 text-xs ml-2'>
                       기본 배송지
                     </span>
                   )}
@@ -96,21 +96,21 @@ const ListComponent = () => {
               <div className='text-sm text-gray-600 space-y-1'>
                 <div className='flex justify-between'>
                   <span className='flex items-center'>
-                    <span className='text-orange-500'>*</span>
+                    <span className='text-primary'>*</span>
                     <span className='font-bold ml-1'>수령인</span>
                   </span>
                   <span>{address.name}</span>
                 </div>
                 <div className='flex justify-between'>
                   <span className='flex items-center'>
-                    <span className='text-orange-500'>*</span>
+                    <span className='text-primary'>*</span>
                     <span className='font-bold ml-1'>연락처</span>
                   </span>
                   <span>{formatPhoneNumber(address.phoneNumber)}</span>
                 </div>
                 <div className='flex justify-between'>
                   <span className='flex items-center'>
-                    <span className='text-orange-500'>*</span>
+                    <span className='text-primary'>*</span>
                     <span className='font-bold ml-1'>주소</span>
                   </span>
                   <span>
@@ -121,12 +121,12 @@ const ListComponent = () => {
               <div className='mt-3 flex justify-end space-x-2'>
                 <Link
                   to={`${address.addressId}`}
-                  className='text-gray-500 hover:text-gray-700 text-sm'
+                  className='text-primary hover:text-secondary text-sm'
                 >
                   수정
                 </Link>
                 <button
-                  className='text-gray-500 hover:text-gray-700 text-sm mr-3'
+                  className='text-primary hover:text-secondary text-sm'
                   onClick={() => handleDelete(address)}
                 >
                   삭제

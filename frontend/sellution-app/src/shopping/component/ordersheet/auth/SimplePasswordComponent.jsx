@@ -86,7 +86,7 @@ const SimplePasswordComponent = () => {
       );
       if (response.data === 'success') {
         console.log('간편비밀번호 검증 성공');
-        console.log('넘겨온값 확인',location.state)
+        console.log('넘겨온값 확인', location.state);
         if (location.state && location.state.orderData) {
           completeOrder(location.state.orderData);
         } else {
@@ -154,7 +154,7 @@ const SimplePasswordComponent = () => {
             <div
               key={index}
               className={`w-4 h-4 rounded-full ${
-                index < password.length ? 'bg-brandOrange' : 'bg-gray-300'
+                index < password.length ? 'bg-primary' : 'bg-gray-300'
               }`}
             />
           ))}
@@ -168,7 +168,7 @@ const SimplePasswordComponent = () => {
       </div>
 
       <div className='mb-12 flex-grow flex items-end'>
-        <div className='bg-brandOrange rounded-lg p-4 w-full flex-grow flex flex-col justify-center'>
+        <div className='bg-primary rounded-lg p-4 w-full flex-grow flex flex-col justify-center'>
           <div className='grid grid-cols-3 gap-4 flex-grow'>
             {shuffledNumbers.map((item, index) => (
               <button

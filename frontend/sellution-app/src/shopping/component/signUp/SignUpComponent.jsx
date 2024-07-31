@@ -97,7 +97,7 @@ const SignupForm = () => {
       <MenuHeaderNav title={'회원가입'} />
       <form onSubmit={handleSubmit} className='max-w-md mx-auto p-4 space-y-4'>
         <div className='space-y-2'>
-          <label className='block text-orange-500 font-semibold'>
+          <label className='block text-primary font-semibold'>
             * 아이디
             {idAvailable === true && (
               <span className='ml-2 text-green-500 text-sm'>사용 가능한 아이디입니다.</span>
@@ -113,12 +113,12 @@ const SignupForm = () => {
               value={formData.id}
               onChange={handleChange}
               placeholder='아이디 입력(6-20자)'
-              className='flex-grow border rounded-l px-3 py-2 text-sm'
+              className='flex-grow border rounded px-3 py-2 text-sm'
             />
             <button
               type='button'
               onClick={checkIdAvailability}
-              className='bg-orange-500 text-white rounded px-4 py-2 text-sm'
+              className='bg-primary text-white rounded px-4 py-2 text-sm'
             >
               중복확인
             </button>
@@ -126,7 +126,7 @@ const SignupForm = () => {
         </div>
 
         <div className='space-y-2'>
-          <label className='block text-orange-500 font-semibold'>* 비밀번호</label>
+          <label className='block text-primary font-semibold'>* 비밀번호</label>
           <input
             type='password'
             name='password'
@@ -138,7 +138,7 @@ const SignupForm = () => {
         </div>
 
         <div className='space-y-2'>
-          <label className='block text-orange-500 font-semibold'>* 비밀번호 확인</label>
+          <label className='block text-primary font-semibold'>* 비밀번호 확인</label>
           <input
             type='password'
             name='confirmPassword'
@@ -156,7 +156,7 @@ const SignupForm = () => {
         </div>
 
         <div className='space-y-2'>
-          <label className='block text-orange-500 font-semibold'>* 이름</label>
+          <label className='block text-primary font-semibold'>* 이름</label>
           <input
             type='text'
             name='name'
@@ -168,7 +168,7 @@ const SignupForm = () => {
         </div>
 
         <div className='space-y-2'>
-          <label className='block text-orange-500 font-semibold'>* 전화번호</label>
+          <label className='block text-primary font-semibold'>* 전화번호</label>
           <div className='flex items-center space-x-2'>
             <input
               type='tel'
@@ -182,7 +182,7 @@ const SignupForm = () => {
             <button
               type='button'
               onClick={handleRequestAuth}
-              className='bg-gray-200 text-gray-700 rounded px-4 py-2 text-sm  hover:bg-brandOrange hover:text-white '
+              className='bg-gray-200 text-gray-700 rounded px-4 py-2 text-sm  hover:bg-primary hover:text-white '
               disabled={authStep > 0}
             >
               휴대폰 인증
@@ -192,7 +192,7 @@ const SignupForm = () => {
 
         {authStep >= 2 && (
           <div className='space-y-2'>
-            <label className='block text-orange-500 font-semibold'>인증번호</label>
+            <label className='block text-primary font-semibold'>인증번호</label>
             <div className='flex items-center space-x-2'>
               <input
                 type='text'
@@ -204,7 +204,7 @@ const SignupForm = () => {
               <button
                 type='button'
                 onClick={handleVerifyAuth}
-                className='bg-orange-500 text-white rounded px-4 py-2 text-sm'
+                className='bg-primary text-white rounded px-4 py-2 text-sm'
               >
                 확인
               </button>
@@ -225,7 +225,7 @@ const SignupForm = () => {
             id='sms-consent'
             checked={smsConsent}
             onChange={(e) => setSmsConsent(e.target.checked)}
-            className='rounded text-orange-500'
+            className='rounded text-primary'
           />
           <label htmlFor='sms-consent' className='text-sm'>
             SMS 동의 여부 (필수)
@@ -234,7 +234,7 @@ const SignupForm = () => {
 
         <button
           type='submit'
-          className='w-full bg-orange-500 text-white rounded py-3 text-lg font-semibold'
+          className='w-full bg-primary text-white rounded py-3 text-lg font-semibold'
           disabled={!(idAvailable && passwordMatch && phoneVerified && smsConsent)}
         >
           가입하기
