@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.customer.domain.CustomerRepository;
+import shop.sellution.server.event.domain.CouponEvent;
+import shop.sellution.server.event.domain.EventRepository;
+import shop.sellution.server.event.domain.type.EventState;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.order.domain.Order;
 import shop.sellution.server.order.domain.repository.OrderRepository;
@@ -32,6 +35,7 @@ public class SchedulerService {
     private final PaymentUtil paymentUtil;
     private final PaymentService paymentService;
     private final CustomerRepository customerRepository;
+    private final EventRepository eventRepository;
 
 
 //    @Scheduled(cron = "0 0 19 * * *", zone = "Asia/Seoul")
@@ -92,11 +96,14 @@ public class SchedulerService {
             PaymentHistory paymentHistory = paymentHistoryRepository.findPendingPaymentHistory(orderId, yesterday.atStartOfDay(),yesterday.plusDays(1).atStartOfDay()); // LocalDate와 LocalDateTime을 비교하기위해..
             // 2.1 "어제" 생성된 결제내역이 PENDING(실패)이면 다시 결제를 시도한다.
             if (paymentHistory != null) {
-                paymentService.pay(PaymentReq.builder()
+                boolean result = paymentService.pay(PaymentReq.builder()
                         .orderId(orderId)
                         .customerId(order.getCustomer().getId())
                         .accountId(order.getAccount().getId())
                         .build());
+                if (!result) { // 재결제 실패라면 주문 취소
+                    order.cancelOrder();
+                }
                 // 3. 현재 스케줄러에서 시도한 결제횟수를 증가시킨다.
                 retryPaymentCount++;
             }
@@ -145,7 +152,7 @@ public class SchedulerService {
                     case MONTH_SUBSCRIPTION ->{
                         LocalDate startDate = LocalDate.now().plusDays(1);
                         LocalDate endDate = order.getNextPaymentDate().plusDays(7);
-                        PaymentUtil.DeliveryInfo deliveryInfo = paymentUtil.calculateDeliveryInfo(startDate, endDate, order.getWeekOption().getWeekValue(), paymentUtil.getDeliveryDays(order.getSelectedDays()));
+                        PaymentUtil.DeliveryInfo deliveryInfo = paymentUtil.calculateDeliveryInfo(startDate, endDate, order.getWeekOptionValue(), paymentUtil.getDeliveryDays(order.getSelectedDays()));
                         order.updateNextDeliveryDate(deliveryInfo.getNextDeliveryDate());
                     }
 
@@ -153,7 +160,7 @@ public class SchedulerService {
                     case COUNT_SUBSCRIPTION->{
                         LocalDate startDate = LocalDate.now().plusDays(1);
                         LocalDate farFutureDate = startDate.plusYears(1);
-                        PaymentUtil.DeliveryInfo deliveryInfo = paymentUtil.calculateDeliveryInfo(startDate, farFutureDate, order.getWeekOption().getWeekValue(), paymentUtil.getDeliveryDays(order.getSelectedDays()));
+                        PaymentUtil.DeliveryInfo deliveryInfo = paymentUtil.calculateDeliveryInfo(startDate, farFutureDate, order.getWeekOptionValue(), paymentUtil.getDeliveryDays(order.getSelectedDays()));
                         order.updateNextDeliveryDate(deliveryInfo.getNextDeliveryDate());
                     }
                 }
@@ -169,4 +176,39 @@ public class SchedulerService {
         // 최신 배송일자가 오늘보다 60일 이상 차이나는 회원은 휴면회원으로 변경
         return customerRepository.updateDormantCustomerType(LocalDateTime.now().minusDays(60));
     }
+
+
+    //    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul") // 자정이여야함
+    @Transactional
+    public void regularEventStateUpdate() {
+        log.info("*************** 스케줄러 시작 *************** ");
+        log.info("*************** 이벤트 상태 변경 시작 *************** ");
+        int eventCount = 0;
+        List<CouponEvent> couponEventList = eventRepository.findAll();
+        for(CouponEvent event : couponEventList){
+            if(!event.isDeleted() && event.getEventEndDate().isBefore(LocalDate.now()) && event.getState() == EventState.ONGOING){
+                event.changeStateToEnd();
+                eventCount++;
+            }else if(!event.isDeleted() && event.getEventStartDate().isEqual(LocalDate.now()) && event.getState()==EventState.UPCOMING){
+                event.changeStateToOngoing();
+                eventCount++;
+            }
+        }
+        log.info("*************** 이벤트 상태 변경 종료 *************** ");
+        log.info("*************** 변경된 이벤트 : {}건 *************** ", eventCount);
+        log.info("*************** 스케줄러 종료 *************** ");
+
+    }
+
+    //    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul") // 자정이여야함
+    @Transactional
+    public void regularOrderCancel() { // 배송당일이 됬는데 승인이 안된 주문은 취소한다.
+        log.info("*************** 스케줄러 시작 *************** ");
+        log.info("*************** 배송당일인데 승인이 안된 주문은 취소 상태로 변경 *************** ");
+        int count = orderRepository.updateHoldOrderStatusToCancel(LocalDate.now());
+        log.info("*************** 취소로 변경된 주문 : {}건 *************** ", count);
+        log.info("*************** 스케줄러 종료 *************** ");
+
+    }
+
 }

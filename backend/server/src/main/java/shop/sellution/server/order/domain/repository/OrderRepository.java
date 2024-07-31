@@ -3,6 +3,7 @@ package shop.sellution.server.order.domain.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
@@ -23,8 +24,7 @@ public interface OrderRepository extends
             select o from Order o
             left join fetch o.customer
             left join fetch o.address
-            left join fetch o.monthOption
-            left join fetch o.weekOption
+            left join fetch o.couponEvent
             where o.customer.id = :customerId
             """)
     Page<Order> findAllOrderByCustomerId(@Param("customerId") Long customerId, Pageable pageable);
@@ -67,5 +67,15 @@ public interface OrderRepository extends
                     where o.id = :orderId
             """)
     Optional<Order> findOrderById(Long orderId);
+
+    // OrderStatus가 HOLD 이고 nextDeliveryDate 오늘인 Order의 OrderStatus를 CANCEL로 바꾸는 벌크 업데이트
+    @Modifying
+    @Query("""
+            update Order o
+            set o.status = shop.sellution.server.order.domain.type.OrderStatus.CANCEL
+            where o.status = shop.sellution.server.order.domain.type.OrderStatus.HOLD
+            and o.nextDeliveryDate = :date
+            """)
+    int updateHoldOrderStatusToCancel(@Param("date") LocalDate date);
 
 }

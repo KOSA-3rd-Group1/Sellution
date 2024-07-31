@@ -92,7 +92,6 @@ public class Company{
     @Column(name = "qr_code")
     private String qrCodeUrl;
 
-
     @Builder
     public Company(String displayName, String name) {
         this.displayName = displayName;
@@ -100,9 +99,8 @@ public class Company{
         this.shopUrl = generateShopUrl(name);
     }
 
-
     private String generateShopUrl(String name) {
-        return "https://www.sellution.shop/shopping/" + name;
+        return "https://www.sellution.shop/shopping/" + name + "/home";
     }
 
     // 주문 자동 승인 토글

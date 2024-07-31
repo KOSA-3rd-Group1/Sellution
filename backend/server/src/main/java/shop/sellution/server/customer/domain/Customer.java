@@ -77,6 +77,7 @@ public class Customer extends BaseEntity {
         return UserRole.ROLE_CUSTOMER;
     }
 
+    public void changeName(String newName) { this.name = newName; }
 
     public void changeToNormal() {
         this.type = CustomerType.NORMAL;

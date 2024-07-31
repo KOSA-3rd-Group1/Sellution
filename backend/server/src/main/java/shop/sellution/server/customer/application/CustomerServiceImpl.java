@@ -2,16 +2,23 @@ package shop.sellution.server.customer.application;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.sellution.server.auth.dto.CustomUserDetails;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
+import shop.sellution.server.customer.dto.CustomerSearchCondition;
 import shop.sellution.server.customer.dto.request.*;
+import shop.sellution.server.customer.dto.resonse.FindCurrentCustomerInfoRes;
 import shop.sellution.server.customer.dto.resonse.FindCustomerInfoRes;
+import shop.sellution.server.customer.dto.resonse.FindCustomerRes;
 import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
@@ -20,11 +27,12 @@ import shop.sellution.server.sms.dto.request.SendSmsAuthNumberReq;
 import shop.sellution.server.sms.dto.request.VerifySmsAuthNumberReq;
 
 import java.time.Duration;
+import java.util.Random;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import static shop.sellution.server.global.exception.ExceptionCode.*;
-import static shop.sellution.server.global.type.SmsAuthType.ID;
-import static shop.sellution.server.global.type.SmsAuthType.PASSWORD;
+import static shop.sellution.server.global.type.SmsAuthType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +67,20 @@ public class CustomerServiceImpl implements CustomerService{
     @Transactional(readOnly = true)
     public void checkCustomerUsername(CheckCustomerUsernameReq request) {
         validateUniqueUsername(request.getCompanyId(), request.getUsername());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public FindCurrentCustomerInfoRes getCurrentUserInfo() {
+        CustomUserDetails customUserDetails = getCustomUserDetailsFromSecurityContext();
+        Customer customer = customerRepository.findById(customUserDetails.getUserId())
+                .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_CUSTOMER));
+        return FindCurrentCustomerInfoRes.builder()
+                .id(customer.getId())
+                .companyId(customer.getCompany().getCompanyId())
+                .name(customer.getName())
+                .customerType(customer.getType())
+                .build();
     }
 
     @Override
@@ -134,6 +156,68 @@ public class CustomerServiceImpl implements CustomerService{
         customerRepository.save(customer);
 
         redisTemplate.delete(redisKey);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<FindCustomerRes> findAllCustomerByCompanyId(CustomerSearchCondition condition, Pageable pageable) {
+        CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
+        Long companyId = userDetails.getCompanyId();
+        Page<Customer> customers = customerRepository.findCustomerByCompanyIdAndCondition(companyId, condition, pageable);
+        return customers.map(customer -> FindCustomerRes.fromEntity(customer));
+    }
+
+    @Override
+    public FindCustomerRes registerCustomerFromClient(RegisterCustomerReq request) {
+        CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
+        Long companyId = userDetails.getCompanyId();
+
+        validateUniquePhoneNumber(companyId, request.getPhoneNumber());
+
+        String username = generateCustomerUsername(companyId); // 회원 아이디 생성
+        String password = generatePassword(); // 회원 임시 비밀번호 생성
+
+        // 아이디와 임시 비밀번호를 고객에게 문자(또는 메일)로 보내는 로직 구현 (추후)
+        System.out.println("이거 나오나?");
+        System.out.println(request.getCustomerName());
+        System.out.println(request.getPhoneNumber());
+        System.out.println(username);
+        System.out.println(password);
+        Company company = findCompanyById(companyId);
+        SaveCustomerReq customerReq = SaveCustomerReq.builder()
+                .companyId(companyId)
+                .username(username)
+                .password(password)
+                .name(request.getCustomerName())
+                .phoneNumber(request.getPhoneNumber())
+                .build();
+
+        Customer customer = createCustomer(company, customerReq);
+        Customer savedCustomer = customerRepository.save(customer);
+        return FindCustomerRes.fromEntity(savedCustomer);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public FindCustomerRes getCustomerById(Long customerId) {
+        Customer customer = findCustomerById(customerId);
+        return FindCustomerRes.fromEntity(customer);
+    }
+
+    @Override
+    public void updateCustomer(Long customerId, RegisterCustomerReq request) {
+        CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
+        Long companyId = userDetails.getCompanyId();
+
+        Customer customer = findCustomerById(customerId);
+
+        if (!customer.getPhoneNumber().equals(request.getPhoneNumber())) {
+            validateUniquePhoneNumber(companyId, request.getPhoneNumber());
+        }
+
+        customer.updatePhoneNumber(request.getPhoneNumber());
+        customer.changeName(request.getCustomerName());
+        customerRepository.save(customer);
     }
 
     // company_id로 사업체 조회
@@ -265,6 +349,70 @@ public class CustomerServiceImpl implements CustomerService{
         redisTemplate.opsForValue().set(redisKey, userId + ":" + (attemptCount + 1), Duration.ofMinutes(TOKEN_VALID_MINUTES));
     }
 
+    // securitycontextholder에서 정보 가져오기
+    private CustomUserDetails getCustomUserDetailsFromSecurityContext() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof CustomUserDetails) {
+            return (CustomUserDetails) principal;
+        } else {
+            throw new AuthException(NOT_FOUND_USER);
+        }
+    }
+
+    // 회원 아이디 자동 생성
+    private String generateCustomerUsername(Long companyId) {
+        Random random = new Random();
+        String customerUsername;
+        do {
+            StringBuilder sb = new StringBuilder();
+
+            // 랜덤 문자로 시작
+            sb.append((char) (random.nextInt(26) + 'a'));
+
+            // 5-19의 random alphanumeric characters
+            int length = random.nextInt(15) + 5;
+            for (int i = 0; i < length; i++) {
+                char c;
+                if (random.nextBoolean()) {
+                    c = (char) (random.nextInt(10) + '0');
+                } else {
+                    c = (char) (random.nextInt(26) + (random.nextBoolean() ? 'a' : 'A'));
+                }
+                sb.append(c);
+            }
+
+            customerUsername = sb.toString();
+        } while (!isValidCustomerId(customerUsername) || customerRepository.existsByCompany_CompanyIdAndUsername(companyId, customerUsername));
+
+        return customerUsername;
+    }
+
+    private boolean isValidCustomerId(String customerId) {
+        return Pattern.matches("^[a-zA-Z][a-zA-Z0-9]{5,19}$", customerId);
+    }
+
+    private String generatePassword() {
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@$!%*#?&";
+
+        do {
+            sb.setLength(0);
+            for (int i = 0; i < 12; i++) {
+                sb.append(chars.charAt(random.nextInt(chars.length())));
+            }
+        } while (!isValidPassword(sb.toString()));
+
+        return sb.toString();
+    }
+
+    private boolean isValidPassword(String password) {
+        return Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,16}$", password);
+    }
+
+
+
     @Override
     @Transactional(readOnly = true)
     public FindCustomerInfoRes getCustomerInfo(Long customerId) {
@@ -275,4 +423,34 @@ public class CustomerServiceImpl implements CustomerService{
                 .customerType(customer.getType())
                 .build();
     }
+
+    //본인 인증을 위한 메서드
+    public void sendAuthenticationCode(Long customerId, String name, String phoneNumber) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER));
+
+        if (!customer.getName().equals(name) || !customer.getPhoneNumber().equals(phoneNumber)) {
+            throw new BadRequestException(INVALID_CUSTOMER_INFO);
+        }
+
+        sendSmsAuthNumber(AUTHENTICATION.getName(), customer);
+    }
+
+    //인증번호 검증을 위한 메소드
+    public void verifyAuthenticationCode(Long customerId, String authCode) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_CUSTOMER));
+
+        VerifySmsAuthNumberReq verifyRequest = new VerifySmsAuthNumberReq(
+                AUTHENTICATION.getName(),
+                customer.getUserRole().getRoleName(),
+                customer.getCompany().getCompanyId(),
+                customer.getId(),
+                authCode
+        );
+
+        smsAuthNumberService.verifySmsAuthNumber(verifyRequest);
+    }
+
+
 }

@@ -6,6 +6,7 @@ import lombok.Setter;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.CompanyImage;
 import shop.sellution.server.company.domain.type.ImagePurposeType;
+import shop.sellution.server.global.type.DeliveryType;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ public class FindCompanyDisplaySettingRes {
     private String displayName;
     private String logoImageUrl; //null이면 displayName 넣어줌
     private List<String> promotionImageUrls;
+    private DeliveryType serviceType;
     private String themeColor; //deflaut값 있음
     private String mainPromotion1Title; //deflaut값 있음
     private String mainPromotion1Content; //deflaut값 있음
@@ -39,8 +41,9 @@ public class FindCompanyDisplaySettingRes {
 
         return FindCompanyDisplaySettingRes.builder()
                 .companyId(company.getCompanyId())
-                .displayName(company.getName())
+                .displayName(company.getDisplayName())
                 .themeColor(company.getThemeColor())
+                .serviceType(company.getServiceType())
                 .mainPromotion1Title(company.getMainPromotion1Title())
                 .mainPromotion1Content(company.getMainPromotion1Content())
                 .mainPromotion2Title(company.getMainPromotion2Title())

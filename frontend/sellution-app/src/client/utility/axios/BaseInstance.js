@@ -1,12 +1,14 @@
 import axios from 'axios';
+import { addContentTypeInterceptor } from '@/client/utility/axios/Interceptors';
 
-export const BaseInstance = (option = {}) => {
-  const instance = axios.create({
+const BaseInstance = (contentType = 'JSON') => {
+  let instance = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    ...option,
+    withCredentials: true,
   });
-  return instance;
+
+  // Content-Type interceptor 추가
+  return addContentTypeInterceptor(instance, contentType);
 };
+
+export default BaseInstance;

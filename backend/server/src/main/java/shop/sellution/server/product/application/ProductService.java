@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface ProductService {
-    Page<FindProductRes> getAllProducts(Pageable pageable);
+    //Page<FindProductRes> getAllProducts(Pageable pageable);
     FindAllProductRes getProductById(Long productId);
     void createProduct(SaveProductReq productRequestDTO, MultipartFile thumbnailImage, List<MultipartFile> listImages, List<MultipartFile> detailImages) throws IOException;
     void updateProduct(Long productId, SaveProductReq productRequestDTO, MultipartFile thumbnailImage, List<MultipartFile> listImages, List<MultipartFile> detailImages) throws IOException;
@@ -20,4 +20,6 @@ public interface ProductService {
 //    void updateProduct(Long productId, SaveProductReq productRequestDTO);
     void deleteProduct(Long productId);
     void deleteProducts(List<Long> ids);
+    //Page<FindProductRes> getAllProducts(Pageable pageable, String deliveryType, String isDiscount, String categoryName, String isVisible, String productName);
+    Page<FindProductRes> getAllProducts(Long companyId, Pageable pageable, String deliveryType, String isDiscount, String categoryName, String isVisible, String productName);
 }

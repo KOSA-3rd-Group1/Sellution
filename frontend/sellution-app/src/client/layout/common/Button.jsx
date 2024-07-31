@@ -51,6 +51,26 @@ export const EventBtn = ({ Icon, label, ...attr }) => (
   </button>
 );
 
+export const DownloadBtn = ({ Icon, label, ...attr }) => (
+  <button
+    className={`h-8 w-fit min-w-fit px-2 row-center-position gap-3 text-xs text-gray-500 border border-gray-500 rounded-md bg-white hover:bg-gray-100 hover:text-gray-700`}
+    {...attr}
+  >
+    {Icon && <Icon className='object-contain h-5' />}
+    <div>{label}</div>
+  </button>
+);
+
+export const ResetBtn = ({ Icon, label, ...attr }) => (
+  <button
+    className={`h-8 w-fit min-w-fit px-2 row-center-position gap-3 text-xs font-light text-gray-500 border border-gray-400 bg-white rounded-md hover:bg-brandOrange-light hover:text-brandOrange hover:border-brandOrange-light `}
+    {...attr}
+  >
+    {Icon && <Icon className='object-contain h-5' />}
+    <div>{label}</div>
+  </button>
+);
+
 export const NotBorderBtn = ({ Icon, label, ...attr }) => (
   <button
     className={`h-8 w-fit min-w-fit px-2 row-center-position gap-2 text-xs text-black border-transparent cursor-default`}
@@ -74,3 +94,24 @@ export const CountOrderBtn = ({ Icon, label, count, ...attr }) => (
     </div>
   </button>
 );
+
+export const ModalBtn = ({ children, className = '', variant = 'default', ...props }) => {
+  const baseStyle =
+    'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
+
+  const variants = {
+    default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+    outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+    warning: 'bg-yellow-500 text-white hover:bg-yellow-600',
+    danger: 'bg-red-500 text-white hover:bg-red-600',
+    success: 'bg-green-500 text-white hover:bg-green-600',
+  };
+
+  const classes = `${baseStyle} ${variants[variant]} ${className}`;
+
+  return (
+    <button className={classes} {...props}>
+      {children}
+    </button>
+  );
+};

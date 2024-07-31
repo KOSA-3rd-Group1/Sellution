@@ -15,6 +15,7 @@ import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.company.domain.repository.DayOptionRepository;
 import shop.sellution.server.company.domain.repository.MonthOptionRepository;
 import shop.sellution.server.company.domain.repository.WeekOptionRepository;
+import shop.sellution.server.company.domain.type.DayValueType;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.event.domain.CouponEvent;
@@ -28,6 +29,7 @@ import shop.sellution.server.order.dto.request.FindOrderedProductSimpleReq;
 import shop.sellution.server.order.dto.request.SaveOrderReq;
 import shop.sellution.server.payment.application.PaymentService;
 import shop.sellution.server.payment.dto.request.PaymentReq;
+import shop.sellution.server.payment.util.PayInfo;
 import shop.sellution.server.payment.util.PaymentUtil;
 import shop.sellution.server.product.domain.Product;
 import shop.sellution.server.product.domain.ProductRepository;
@@ -37,7 +39,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -62,30 +63,31 @@ public class OrderCreationService {
     private final PaymentService paymentService;
     private final SmsServiceImpl smsService;
     private final EventRepository eventRepository;
+    private final PaymentUtil paymentUtil;
 
 
     private static final int ONETIME = 1;
 
 
     @Transactional
-    public void createOrder(Long customerId, SaveOrderReq saveOrderReq) {
+    public long createOrder(Long customerId, SaveOrderReq saveOrderReq) {
         log.info("주문 생성 시작");
 
         // 단건주문 생성시 예외처리
         if (saveOrderReq.getOrderType().isOnetime()) {
-            if (saveOrderReq.getMonthOptionId() != null || saveOrderReq.getWeekOptionId() != null) {
+            if (saveOrderReq.getMonthOptionValue() != null || saveOrderReq.getWeekOptionValue() != null) {
                 throw new BadRequestException(INVALID_ORDER_INFO_FOR_ONETIME);
             }
         }
         // 정기주문[월] 생성시 예외처리
         if (saveOrderReq.getOrderType().isMonthSubscription()) {
-            if (saveOrderReq.getMonthOptionId() == null || saveOrderReq.getWeekOptionId() == null) {
+            if (saveOrderReq.getMonthOptionValue() == null || saveOrderReq.getWeekOptionValue() == null) {
                 throw new BadRequestException(INVALID_ORDER_INFO_FOR_SUB);
             }
         }
         // 정기주문[횟수] 생성시 예외처리
         if (saveOrderReq.getOrderType().isCountSubscription()) {
-            if (saveOrderReq.getWeekOptionId() == null || saveOrderReq.getTotalDeliveryCount() == null) {
+            if (saveOrderReq.getWeekOptionValue() == null || saveOrderReq.getTotalDeliveryCount() == null) {
                 throw new BadRequestException(INVALID_ORDER_INFO_FOR_SUB);
             }
         }
@@ -112,12 +114,12 @@ public class OrderCreationService {
         WeekOption weekOption = null;
 
 
-        if (saveOrderReq.getMonthOptionId() != null) {
-            monthOption = monthOptionRepository.findById(saveOrderReq.getMonthOptionId())
+        if (saveOrderReq.getMonthOptionValue() != null) {
+            monthOption = monthOptionRepository.findByCompanyAndDayValue(company,saveOrderReq.getMonthOptionValue())
                     .orElseThrow(() -> new BadRequestException(NOT_FOUND_MONTH_OPTION));
         }
-        if (saveOrderReq.getWeekOptionId() != null) {
-            weekOption = weekOptionRepository.findById(saveOrderReq.getWeekOptionId())
+        if (saveOrderReq.getWeekOptionValue() != null) {
+            weekOption = weekOptionRepository.findByCompanyAndDayValue(company,saveOrderReq.getWeekOptionValue())
                     .orElseThrow(() -> new BadRequestException(NOT_FOUND_WEEK_OPTION));
         }
 
@@ -127,7 +129,7 @@ public class OrderCreationService {
                 saveOrderReq.getOrderType(),
                 monthOption,
                 weekOption,
-                saveOrderReq.getDayOptionIds(),
+                saveOrderReq.getDayValueTypeList(),
                 saveOrderReq.getTotalDeliveryCount()
         );
 
@@ -141,19 +143,20 @@ public class OrderCreationService {
                 .customer(customer)
                 .account(account)
                 .address(address)
-                .monthOption(monthOption)
-                .weekOption(weekOption)
+                .couponEvent(couponEvent)
+                .monthOptionValue(monthOption == null ? null : monthOption.getMonthValue())
+                .weekOptionValue(weekOption == null ? null : weekOption.getWeekValue())
                 .code(orderCodeMaker())
                 .type(saveOrderReq.getOrderType())
                 .status(company.getIsAutoApproved().name().equals("Y")? OrderStatus.APPROVED : OrderStatus.HOLD)
-                .perPrice(totalPrice(saveOrderReq.getOrderedProducts()))
+                .perPrice(totalPrice(saveOrderReq.getOrderedProducts(),couponEvent))
                 .deliveryStartDate(saveOrderReq.getDeliveryStartDate())
                 .deliveryEndDate(deliveryInfo.getDeliveryEndDate())
                 .nextDeliveryDate(deliveryInfo.getNextDeliveryDate())
                 .totalDeliveryCount(deliveryInfo.getTotalDeliveryCount())
                 .remainingDeliveryCount(deliveryInfo.getTotalDeliveryCount())
                 .build();
-        order.setNextPaymentDate(getNextPaymentDate(order));
+//        order.setNextPaymentDate(getNextPaymentDate(order));
         order.setTotalPrice(order.getPerPrice()*order.getTotalDeliveryCount());
         log.info("생성된 주문 배송시작일: {}", order.getDeliveryStartDate());
         Order savedOrder = orderRepository.save(order);
@@ -162,9 +165,18 @@ public class OrderCreationService {
         List<OrderedProduct> orderedProducts = createOrderedProducts(order, products, saveOrderReq.getOrderedProducts());
         order.setOrderedProducts(orderedProducts);
 
-        // SelectedDay 엔티티 생성 및 연결
-        List<SelectedDay> selectedDays = createSelectedDays(order, saveOrderReq.getDayOptionIds());
-        order.setSelectedDays(selectedDays);
+        if (saveOrderReq.getDayValueTypeList() != null && !saveOrderReq.getDayValueTypeList().isEmpty()) {
+            // SelectedDay 엔티티 생성 및 연결
+            List<SelectedDay> selectedDays = createSelectedDays(order, saveOrderReq.getDayValueTypeList());
+            order.setSelectedDays(selectedDays);
+        }
+        else{
+            order.setSelectedDays(null);
+        }
+
+
+        PayInfo payInfo = paymentUtil.calculatePayCost(order, order.getDeliveryStartDate());
+        order.setThisMonthDeliveryCount(payInfo.getDeliveryCount());
 
         String orderedProductInfo = orderedProducts.stream()
                 .map(orderedProduct -> "   " + orderedProduct.getProduct().getName() + " : " + orderedProduct.getCount() + "개\n")
@@ -214,16 +226,15 @@ public class OrderCreationService {
                             .build()
             );
         }
+        return order.getId();
 
     }
 
-    private List<SelectedDay> createSelectedDays(Order order, List<Long> dayOptionIds) {
-        List<DayOption> dayOptions = dayOptionRepository.findByIdIn(dayOptionIds);
-        return dayOptions.stream()
-                .map(dayOption -> {
+    private List<SelectedDay> createSelectedDays(Order order, List<DayValueType> dayValueTypeList) {
+        return dayValueTypeList.stream()
+                .map(dayValueType -> {
                     return SelectedDay.builder()
-                            .id(new SelectedDayId(order.getId(), dayOption.getId()))
-                            .dayOption(dayOption)
+                            .dayValueType(dayValueType)
                             .order(order)
                             .build();
                 })
@@ -263,12 +274,31 @@ public class OrderCreationService {
         return localDate.format(DateTimeFormatter.BASIC_ISO_DATE) + String.format("%06d", maxOrderId);
     }
 
-    public int totalPrice(List<FindOrderedProductSimpleReq> orderedProducts) {
+    public int totalPrice(List<FindOrderedProductSimpleReq> orderedProducts, CouponEvent couponEvent) {
         // 주문한 상품들의 가격을 합쳐서 총 가격을 만들어준다.
         return orderedProducts.stream()
                 .mapToInt(product -> {
-                    double discountedPrice = product.getPrice() * (100 - product.getDiscountRate()) / 100.0;
-                    return (int) Math.round(discountedPrice); // 반올림 적용
+                    double originProductPrice = product.getPrice();
+                    double productPrice = product.getPrice();
+                    double productDiscountPrice = 0;
+                    double eventDiscountPrice =0;
+
+                    log.info("원래 상품 가격 : {}", originProductPrice);
+
+                    if (product.getDiscountRate() != 0) {
+                        productDiscountPrice = originProductPrice * (product.getDiscountRate() / 100.0);
+                        productPrice = originProductPrice - productDiscountPrice;
+                        log.info("상품 할인율에 의한 할인가 : {} , 할인 후 가격 {}", productDiscountPrice, productPrice);
+                    }
+
+                    if (couponEvent != null) {
+                        eventDiscountPrice = productPrice * (couponEvent.getCouponDiscountRate() / 100.0);
+                        productPrice = productPrice - eventDiscountPrice;
+                        log.info("쿠폰 할인율에 의한 할인가 : {}, 할인 후 가격 {}", eventDiscountPrice, productPrice);
+                    }
+
+
+                    return (int) Math.round(productPrice * product.getCount());
                 })
                 .sum();
     }
@@ -278,7 +308,7 @@ public class OrderCreationService {
             OrderType orderType,
             MonthOption monthOption,
             WeekOption weekOption,
-            List<Long> dayOptionIds,
+            List<DayValueType> dayValueTypeList,
             Integer totalDeliveryCount
     ) {
 
@@ -288,18 +318,17 @@ public class OrderCreationService {
         }
 
         if (orderType.isOnetime()) {
-            return new DeliveryInfo(ONETIME, deliveryStartDate, deliveryStartDate);
+            return new DeliveryInfo(ONETIME, deliveryStartDate, deliveryStartDate.plusDays(3)); // 단건주문은 3일 후 배송
         }
 
-        if (weekOption == null || dayOptionIds.isEmpty()) {
+        if (weekOption == null || dayValueTypeList.isEmpty()) {
             throw new BadRequestException(INVALID_ORDER_TYPE);
         }
 
         int weekly = weekOption.getWeekValue(); // n 주 마다 배송
         // 선택된 요일값 [월,화,수 ... ]
-        List<DayOption> dayOptions = dayOptionRepository.findByIdIn(dayOptionIds);
-        List<DayOfWeek> deliveryDays = dayOptions.stream()
-                .map((dayOption -> dayOption.getDayValue().changeToDayOfWeek()))
+        List<DayOfWeek> deliveryDays = dayValueTypeList.stream()
+                .map((DayValueType::changeToDayOfWeek))
                 .sorted()
                 .toList();
 
@@ -329,10 +358,10 @@ public class OrderCreationService {
         // 구독 종료일 계산 (deliveryStartDate 기준)
         LocalDate subscriptionEndDate = deliveryStartDate.plusMonths(months);
 
-        // 다음 주 월요일 계산
-        LocalDate nextMonday = deliveryStartDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+//         다음 주 월요일 계산
+//        LocalDate nextMonday = deliveryStartDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
 
-        return calculateDeliveryInfo(nextMonday, subscriptionEndDate, weekly, deliveryDays,-1);
+        return calculateDeliveryInfo(deliveryStartDate, subscriptionEndDate, weekly, deliveryDays,-1);
     }
 
 private DeliveryInfo calculateCountSubscription(
@@ -341,10 +370,10 @@ private DeliveryInfo calculateCountSubscription(
         int weekly,
         List<DayOfWeek> deliveryDays
 ) {
-    // 1. 다음 주의 월요일을 찾습니다.
-    LocalDate nextMonday = deliveryStartDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+//     1. 다음 주의 월요일을 찾습니다.
+//    LocalDate nextMonday = deliveryStartDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
 
-    return calculateDeliveryInfo(nextMonday, null, weekly, deliveryDays, totalDeliveryCount);
+    return calculateDeliveryInfo(deliveryStartDate, null, weekly, deliveryDays, totalDeliveryCount);
 }
 
 private LocalDate getNextPaymentDate(Order order) {

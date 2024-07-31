@@ -3,14 +3,19 @@ package shop.sellution.server.customer.presentation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import shop.sellution.server.customer.application.CustomerService;
 import shop.sellution.server.customer.domain.Customer;
+import shop.sellution.server.customer.dto.CustomerSearchCondition;
 import shop.sellution.server.customer.dto.request.*;
+import shop.sellution.server.customer.dto.resonse.FindCurrentCustomerInfoRes;
 import shop.sellution.server.customer.dto.resonse.FindCustomerInfoRes;
+import shop.sellution.server.customer.dto.resonse.FindCustomerRes;
 import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
 
@@ -37,6 +42,12 @@ public class CustomerController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("available", false));
         }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, FindCurrentCustomerInfoRes>> getCurrentCustomerInfo() {
+        FindCurrentCustomerInfoRes currentCustomerInfo = customerService.getCurrentUserInfo();
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("data", currentCustomerInfo));
     }
 
     @PostMapping("/find-id")
@@ -98,6 +109,32 @@ public class CustomerController {
         }
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<Page<FindCustomerRes>> findAllCustomerByCompanyId(CustomerSearchCondition condition, Pageable pageable) {
+        return ResponseEntity.ok(customerService.findAllCustomerByCompanyId(condition, pageable));
+    }
+
+    @PostMapping("/self")
+    public ResponseEntity<FindCustomerRes> registerCustomerFromClient(@Valid @RequestBody RegisterCustomerReq request) {
+        FindCustomerRes findCustomerRes = customerService.registerCustomerFromClient(request);
+        return ResponseEntity.status(HttpStatus.OK).body(findCustomerRes);
+    }
+
+    @GetMapping("/{customerId}")
+    public ResponseEntity<FindCustomerRes> findCustomerById(@PathVariable Long customerId) {
+        FindCustomerRes findCustomerRes = customerService.getCustomerById(customerId);
+        return ResponseEntity.status(HttpStatus.OK).body(findCustomerRes);
+    }
+
+    @PutMapping("/{customerId}")
+    public ResponseEntity<String> updateCustomer(
+            @PathVariable Long customerId,
+            @RequestBody @Valid RegisterCustomerReq request
+    ) {
+        customerService.updateCustomer(customerId, request);
+        return ResponseEntity.ok("success");
+    }
+
 
     @GetMapping("/mypage/{customerId}")
     public ResponseEntity<FindCustomerInfoRes> getCustomerInfo(@PathVariable Long customerId) {
@@ -105,6 +142,21 @@ public class CustomerController {
         return ResponseEntity.ok(customerInfo);
     }
 
+    @PostMapping("/{customerId}/send-auth-code")
+    public ResponseEntity<?> sendAuthenticationCode(
+            @PathVariable Long customerId,
+            @RequestBody SendAuthCodeReq sendAuthCodeReq
+    ) {
+        customerService.sendAuthenticationCode(customerId, sendAuthCodeReq.getName(), sendAuthCodeReq.getPhoneNumber());
+        return ResponseEntity.ok().build();
+    }
 
-
+    @PostMapping("/{customerId}/verify-auth-code")
+    public ResponseEntity<?> verifyAuthenticationCode(
+            @PathVariable Long customerId,
+            @RequestBody VerifyAuthCodeReq verifyAuthCodeReq
+    ) {
+        customerService.verifyAuthenticationCode(customerId, verifyAuthCodeReq.getAuthCode());
+        return ResponseEntity.ok().build();
+    }
 }

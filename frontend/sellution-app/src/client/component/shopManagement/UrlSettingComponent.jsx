@@ -1,45 +1,38 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import { InfoInput } from '@/client/layout/common/Input';
+import { DownloadBtn } from '@/client/layout/common/Button';
 import RadioButtonGroup from '@/client/layout/common/RadioButtonGroup';
+import DropdownModal from '@/client/layout/common/modal/DropdownModal';
+import AlertModal from '@/client/layout/common/modal/AlertModal';
+import { useDropdownModal } from '@/client/business/common/useDropdownModal';
+import { useModal } from '@/client/business/common/useModal';
 import { useShopManagementUrlSetting } from '@/client/business/shopManagement/useShopManagementUrlSetting';
-import { LinkIcon } from '../../utility/assets/Icons';
-import { useRef, useState } from 'react';
+import { LinkIcon, DownloadIcon } from '@/client/utility/assets/Icons';
 
 const UrlSettingComponent = () => {
-  const { data, handleChangeInputValue, handleChangeInputNameValue, handleSaveData } =
-    useShopManagementUrlSetting();
-  console.log(data);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalPosition, setModalPosition] = useState({ top: 0, right: 0 });
-  const buttonRef = useRef(null);
-  //   const handleCopy = (textToCopy) => {
-  //     navigator.clipboard
-  //       .writeText(textToCopy)
-  //       .then(() => {
-  //         alert('Text copied to clipboard');
-  //       })
-  //       .catch((err) => {
-  //         console.error('Could not copy text: ', err);
-  //       });
-  //   };
-  const handleCopy = (textToCopy) => {
-    navigator.clipboard
-      .writeText(textToCopy)
-      .then(() => {
-        if (buttonRef.current) {
-          const rect = buttonRef.current.getBoundingClientRect();
-          setModalPosition({
-            top: rect.bottom + window.scrollY,
-            right: window.innerWidth - rect.right,
-          });
-        }
-        setIsModalOpen(true);
-        setTimeout(() => setIsModalOpen(false), 1000); // 2초 후 모달 닫기
-      })
-      .catch((err) => {
-        console.error('Could not copy text: ', err);
-      });
-  };
+  const { isModalOpen, modalPosition, buttonRef, handleCopy } = useDropdownModal();
+  const {
+    alertModalState,
+    autoCloseModalState,
+    openAlertModal,
+    closeAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  } = useModal();
+  const {
+    data,
+    handleChangeInputValue,
+    handleChangeInputNameValue,
+    checkResetContent,
+    checkSaveContent,
+    handleOnConfirm,
+    handleDownload,
+  } = useShopManagementUrlSetting({
+    openAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  });
+
   return (
     <div className='relative w-full h-full justify-between'>
       <section className='absolute w-full h-[calc(100%-58px)] p-2 flex flex-col overflow-y-auto'>
@@ -73,10 +66,21 @@ const UrlSettingComponent = () => {
                   </button>
                 </div>
               </li>
-              <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
-                <div className='flex-1 min-w-32'>쇼핑몰 QR 코드 *수정 필요*</div>
-                <div className='flex-1 min-w-64'>
-                  <InfoInput value={data?.qrCode || ''} readOnly />
+              <li className='pl-4 h-44 flex justify-between items-center gap-10 border-b'>
+                <div className='flex-1 min-w-32'>쇼핑몰 QR 코드</div>
+                <div className='flex-1 flex flex-col items-end justify-center min-w-64'>
+                  <div className='w-fit min-w-64 h-full px-auto flex flex-row justify-center items-center border border-gray-400 border-dashed rounded-lg'>
+                    <div className='w-32 h-32'>
+                      <img className='w-full h-full object-contain' src={data?.qrCodeUrl || ''} />
+                    </div>
+                    <div className='h-32 min-w-28 pb-4 flex flex-col justify-end items-start'>
+                      <DownloadBtn
+                        Icon={DownloadIcon}
+                        label={'다운로드'}
+                        onClick={() => handleDownload(data?.qrCodeUrl)}
+                      />
+                    </div>
+                  </div>
                 </div>
               </li>
               <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
@@ -86,8 +90,8 @@ const UrlSettingComponent = () => {
                     className='w-full flex justify-start items-center gap-6 px-4'
                     data={data}
                     options={[
-                      { label: '공개', selectData: true },
-                      { label: '비공개', selectData: false },
+                      { label: '공개', selectData: 'Y' },
+                      { label: '비공개', selectData: 'N' },
                     ]}
                     name='isShopVisible'
                     onChange={handleChangeInputValue}
@@ -96,55 +100,23 @@ const UrlSettingComponent = () => {
               </li>
             </ul>
           </div>
-          {/* <div className='w-1/2'>
-            <div className='w-full min-h-20 h-20 max-h-20 text-base font-semibold flex items-center'>
-              <div>자동 결제 CMS</div>
-            </div>
-            <ul className=' w-full min-w-fit flex flex-col text-sm border-t-2'>
-              <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
-                <div className='flex-1 min-w-32'>은행</div>
-                <div className='flex-1 min-w-64'>
-                  <InfoInput value={data.bank || ''} readOnly />
-                </div>
-              </li>
-              <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
-                <div className='flex-1 min-w-32'>계좌번호</div>
-                <div className='flex-1 min-w-64'>
-                  <InfoInput value={data.accountNumber || ''} readOnly />
-                </div>
-              </li>
-            </ul>
-          </div> */}
         </div>
       </section>
       <FooterComponent
-        btn1={{ label: '취소', event: handleSaveData }}
-        btn2={{ label: '변경사항 적용', event: handleSaveData }}
+        btn1={{ label: '취소', event: checkResetContent }}
+        btn2={{ label: '변경사항 적용', event: checkSaveContent }}
       />
-      {isModalOpen && (
-        <div
-          className='fixed bg-white p-3 rounded-md shadow-lg z-50 text-sm border border-gray-200'
-          style={{
-            top: `${modalPosition.top}px`,
-            right: `${modalPosition.right}px`,
-          }}
-        >
-          <div className='flex items-center'>
-            <svg
-              className='w-5 h-5 text-green-500 mr-2'
-              fill='none'
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth='2'
-              viewBox='0 0 24 24'
-              stroke='currentColor'
-            >
-              <path d='M5 13l4 4L19 7'></path>
-            </svg>
-            <p className='text-gray-700 font-medium'>링크가 복사되었습니다.</p>
-          </div>
-        </div>
-      )}
+
+      {isModalOpen && <DropdownModal modalPosition={modalPosition} />}
+
+      <AlertModal
+        isOpen={alertModalState.isOpen}
+        onClose={closeAlertModal}
+        onConfirm={handleOnConfirm}
+        type={alertModalState.type}
+        title={alertModalState.title}
+        message={alertModalState.message}
+      />
     </div>
   );
 };

@@ -1,93 +1,67 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import useAuthStore from '@/client/store/stores/useAuthStore';
+import { getCustomerPaymentList } from '@/client/utility/apis/customer/detail/payment/customerPaymentListApi';
+import { bankCodeIndexInfo } from '@/client/utility/bank/bankInfo';
 
-// 더미 데이터 생성 함수
-const generateDummyData = (count) => {
-  return Array.from({ length: count }, (_, index) => ({
-    id: index + 1,
-    paymentMethod: `CMS`,
-    bank: `신한 은행`,
-    accountNumber: `${Math.floor(100000 + Math.random() * 900000)}-01-${Math.floor(100000 + Math.random() * 900000)}`,
-    createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
-      .toISOString()
-      .split('T')[0],
-  }));
-};
+// // 더미 데이터 생성 함수
+// const generateDummyData = (count) => {
+//   return Array.from({ length: count }, (_, index) => ({
+//     id: index + 1,
+//     no: index + 100,
+//     paymentMethod: `CMS`,
+//     bankCode: `신한 은행`,
+//     accountNumber: `${Math.floor(100000 + Math.random() * 900000)}-01-${Math.floor(100000 + Math.random() * 900000)}`,
+//     createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
+//       .toISOString()
+//       .split('T')[0],
+//   }));
+// };
 
-//더미 데이터
-const DUMMY_DATA = generateDummyData(5);
+// //더미 데이터
+// const DUMMY_DATA = generateDummyData(5);
 
 export const useCustomerPaymentList = () => {
-  const HEADERS = [
-    {
-      key: 'paymentMethod',
-      label: '결제 수단',
-      //   type: 'search',
-      width: 'min-w-48 w-48 max-w-48',
-    },
-    {
-      key: 'bank',
-      label: '결제사',
-      //   type: 'search',
-      width: 'min-w-48 w-48 max-w-48',
-    },
-    {
-      key: 'accountNumber',
-      label: '계좌번호',
-      //   type: 'search',
-      width: 'min-w-56 w-56 max-w-56',
-    },
-    {
-      key: 'createdAt',
-      label: '등록일',
-      //   type: 'sort',
-      width: 'min-w-48 w-48 max-w-48',
-    },
-  ];
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
-  const ROW_HEIGHT = 'min-h-14 h-14 max-h-14';
+  const { customerId } = useParams();
 
-  const navigate = useNavigate();
+  const [data, setData] = useState([]); // 테이블 데이터
+  const [totalDataCount, setTotalDataCount] = useState(0); // 데이터 총 개수
 
-  // 테이블 데이터
-  const [data, setData] = useState([]);
-
-  // 데이터 총 개수
-  const [totalDataCount, setTotalDataCount] = useState(0);
+  const formatData = useCallback(
+    (content, index) => ({
+      ...content,
+      paymentMethod: `CMS`,
+      id: content.accountId,
+      no: index + 1,
+      createdAt: content.createdAt.split('T')[0],
+      bankCode: bankCodeIndexInfo[content.bankCode].name,
+    }),
+    [],
+  );
 
   // api 요청으로 데이터 받아오기
   useEffect(() => {
-    setData(DUMMY_DATA);
-    setTotalDataCount(100);
+    const fetch = async (customerId, setAccessToken, accessToken) => {
+      const response = await getCustomerPaymentList(customerId, setAccessToken, accessToken); // API 요청
+      const { content, empty, totalElements } = response.data;
+
+      if (!empty) {
+        const formattedContent = content.map((item, index) => {
+          return formatData(item, index);
+        });
+        setData(() => formattedContent);
+        setTotalDataCount(totalElements);
+      }
+    };
+
+    fetch(customerId, setAccessToken, accessToken);
   }, []);
 
-  // 등록 버튼
-  const handleAddBtn = () => {
-    navigate({
-      pathname: 'add',
-    });
-  };
-
-  // 테이블 row onClick 이벤트
-  const handleRowEvent = (e) => {
-    navigate({
-      pathname: `${e}`,
-    });
-  };
-
-  const moveList = () => {
-    navigate({
-      pathname: '/customer',
-    });
-  };
-
   return {
-    HEADERS,
-    ROW_HEIGHT,
     data,
     totalDataCount,
-    handleAddBtn,
-    handleRowEvent,
-    moveList,
   };
 };

@@ -26,11 +26,11 @@ public class FindCompanySaleSettingRes {
     private Integer minDeliveryCount;
     private Integer maxDeliveryCount;
 
-    private List<Integer> monthValues;
-    private List<Integer> weekValues;
-    private List<String> dayValues;
+    private List<FindOptionRes> monthValues;
+    private List<FindOptionRes> weekValues;
+    private List<FindOptionRes> dayValues;
 
-    public static FindCompanySaleSettingRes fromEntity(Company company, List<Integer> monthValues, List<Integer> weekValues, List<String> dayValues) {
+    public static FindCompanySaleSettingRes fromEntity(Company company, List<FindOptionRes> monthValues, List<FindOptionRes> weekValues, List<FindOptionRes> dayValues) {
         return FindCompanySaleSettingRes.builder()
                 .companyId(company.getCompanyId())
                 .serviceType(company.getServiceType())

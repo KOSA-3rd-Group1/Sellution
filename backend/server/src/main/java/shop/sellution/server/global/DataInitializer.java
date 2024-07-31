@@ -4,22 +4,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import shop.sellution.server.account.domain.Account;
-import shop.sellution.server.account.domain.AccountRepository;
+import org.springframework.transaction.annotation.Transactional;
+import shop.sellution.server.account.application.AccountService;
+import shop.sellution.server.account.dto.request.SaveAccountReq;
 import shop.sellution.server.address.domain.Address;
 import shop.sellution.server.address.domain.AddressRepository;
 import shop.sellution.server.category.domain.Category;
 import shop.sellution.server.category.domain.CategoryRepository;
-import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.DayOption;
-import shop.sellution.server.company.domain.MonthOption;
-import shop.sellution.server.company.domain.WeekOption;
-import shop.sellution.server.company.domain.repository.CompanyRepository;
-import shop.sellution.server.company.domain.repository.DayOptionRepository;
-import shop.sellution.server.company.domain.repository.MonthOptionRepository;
-import shop.sellution.server.company.domain.repository.WeekOptionRepository;
+import shop.sellution.server.company.domain.*;
+import shop.sellution.server.company.domain.repository.*;
 import shop.sellution.server.company.domain.type.DayValueType;
+import shop.sellution.server.company.domain.type.ImagePurposeType;
 import shop.sellution.server.company.domain.type.SellType;
 import shop.sellution.server.company.domain.type.SubscriptionType;
 import shop.sellution.server.contractcompany.domain.ContractCompany;
@@ -27,6 +24,10 @@ import shop.sellution.server.contractcompany.domain.ContractCompanyRepository;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.customer.domain.type.CustomerType;
+import shop.sellution.server.event.domain.CouponEvent;
+import shop.sellution.server.event.domain.EventRepository;
+import shop.sellution.server.event.domain.type.EventState;
+import shop.sellution.server.event.domain.type.TargetCustomerType;
 import shop.sellution.server.global.type.DeliveryType;
 import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.order.application.OrderCreationService;
@@ -35,14 +36,17 @@ import shop.sellution.server.order.dto.request.FindOrderedProductSimpleReq;
 import shop.sellution.server.order.dto.request.SaveOrderReq;
 import shop.sellution.server.product.domain.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 @Profile("data")
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class DataInitializer implements ApplicationListener<ContextRefreshedEvent> {
 
     private boolean alreadySetup = false;
@@ -52,15 +56,17 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private final CompanyRepository companyRepository;
     private final ContractCompanyRepository contractCompanyRepository;
     private final ProductRepository productRepository;
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
     private final CustomerRepository customerRepository;
     private final AddressRepository addressRepository;
     private final MonthOptionRepository monthOptionRepository;
     private final WeekOptionRepository weekOptionRepository;
     private final DayOptionRepository dayOptionRepository;
     private final ProductImageRepository productImageRepository;
-
+    private final EventRepository eventRepository;
     private final OrderCreationService orderCreationService;
+    private final CompanyImageRepository companyImageRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     private Company 포켓샐러드;
@@ -107,8 +113,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private Customer 휴면회원;
     private Customer 일반회원;
 
-    private Account 테스트용공용계좌;
-    private Account 테스트용공용계좌2;
+    private Long 테스트용공용계좌아이디;
 
     private Address 공용주소;
     private Address 공용주소2;
@@ -129,6 +134,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         createAccount();
         createAddress();
         createCompanyOptions();
+        createCouponEvent();
         createOrder();
 
 
@@ -150,12 +156,39 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .maxDeliveryCount(30)
                 .themeColor("F37021")
                 .sellType(SellType.ALL)
-                .mainPromotion1Title("한끼, 건강하고 간단하게 \uD83E\uDD57")
+                .mainPromotion1Title("한끼, 건강하고 간단하게")
                 .mainPromotion1Content("최고의 퀄리티를 위해\n아끼지 않고 가득 담았습니다.")
                 .mainPromotion2Title("식단 관리 할 사람!")
                 .mainPromotion2Content("너랑!  나랑!")
                 .build();
         companyRepository.save(포켓샐러드);
+
+        CompanyImage logo = CompanyImage.builder()
+                .company(포켓샐러드)
+                .imageUrl("https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/setting/%ED%8F%AC%EC%BA%A3%EC%83%90%EB%9F%AC%EB%93%9C_%EB%A1%9C%EA%B3%A0.png")
+                .purposeOfUse(ImagePurposeType.LOGO)
+                .build();
+        companyImageRepository.save(logo);
+        CompanyImage promotion1 = CompanyImage.builder()
+                .company(포켓샐러드)
+                .imageUrl("https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/setting/%EB%A9%94%EC%9D%B8%ED%94%84%EB%A1%9C%EB%AA%A8%EC%85%98.jfif")
+                .purposeOfUse(ImagePurposeType.PROMOTION)
+                .build();
+        companyImageRepository.save(promotion1);
+        CompanyImage promotion2 = CompanyImage.builder()
+                .company(포켓샐러드)
+                .imageUrl("https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/setting/%EB%A9%94%EC%9D%B8%ED%94%84%EB%A1%9C%EB%AA%A8%EC%85%982.jfif")
+                .purposeOfUse(ImagePurposeType.PROMOTION)
+                .build();
+        companyImageRepository.save(promotion2);
+        CompanyImage promotion3 = CompanyImage.builder()
+                .company(포켓샐러드)
+                .imageUrl("https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/setting/%EB%A9%94%EC%9D%B8%ED%94%84%EB%A1%9C%EB%AA%A8%EC%85%983.jfif")
+                .purposeOfUse(ImagePurposeType.PROMOTION)
+                .build();
+        companyImageRepository.save(promotion3);
+
+
     }
 
     private void createContractCompany() {
@@ -178,9 +211,11 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private void createCategory() {
         데일리샐러드 = Category.builder()
                 .name("데일리샐러드")
+                .company(포켓샐러드)
                 .build();
         테이스티샐러드 = Category.builder()
                 .name("테이스티샐러드")
+                .company(포켓샐러드)
                 .build();
 
         categoryRepository.save(데일리샐러드);
@@ -200,6 +235,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .productInformation("깔끔하고 담백한 닭가슴살과 가볍게 맛있는 갈릭 소이 드레싱, 신선하고 풍성한 채소가 어우러져 가장 깔끔하고 신선한 맛을 느끼실 수 있어요.")
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
+                .discountedPrice(calculateDiscountedPrice(8300, 19))
                 .discountRate(19)
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
@@ -221,6 +257,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(21)
+                .discountedPrice(calculateDiscountedPrice(9000, 21))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -240,6 +277,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(23)
+                .discountedPrice(calculateDiscountedPrice(9000, 23))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -259,6 +297,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(20)
+                .discountedPrice(calculateDiscountedPrice(8100, 20))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -278,6 +317,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.ONETIME)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(19)
+                .discountedPrice(calculateDiscountedPrice(9800, 19))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -296,6 +336,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.SUBSCRIPTION)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(23)
+                .discountedPrice(calculateDiscountedPrice(9000, 23))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -316,6 +357,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(21)
+                .discountedPrice(calculateDiscountedPrice(10700, 21))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -335,6 +377,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(19)
+                .discountedPrice(calculateDiscountedPrice(11000, 19))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -355,6 +398,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(19)
+                .discountedPrice(calculateDiscountedPrice(11000, 19))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -374,6 +418,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.BOTH)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(20)
+                .discountedPrice(calculateDiscountedPrice(10200, 20))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -393,6 +438,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.ONETIME)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(21)
+                .discountedPrice(calculateDiscountedPrice(11200 ,21))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -412,6 +458,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 .deliveryType(DeliveryType.SUBSCRIPTION)
                 .isDiscount(DisplayStatus.Y)
                 .discountRate(23)
+                .discountedPrice(calculateDiscountedPrice(11600, 23))
                 .discountStartDate(LocalDateTime.now().minusDays(random.nextInt(20) + 1))
                 .discountEndDate(LocalDateTime.now().plusDays(random.nextInt(40) + 1))
                 .build();
@@ -556,11 +603,12 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private void createCustomer() {
 
+
         신규회원 = Customer.builder()
                 .company(포켓샐러드)
                 .username("newCustomer")
-                .password("newCustomer")
-                .name("샐러드뉴비")
+                .password(passwordEncoder.encode("newCustomer"))
+                .name("길재현")
                 .phoneNumber("01075985112")
                 .type(CustomerType.NEW)
                 .build();
@@ -571,7 +619,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         휴면회원 = Customer.builder()
                 .company(포켓샐러드)
                 .username("dormantCustomer")
-                .password("dormantCustomer")
+                .password(passwordEncoder.encode("dormantCustomer") )
                 .name("돌아온샐러드귀신")
                 .phoneNumber("01075985112")
                 .type(CustomerType.DORMANT)
@@ -582,7 +630,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         일반회원 = Customer.builder()
                 .company(포켓샐러드)
                 .username("normalCustomer")
-                .password("normalCustomer")
+                .password(passwordEncoder.encode("normalCustomer") )
                 .name("샐러드매니아")
                 .phoneNumber("01075985112")
                 .type(CustomerType.NORMAL)
@@ -593,11 +641,11 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         customerRepository.save(휴면회원);
 
 
-        for (int i = 0; i < 50; i++) { // 회원 50명 랜덤 생성
+        for (int i = 0; i < 31; i++) {
             Customer customer = Customer.builder()
                     .company(포켓샐러드)
                     .username("customer" + i)
-                    .password("customer" + i)
+                    .password(passwordEncoder.encode("customer" + i) )
                     .name("샐러드매니아" + i)
                     .phoneNumber("01011111111")
                     .type(CustomerType.values()[random.nextInt(OrderType.values().length)])
@@ -608,40 +656,30 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     }
 
     private void createAccount() {
-        테스트용공용계좌 = Account.builder()
-                .customer(일반회원)
+
+        테스트용공용계좌아이디 = accountService.saveAccount(일반회원.getId(), SaveAccountReq.builder()
                 .accountNumber("42750204039102")
                 .bankCode("004")
-                .build();
+                .build());
 
-        accountRepository.save(테스트용공용계좌);
 
-        테스트용공용계좌2 = Account.builder()
-                .customer(휴면회원)
-                .accountNumber("110555920510")
-                .bankCode("088")
-                .build();
-
-        accountRepository.save(테스트용공용계좌2);
-
-        for (Customer customer : customers) { // 50명 더미에 같은 계좌[테스트용]
-            accountRepository.save(Account.builder()
-                    .customer(customer)
-                    .accountNumber("42750204039102")
-                    .bankCode("004")
-                    .build());
-        }
+//        for (Customer customer : customers) { // 50명 더미에 같은 계좌[테스트용]
+//            accountService.saveAccount(customer.getId(), SaveAccountReq.builder()
+//                    .accountNumber("42750204039102")
+//                    .bankCode("004")
+//                    .build());
+//        }
     }
 
     private void createAddress() {
         공용주소 = Address.builder()
                 .customer(일반회원)
-                .name("집")
+                .name("길김이")
                 .addressName("집")
                 .address("서울특별시 강남구 테헤란로 427")
                 .addressDetail("포스코타워 3층")
                 .zipcode("06164")
-                .phoneNumber("010-7598-5112")
+                .phoneNumber("01075985112")
                 .isDefaultAddress(DisplayStatus.Y)
                 .build();
 
@@ -649,12 +687,12 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         공용주소2 = Address.builder()
                 .customer(휴면회원)
-                .name("집")
+                .name("길김이")
                 .addressName("집")
                 .address("서울특별시 강남구 테헤란로 427")
                 .addressDetail("포스코타워 3층")
                 .zipcode("06164")
-                .phoneNumber("010-7598-5112")
+                .phoneNumber("01075985112")
                 .isDefaultAddress(DisplayStatus.Y)
                 .build();
 
@@ -663,12 +701,12 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         for (Customer customer : customers) { // 50명 더미에 같은 주소[테스트용]
             addressRepository.save(Address.builder()
                     .customer(customer)
-                    .name("집")
+                    .name("길김이")
                     .addressName("집")
                     .address("서울특별시 강남구 테헤란로 427")
                     .addressDetail("포스코타워 " + random.nextInt(50) + 1 + "층")
                     .zipcode("06164")
-                    .phoneNumber("010-7598-5333")
+                    .phoneNumber("01075985333")
                     .isDefaultAddress(DisplayStatus.Y)
                     .build());
         }
@@ -695,7 +733,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         }
 
         for (DayValueType type : DayValueType.values()) {
-            if (type.name().equals("화")) continue; // 화요일 제외 월 ~ 금
+            if (type.name().equals("TUE")) continue; // 화요일 제외 월 ~ 금
             DayOption dayOption = DayOption.builder()
                     .company(포켓샐러드)
                     .dayValue(type)
@@ -708,14 +746,14 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private void createOrder() {
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 12; i++) {
             Customer customer = customers.get(random.nextInt(customers.size()));
             OrderType orderType = OrderType.values()[random.nextInt(OrderType.values().length)];
 
             SaveOrderReq.SaveOrderReqBuilder orderReqBuilder = SaveOrderReq.builder()
                     .companyId(포켓샐러드.getCompanyId())
                     .addressId(공용주소.getId())
-                    .accountId(테스트용공용계좌.getId())
+                    .accountId(테스트용공용계좌아이디)
                     .orderType(orderType);
 
             List<Product> eligibleProducts;
@@ -748,27 +786,28 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
             }
 
             if (orderType == OrderType.MONTH_SUBSCRIPTION) { // 정기[월] 주문이면 월, 주,요일 옵션 필수
-                orderReqBuilder.monthOptionId(monthOptions.get(random.nextInt(monthOptions.size())).getId())
-                        .weekOptionId(weekOptions.get(random.nextInt(weekOptions.size())).getId())
-                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(3)));
+                orderReqBuilder.monthOptionValue(monthOptions.get(random.nextInt(monthOptions.size())).getMonthValue())
+                        .weekOptionValue(weekOptions.get(random.nextInt(weekOptions.size())).getWeekValue())
+                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(14)).with(TemporalAdjusters.next(DayOfWeek.MONDAY)));
             }
             if (orderType == OrderType.COUNT_SUBSCRIPTION) { // 정기[횟수] 주문이면
                 int minDeliveryCount = 포켓샐러드.getMinDeliveryCount();
                 int maxDeliveryCount = 포켓샐러드.getMaxDeliveryCount();
 
-                orderReqBuilder.weekOptionId(weekOptions.get(random.nextInt(weekOptions.size())).getId())
+                orderReqBuilder.weekOptionValue(weekOptions.get(random.nextInt(weekOptions.size())).getWeekValue())
                         .totalDeliveryCount((random.nextInt(maxDeliveryCount - minDeliveryCount + 1) + minDeliveryCount))
-                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(3)));
+                        .deliveryStartDate(LocalDate.now().plusDays(random.nextInt(14)).with(TemporalAdjusters.next(DayOfWeek.MONDAY)));
             }
             int numberOfDayOptions = random.nextInt(dayOptions.size()) + 1;
-            List<Long> selectedDayOptionIds = new ArrayList<>();
+            List<DayValueType> selectedDayValueType = new ArrayList<>();
             for (int j = 0; j < numberOfDayOptions; j++) {
                 DayOption dayOption = dayOptions.get(random.nextInt(dayOptions.size()));
-                if (!selectedDayOptionIds.contains(dayOption.getId())) {
-                    selectedDayOptionIds.add(dayOption.getId());
+                if (!selectedDayValueType.contains(dayOption.getDayValue())) {
+                    selectedDayValueType.add(dayOption.getDayValue());
                 }
             }
-            orderReqBuilder.dayOptionIds(selectedDayOptionIds);
+            orderReqBuilder.dayValueTypeList(selectedDayValueType);
+            orderReqBuilder.eventId(random.nextLong(9)+1); // 이벤트 랜덤지정
 
             orderCreationService.createOrder(customer.getId(), orderReqBuilder.build());
         }
@@ -783,5 +822,128 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private int calculateDiscountedPrice(int cost, int discountRate) {
         return cost - (cost * discountRate / 100);
+    }
+
+    private void createCouponEvent() {
+        // 기간이 지난 이벤트 2개
+        CouponEvent pastEvent1 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Past Event 1")
+                .couponDiscountRate(5)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(30))
+                .eventEndDate(LocalDate.now().minusDays(10))
+                .state(EventState.END)
+                .isDeleted(false)
+                .initialQuantity(100)
+                .build();
+
+        CouponEvent pastEvent2 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Past Event 2")
+                .couponDiscountRate(10)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(20))
+                .eventEndDate(LocalDate.now().minusDays(5))
+                .state(EventState.END)
+                .isDeleted(false)
+                .initialQuantity(100)
+                .build();
+
+        // 진행 중인 이벤트 4개
+        CouponEvent ongoingEvent1 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ongoing Event 1")
+                .couponDiscountRate(15)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(5))
+                .eventEndDate(LocalDate.now().plusDays(10))
+                .state(EventState.ONGOING)
+                .isDeleted(false)
+                .initialQuantity(100)
+                .build();
+
+        CouponEvent ongoingEvent2 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ongoing Event 2")
+                .couponDiscountRate(20)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(3))
+                .eventEndDate(LocalDate.now().plusDays(15))
+                .state(EventState.ONGOING)
+                .isDeleted(true)
+                .initialQuantity(100)
+                .build();
+
+        CouponEvent ongoingEvent3 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ongoing Event 3")
+                .couponDiscountRate(25)
+                .targetCustomerType(TargetCustomerType.NEW)
+                .eventStartDate(LocalDate.now().minusDays(1))
+                .eventEndDate(LocalDate.now().plusDays(20))
+                .state(EventState.ONGOING)
+                .isDeleted(false)
+                .initialQuantity(100)
+                .build();
+
+        CouponEvent ongoingEvent4 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ongoing Event 4")
+                .couponDiscountRate(30)
+                .targetCustomerType(TargetCustomerType.NORMAL)
+                .eventStartDate(LocalDate.now().minusDays(2))
+                .eventEndDate(LocalDate.now().plusDays(25))
+                .state(EventState.ONGOING)
+                .isDeleted(false)
+                .initialQuantity(100)
+                .build();
+
+        // 끝난 이벤트 3개
+        CouponEvent endedEvent1 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ended Event 1")
+                .couponDiscountRate(10)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(25))
+                .eventEndDate(LocalDate.now().minusDays(1))
+                .state(EventState.END)
+                .isDeleted(false)
+                .initialQuantity(100)
+                .build();
+
+        CouponEvent endedEvent2 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ended Event 2")
+                .couponDiscountRate(20)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(15))
+                .eventEndDate(LocalDate.now().minusDays(1))
+                .state(EventState.END)
+                .isDeleted(false)
+                .initialQuantity(100)
+                .build();
+
+        CouponEvent endedEvent3 = CouponEvent.builder()
+                .company(포켓샐러드)
+                .couponName("Ended Event 3")
+                .couponDiscountRate(30)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now().minusDays(10))
+                .eventEndDate(LocalDate.now().minusDays(1))
+                .state(EventState.END)
+                .isDeleted(false)
+                .initialQuantity(100)
+                .build();
+
+        eventRepository.save(pastEvent1);
+        eventRepository.save(pastEvent2);
+        eventRepository.save(ongoingEvent1);
+        eventRepository.save(ongoingEvent2);
+        eventRepository.save(ongoingEvent3);
+        eventRepository.save(ongoingEvent4);
+        eventRepository.save(endedEvent1);
+        eventRepository.save(endedEvent2);
+        eventRepository.save(endedEvent3);
     }
 }

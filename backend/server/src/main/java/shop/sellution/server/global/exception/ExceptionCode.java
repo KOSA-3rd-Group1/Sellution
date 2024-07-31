@@ -25,6 +25,7 @@ public enum ExceptionCode {
     INVALID_COMPANY_ID_FORMAT(7003, "유효하지 않은 사업체 ID 형식입니다."),
     NOT_FOUND_CLIENT(7004, "요청한 ID에 해당하는 고객을 찾을 수 없습니다."),
 //    NOT_FOUND_CUSTOMER(7005, "요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
+    NOT_FOUND_USER(7006, "요청한 ID에 해당하는 사용자 찾을 수 없습니다."),
 
     //JWT
     EXPIRED_JWT_TOKEN(4000, "토큰이 만료되었습니다."),
@@ -50,9 +51,9 @@ public enum ExceptionCode {
     INVALID_ACCOUNT_INFO(5002,"유효하지않은 계좌정보입니다."),
     NOT_FOUND_ACCOUNT(5001,"요청한 ID에 해당하는 계좌를 찾을 수 없습니다."),
     NOT_FOUND_ADDRESS(5002,"요청한 ID에 해당하는 주소를 찾을 수 없습니다."),
-    NOT_FOUND_MONTH_OPTION(5003,"요청한 ID에 해당하는 월 옵션을 찾을 수 없습니다."),
-    NOT_FOUND_WEEK_OPTION(5004,"요청한 ID에 해당하는 주 옵션을 찾을 수 없습니다."),
-    NOT_FOUND_DAY_OPTION(5005,"요청한 ID에 해당하는 요일 옵션을 찾을 수 없습니다." ),
+    NOT_FOUND_MONTH_OPTION(5003,"회사가 설정한 월 옵션값이 아닙니다."),
+    NOT_FOUND_WEEK_OPTION(5004,"회사가 설정한 주 옵션값이 아닙니다."),
+    NOT_FOUND_DAY_OPTION(5005,"회사가 설정한 요일 옵션값이 아닙니다." ),
     INVALID_ORDER_TYPE(5006,"유효하지않은 주문 입력값입니다."),
     NOT_FOUND_PRODUCT(5007, "요청한 ID에 해당하는 상품을 찾을 수 없습니다."),
     NOT_FOUND_ORDER(5008, "요청한 ID에 해당하는 주문을 찾을 수 없습니다."),
@@ -67,18 +68,26 @@ public enum ExceptionCode {
     FAIL_TO_PAY_CANCEL(5017,"결제취소에 실패하였습니다." ),
     INVALID_ORDER_INFO_FOR_ONETIME(5018,"단건 주문에 유효하지않은 정보값입니다." ),
     INVALID_ORDER_INFO_FOR_SUB(5018,"정기 주문에 유효하지않은 정보값입니다." ),
+    ALREADY_ACCOUNT(5019,"이미 등록된 계좌입니다." ),
 
 
-    // ---------------------------- Address, category, event 6501 ~ 7000 ---------------------------------------
+
+    // ---------------------------- Product, Address, category, event 6501 ~ 7000 ---------------------------------------
 
     NOT_FOUND_CUSTOMER_FOR_ADDRESS(6501, "주소와 연관된 회원을 찾을 수 없습니다."),
     FAILED_TO_RESET_DEFAULT_ADDRESS(6502, "기본 주소 재설정에 실패했습니다."),
     INVALID_ADDRESS_DATA(6503, "유효하지 않은 주소 데이터입니다."),
+    CANNOT_DELETE_DEFAULT_ADDRESS(6504, "기본 배송지는 삭제할 수 없습니다."),
 
     NOT_FOUND_COMPANY(6601, "요청한 ID에 해당하는 회사를 찾을 수 없습니다."),
     FAIL_TO_GENERATE_QR_CODE(6602, "QR 코드 생성에 실패했습니다."),
 
     NOT_FOUND_CATEGORY(6701, "요청한 ID에 해당하는 카테고리를 찾을 수 없습니다."),
+
+    FAIL_TO_UPLOAD_IMAGE(6801, "S3에 이미지 등록이 실패했습니다."),
+    INVALID_IMAGE(6802, "유효하지 않는 이미지입니다."),
+    FAIL_TO_RESIZE_IMAGE(6803, "이미지 리사이징 실패입니다."),
+//    INVALID_LOGO_IMAGE_SIZE(6803, "로고 이미지는 정사각형이어야 합니다."),
 
     NOT_FOUND_EVENT(6901, "요청한 ID에 해당하는 이벤트를 찾을 수 없습니다."),
 
@@ -91,6 +100,7 @@ public enum ExceptionCode {
     NOT_FOUND_ADMIN_ID(8103, "요청한 ID에 해당하는 관리자를 찾을 수 없습니다."),
     INVALID_CURRENT_PASSWORD(8104, "현재 사용중인 비밀번호가 일치하지 않습니다."),
     INVALID_ADMIN_AUTHORITY(8201, "해당 관리자 기능에 대한 접근 권한이 없습니다."),
+    INVALID_CUSTOMER_INFO(8301, "회원의 이름과 전화번호 정보가 일치하지 않습니다"),
 
     //  ---------------------------- Auth 9001 ~ 9998 ---------------------------------------
 

@@ -22,6 +22,7 @@ public class WeekOption {
     @JoinColumn(name = "company_id")
     private Company company;
 
+    @Column(nullable = false)
     private Integer weekValue;
 
     @Builder

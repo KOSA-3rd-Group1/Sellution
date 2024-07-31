@@ -8,6 +8,7 @@ const TablePaymentHistory = ({
   totalDataCount,
   tableState,
   setTableState,
+  ResetBtn,
 }) => {
   const { selectedCount, handleTableStateChange, handleSort } = useTable({ data, setTableState });
 
@@ -27,6 +28,7 @@ const TablePaymentHistory = ({
               <th className='sticky min-w-20 w-20 max-w-20 h-full p-3 z-20 left-[0px] bg-gray-50'>
                 <div className='flex flex-col w-full h-full justify-between items-center gap-3'>
                   <div>No.</div>
+                  {ResetBtn}
                 </div>
               </th>
 

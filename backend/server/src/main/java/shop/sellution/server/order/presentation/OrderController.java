@@ -1,5 +1,6 @@
 package shop.sellution.server.order.presentation;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -9,8 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import shop.sellution.server.order.application.OrderCreationService;
 import shop.sellution.server.order.application.OrderService;
 import shop.sellution.server.order.dto.OrderSearchCondition;
+import shop.sellution.server.order.dto.request.CalculateReq;
 import shop.sellution.server.order.dto.request.CancelOrderReq;
 import shop.sellution.server.order.dto.request.SaveOrderReq;
+import shop.sellution.server.order.dto.response.CalculateRes;
 import shop.sellution.server.order.dto.response.FindOrderRes;
 
 @RestController
@@ -42,8 +45,8 @@ public class OrderController {
     // 주문하기
     @PostMapping("/customers/{customerId}")
     public ResponseEntity<String> order(@PathVariable Long customerId, @RequestBody SaveOrderReq saveOrderReq) {
-        orderCreationService.createOrder(customerId,saveOrderReq);
-        return ResponseEntity.ok().body("success");
+        long savedOrderId = orderCreationService.createOrder(customerId, saveOrderReq);
+        return ResponseEntity.ok().body("success, 생성된 주문 아이디 : " + savedOrderId);
     }
 
     // 주문 취소하기
@@ -65,6 +68,24 @@ public class OrderController {
     public ResponseEntity<String> autoApproveOrder(@PathVariable Long companyId) {
         orderService.toggleAutoApprove(companyId);
         return ResponseEntity.ok().body("success");
+    }
+
+    // 주문 상세조회
+    @GetMapping("/{orderId}")
+    public ResponseEntity<FindOrderRes> findOrderById(@PathVariable Long orderId) {
+        return ResponseEntity.ok(orderService.findOrder(orderId));
+    }
+
+    // 정기주문(월)화면에 필요한 가격정보 조회
+    @PostMapping("/month/calculate-price")
+    public ResponseEntity<CalculateRes> calculatePrice(@RequestBody CalculateReq calculateReq) {
+        return ResponseEntity.ok(orderService.calculatePrice(calculateReq));
+    }
+
+    // 정기주문(횟수)화면에 필요한 정보 조회
+    @PostMapping("/count/info")
+    public ResponseEntity<CalculateRes> getCountOrderDeliveryInfo(@RequestBody CalculateReq calculateReq) {
+        return ResponseEntity.ok(orderService.calculatePrice(calculateReq));
     }
 
 

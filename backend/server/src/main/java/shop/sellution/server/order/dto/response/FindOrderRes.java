@@ -2,6 +2,7 @@ package shop.sellution.server.order.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import shop.sellution.server.address.dto.response.FindAddressSummaryRes;
 import shop.sellution.server.company.domain.type.DayValueType;
 import shop.sellution.server.customer.dto.resonse.FindCustomerSummaryRes;
@@ -11,10 +12,12 @@ import shop.sellution.server.order.domain.SelectedDay;
 import shop.sellution.server.order.domain.type.DeliveryStatus;
 import shop.sellution.server.order.domain.type.OrderStatus;
 import shop.sellution.server.order.domain.type.OrderType;
+import shop.sellution.server.product.dto.ProductImageSummary;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Builder
 @Getter
@@ -26,15 +29,21 @@ public class FindOrderRes {
 
     private String orderCode;
 
+    private Long orderId;
+
     private OrderType type;
 
     private OrderStatus status;
 
     private DeliveryStatus deliveryStatus;
 
+    private int perPrice;
+
     private int totalPrice;
 
     private LocalDate deliveryStartDate;
+
+    private LocalDate nextDeliveryDate;
 
     private LocalDate deliveryEndDate;
 
@@ -44,7 +53,7 @@ public class FindOrderRes {
 
     private List<FindOrderedProductRes> orderedProductList;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime orderCreatedAt;
 
     private List<DayValueType> selectedDayList;
 
@@ -52,29 +61,51 @@ public class FindOrderRes {
 
     private Integer selectedMonthOption;
 
+    private Long couponEventId;
 
-    public static FindOrderRes fromEntities(Order order, List<OrderedProduct> orderedProducts, List<SelectedDay> selectedDays) {
+    private String couponName;
+
+    private Integer couponDiscountRate;
+
+    private Integer paymentCount;
+
+    private LocalDate nextPaymentDate;
+
+    private Integer thisMonthDeliveryCount;
+
+
+
+    public static FindOrderRes fromEntities(Order order, List<OrderedProduct> orderedProducts, List<SelectedDay> selectedDays, Map<Long, List<ProductImageSummary>> productImageMap) {
         return FindOrderRes.builder()
                 .customer(FindCustomerSummaryRes.fromEntity(order.getCustomer()))
                 .address(FindAddressSummaryRes.fromEntity(order.getAddress()))
+                .orderId(order.getId())
                 .orderCode(order.getCode())
                 .type(order.getType())
                 .status(order.getStatus())
                 .deliveryStatus(order.getDeliveryStatus())
+                .perPrice(order.getPerPrice())
                 .totalPrice(order.getTotalPrice())
                 .deliveryStartDate(order.getDeliveryStartDate())
+                .nextDeliveryDate(order.getNextDeliveryDate())
                 .deliveryEndDate(order.getDeliveryEndDate())
                 .totalDeliveryCount(order.getTotalDeliveryCount())
                 .remainingDeliveryCount(order.getRemainingDeliveryCount())
                 .orderedProductList(orderedProducts.stream()
-                        .map(FindOrderedProductRes::fromEntity)
+                        .map(op -> FindOrderedProductRes.fromEntity(op, productImageMap.get(op.getProduct().getProductId())))
                         .toList())
-                .createdAt(order.getCreatedAt())
+                .orderCreatedAt(order.getCreatedAt())
                 .selectedDayList(selectedDays.stream()
-                        .map((sd) -> sd.getDayOption().getDayValue())
+                        .map(SelectedDay::getDayValueType)
                         .toList())
-                .selectedWeekOption(order.getWeekOption() == null ? null : order.getWeekOption().getWeekValue())
-                .selectedMonthOption(order.getMonthOption() == null ? null : order.getMonthOption().getMonthValue())
+                .selectedWeekOption(order.getWeekOptionValue() == null ? null : order.getWeekOptionValue())
+                .selectedMonthOption(order.getMonthOptionValue() == null ? null : order.getMonthOptionValue())
+                .couponEventId(order.getCouponEvent() != null ? order.getCouponEvent().getId() : null)
+                .couponName(order.getCouponEvent() != null ? order.getCouponEvent().getCouponName() : null)
+                .couponDiscountRate(order.getCouponEvent() != null ? order.getCouponEvent().getCouponDiscountRate() : null)
+                .thisMonthDeliveryCount(order.getThisMonthDeliveryCount())
+                .nextPaymentDate(order.getNextPaymentDate())
+                .paymentCount(order.getPaymentCount())
                 .build();
     }
 

@@ -1,23 +1,346 @@
-import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
+import MenuHeaderNav from '../../layout/MenuHeaderNav';
+import useOrderListStore from './../../store/stores/useOrderListStore';
+import OneButtonFooterLayout from './../../layout/OneButtonFooterLayout';
+import OrderListLayout from '../../layout/OrderListLayout';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { TrashIcon } from '@/client/utility/assets/Icons.jsx';
+import DeliverySelection from '../../layout/order/DeliverySelection';
+import SubscriptionDeliverySetting from '../../layout/order/SubscriptionDeliverySetting';
+import CouponSelection from '../../layout/order/CouponSelection';
+import PaymentEstimation from '../../layout/order/PaymentEstimation';
+import PaymentMethodSelection from '../../layout/order/PaymentMethodSelection';
+import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
+import useAuthStore from "@/shopping/store/stores/useAuthStore.js";
+import { getMyCouponList } from "@/shopping/utility/apis/mypage/coupon/couponApi.js";
 
 const OrderComponent = () => {
-  const [selectedDays, setSelectedDays] = useState(['MON', 'WED', 'FRI']);
-  const days = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
   const navigate = useNavigate();
+  const { orderList } = useOrderListStore();
+  const clientName = useCompanyInfoStore((state) => state.name);
+  const customerId = useUserInfoStore((state) => state.id);
+  const location = useLocation();
+  const companyId = useCompanyInfoStore((state) => state.companyId);
+
+  const accessToken =useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+
+  //목록 선택
+  const listToShow = orderList;
+  // 배송지
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const { clientName, customerId } = useParams();
-  const location = useLocation();
+  //정기주문
+  const [selectedStartDate, setSelectedStartDate] = useState(''); // 추가
+  const [subscriptionType, setSubscriptionType] = useState('');
+  const [selectedDays, setSelectedDays] = useState([]);
+  const [dayValues, setDayValues] = useState([]);
+  const [dayValueTypeList, setDayValueTypeList] = useState([]);
+  const [weekValues, setWeekValues] = useState([]);
+  const [monthValues, setMonthValues] = useState([]);
+  const [minDeliveryCount, setMinDeliveryCount] = useState(0);
+  const [maxDeliveryCount, setMaxDeliveryCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [monthlyPriceData, setMonthlyPriceData] = useState({
+    thisMonthDeliveryCount: 0,
+    thisMonthPrice: 0,
+    totalDeliveryCount: 0,
+    totalPrice: 0,
+    deliveryNextDate: '',
+    deliveryEndDate: ''
+  });
+
+  const [selectedWeek, setSelectedWeek] = useState('');
+  const [selectedCount, setSelectedCount] = useState('');
+  const [selectedMonth, setSelectedMonth] = useState('');
+  //결제정보
+  const [paymentMethods, setPaymentMethods] = useState([]);
+
+  //쿠폰정보
+  const [coupons, setCoupons] = useState([]);
+  const [selectedCoupon, setSelectedCoupon] = useState(null);
+
+  //결제금액
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [productDiscountTotal, setProductDiscountTotal] = useState(0); //상품 할인 금액
+  const [couponDiscountTotal, setCouponDiscountTotal] = useState(0); // 쿠폰 할인 금액
+  const [finalPrice, setFinalPrice] = useState(0);
+
+  const [isPasswordVerified, setIsPasswordVerified] = useState(false);
+  const [orderData, setOrderData] = useState(null);
+
+  const BANK_CODES = {
+    '004': '국민은행',
+    '090': '카카오뱅크',
+    '088': '신한은행',
+    '020': '우리은행',
+    '003': '기업은행',
+    '092': '토스뱅크',
+    '071': '우체국은행',
+    '011': '농협은행',
+    '081': '하나은행',
+  };
+
+  const handleAddressChange = () => {
+    navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
+      state: { returnToOrder: true },
+    });
+  };
+
+  const checkForSavedAddress = () => {
+    console.log('Checking for saved address');
+    const savedAddress = localStorage.getItem('selectedAddress');
+    if (savedAddress) {
+      console.log('Found saved address:', savedAddress);
+      setSelectedAddress(JSON.parse(savedAddress));
+      localStorage.removeItem('selectedAddress');
+    }
+  };
+
+  const toggleDay = (day) => {
+    setSelectedDays((prev) =>
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day],
+    );
+  };
+
+  const handleCouponChange = (e) => {
+    const selected = coupons.find((coupon) => coupon.id === e.target.value);
+    console.log('쿠폰: ', selected);
+    setSelectedCoupon(selected);
+    calculateTotalPrice();
+  };
+
+  const handleAddPaymentMethod = () => {
+    saveState(); // 현재 상태 저장
+    console.log('이동전 경로 : ', location.pathname);
+    navigate(`/shopping/${clientName}/my/${customerId}/payment/add`, {
+      state: { returnUrl: location.pathname }
+    });
+  };
+
+  const handleCheckChange = (id) => {
+    setPaymentMethods(
+      paymentMethods.map((method) =>
+        method.id === id ? { ...method, isChecked: true } : { ...method, isChecked: false },
+      ),
+    );
+  };
+
+  const handleDeleteAccount = async (id) => {
+    if (window.confirm('해당 계좌를 삭제하시겠습니까?')) {
+      try {
+        await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/accounts/${id}`);
+        setPaymentMethods(paymentMethods.filter((method) => method.id !== id));
+        alert('계좌가 성공적으로 삭제되었습니다.');
+      } catch (error) {
+        console.error('계좌 삭제에 실패했습니다:', error);
+        alert('계좌 삭제에 실패했습니다. 다시 시도해주세요.');
+      }
+    }
+  };
+
+  // 계좌번호 마스킹 함수
+  const maskAccountNumber = (accountNumber) => {
+    if (accountNumber.length <= 4) return accountNumber;
+    return '*'.repeat(accountNumber.length - 4) + accountNumber.slice(-4);
+  };
+
+  //월별 결제 >> 결제금액 계산 함수
+  const calculateMonthlyPrice = async () => {
+    try {
+      const response = await axios.post('http://localhost:8080/orders/month/calculate-price', {
+        selectedDays: selectedDays,
+        weekOptionValue: selectedWeek.value,
+        monthOptionValue: selectedMonth.value,
+        perPrice: finalPrice,
+        startDate: selectedStartDate,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error calculating monthly price:', error);
+      return null;
+    }
+  };
+
+  // 결제금액 계산
+  const calculateTotalPrice = async () => {
+    const total = listToShow.reduce((sum, item) => sum + item.cost * item.quantity, 0);
+    const productDiscountTotal = listToShow.reduce(
+      (sum, item) => sum + (item.cost - item.discountedPrice) * item.quantity,
+      0,
+    );
+    const couponDiscountTotal = selectedCoupon
+      ? Math.floor(
+        listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
+        (selectedCoupon.couponDiscountRate / 100),
+      )
+      : 0;
+
+    setTotalPrice(total);
+    setProductDiscountTotal(productDiscountTotal);
+    setCouponDiscountTotal(couponDiscountTotal);
+    setFinalPrice(total - productDiscountTotal - couponDiscountTotal);
+
+    if (subscriptionType === 'MONTH' && selectedStartDate && selectedWeek && selectedMonth && selectedDays.length > 0) {
+      const monthlyPriceData = await calculateMonthlyPrice();
+      if (monthlyPriceData) {
+        setMonthlyPriceData(monthlyPriceData);
+      }
+    } else {
+      setMonthlyPriceData({
+        thisMonthDeliveryCount: 0,
+        thisMonthPrice: 0,
+        totalDeliveryCount: 0,
+        totalPrice: 0,
+        deliveryNextDate: '',
+        deliveryEndDate: ''
+      });
+    }
+  };
+
+  //유효성 검사 함수
+  const validateForm = () => {
+    const isSubscriptionValid =
+      (subscriptionType === 'COUNT' && selectedCount !== null && selectedCount !== '') ||
+      (subscriptionType === 'MONTH' && selectedMonth !== null && selectedMonth !== '');
+
+    return (
+      selectedStartDate !== null &&
+      selectedStartDate !== '' &&
+      selectedAddress !== null &&
+      selectedAddress !== '' &&
+      selectedWeek !== null &&
+      selectedWeek !== '' &&
+      selectedDays.length > 0 && // 빈 배열 체크
+      isSubscriptionValid &&
+      paymentMethods.some((method) => method.isChecked)
+    );
+  };
+
+  const isOrderButtonDisabled = !validateForm();
+
+  //주문 데이터 생성 (결제하기 버튼)
+  const handleOrderClick = async () => {
+    if (isOrderButtonDisabled) return;
+
+    const orderedProducts = listToShow.map((item) => ({
+      productId: item.id,
+      count: item.quantity,
+      price: item.discountedPrice || item.cost,
+      discountRate: item.discountRate || 0,
+    }));
+
+    const saveOrderReq = {
+      companyId: companyId, // 회사 ID
+      addressId: selectedAddress.addressId, // 주소 ID
+      accountId: paymentMethods.find((method) => method.isChecked).id, // 결제 수단 ID
+      eventId: selectedCoupon ? selectedCoupon.id : null, // 쿠폰 ID (선택 사항)
+      monthOptionValue: selectedMonth ? Number(selectedMonth.value) : null, // 월 옵션 ID (선택 사항)
+      weekOptionValue: selectedWeek ? Number(selectedWeek.value) : null, // 주 옵션 ID (선택 사항)
+      orderType: subscriptionType === 'COUNT' ? 'COUNT_SUBSCRIPTION' : 'MONTH_SUBSCRIPTION', // 주문 타입
+      totalDeliveryCount: selectedCount, // 총 배송 횟수 (선택 사항)
+      deliveryStartDate: selectedStartDate, // 배송 시작일
+      orderedProducts: orderedProducts, // 주문한 상품들
+      dayValueTypeList: selectedDays.map((day) => dayValues.find((d) => d.value === day).value), // 선택된 요일들 값
+      // dayValueTypeList: selectedDays.map((day) => dayValues.find((d) => d.value === day).id), // 선택된 요일들 ID
+    };
+
+    console.log('주문 보내는 양식: ', saveOrderReq);
+
+    setOrderData(saveOrderReq);
+
+    // 비밀번호 인증 페이지로 이동하면서 주문 데이터 전달
+    navigate(`/shopping/${clientName}/ordersheet/auth/${customerId}`, {
+      state: { orderData: saveOrderReq }
+    });
+  };
+
+  useEffect(() => {
+    if (location.state && location.state.passwordVerified) {
+      setIsPasswordVerified(true);
+    }
+  }, [location]);
+
+
+  //api
+  const fetchAddresses = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/addresses/customer/${customerId}`,
+      );
+      setAddresses(response.data);
+      if (!selectedAddress) {
+        const defaultAddress = response.data.find((addr) => addr.isDefaultAddress === 'Y');
+        setSelectedAddress(defaultAddress || response.data[0] || null);
+      }
+    } catch (error) {
+      console.error('Error fetching addresses:', error);
+    }
+  };
+
+  const fetchCoupons = async () => {
+    try {
+      const response = await getMyCouponList(setAccessToken,accessToken);
+      setCoupons(response.data.content);
+      console.log('fetch한 쿠폰1: ', coupons);
+      console.log('fetch한 쿠폰2: ', response);
+    } catch (error) {
+      console.error('Error fetching coupons:', error);
+    }
+  };
+  const fetchSaleSettings = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/sale-setting/1');
+      console.log('여기', response.data);
+      setSubscriptionType(response.data.subscriptionType);
+      setDayValues(response.data.dayValues || []);
+      setDayValueTypeList(response.data.dayValues || []);
+      setWeekValues(response.data.weekValues || []);
+      setMonthValues(response.data.monthValues || []);
+      setMinDeliveryCount(response.data.minDeliveryCount || 0);
+      setMaxDeliveryCount(response.data.maxDeliveryCount || 0);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const fetchAccounts = async () => {
+    if (!customerId) {
+      console.error('customerId가 없습니다.');
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/accounts/customers/${customerId}`,
+      );
+      const accounts = response.data.content.map((account) => ({
+        id: account.accountId,
+        bank: BANK_CODES[account.bankCode] || '알 수 없는 은행',
+        accountNumber: maskAccountNumber(account.accountNumber),
+        bankCode: account.bankCode,
+        isChecked: false,
+      }));
+      console.log('fetch한 account: ', customerId, accounts);
+      setPaymentMethods(accounts);
+    } catch (error) {
+      console.error('계좌 정보를 가져오는 데 실패했습니다:', error);
+    }
+  };
 
   // 첫 번째 useEffect: 컴포넌트 마운트 시 주소 가져오기
   useEffect(() => {
     console.log('OrderComponent mounted');
     const fetchData = async () => {
       await fetchAddresses();
+      await fetchCoupons();
+      await fetchSaleSettings();
+      await fetchAccounts();
       checkForSavedAddress();
+      restoreState();
+      calculateTotalPrice(); // 기본값 설정을 위해 초기 호출
     };
     fetchData();
     return () => {
@@ -32,239 +355,117 @@ const OrderComponent = () => {
     }
   }, [location]);
 
-  const checkForSavedAddress = () => {
-    console.log('Checking for saved address');
-    const savedAddress = localStorage.getItem('selectedAddress');
-    if (savedAddress) {
-      console.log('Found saved address:', savedAddress);
-      setSelectedAddress(JSON.parse(savedAddress));
-      localStorage.removeItem('selectedAddress');
+  useEffect(() => {
+    calculateTotalPrice();
+    console.log('계산 변경: ', selectedCoupon);
+  }, [selectedCoupon, orderList, selectedStartDate, selectedWeek, selectedMonth, selectedDays]);
+
+  // 상태 저장 함수
+  const saveState = () => {
+    const stateToSave = {
+      // selectedAddress,
+      selectedCoupon,
+      selectedStartDate,
+      subscriptionType,
+      selectedDays,
+      selectedWeek,
+      selectedCount,
+      selectedMonth,
+      dayValues,
+      dayValueTypeList,
+    };
+    localStorage.setItem('orderState', JSON.stringify(stateToSave));
+  };
+
+  // 상태 복원 함수
+  const restoreState = () => {
+    const savedState = localStorage.getItem('orderState');
+    if (savedState) {
+      const parsedState = JSON.parse(savedState);
+      // setSelectedAddress(parsedState.selectedAddress);
+      setSelectedCoupon(parsedState.selectedCoupon);
+      setSelectedStartDate(parsedState.selectedStartDate);
+      setSubscriptionType(parsedState.subscriptionType);
+      setSelectedDays(parsedState.selectedDays);
+      setSelectedWeek(parsedState.selectedWeek);
+      setSelectedCount(parsedState.selectedCount);
+      setSelectedMonth(parsedState.selectedMonth);
+      setDayValueTypeList(parsedState.dayValueTypeList);
+      setDayValues(parsedState.dayValues);
     }
-  };
-
-  const fetchAddresses = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/addresses/customer/${customerId}`,
-      );
-      setAddresses(response.data);
-      if (!selectedAddress) {
-        const defaultAddress = response.data.find((addr) => addr.isDefaultAddress === 'Y');
-        setSelectedAddress(defaultAddress || null);
-      }
-    } catch (error) {
-      console.error('Error fetching addresses:', error);
-    }
-  };
-
-  const toggleDay = (day) => {
-    setSelectedDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day],
-    );
-  };
-
-  const handleAddressChange = () => {
-    navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
-      state: { returnToOrder: true },
-    });
-  };
-
-  const handleAddPaymentMethod = () => {
-    navigate(`/shopping/${clientName}/ordersheet/setting/payment`);
-  };
-
-  const [paymentMethods, setPaymentMethods] = useState([
-    { id: 1, bank: 'KB국민은행', accountNumber: '123*****987', isChecked: true },
-  ]);
-
-  const handleCheckChange = (id) => {
-    setPaymentMethods(
-      paymentMethods.map((method) =>
-        method.id === id ? { ...method, isChecked: !method.isChecked } : method,
-      ),
-    );
-  };
-
-  const handleDeleteAccount = (id) => {
-    if (window.confirm('해당 계좌를 삭제하시겠습니까?')) {
-      setPaymentMethods(paymentMethods.filter((method) => method.id !== id));
-    }
-  };
-
-  const formatPhoneNumber = (value) => {
-    const cleaned = ('' + value).replace(/\D/g, '');
-    const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
-    if (match) {
-      return `${match[1]}-${match[2]}-${match[3]}`;
-    }
-    return value;
   };
 
   return (
-    <div className='container mx-auto max-w-lg p-4 bg-gray-100 h-screen overflow-y-auto'>
-      <div className='space-y-4'>
-        <h1 className='text-xl font-bold border-b pb-2 mb-4'>주문 / 결제</h1>
-
-        <div className='mb-6 bg-white rounded-lg shadow-md p-4'>
-          <div className='flex justify-between items-center mb-2'>
-            <h2 className='text-lg font-semibold mb-2'>
-              배송지 {selectedAddress && `(${selectedAddress.addressName})`}
-            </h2>
-            <button
-              onClick={handleAddressChange}
-              className='text-gray-500 border border-gray-300 rounded px-2 py-1 text-sm'
-            >
-              {addresses.length > 0 ? '변경' : '추가'}
-            </button>
-          </div>
-          {selectedAddress ? (
-            <div className='space-y-2'>
-              <div>
-                <span className='text-brandOrange mr-2'>*</span>이름: {selectedAddress.name}
-              </div>
-              <div>
-                <span className='text-brandOrange mr-2'>*</span>연락처:{' '}
-                {formatPhoneNumber(selectedAddress.phoneNumber)}
-              </div>
-              <div>
-                <span className='text-brandOrange mr-2'>*</span>주소:{' '}
-                {selectedAddress.streetAddress} {selectedAddress.addressDetail}
-              </div>
-            </div>
-          ) : (
-            <div className='text-gray-500'>등록된 배송지가 없습니다. 배송지를 추가해주세요.</div>
-          )}
-          <select className='w-full mt-2 p-2 border rounded'>
-            <option>배송요청사항 선택</option>
-          </select>
-        </div>
+    <>
+      <MenuHeaderNav title={'주문 / 결제'} />
+      <div className='flex flex-col items-center w-full'>
+        <OrderListLayout listToShow={listToShow} />
+        <div className='seperator w-full h-4 bg-gray-100'></div>
+        {/* 배송지 */}
+        <DeliverySelection
+          addresses={addresses}
+          selectedAddress={selectedAddress}
+          handleAddressChange={handleAddressChange}
+        />
+        <div className='seperator w-full h-4 bg-gray-100'></div>
 
         {/* 정기 배송 설정 섹션 */}
-        <div className='mb-6 bg-white rounded-lg shadow-md p-4'>
-          <h2 className='text-lg font-semibold mb-4'>정기 배송 설정</h2>
-
-          <div className='mb-4'>
-            <h3 className='text-brandOrange mb-2'>* 배송 요일</h3>
-            <div className='flex justify-between'>
-              {days.map((day) => (
-                <button
-                  key={day}
-                  onClick={() => toggleDay(day)}
-                  className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                    selectedDays.includes(day)
-                      ? 'bg-orange-500 text-white'
-                      : 'border border-gray-300 text-gray-500'
-                  }`}
-                >
-                  {day}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className='mb-4'>
-            <h3 className='text-brandOrange mb-2'>* 배송 주기</h3>
-            <select className='w-full p-2 border rounded'>
-              <option>1주마다 배송</option>
-              {/* 백엔드에서 받은 데이터로 옵션을 채우세요 */}
-            </select>
-          </div>
-
-          <div className='mb-4'>
-            <h3 className='text-brandOrange mb-2'>* 배송 횟수</h3>
-            <select className='w-full p-2 border rounded'>
-              <option>8회</option>
-              {/* 백엔드에서 받은 데이터로 옵션을 채우세요 */}
-            </select>
-          </div>
-
-          <div>
-            <h3 className='text-brandOrange mb-2'>* 배송 시작일</h3>
-            <input type='date' className='w-full p-2 border rounded' defaultValue='2024-06-24' />
-          </div>
-        </div>
-
-        <div className='mb-6 bg-white rounded-lg shadow-md p-4'>
-          <h2 className='text-lg font-semibold mb-2'>할인쿠폰</h2>
-          <select className='w-full p-2 border rounded'>
-            <option>신규회원 10% 할인 쿠폰</option>
-          </select>
-        </div>
-
-        <div className='mb-6 bg-white rounded-lg shadow-md p-4'>
-          <h2 className='text-lg font-semibold mb-4'>결제 예상 금액</h2>
-          <div className='space-y-2'>
-            <div className='flex justify-between'>
-              <span>총 상품 금액</span>
-              <span>47,000원</span>
-            </div>
-            <div className='flex justify-between text-blue-500'>
-              <span>쿠폰 할인</span>
-              <span>- 4,700원</span>
-            </div>
-            <div className='flex justify-between text-gray-500'>
-              <span>상품 할인</span>
-              <span>0원</span>
-            </div>
-            <div className='flex justify-between'>
-              <span>배송비</span>
-              <span>4,000원</span>
-            </div>
-            <div className='flex justify-between font-bold mt-2 pt-2 border-t'>
-              <span>총 결제 금액</span>
-              <span className='text-brandOrange'>46,300원</span>
-            </div>
-          </div>
-        </div>
-
-        <div className='bg-white rounded-lg shadow-md p-4'>
-          <h2 className='text-lg font-semibold mb-4'>결제 정보</h2>
-          <div className='flex items-center mb-4'>
-            <div className='text-brandOrange mr-2'> * </div>
-            <span className='font-semibold'>CMS</span>
-          </div>
-
-          <div className='overflow-x-auto'>
-            <div className='flex space-x-4 pb-4'>
-              {paymentMethods.map((method) => (
-                <div
-                  key={method.id}
-                  className='bg-yellow-400 rounded-lg p-4 flex flex-col justify-between shadow-md relative w-64 h-36 flex-shrink-0'
-                >
-                  <div>
-                    <img src='/path-to-kb-logo.png' alt={method.bank} className='w-8 h-8 mb-2' />
-                    <div className='absolute bottom-4'>
-                      <div className='font-semibold'>계좌번호</div>
-                      <div>{method.accountNumber}</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => handleCheckChange(method.id)}
-                    className='absolute top-3 right-3 w-6 h-6 bg-white rounded-full flex items-center justify-center'
-                  >
-                    {method.isChecked && <span className='text-brandOrange'>✓</span>}
-                  </button>
-                  <button
-                    onClick={() => handleDeleteAccount(method.id)}
-                    className='absolute bottom-4 right-4'
-                  >
-                    <TrashIcon className='w-6 h-6 text-gray-500' />
-                  </button>
-                </div>
-              ))}
-
-              <button
-                onClick={handleAddPaymentMethod}
-                className='border border-gray-300 rounded-lg p-4 w-64 h-36 flex flex-col justify-center items-center shadow-md flex-shrink-0'
-              >
-                <span className='text-2xl mr-2'>+</span>
-                결제 수단 추가
-              </button>
-            </div>
-          </div>
-        </div>
+        <SubscriptionDeliverySetting
+          selectedDays={selectedDays}
+          toggleDay={toggleDay}
+          dayValues={dayValues}
+          weekValues={weekValues}
+          minDeliveryCount={minDeliveryCount}
+          maxDeliveryCount={maxDeliveryCount}
+          monthValues={monthValues}
+          subscriptionType={subscriptionType}
+          isLoading={isLoading}
+          setSelectedWeek={setSelectedWeek}
+          selectedWeek={selectedWeek}
+          setSelectedCount={setSelectedCount}
+          selectedCount={selectedCount}
+          setSelectedMonth={setSelectedMonth}
+          selectedMonth={selectedMonth}
+          selectedStartDate={selectedStartDate}
+          setSelectedStartDate={setSelectedStartDate}
+        />
+        <div className='seperator w-full h-4 bg-gray-100'></div>
+        {/* coupon */}
+        <CouponSelection
+          handleCouponChange={handleCouponChange}
+          coupons={coupons}
+          selectedCoupon={selectedCoupon}
+        />
+        <div className='seperator w-full h-4 bg-gray-100'></div>
+        {/* 결제 예상 금액 */}
+        {/* selectedCoupon 가격 만큼 빼기 */}
+        <PaymentEstimation
+          totalPrice={totalPrice}
+          productDiscountTotal={productDiscountTotal}
+          couponDiscountTotal={couponDiscountTotal}
+          finalPrice={finalPrice}
+          monthlyPriceData={monthlyPriceData}
+          subscriptionType={subscriptionType}
+          selectedCount={selectedCount}
+          perPrice={finalPrice}
+        />
+        <div className='seperator w-full h-4 bg-gray-100'></div>
+        {/* 결제 정보 */}
+        <PaymentMethodSelection
+          paymentMethods={paymentMethods}
+          handleCheckChange={handleCheckChange}
+          handleDeleteAccount={handleDeleteAccount}
+          handleAddPaymentMethod={handleAddPaymentMethod}
+          subscriptionType={subscriptionType}
+        />
       </div>
-    </div>
+      {/*  */}
+      <OneButtonFooterLayout
+        footerText={'결제하기'}
+        onClick={handleOrderClick}
+        isDisabled={isOrderButtonDisabled}
+      />
+    </>
   );
 };
 

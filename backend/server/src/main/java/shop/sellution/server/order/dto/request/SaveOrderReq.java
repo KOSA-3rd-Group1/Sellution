@@ -5,11 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
+import shop.sellution.server.company.domain.type.DayValueType;
 import shop.sellution.server.order.domain.type.OrderType;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -28,9 +27,9 @@ public class SaveOrderReq {
     private Long eventId;
 
     @Nullable
-    private Long monthOptionId;
+    private Integer monthOptionValue;
     @Nullable
-    private Long weekOptionId;
+    private Integer weekOptionValue;
 
     @NotNull(message = "주문 타입은 필수입니다.")
     private OrderType orderType;
@@ -46,6 +45,6 @@ public class SaveOrderReq {
     private List<FindOrderedProductSimpleReq> orderedProducts;
 
     @Nullable
-    private List<Long> dayOptionIds;
+    private List<DayValueType> dayValueTypeList;
 
 }

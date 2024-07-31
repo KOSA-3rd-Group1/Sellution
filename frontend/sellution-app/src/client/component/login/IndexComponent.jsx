@@ -1,5 +1,4 @@
 import {
-  LogoIcon,
   Icon1,
   Icon2,
   Icon3,
@@ -13,8 +12,8 @@ import {
   Icon11,
   Icon12,
 } from '@/client/utility/assets/LoginIcons';
-import '@/client/component/login/Login.css';
 import LoginComponent from '@/client/component/login/LoginComponent';
+import '@/client/component/login/Login.css';
 
 const IndexComponent = () => {
   const items = [

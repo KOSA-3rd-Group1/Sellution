@@ -1,17 +1,20 @@
 package shop.sellution.server.company.presentation;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import shop.sellution.server.company.application.CompanyDisplaySettingServiceImpl;
 import shop.sellution.server.company.application.CompanySaleSettingServiceImpl;
+import shop.sellution.server.company.application.CompanyServiceImpl;
 import shop.sellution.server.company.application.CompanyUrlSettingServiceImpl;
 import shop.sellution.server.company.dto.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 //@RequestMapping("/sellsolution")
@@ -19,11 +22,13 @@ public class CompanyController {
     private final CompanyUrlSettingServiceImpl clientCompanyService;
     private final CompanyDisplaySettingServiceImpl clientCompanyDisplayService;
     private final CompanySaleSettingServiceImpl clientCompanySaleService;
+    private final CompanyServiceImpl companyService;
 
-    public CompanyController(CompanyUrlSettingServiceImpl clientCompanyService, CompanyDisplaySettingServiceImpl clientCompanyDisplayService, CompanySaleSettingServiceImpl clientCompanySaleService) {
+    public CompanyController(CompanyUrlSettingServiceImpl clientCompanyService, CompanyDisplaySettingServiceImpl clientCompanyDisplayService, CompanySaleSettingServiceImpl clientCompanySaleService, CompanyServiceImpl companyService) {
         this.clientCompanyService = clientCompanyService;
         this.clientCompanyDisplayService = clientCompanyDisplayService;
         this.clientCompanySaleService = clientCompanySaleService;
+        this.companyService = companyService;
     }
 
     @GetMapping("/url-setting/{companyId}")
@@ -43,6 +48,20 @@ public class CompanyController {
         FindCompanyDisplaySettingRes findCompanyDisplaySettingRes = clientCompanyDisplayService.getCompanyDisplaySetting(companyId);
         return ResponseEntity.ok(findCompanyDisplaySettingRes);
     }
+
+    @PostMapping(value = "/display-setting", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> createCompanyDisplaySetting(
+            @Valid @ModelAttribute SaveCompanyDisplaySettingReq saveCompanyDisplaySettingReq,
+            @RequestParam(value = "logoFile", required = false) MultipartFile logoFile,
+            @RequestParam(value = "promotionFiles", required = false) List<MultipartFile> promotionFiles) {
+        try {
+            clientCompanyDisplayService.createCompanyDisplaySetting(saveCompanyDisplaySettingReq, logoFile, promotionFiles);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     // multipart/form-data 요청을 처리
     @PutMapping(value = "/display-setting", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -64,16 +83,21 @@ public class CompanyController {
         return ResponseEntity.ok(findCompanySaleSettingRes);
     }
 
+    @PostMapping("/sale-setting")
+    public ResponseEntity<Void> createCompanySaleSetting(@Valid @RequestBody SaveCompanySaleSettingReq saveCompanySaleSettingReq) {
+        clientCompanySaleService.createCompanySaleSetting(saveCompanySaleSettingReq);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
     @PutMapping("/sale-setting")
     public ResponseEntity<Void> updateCompanySaleSetting(@RequestBody SaveCompanySaleSettingReq saveCompanySaleSettingReq) {
         clientCompanySaleService.updateCompanySaleSetting(saveCompanySaleSettingReq);
         return ResponseEntity.ok().build();
     }
 
-
-
-
-
-
-
+    @GetMapping("/shopping-find-companyId/{companyName}")
+    public ResponseEntity<Map<String, FindCompanyInfoRes>> getCompanyInfo(@PathVariable String companyName) {
+        FindCompanyInfoRes findCompanyInfo = companyService.findCompanyId(companyName);
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("data", findCompanyInfo));
+    }
 }

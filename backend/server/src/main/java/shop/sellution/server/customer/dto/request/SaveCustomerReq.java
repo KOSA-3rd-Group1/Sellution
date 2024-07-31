@@ -4,13 +4,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import shop.sellution.server.global.annotation.validation.ValidId;
 import shop.sellution.server.global.annotation.validation.ValidPassword;
 import shop.sellution.server.global.annotation.validation.ValidPhoneNumber;
 
 @Getter
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class SaveCustomerReq {
 
     @NotNull

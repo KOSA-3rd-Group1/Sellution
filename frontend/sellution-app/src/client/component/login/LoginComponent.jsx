@@ -1,31 +1,20 @@
-import React, { useState } from 'react';
+import { useLogin } from '@/client/business/login/useLogin';
 import { LogoIcon } from '@/client/utility/assets/LoginIcons';
 import { EyeOnIcon, EyeOffIcon } from '@/client/utility/assets/Icons';
+import { Link } from 'react-router-dom';
 
 const LoginComponent = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!username && !password) {
-      setError('아이디와 비밀번호를 입력해주세요.');
-    } else if (!username) {
-      setError('아이디를 입력해주세요.');
-    } else if (!password) {
-      setError('비밀번호를 입력해주세요.');
-    } else {
-      setError('');
-      // 여기에 로그인 로직을 추가하세요
-      console.log('로그인 시도:', { username, password });
-    }
-  };
+  const {
+    username,
+    password,
+    showPassword,
+    error,
+    isLoading,
+    setUsername,
+    setPassword,
+    togglePasswordVisibility,
+    handleSubmit,
+  } = useLogin();
 
   return (
     <div className='w-full min-h-screen bg-gray-100 flex items-center justify-center p-4 flex-1'>
@@ -83,18 +72,25 @@ const LoginComponent = () => {
               <button
                 type='submit'
                 className='w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-300 ease-in-out transform hover:scale-102'
+                disabled={isLoading}
               >
-                로그인
+                {isLoading ? '로그인 중...' : '로그인'}
               </button>
             </div>
           </form>
         </div>
         <div className='w-full text-center text-sm mt-8 flex justify-center items-center'>
-          <div className='font-medium text-orange-600 hover:text-orange-500'>아이디 찾기</div>
+          <Link to='/idInquiry' className='font-medium text-orange-600 hover:text-orange-500'>
+            아이디 찾기
+          </Link>
           <div className='divider divider-horizontal'></div>
-          <div className='font-medium text-orange-600 hover:text-orange-500'>비밀번호 찾기</div>
+          <Link to='/pwInquiry' className='font-medium text-orange-600 hover:text-orange-500'>
+            비밀번호 찾기
+          </Link>
           <div className='divider divider-horizontal'></div>
-          <div className='font-medium text-orange-600 hover:text-orange-500'>아이디 생성</div>
+          <Link to='/join' className='font-medium text-orange-600 hover:text-orange-500'>
+            아이디 생성
+          </Link>
         </div>
       </div>
     </div>

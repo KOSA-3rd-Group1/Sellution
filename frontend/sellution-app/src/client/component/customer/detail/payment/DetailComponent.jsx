@@ -1,9 +1,35 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import { InfoInput } from '@/client/layout/common/Input';
+import BankSelector from '@/client/layout/common/BankSelector';
+import AlertModal from '@/client/layout/common/modal/AlertModal';
+import AutoCloseModal from '@/client/layout/common/modal/AutoCloseModal';
+import { useMove } from '@/client/business/common/useMove';
+import { useModal } from '@/client/business/common/useModal';
 import { useCustomerPaymentDetail } from '@/client/business/customer/detail/payment/useCustomerPaymentDetail';
 
 const DetailComponent = () => {
-  const { data, moveList, handleDeleteData } = useCustomerPaymentDetail();
+  const { moveToPathname } = useMove();
+  const {
+    alertModalState,
+    autoCloseModalState,
+    openAlertModal,
+    closeAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  } = useModal();
+  const {
+    data,
+    bankCodeIndex,
+    checkMoveList,
+    checkDeleteContent,
+    scuccessCloseAutoCloseModal,
+    handleOnConfirm,
+  } = useCustomerPaymentDetail({
+    moveToPathname,
+    openAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  });
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -12,7 +38,7 @@ const DetailComponent = () => {
           <div>결제 수단 상세 정보</div>
         </div>
         <div className='flex flex-col gap-10 px-4'>
-          <div className='w-1/2'>
+          <div className='w-3/5'>
             <div className='w-full min-h-20 h-20 max-h-20 text-base font-semibold flex items-center'>
               <div>기본 정보</div>
             </div>
@@ -31,7 +57,7 @@ const DetailComponent = () => {
               </li>
             </ul>
           </div>
-          <div className='w-1/2'>
+          <div className='w-3/5'>
             <div className='w-full min-h-20 h-20 max-h-20 text-base font-semibold flex items-center'>
               <div>자동 결제 CMS</div>
             </div>
@@ -39,13 +65,13 @@ const DetailComponent = () => {
               <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
                 <div className='flex-1 min-w-32'>은행</div>
                 <div className='flex-1 min-w-64'>
-                  <InfoInput value={data.bank || ''} readOnly />
+                  <BankSelector bankCodeIndex={bankCodeIndex} isDisabled={true} />
                 </div>
               </li>
               <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
                 <div className='flex-1 min-w-32'>예금주명</div>
                 <div className='flex-1 min-w-64'>
-                  <InfoInput value={data.name || ''} readOnly />
+                  <InfoInput value={data.customerName || ''} readOnly />
                 </div>
               </li>
               <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
@@ -59,9 +85,25 @@ const DetailComponent = () => {
         </div>
       </section>
       <FooterComponent
-        // btn1={{ label: '결제 수단 삭제', event: handleDeleteData }}
-        btn2={{ label: '결제 수단 삭제', event: handleDeleteData }}
-        back={{ label: '목록으로', event: moveList }}
+        btn2={{ label: '결제 수단 삭제', event: checkDeleteContent }}
+        back={{ label: '목록으로', event: checkMoveList }}
+      />
+
+      <AlertModal
+        isOpen={alertModalState.isOpen}
+        onClose={closeAlertModal}
+        onConfirm={handleOnConfirm}
+        type={alertModalState.type}
+        title={alertModalState.title}
+        message={alertModalState.message}
+      />
+
+      <AutoCloseModal
+        isOpen={autoCloseModalState.isOpen}
+        onClose={scuccessCloseAutoCloseModal}
+        title={autoCloseModalState.title}
+        message={autoCloseModalState.message}
+        duration={1500}
       />
     </div>
   );

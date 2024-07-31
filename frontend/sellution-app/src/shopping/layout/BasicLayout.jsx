@@ -1,15 +1,16 @@
 import { Outlet } from 'react-router-dom';
-// header, footer 추가 예정
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 const BasicLayout = () => {
+  const clientName = useCompanyInfoStore((state) => state.name);
   return (
-    <div className='flex justify-center h-screen'>
+    <div className='flex justify-center h-screen' data-theme={'CustomRoseTheme'}>
       <div
-        className={`container-box relative w-full max-w-lg h-full flex justify-center ${location.pathname === '/' ? 'pt-16' : 'pt-14'} ${location.pathname === '/sub-item/info' ? 'pb-0' : 'pb-14'}`}
+        className={`container-box relative w-full max-w-lg h-full flex flex-col ${location.pathname === `/shopping/${clientName}/home` ? 'pt-16' : 'pt-14'} pb-14`}
       >
         {/* <Header toggleCategoryMenu={toggleCategoryMenu} isCategoryVisible={isCategoryVisible} /> */}
-        {/* <div className={`w-full scroll-box ${isScrollDisabled ? 'overflow-hidden' : 'overflow-auto'} flex-grow`}> */}
-        <Outlet />
-        {/* </div> */}
+        <div className={`w-full h-full scroll-box overflow-auto flex-grow`}>
+          <Outlet />
+        </div>
       </div>
     </div>
   );

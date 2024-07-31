@@ -5,10 +5,9 @@ import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.MonthOption;
-import shop.sellution.server.company.domain.WeekOption;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.address.domain.Address;
+import shop.sellution.server.event.domain.CouponEvent;
 import shop.sellution.server.global.BaseEntity;
 import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.order.domain.type.OrderStatus;
@@ -16,7 +15,6 @@ import shop.sellution.server.order.domain.type.DeliveryStatus;
 import shop.sellution.server.product.domain.Product;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -51,12 +49,14 @@ public class Order extends BaseEntity {
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "month_option_id", nullable = true)
-    private MonthOption monthOption;
+    @JoinColumn(name = "event_id", nullable = true)
+    private CouponEvent couponEvent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "week_option_id", nullable = true)
-    private WeekOption weekOption;
+    @Column(nullable = true)
+    private Integer monthOptionValue;
+
+    @Column(nullable = true)
+    private Integer weekOptionValue;
 
     @Column(nullable = false, unique = true)
     private String code;
@@ -100,10 +100,14 @@ public class Order extends BaseEntity {
     private int paymentCount =0; // 해당 주문에 대해 결제된 횟수
 
     @Column(nullable = false)
-    private int totalDeliveryCount;
+    private int totalDeliveryCount; // 전체 배송횟수
 
     @Column(nullable = false)
-    private int remainingDeliveryCount;
+    private int remainingDeliveryCount; // 남은 배송횟수
+
+    @Setter
+    @Column(nullable = true)
+    private Integer thisMonthDeliveryCount; // 이번달 배송횟수
 
     @Setter
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -178,6 +182,11 @@ public class Order extends BaseEntity {
     // 해당 주문의 결제 횟수 증가
     public void increasePaymentCount() {
         this.paymentCount++;
+    }
+
+    // 이번달 배송횟수 갱신 [단건,횟수 정기주문은 null로 값이 들어온다.]
+    public void updateThisMonthDeliveryCount(Integer thisMonthDeliveryCount) {
+        this.thisMonthDeliveryCount = thisMonthDeliveryCount;
     }
 
 

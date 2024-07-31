@@ -32,9 +32,9 @@ public class AddressController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createAddress(@Valid @RequestBody SaveAddressReq addressRequestDTO) {
-        customerAddressService.createAddress(addressRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Long> createAddress(@Valid @RequestBody SaveAddressReq saveAddressReq) {
+        Long addressId = customerAddressService.createAddress(saveAddressReq);
+        return ResponseEntity.ok(addressId);
     }
 
     @PutMapping("/{addressId}")

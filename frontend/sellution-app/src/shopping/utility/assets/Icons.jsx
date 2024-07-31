@@ -33,6 +33,16 @@ export const AddCustomerIcon = (props) => (
     </g>
   </svg>
 );
+// 계좌 인증 성공시 붙는 체크 아이콘
+export const AccountAuthCheckIcon = (props) => (
+  <svg width='23' height='23' viewBox='0 0 23 23' fill='none' xmlns='http://www.w3.org/2000/svg'>
+    <rect width='23' height='23' rx='11.5' fill='#57E65C' />
+    <path
+      d='M15.9333 9.3884C16.2493 9.07081 16.2493 8.55584 15.9333 8.23822C15.6173 7.92059 15.105 7.92059 14.789 8.23822L9.96686 13.0852L8.38129 11.4916C8.06531 11.1739 7.55298 11.1739 7.23699 11.4916C6.921 11.8092 6.921 12.3241 7.23699 12.6417L9.39471 14.8106C9.71074 15.1282 10.223 15.1282 10.539 14.8106L15.9333 9.3884Z'
+      fill='white'
+    />
+  </svg>
+);
 
 //배송지 아이콘
 export const DeliveryAddressIcon = (props) => (
@@ -350,5 +360,130 @@ export const SetPasswordIcon = (props) => (
       d='M89 86C80.7157 86 74 92.7157 74 101C74 109.284 80.7157 116 89 116C97.2843 116 104 109.284 104 101C104 92.7157 97.2843 86 89 86ZM76.093 101C76.093 93.8717 81.8717 88.093 89 88.093C96.1283 88.093 101.907 93.8717 101.907 101C101.907 108.128 96.1283 113.907 89 113.907C81.8717 113.907 76.093 108.128 76.093 101Z'
       fill='#FDFDFD'
     />
+  </svg>
+);
+
+//쿠폰 다운로드
+export const StarIcon = (props) => (
+  <svg
+    className={props.className}
+    viewBox='0 0 24 24'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <path
+      d='M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z'
+      fill='currentColor'
+      stroke='currentColor'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
+    />
+  </svg>
+);
+
+//오른쪽 화살표
+export const RightChevronIcon = (props) => (
+  <svg
+    className={props.className}
+    fill='none'
+    stroke='currentColor'
+    viewBox='0 0 24 24'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M9 5l7 7-7 7'></path>
+  </svg>
+);
+
+//마이너스
+export const MinusIcon = (props) => (
+  <svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' className={props.className}>
+    <path d='M6 12L18 12' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'></path>
+  </svg>
+);
+
+//증가
+export const PlusIcon = (props) => (
+  <svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' className={props.className}>
+    <path d='M6 12H18M12 6V18' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'></path>
+  </svg>
+);
+
+//X버튼
+export const DeleteIcon = (props) => (
+  <svg
+    viewBox='0 0 24 24'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+    className={props.className}
+  >
+    <path
+      d='M6.75827 17.2426L12.0009 12M17.2435 6.75736L12.0009 12M12.0009 12L6.75827 6.75736M12.0009 12L17.2435 17.2426'
+      stroke='#000000'
+      strokeWidth='1.5'
+      strokeLinecap='round'
+      strokeLinejoin='round'
+    ></path>
+  </svg>
+);
+
+//아래 화살표
+export const DownChevronIcon = (props) => (
+  <svg
+    className={props.className}
+    fill='none'
+    stroke='currentColor'
+    viewBox='0 0 24 24'
+    xmlns='http://www.w3.org/2000/svg'
+  >
+    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M19 9l-7 7-7-7'></path>
+  </svg>
+);
+
+//다운로드
+export const DownloadIcon = () => (
+  <svg viewBox='0 0 24 24' fill='white' xmlns='http://www.w3.org/2000/svg'>
+    <path
+      d='M12 16L11.6464 16.3536L12 16.7071L12.3536 16.3536L12 16ZM12.5 4C12.5 3.72386 12.2761 3.5 12 3.5C11.7239 3.5 11.5 3.72386 11.5 4L12.5 4ZM5.64645 10.3536L11.6464 16.3536L12.3536 15.6464L6.35355 9.64645L5.64645 10.3536ZM12.3536 16.3536L18.3536 10.3536L17.6464 9.64645L11.6464 15.6464L12.3536 16.3536ZM12.5 16L12.5 4L11.5 4L11.5 16L12.5 16Z'
+      fill='white'
+    ></path>
+    <path d='M5 21H19' stroke='white'></path>
+  </svg>
+);
+
+//flod-icon
+export const UpChevronIcon = (props) => (
+  <svg viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' className={props.className}>
+    <path d='M903.232 256l56.768 50.432L512 768 64 306.432 120.768 256 512 659.072z'></path>
+  </svg>
+);
+
+//뒤로가기
+export const LeftArrowIcon = (props) => (
+  <svg
+    viewBox='0 0 24 24'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+    className={props.className}
+  >
+    <path d='M5 12H19M5 12L11 6M5 12L11 18' strokeLinecap='round' strokeLinejoin='round'></path>
+  </svg>
+);
+
+//메뉴 햄버거
+export const MenuIcon = (props) => (
+  <svg
+    className={props.className}
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox='0 0 24 24'
+    fill='none'
+    stroke='#000000'
+    strokeWidth='2'
+    strokeLinecap='round'
+    strokeLinejoin='round'
+  >
+    <line x1='3' y1='6' x2='21' y2='6'></line>
+    <line x1='3' y1='12' x2='21' y2='12'></line>
+    <line x1='3' y1='18' x2='21' y2='18'></line>
   </svg>
 );
