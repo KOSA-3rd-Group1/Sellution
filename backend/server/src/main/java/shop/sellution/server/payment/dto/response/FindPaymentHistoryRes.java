@@ -16,6 +16,8 @@ public class FindPaymentHistoryRes {
 
     private Long paymentHistoryId;
     private Long customerId;
+    private String orderCode;
+    private String userName;
     private int price;
     private int remainingPayCount; // 남은 결제 횟수
     private int totalCountForPayment; // 총 결제해야하는 횟수

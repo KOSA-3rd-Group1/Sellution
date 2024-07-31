@@ -51,7 +51,7 @@ public class PaymentService {
     private final SmsService smsService;
     private final CustomerRepository customerRepository;
     private final AccountServiceImpl accountService;
-    private final Duration TIMEOUT = Duration.ofSeconds(2);
+    private final Duration TIMEOUT = Duration.ofSeconds(4);
 
 
     @Transactional

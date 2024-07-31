@@ -37,6 +37,8 @@ public class PaymentHistoryRepositoryCustomImpl implements PaymentHistoryReposit
                 .select(Projections.constructor(FindPaymentHistoryRes.class,
                         paymentHistory.id.as("paymentHistoryId"),
                         order.customer.id.as("companyId"),
+                        order.code.as("orderCode"),
+                        customer.name.as("userName"),
                         paymentHistory.price,
                         paymentHistory.remainingPaymentCount.as("remainingPayCount"),
                         paymentHistory.totalPaymentCount.as("totalCountForPayment"),
