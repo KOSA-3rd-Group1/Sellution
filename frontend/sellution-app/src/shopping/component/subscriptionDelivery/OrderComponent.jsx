@@ -12,19 +12,17 @@ import PaymentEstimation from '../../layout/order/PaymentEstimation';
 import PaymentMethodSelection from '../../layout/order/PaymentMethodSelection';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
-import useAuthStore from "@/shopping/store/stores/useAuthStore.js";
-import { getMyCouponList } from "@/shopping/utility/apis/mypage/coupon/couponApi.js";
-
+import { getMyCouponList } from '@/shopping/utility/apis/mypage/coupon/couponApi';
+import useAuthStore from '@/shopping/store/stores/useAuthStore';
 const OrderComponent = () => {
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const accessToken = useAuthStore((state) => state.accessToken);
   const navigate = useNavigate();
   const { orderList } = useOrderListStore();
   const clientName = useCompanyInfoStore((state) => state.name);
   const customerId = useUserInfoStore((state) => state.id);
   const location = useLocation();
   const companyId = useCompanyInfoStore((state) => state.companyId);
-
-  const accessToken =useAuthStore((state) => state.accessToken);
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   //목록 선택
   const listToShow = orderList;
@@ -48,7 +46,7 @@ const OrderComponent = () => {
     totalDeliveryCount: 0,
     totalPrice: 0,
     deliveryNextDate: '',
-    deliveryEndDate: ''
+    deliveryEndDate: '',
   });
 
   const [selectedWeek, setSelectedWeek] = useState('');
@@ -115,7 +113,7 @@ const OrderComponent = () => {
     saveState(); // 현재 상태 저장
     console.log('이동전 경로 : ', location.pathname);
     navigate(`/shopping/${clientName}/my/${customerId}/payment/add`, {
-      state: { returnUrl: location.pathname }
+      state: { returnUrl: location.pathname },
     });
   };
 
@@ -172,9 +170,9 @@ const OrderComponent = () => {
     );
     const couponDiscountTotal = selectedCoupon
       ? Math.floor(
-        listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
-        (selectedCoupon.couponDiscountRate / 100),
-      )
+          listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
+            (selectedCoupon.couponDiscountRate / 100),
+        )
       : 0;
 
     setTotalPrice(total);
@@ -182,7 +180,13 @@ const OrderComponent = () => {
     setCouponDiscountTotal(couponDiscountTotal);
     setFinalPrice(total - productDiscountTotal - couponDiscountTotal);
 
-    if (subscriptionType === 'MONTH' && selectedStartDate && selectedWeek && selectedMonth && selectedDays.length > 0) {
+    if (
+      subscriptionType === 'MONTH' &&
+      selectedStartDate &&
+      selectedWeek &&
+      selectedMonth &&
+      selectedDays.length > 0
+    ) {
       const monthlyPriceData = await calculateMonthlyPrice();
       if (monthlyPriceData) {
         setMonthlyPriceData(monthlyPriceData);
@@ -194,7 +198,7 @@ const OrderComponent = () => {
         totalDeliveryCount: 0,
         totalPrice: 0,
         deliveryNextDate: '',
-        deliveryEndDate: ''
+        deliveryEndDate: '',
       });
     }
   };
@@ -252,7 +256,7 @@ const OrderComponent = () => {
 
     // 비밀번호 인증 페이지로 이동하면서 주문 데이터 전달
     navigate(`/shopping/${clientName}/ordersheet/auth/${customerId}`, {
-      state: { orderData: saveOrderReq }
+      state: { orderData: saveOrderReq },
     });
   };
 
@@ -261,7 +265,6 @@ const OrderComponent = () => {
       setIsPasswordVerified(true);
     }
   }, [location]);
-
 
   //api
   const fetchAddresses = async () => {
@@ -281,10 +284,9 @@ const OrderComponent = () => {
 
   const fetchCoupons = async () => {
     try {
-      const response = await getMyCouponList(setAccessToken,accessToken);
-      setCoupons(response.data.content);
-      console.log('fetch한 쿠폰1: ', coupons);
-      console.log('fetch한 쿠폰2: ', response);
+      const response = await getMyCouponList(accessToken, setAccessToken);
+      setCoupons(response.data.content || []); // 페이지 응답에서 내용 추출
+      console.log('fetch한 쿠폰: ', response.data);
     } catch (error) {
       console.error('Error fetching coupons:', error);
     }

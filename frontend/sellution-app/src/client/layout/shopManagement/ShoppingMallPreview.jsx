@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   ShoppingHomeIcon,
   ShoppingSubscriptionDeliveryIcon,
@@ -6,9 +7,8 @@ import {
   ShoppingCartIcon,
   ImageUploadIcon,
 } from '@/client/utility/assets/Icons';
-import { useEffect, useState } from 'react';
 
-const ShoppingMallPreview = ({ data, logoImg, promotionImg, themeColor, serviceType }) => {
+const ShoppingMallPreview = ({ data, logoImg, promotionImg, serviceType }) => {
   const [activeSlide, setActiveSlide] = useState(1);
   const totalSlides = promotionImg.length;
 
@@ -20,9 +20,9 @@ const ShoppingMallPreview = ({ data, logoImg, promotionImg, themeColor, serviceT
     setActiveSlide((prevSlide) => (prevSlide >= totalSlides ? 1 : prevSlide + 1));
   };
 
-  //   useEffect(() => {
-  //     setActiveSlide((prevSlide) => (prevSlide >= totalSlides ? 1 : prevSlide + 1));
-  //   }, [promotionImg]);
+  useEffect(() => {
+    setActiveSlide((prevSlide) => (prevSlide >= totalSlides ? 1 : prevSlide + 1));
+  }, [promotionImg]);
 
   return (
     <div className='relative w-full h-full bg-white'>
@@ -79,7 +79,7 @@ const ShoppingMallPreview = ({ data, logoImg, promotionImg, themeColor, serviceT
             {promotionImg.map((image, index) => (
               <button
                 key={`slide${index + 1}`}
-                className={`w-2 h-2 rounded-full ${activeSlide === index + 1 ? 'bg-brandOrange' : 'bg-gray-300'}`}
+                className={`w-2 h-2 rounded-full ${activeSlide === index + 1 ? 'bg-secondary' : 'bg-gray-300'}`}
                 onClick={() => handleSlideChange(index + 1)}
               ></button>
             ))}
@@ -90,16 +90,16 @@ const ShoppingMallPreview = ({ data, logoImg, promotionImg, themeColor, serviceT
         <div className='flex-1 px-2 mb-2 flex flex-col gap-4'>
           {/* 프로모션 문구 1 */}
           <div
-            className={`flex-1 p-4 flex flex-col justify-center items-start gap-2 rounded-lg ${themeColor.lightBgColor}`}
+            className={`flex-1 p-4 flex flex-col justify-center items-start gap-2 rounded-lg bg-accent`}
           >
             <h3 className='text-lg font-bold text-black '>{data.mainPromotion1Title}</h3>
             <p className='text-sm text-gray-600'>{data.mainPromotion1Content}</p>
           </div>
           {/* 프로모션 문구 2 */}
           <div
-            className={`flex-1 p-4 flex flex-col justify-center items-start gap-2 rounded-lg ${themeColor.midBgColor}`}
+            className={`flex-1 p-4 flex flex-col justify-center items-start gap-2 rounded-lg bg-neutral`}
           >
-            <p className='text-base text-black'>{data.mainPromotion2Title}</p>
+            <p className='text-base font-semibold text-black'>{data.mainPromotion2Title}</p>
             <p className='text-sm font-semibold text-gray-600'>{data.mainPromotion2Content}</p>
           </div>
         </div>
@@ -107,7 +107,7 @@ const ShoppingMallPreview = ({ data, logoImg, promotionImg, themeColor, serviceT
 
       {/* Footer */}
       <nav
-        className={`absolute bottom-0 w-full h-16 py-1.5 flex items-center shadow-footer text-xs ${themeColor.textColor}`}
+        className={`absolute bottom-0 w-full h-16 py-1.5 flex items-center shadow-footer text-xs text-secondary`}
       >
         <div className='flex-1 flex flex-col justify-center items-center gap-1'>
           <ShoppingHomeIcon className='w-7 h-7' />

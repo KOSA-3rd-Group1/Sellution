@@ -18,6 +18,6 @@ export const transformPaymentStatus = (type) => {
     case 'CANCEL':
       return '결제취소';
     default:
-      return 'All';
+      return 'ALL';
   }
 };
