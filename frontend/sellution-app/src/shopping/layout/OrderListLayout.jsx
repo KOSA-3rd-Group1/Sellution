@@ -1,3 +1,4 @@
+import { formatPrice } from './../../client/utility/functions/formatterFunction';
 const OrderListLayout = ({ listToShow }) => {
   return (
     <section className='w-[90%]'>
@@ -28,14 +29,18 @@ const OrderListLayout = ({ listToShow }) => {
                     <div>
                       <div className='flex gap-2'>
                         <span className='text-red-400 text-xs'>{item.discountRate}%</span>
-                        <span className='text-gray-400 line-through text-xs'>{item.cost}원</span>
+                        <span className='text-gray-400 line-through text-xs'>
+                          {formatPrice(item.cost)}
+                        </span>
                       </div>
                       <div className='mt-1'>
-                        <span className='text-black text-sm'>{item.discountedPrice} 원</span>
+                        <span className='text-black text-sm'>
+                          {formatPrice(item.discountedPrice)}
+                        </span>
                       </div>
                     </div>
                     <div>
-                      <span className='text-gray-600 text-xs'>수량: {item.quantity} 팩</span>
+                      <span className='text-gray-600 text-xs'>수량: {item.quantity} 개</span>
                     </div>
                   </div>
                 </div>

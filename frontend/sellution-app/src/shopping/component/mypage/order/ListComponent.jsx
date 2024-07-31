@@ -13,7 +13,7 @@ const ListComponent = () => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/orders/customers/${customerId}`,
+          `${import.meta.env.VITE_BACKEND_URL}/orders/customers/${customerId}?sort=createdAt,desc`,
         );
         setOrders(response.data.content);
       } catch (error) {
