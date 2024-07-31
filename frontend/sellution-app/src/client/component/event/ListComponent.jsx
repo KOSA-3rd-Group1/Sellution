@@ -7,27 +7,15 @@ import { useEventList } from '@/client/business/event/useEventList';
 import { HEADERS, ROW_HEIGHT } from '@/client/utility/tableinfo/EventListTableInfo';
 
 const ListComponent = () => {
+  const { page, size, refresh, moveToPathname, moveToPagination, updateQueryParameter } = useMove();
   const {
-    queryParams,
-    page,
-    size,
-    refresh,
-    moveToPathname,
-    moveToPagination,
-    updateQueryParameter,
-  } = useMove();
-  const {
-    // HEADERS,
-    // ROW_HEIGHT,
     data,
     totalPages,
     totalDataCount,
     dateRangeValue,
     handleChangeDateRangeValue,
     handleDeleteBtn,
-    // handleAddBtn,
-    // handleRowEvent,
-  } = useEventList({ queryParams, page, size, refresh, updateQueryParameter });
+  } = useEventList({ page, size, refresh, updateQueryParameter });
 
   return (
     <div className='relative w-full h-full justify-between'>
