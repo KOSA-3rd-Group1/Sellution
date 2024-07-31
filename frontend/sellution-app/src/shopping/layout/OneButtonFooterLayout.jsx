@@ -19,13 +19,13 @@ const OneButtonFooterLayout = ({ footerText, onClick, isDisabled = false }) => {
   return (
     <nav className='fixed bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-lg h-16 bg-white flex shadow-footer px-3 py-1.5'>
       <div
-        className={`footer-box flex-1 flex justify-center items-center rounded-full hover:cursor-pointer ${isDisabled ? 'bg-gray-300' : 'bg-brandOrange hover:bg-orange-600'}`}
+        className={`footer-box flex-1 flex justify-center items-center rounded-full hover:cursor-pointer ${isDisabled ? 'bg-gray-300' : 'bg-primary hover:bg-secondary'}`}
         onClick={!isDisabled ? onClick : null}
       >
         <div className='relative'>
           <span className='footer-text text-white font-bold text-lg'>{footerText}</span>
           {isCountVisible && (
-            <span className='absolute top-[4px] right-[-31px] bg-white text-brandOrange font-bold rounded-full px-[6px] py-[2px] text-xs'>
+            <span className='absolute top-[4px] right-[-31px] bg-white text-primary font-bold rounded-full px-[6px] py-[2px] text-xs'>
               {cartCount}
             </span>
           )}

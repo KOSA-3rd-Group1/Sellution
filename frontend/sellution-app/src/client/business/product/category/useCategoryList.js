@@ -109,10 +109,10 @@ const useCategoryList = () => {
       return;
     }
 
-    const confirmDelete = window.confirm(
-      `선택한 ${selectedItems.length}개의 카테고리를 정말 삭제하시겠습니까?`,
-    );
-    if (!confirmDelete) return;
+    // const confirmDelete = window.confirm(
+    //   `선택한 ${selectedItems.length}개의 카테고리를 정말 삭제하시겠습니까?`,
+    // );
+    // if (!confirmDelete) return;
 
     try {
       for (const categoryId of selectedItems) {
@@ -121,7 +121,6 @@ const useCategoryList = () => {
       setSelectedItems([]);
       setSelectAll(false);
       fetchCategories();
-      alert('선택한 카테고리가 성공적으로 삭제되었습니다.');
     } catch (error) {
       console.error('There was an error deleting the categories!', error);
       alert('카테고리 삭제 중 오류가 발생했습니다.');

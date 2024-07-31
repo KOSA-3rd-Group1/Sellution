@@ -18,7 +18,7 @@ export const transformOrderType = (type) => {
     case 'COUNT_SUBSCRIPTION':
       return '정기(횟수 단위)';
     default:
-      return 'All';
+      return 'ALL';
   }
 };
 
@@ -42,6 +42,6 @@ export const transformOrderStatus = (type) => {
     case 'CANCEL':
       return '주문취소';
     default:
-      return 'All';
+      return 'ALL';
   }
 };

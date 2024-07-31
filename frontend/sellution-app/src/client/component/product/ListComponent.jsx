@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useProductList } from '@/client/business/product/useProductList';
 import TableProduct from '@/client/layout/common/table/TableProduct';
 import { EventBtn } from '@/client/layout/common/Button';
+import AlertModal from '@/client/layout/common/modal/AlertModal';
 
 const ListComponent = () => {
   const location = useLocation();
@@ -26,6 +27,8 @@ const ListComponent = () => {
     updatePage,
   } = useProductList();
 
+  const [alertModal, setAlertModal] = useState({ isOpen: false, type: '', title: '', message: '' });
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const page = parseInt(searchParams.get('page') || '1', 10);
@@ -35,6 +38,41 @@ const ListComponent = () => {
   useEffect(() => {
     fetchProducts();
   }, [tableState.currentPage]);
+
+  const openAlertModal = (type, title, message) => {
+    setAlertModal({ isOpen: true, type, title, message });
+  };
+
+  const closeAlertModal = () => {
+    setAlertModal({ isOpen: false, type: '', title: '', message: '' });
+  };
+
+  const handleDeleteProductBtn = () => {
+    if (selectedCount === 0) {
+      openAlertModal('error', '선택된 상품 없음', '삭제할 상품을 선택해주세요.');
+      return;
+    }
+    openAlertModal(
+      'warning',
+      '상품 삭제 확인',
+      `선택한 ${selectedCount}개의 상품을 삭제하시겠습니까?`,
+    );
+  };
+
+  const handleAlertConfirm = async () => {
+    if (alertModal.type === 'warning') {
+      closeAlertModal();
+      try {
+        await handleDeleteProductsBtn(); // useProductList에서 제공하는 함수 사용
+        openAlertModal('success', '상품 삭제 완료', '선택한 상품이 성공적으로 삭제되었습니다.');
+        fetchProducts(); // 상품 목록 새로고침
+      } catch (error) {
+        openAlertModal('error', '상품 삭제 실패', '상품 삭제 중 오류가 발생했습니다.');
+      }
+    } else {
+      closeAlertModal();
+    }
+  };
 
   const renderPageNumbers = () => {
     const totalPages = Math.ceil(totalDataCount / tableState.itemsPerPage);
@@ -102,8 +140,16 @@ const ListComponent = () => {
             startIndex={(tableState.currentPage - 1) * tableState.itemsPerPage}
             Btns={
               <div className='flex justify-center items-center gap-4'>
-                <EventBtn label={'상품 등록'} onClick={handleAddProductBtn} />
-                <EventBtn label={'상품 삭제'} onClick={handleDeleteProductsBtn} />
+                <EventBtn
+                  label={'상품 등록'}
+                  onClick={handleAddProductBtn}
+                  className='mx-1 px-4 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
+                />
+                <EventBtn
+                  label={'상품 삭제'}
+                  onClick={handleDeleteProductBtn}
+                  className='mx-1 px-4 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
+                />
               </div>
             }
             onRowClick={handleRowClick}
@@ -111,6 +157,14 @@ const ListComponent = () => {
         </div>
         <div className='h-12 flex-none flex justify-end items-end '>{renderPageNumbers()}</div>
       </section>
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={closeAlertModal}
+        type={alertModal.type}
+        title={alertModal.title}
+        message={alertModal.message}
+        onConfirm={handleAlertConfirm}
+      />
     </div>
   );
 };

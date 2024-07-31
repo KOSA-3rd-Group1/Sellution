@@ -29,7 +29,7 @@ export const transformCustomerType = (type) => {
     case 'DORMANT':
       return '휴면';
     default:
-      return 'All';
+      return 'ALL';
   }
 };
 
@@ -41,6 +41,6 @@ export const transformLatestDeliveryDate = (type) => {
     case 'LATEST_DELIVERY_DATE_DESC':
       return '내림차순';
     default:
-      return 'All';
+      return 'ALL';
   }
 };

@@ -37,7 +37,7 @@ const CartComponent = () => {
       <div className='flex flex-col items-center w-full'>
         <section className='page-label flex justify-start items-center w-full pt-4'>
           <div
-            className={`font-bold py-2 px-3 text-sm cursor-pointer text-gray-500 bg-brandOrange text-white`}
+            className={`font-bold py-2 px-3 text-sm cursor-pointer text-gray-500 bg-primary text-white`}
             onClick={() => {
               navigate(`/shopping/${clientName}/subscription/cart`);
             }}
@@ -53,7 +53,7 @@ const CartComponent = () => {
             단건 배송
           </div>
         </section>
-        <div className='seperator w-full h-[2px] bg-brandOrange'></div>
+        <div className='seperator w-full h-[2px] bg-primary'></div>
         <section className='w-[92%] h-full mx-auto mt-2 '>
           <div className='flex justify-between py-2 border-b'>
             <div className='flex items-center'>
@@ -115,7 +115,7 @@ const CartComponent = () => {
                   </div>
                   <div className='product-item-2 flex-[5] flex flex-col justify-center px-4'>
                     <div className='product-name font-bold text-sm'>{item.name}</div>
-                    <div className='product-price text-orange-500 my-2'>{item.cost} 원</div>
+                    <div className='product-price text-primary my-2'>{item.cost} 원</div>
                     <div className='quantity-control flex items-center border border-gray-300 w-20'>
                       <button
                         className='quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center'
@@ -134,7 +134,7 @@ const CartComponent = () => {
                   </div>
                   <div className='product-item-3 flex-[1] flex justify-end items-start'>
                     <button className='' onClick={() => removeFromSubscriptionCart(item.productId)}>
-                    <DeleteIcon className={'w-6 h-6'} />
+                      <DeleteIcon className={'w-6 h-6'} />
                     </button>
                   </div>
                 </li>

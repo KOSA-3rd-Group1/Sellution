@@ -10,7 +10,7 @@ const useHome = () => {
   const [data, setData] = useState(null); // 데이터 상태 추가
   const navigate = useNavigate();
   const { clientName } = useParams(); // url 상 clientName <- 회사명
-  console.log("클라이언트 이름 ", clientName);
+  console.log('클라이언트 이름 ', clientName);
 
   // localstorage에서 관리되는 회사 정보
   // 추후 회사 정보가 필요한 작업에서 회사의 정보가 없다면 home으로 돌려보내야 합니다.
@@ -34,12 +34,14 @@ const useHome = () => {
       }
     };
 
-    if (clientName.toLowerCase() != name.toLowerCase()) {
-      fetchData(clientName, setAllCompanyData); // 데이터 요청 함수 호출
-    } else {
-      setData({ ...getAllCompanyData() });
-      console.log('렌더링된 데이터', getAllCompanyData());
-    }
+    fetchData(clientName, setAllCompanyData); // 데이터 요청 함수 호출
+
+    // if (clientName.toLowerCase() != name.toLowerCase()) {
+    //   fetchData(clientName, setAllCompanyData); // 데이터 요청 함수 호출
+    // } else {
+    //   setData({ ...getAllCompanyData() });
+    //   console.log('렌더링된 데이터', getAllCompanyData());
+    // }
   }, [clientName]); // 빈 배열을 두어 한 번만 실행되도록 설정 -> url의 clientName이 변경될 때마다 재 요청
 
   useEffect(() => {

@@ -67,6 +67,7 @@ export const useProductList = () => {
         label: '금액',
         type: 'none',
         width: 'min-w-36 w-36 max-w-36',
+        format: (value) => `${value.toLocaleString()}원`,
       },
       {
         key: 'stock',
@@ -90,7 +91,7 @@ export const useProductList = () => {
       },
       {
         key: 'discountRate',
-        label: '할인율',
+        label: '할인율(%)',
         type: 'none',
         width: 'min-w-36 w-36 max-w-36',
       },
@@ -99,6 +100,7 @@ export const useProductList = () => {
         label: '할인 적용 후 금액',
         type: 'none',
         width: 'min-w-36 w-36 max-w-36 text-brandOrange',
+        format: (value) => `${value.toLocaleString()}원`,
       },
     ],
     [categories],
@@ -150,6 +152,7 @@ export const useProductList = () => {
         ? response.data
         : response.data.content || [];
       setCategories(categoryData);
+      console.log('categoruy :', response.data);
     } catch (error) {
       console.error('Error fetching categories:', error);
       setCategories([]); // 오류 발생 시 빈 배열로 설정
@@ -195,6 +198,7 @@ export const useProductList = () => {
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
         params,
       });
+      console.log('response :', response.data);
 
       const updatedData = response.data.content.map((item) => ({
         ...item,
@@ -206,6 +210,7 @@ export const useProductList = () => {
               ? '정기'
               : '단건+정기',
         isDiscount: item.isDiscount === 'Y' ? '적용' : '미적용',
+        discountedPrice: item.isDiscount === 'Y' ? item.discountedPrice : item.cost,
       }));
 
       setData(updatedData);
@@ -246,30 +251,22 @@ export const useProductList = () => {
     const selectedProductIds = Object.keys(selectedRows).filter((key) => selectedRows[key]);
 
     if (selectedProductIds.length === 0) {
-      alert('삭제할 상품을 선택해주세요.');
-      return;
+      return; // 선택된 상품이 없으면 함수 종료
     }
 
-    const confirmDelete = window.confirm(
-      `선택한 ${selectedProductIds.length}개의 상품을 삭제하시겠습니까?`,
-    );
-
-    if (confirmDelete) {
-      try {
-        for (const productId of selectedProductIds) {
-          await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}`, {
-            headers: {
-              'Content-Type': 'application/json', // 명시적으로 Content-Type 헤더 설정
-            },
-          });
-        }
-        alert('선택한 상품들이 성공적으로 삭제되었습니다.');
-        setSelectedRows({});
-        fetchProducts();
-      } catch (error) {
-        console.error('Error deleting products:', error);
-        alert('상품 삭제 중 오류가 발생했습니다. 다시 시도해주세요.');
+    try {
+      for (const productId of selectedProductIds) {
+        await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
       }
+      setSelectedRows({});
+      fetchProducts();
+    } catch (error) {
+      console.error('Error deleting products:', error);
+      throw error; // 에러를 상위 컴포넌트로 전파
     }
   };
 
