@@ -1,3 +1,5 @@
+import { formatPrice } from "../../client/utility/functions/formatterFunction";
+
 const DetailComponent = ({ productToShow, activeSlide, handleSlideChange }) => {
   if (!productToShow) {
     return <div>Product not found</div>;
@@ -70,11 +72,11 @@ const DetailComponent = ({ productToShow, activeSlide, handleSlideChange }) => {
                 {productToShow.discountRate}%
               </span>
               <span className='price text-sm text-gray-400 line-through'>
-                {productToShow.cost}원
+                {formatPrice(productToShow.cost)}
               </span>
             </div>
             <span className='discount-price text-lg text-orange-600 font-bold font-shadow'>
-              {productToShow.discountedPrice}원
+              {formatPrice(productToShow.discountedPrice)}
             </span>
           </div>
         </div>

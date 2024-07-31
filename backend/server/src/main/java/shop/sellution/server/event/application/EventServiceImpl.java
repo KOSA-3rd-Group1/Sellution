@@ -17,6 +17,7 @@ import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.event.domain.*;
 import shop.sellution.server.event.domain.type.EventState;
+import shop.sellution.server.event.domain.type.TargetCustomerType;
 import shop.sellution.server.event.dto.request.SaveEventReq;
 import shop.sellution.server.event.dto.request.UpdateEventReq;
 import shop.sellution.server.event.dto.response.FindEventRes;
@@ -237,7 +238,8 @@ public class EventServiceImpl implements EventService {
     private void validateEvent(LocalDate now, CouponEvent event, Long customerId){
         //1. 해당 이벤트가 종료되었는지 확인
         //2. 해당 이벤트가 삭제되었는지 확인
-        //3. 사용자가 이미 발급했는지 확인
+        //3. 이벤트 타겟에 해당하는지 확인
+        //4. 사용자가 이미 발급했는지 확인
         if(now.isAfter(event.getEventEndDate()) || now.isBefore(event.getEventStartDate())){
             //throw new IllegalArgumentException("이벤트 기간이 아닙니다");
             throw new BadRequestException(ExceptionCode.INVALID_DOWNLOAD_EVENT_DATE);
@@ -245,6 +247,11 @@ public class EventServiceImpl implements EventService {
         if(event.isDeleted()){
             //throw new IllegalArgumentException("중단된 이벤트는 쿠폰을 다운로드할 수 없습니다.");
             throw new BadRequestException(ExceptionCode.INVALID_DOWNLOAD_EVENT_DELETED);
+        }
+        Customer customer = getCustomerById(customerId);
+        if(event.getTargetCustomerType() != TargetCustomerType.ALL && !event.getTargetCustomerType().name().equals(customer.getType().name())){
+            //throw new IllegalArgumentException("해당 이벤트는 타겟 고객이 아닙니다.");
+            throw new BadRequestException(ExceptionCode.INVALID_DOWNLOAD_EVENT_TARGET_CUSTOMER);
         }
         //TODO: (redis로도 확인 가능)
         if(couponBoxRepository.existsByCustomerIdAndCouponEventId(customerId, event.getId())){
