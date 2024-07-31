@@ -24,6 +24,12 @@ export const HEADERS = [
     width: 'min-w-52 w-52 max-w-52',
   },
   {
+    key: 'orderCreatedAt',
+    label: '주문 생성일',
+    type: 'none',
+    width: 'min-w-36 w-36 max-w-36',
+  },
+  {
     key: 'deliveryStartDate',
     label: '주문 시작일',
     type: 'none',
@@ -42,7 +48,7 @@ export const HEADERS = [
     width: 'min-w-72 w-72 max-w-72 ',
   },
   {
-    key: 'type',
+    key: 'orderType',
     label: '주문 유형',
     type: 'filter',
     options: ['단건', '정기(월 단위)', '정기(횟수 단위)'],

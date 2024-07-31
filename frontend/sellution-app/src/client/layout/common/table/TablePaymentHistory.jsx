@@ -82,7 +82,7 @@ const TablePaymentHistory = ({
                 >
                   <td className='sticky min-w-20 w-20 max-w-20 p-3 z-10 left-[0px] bg-white group-hover:bg-brandOrange-light'>
                     <div className='flex flex-col w-full justify-between items-center gap-3'>
-                      {row.id}
+                      {row.no}
                     </div>
                   </td>
                   {HEADERS.map((header) => (

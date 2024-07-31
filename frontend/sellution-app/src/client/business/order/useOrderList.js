@@ -72,12 +72,16 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
   const [data, setData] = useState([]); // 테이블 데이터
   const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수
   const [totalDataCount, setTotalDataCount] = useState(0); // 데이터 총 개수
+  //   const [refresh, setRefresh] = useState(false);
 
   // 테이블 상태 관리 - 검색, 필터, 정렬 기능
   const [tableState, setTableState] = useState(
     HEADERS.reduce((acc, header) => {
       const value = queryParams.get(header.key);
       switch (header.key) {
+        case 'orderType':
+          acc[header.key] = value ? formatOrderType(value) : 'All';
+          break;
         case 'status':
           acc[header.key] = value ? formatOrderStatus(value) : 'All';
           break;
@@ -109,13 +113,14 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
       orderCode: content.orderCode, // 주문 번호
       customerName: content.customer.name, // 회원명
       customerPhoneNumber: formatPhoneNumber(content.customer.phoneNumber), // 휴대폰 번호
+      orderCreatedAt: content.orderCreatedAt.split('T')[0],
       deliveryStartDate: content.deliveryStartDate, // 주문 시작일
       deliveryEndDate: content.deliveryEndDate, // 주문 종료일
       orderedProduct:
         content.orderedProductList?.length > 1
           ? `${content.orderedProductList[0].productName} ... 외 ${content.orderedProductList?.length - 1}건`
           : `${content.orderedProductList[0].productName}`,
-      type: formatOrderType(content.type),
+      orderType: formatOrderType(content.type),
       status: formatOrderStatus(content.status),
       deliveryStatus: formatDeliveryStatus(content.deliveryStatus),
     }),
@@ -126,22 +131,22 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
     const filterAndTransform = (obj) => {
       return Object.entries(obj).reduce((acc, [key, value]) => {
         switch (key) {
-          case 'type':
+          case 'orderType':
             if (value) {
               const transformValue = transformOrderType(value);
-              if (transformValue !== 'All') acc[key] = transformOrderType(value);
+              if (transformValue !== 'All') acc[key] = transformValue;
             }
             break;
           case 'status':
             if (value) {
               const transformValue = transformOrderStatus(value);
-              if (transformValue !== 'All') acc[key] = transformOrderStatus(value);
+              if (transformValue !== 'All') acc[key] = transformValue;
             }
             break;
           case 'deliveryStatus':
             if (value) {
               const transformValue = transformDeliveryStatus(value);
-              if (transformValue !== 'All') acc[key] = transformDeliveryStatus(value);
+              if (transformValue !== 'All') acc[key] = transformValue;
             }
             break;
           case 'orderCode':
@@ -205,6 +210,7 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
         updateQueryParameter(pageParam, 1);
       }
     };
+
     fetch(companyId, setAccessToken, accessToken);
 
     return () => {
@@ -220,8 +226,7 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
 
   // 필터 초기화
   const handleFilterReset = (tableId) => {
-    // setTableState({});
-
+    setTableState({});
     clearTable(tableId);
   };
 
@@ -230,7 +235,6 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
     try {
       await postAutoApproveToggle(companyId, setAccessToken, accessToken);
       await setIsAutoApproved(!isAutoApproved);
-      //   setIsAutoOrderApproved(!isAutoOrderApproved);
     } catch (error) {
       console.log(error);
     }
@@ -246,6 +250,7 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
         }
       });
       alert('간편 주문 일괄 승인');
+      //   setRefresh(!refresh);
     } else {
       alert('없음');
     }
