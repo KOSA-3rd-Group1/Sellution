@@ -1,4 +1,5 @@
-import { MinusIcon, PlusIcon, UpChevronIcon } from "../../utility/assets/Icons";
+import { formatPrice } from '../../../client/utility/functions/formatterFunction';
+import { MinusIcon, PlusIcon, UpChevronIcon } from '../../utility/assets/Icons';
 
 const DetailOptionComponent = ({
   productToShow,
@@ -9,6 +10,8 @@ const DetailOptionComponent = ({
   isDetailOptionVisible,
   toggleDetailOption,
 }) => {
+  const isOutOfStock = productToShow.stock === 0;
+
   return (
     <div
       className={`option-footer-box fixed z-10 w-full max-w-lg transition-bottom duration-300 ${isDetailOptionVisible ? 'bottom-16' : '-bottom-48'} bg-white pb-4 px-4 left-1/2 transform -translate-x-1/2 shadow-footer`}
@@ -26,15 +29,15 @@ const DetailOptionComponent = ({
           <div className='product-name font-bold text-sm mb-2'>{productToShow.name}</div>
           <div className='quantity-control flex items-center border border-gray-300 w-20'>
             <button
-              className='quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center'
-              onClick={decreaseQuantity}
+              className={`quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center ${isOutOfStock ? 'cursor-not-allowed opacity-50' : ''}`}
+              onClick={!isOutOfStock ? decreaseQuantity : null}
             >
               <MinusIcon className={'minus w-4 h-4 stroke-current text-gray-600'} />
             </button>
             <div className='quantity flex-1 text-center bg-white'>{itemCountToAdd}</div>
             <button
-              className='quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center'
-              onClick={increaseQuantity}
+              className={`quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center ${isOutOfStock ? 'cursor-not-allowed opacity-50' : ''}`}
+              onClick={!isOutOfStock ? increaseQuantity : null}
             >
               <PlusIcon className={'plus w-4 h-4 stroke-current text-gray-600'} />
             </button>
@@ -45,10 +48,12 @@ const DetailOptionComponent = ({
             <span className='discount-rate text-xs bg-orange-600 text-white rounded-sm py-1 px-2 mr-2'>
               {productToShow.discountRate}%
             </span>
-            <span className='price text-sm text-gray-400 line-through'>{productToShow.cost}원</span>
+            <span className='price text-sm text-gray-400 line-through'>
+              {formatPrice(productToShow.cost)}
+            </span>
           </div>
           <span className='discount-price text-md font-bold'>
-            {productToShow.discountedPrice}원
+            {formatPrice(productToShow.discountedPrice)}
           </span>
         </div>
       </div>

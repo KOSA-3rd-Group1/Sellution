@@ -4,7 +4,7 @@ import Category from '../layout/partials/Category';
 import { Link, useNavigate } from 'react-router-dom';
 import { HomeIcon, LeftArrowIcon, MenuIcon } from '../utility/assets/Icons';
 
-const MenuCategoryHeaderNav = ({ title, categoryList, onCategoryClick }) => {
+const MenuCategoryHeaderNav = ({ title, categoryList, onCategoryClick, selectedCategory }) => {
   const clientName = useCompanyInfoStore((state) => state.name);
   const navigate = useNavigate();
   const handleBack = () => {
@@ -28,7 +28,13 @@ const MenuCategoryHeaderNav = ({ title, categoryList, onCategoryClick }) => {
         </button>
       </div>
       <span className='menu-title absolute left-1/2 transform -translate-x-1/2 font-bold text-lg text-center w-[55%]'>
-        {title}
+        {selectedCategory && selectedCategory.name === '단건배송 전체'
+          ? '단건배송 상품 목록'
+          : selectedCategory && selectedCategory.name === '정기배송 전체'
+            ? '정기배송 상품 목록'
+            : selectedCategory
+              ? selectedCategory.name
+              : title}
       </span>
       <Link to={`/shopping/${clientName}/home`}>
         <div className='header-icon header-gohome'>
