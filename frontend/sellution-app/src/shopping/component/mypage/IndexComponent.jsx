@@ -53,7 +53,7 @@ const IndexComponent = () => {
       <MenuHeaderNav title={'마이페이지'} />
       <div className='space-y-8 px-4'>
         <div className='w-full px-2 py-6'>
-          <div className='bg-brandOrange-light rounded-lg p-4 mb-6'>
+          <div className='bg-accent rounded-lg p-4 mb-6'>
             <div className='flex items-center'>
               <AddCustomerIcon className='w-10 h-10 mr-6' />
               <p className=' text-sm'>

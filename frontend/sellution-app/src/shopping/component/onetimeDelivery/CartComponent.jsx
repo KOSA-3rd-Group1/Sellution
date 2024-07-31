@@ -45,7 +45,7 @@ const CartComponent = () => {
             정기 배송
           </div>
           <div
-            className={`font-bold py-2 px-3 text-sm cursor-pointer bg-brandOrange text-white`}
+            className={`font-bold py-2 px-3 text-sm cursor-pointer bg-primary text-white`}
             onClick={() => {
               navigate(`/shopping/${clientName}/onetime/cart`);
             }}
@@ -53,7 +53,7 @@ const CartComponent = () => {
             단건 배송
           </div>
         </section>
-        <div className='seperator w-full h-[2px] bg-brandOrange'></div>
+        <div className='seperator w-full h-[2px] bg-primary'></div>
         <section className='w-[92%] h-full mx-auto mt-2 '>
           <div className='flex justify-between py-2 border-b'>
             <div className='flex items-center'>
@@ -115,7 +115,7 @@ const CartComponent = () => {
                   </div>
                   <div className='product-item-2 flex-[5] flex flex-col justify-center px-4'>
                     <div className='product-name font-bold text-sm'>{item.name}</div>
-                    <div className='product-price text-brandOrange my-2'>{item.cost} 원</div>
+                    <div className='product-price text-primary my-2'>{item.cost} 원</div>
                     <div className='quantity-control flex items-center border border-gray-300 w-20'>
                       <button
                         className='quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center'

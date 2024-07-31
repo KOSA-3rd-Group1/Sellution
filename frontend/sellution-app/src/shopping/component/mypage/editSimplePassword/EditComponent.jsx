@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { SetPasswordIcon } from '@/shopping/utility/assets/Icons.jsx';
-import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx";
+import MenuHeaderNav from '@/shopping/layout/MenuHeaderNav.jsx';
 
 const EditComponent = () => {
   const [firstPassword, setFirstPassword] = useState('');
@@ -66,7 +66,12 @@ const EditComponent = () => {
     if (firstPassword === secondPassword) {
       registerPassword();
     } else {
-      setErrorMessage(<div>비밀번호가 일치하지 않습니다.<br/> 다시 입력해주세요.</div>);
+      setErrorMessage(
+        <div>
+          비밀번호가 일치하지 않습니다.
+          <br /> 다시 입력해주세요.
+        </div>,
+      );
       setStep(2); // 한 번만 다시 입력받기 위해 step을 2로 유지
       setSecondPassword('');
     }
@@ -92,17 +97,18 @@ const EditComponent = () => {
   if (isComplete) {
     return (
       <div className='container mx-auto h-full max-w-lg p-4 bg-white flex flex-col justify-between'>
+        <MenuHeaderNav title='간편비밀번호' />
         <div className='space-y-8 flex-grow flex flex-col items-center justify-center'>
           <h2 className='text-2xl font-bold mb-4'>간편 비밀번호 등록 완료</h2>
           <SetPasswordIcon className='mb-4' />
         </div>
         <div className='mb-8 flex justify-center'>
           <button
-            className='bg-brandOrange text-white px-4 py-2 rounded-full w-full max-w-sm'
+            className='bg-primary text-white px-4 py-2 rounded-full w-full max-w-sm hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary '
             onClick={() => {
               if (location.state?.returnTo) {
                 navigate(location.state.returnTo, {
-                  state: { orderData: location.state?.orderData }
+                  state: { orderData: location.state?.orderData },
                 });
               } else {
                 navigate(`/shopping/${clientName}/my/${customerId}`);
@@ -118,7 +124,7 @@ const EditComponent = () => {
 
   return (
     <div className='container mx-auto h-full max-w-lg p-4 bg-white flex flex-col justify-between'>
-      <MenuHeaderNav title='간편비밀번호'/>
+      <MenuHeaderNav title='간편비밀번호' />
       <div className='space-y-8'>
         <h1 className='text-2xl font-bold text-center mt-8 mb-6'>
           {step === 1 ? '간편 비밀번호 등록' : '간편 비밀번호 확인'}
@@ -129,7 +135,7 @@ const EditComponent = () => {
               key={index}
               className={`w-4 h-4 rounded-full ${
                 index < (step === 1 ? firstPassword.length : secondPassword.length)
-                  ? 'bg-brandOrange'
+                  ? 'bg-primary'
                   : 'bg-gray-300'
               }`}
             />
@@ -137,7 +143,8 @@ const EditComponent = () => {
         </div>
         {step === 1 && !errorMessage && (
           <p className='text-center mb-10'>
-            간편 비밀번호를 등록하시면,<br/> 6자리 숫자 입력으로 결제가 가능합니다.
+            간편 비밀번호를 등록하시면,
+            <br /> 6자리 숫자 입력으로 결제가 가능합니다.
           </p>
         )}
         {step === 2 && !errorMessage && (
@@ -147,7 +154,7 @@ const EditComponent = () => {
       </div>
 
       <div className='flex-grow flex items-center '>
-        <div className='bg-brandOrange rounded-lg p-4 w-full flex-grow flex flex-col justify-center'>
+        <div className='bg-primary rounded-lg p-4 w-full flex-grow flex flex-col justify-center'>
           <div className='grid grid-cols-3 gap-4 flex-grow'>
             {shuffledNumbers.map((item, index) => (
               <button

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams , useNavigate  } from 'react-router-dom';
-import LogoHeaderNav from "@/shopping/layout/LogoHeaderNav.jsx";
+import { useParams, useNavigate } from 'react-router-dom';
+import LogoHeaderNav from '@/shopping/layout/LogoHeaderNav.jsx';
 
 const OrderCompletedComponent = () => {
   const [orderData, setOrderData] = useState(null);
@@ -10,7 +10,6 @@ const OrderCompletedComponent = () => {
   const handleViewPaymentHistory = () => {
     navigate(`/shopping/PocketSalad/onetime/payment-history/${orderId}`);
   };
-
 
   const formatDayList = (dayList) => {
     const dayMap = {
@@ -57,16 +56,16 @@ const OrderCompletedComponent = () => {
       return (
         <>
           <div className=''>
-            <p className='text-sm font-semibold text-brandOrange'>배송 주기</p>
+            <p className='text-sm font-semibold text-primary'>배송 주기</p>
             <p className='text-base font-semibold'>{orderData.selectedWeekOption}주마다</p>
           </div>
           <div className=''>
-            <p className='text-sm font-semibold text-brandOrange'>배송 요일</p>
+            <p className='text-sm font-semibold text-primary'>배송 요일</p>
             <p className='text-base font-semibold'>{formatDayList(orderData.selectedDayList)}</p>
           </div>
           {orderData.type === 'MONTH_SUBSCRIPTION' && (
             <div className='mt-2 col-span-2'>
-              <p className='text-sm font-semibold text-brandOrange'>구독 기간</p>
+              <p className='text-sm font-semibold text-primary'>구독 기간</p>
               <div className='text-base flex items-center space-x-1 font-semibold'>
                 <span>{simpleFormatDate(orderData.deliveryStartDate)}</span>
                 <span>~</span>
@@ -89,7 +88,7 @@ const OrderCompletedComponent = () => {
     if (orderData.type === 'ONETIME') {
       return (
         <div>
-          <p className='text-sm font-semibold text-brandOrange'>배송 예정일</p>
+          <p className='text-sm font-semibold text-primary'>배송 예정일</p>
           <p className='text-base font-semibold'>{formatDate(orderData.deliveryEndDate)}</p>
         </div>
       );
@@ -98,23 +97,23 @@ const OrderCompletedComponent = () => {
         <>
           {renderSubscriptionInfo()}
           <div className='col-span-2'>
-            <p className='text-sm font-semibold text-brandOrange'>선택된 배송 시작일</p>
+            <p className='text-sm font-semibold text-primary'>선택된 배송 시작일</p>
             <p className='text-base font-semibold'>{formatDate(orderData.deliveryStartDate)}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold text-brandOrange'>다음 배송 예정일</p>
+            <p className='text-sm font-semibold text-primary'>다음 배송 예정일</p>
             <p className='text-base font-semibold'>{formatDate(orderData.nextDeliveryDate)}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold text-brandOrange'>마지막 배송 예정일</p>
+            <p className='text-sm font-semibold text-primary'>마지막 배송 예정일</p>
             <p className='text-base font-semibold'>{formatDate(orderData.deliveryEndDate)}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold text-brandOrange'>잔여 배송 횟수</p>
+            <p className='text-sm font-semibold text-primary'>잔여 배송 횟수</p>
             <p className='text-base font-semibold'>{orderData.remainingDeliveryCount}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold text-brandOrange'>총 배송 횟수</p>
+            <p className='text-sm font-semibold text-primary'>총 배송 횟수</p>
             <p className='text-base font-semibold'>{orderData.totalDeliveryCount}</p>
           </div>
         </>
@@ -143,53 +142,17 @@ const OrderCompletedComponent = () => {
             )}
             <p className='flex justify-between font-semibold text-lg border-t pt-2'>
               <span>총 결제금액</span>
-              <span className='text-brandOrange'>{finalTotalPrice.toLocaleString()}원</span>
+              <span className='text-primary'>{finalTotalPrice.toLocaleString()}원</span>
             </p>
-            <p className='font-semibold underline text-right'>{orderData.paymentCount === 0
-              ? '주문이 승인될 때 결제됩니다.': ''}</p>
+            <p className='font-semibold underline text-right'>
+              {orderData.paymentCount === 0 ? '주문이 승인될 때 결제됩니다.' : ''}
+            </p>
           </>
         );
       case 'COUNT_SUBSCRIPTION':
         return (
           <>
-            <p className="flex justify-between">
-              <span>총 상품 금액</span>
-              <span>{totalProductPrice.toLocaleString()}원</span>
-            </p>
-            <p className="flex justify-between text-red-500">
-              <span>상품 할인 금액</span>
-              <span>-{totalDiscountAmount.toLocaleString()}원</span>
-            </p>
-            {orderData.couponName && (
-              <p className="flex justify-between text-red-500">
-                <span>쿠폰 할인 ({orderData.couponName})</span>
-                <span>-{couponDiscountAmount.toLocaleString()}원</span>
-              </p>
-            )}
-            <p className="flex justify-between font-semibold border-t text-lg">
-              <span>배송 1회당 상품 금액</span>
-              <span className="font-semibold text-brandOrange">
-                {orderData.perPrice.toLocaleString()}원
-              </span>
-            </p>
-
-            <p className="flex justify-between font-semibold text-lg border-t pt-2">
-              <span>총 결제금액</span>
-              <span className="text-brandOrange">
-                {(orderData.perPrice * orderData.totalDeliveryCount).toLocaleString()}원
-              </span>
-            </p>
-            <p className="text-xs text-gray-500 ml-2">
-              <span>공식 : (배송 1회당 금액 * 총 배송횟수)  [{orderData.perPrice} *{" "} {orderData.totalDeliveryCount}]</span>
-            </p>
-            <p className="font-semibold underline text-right">{orderData.paymentCount === 0
-              ? "주문이 승인될 때 결제됩니다." : ""}</p>
-          </>
-        );
-      case "MONTH_SUBSCRIPTION":
-        return (
-          <>
-            <p className="flex justify-between">
+            <p className='flex justify-between'>
               <span>총 상품 금액</span>
               <span>{totalProductPrice.toLocaleString()}원</span>
             </p>
@@ -205,7 +168,48 @@ const OrderCompletedComponent = () => {
             )}
             <p className='flex justify-between font-semibold border-t text-lg'>
               <span>배송 1회당 상품 금액</span>
-              <span className='font-semibold text-brandOrange'>
+              <span className='font-semibold text-primary'>
+                {orderData.perPrice.toLocaleString()}원
+              </span>
+            </p>
+
+            <p className='flex justify-between font-semibold text-lg border-t pt-2'>
+              <span>총 결제금액</span>
+              <span className='text-primary'>
+                {(orderData.perPrice * orderData.totalDeliveryCount).toLocaleString()}원
+              </span>
+            </p>
+            <p className='text-xs text-gray-500 ml-2'>
+              <span>
+                공식 : (배송 1회당 금액 * 총 배송횟수) [{orderData.perPrice} *{' '}
+                {orderData.totalDeliveryCount}]
+              </span>
+            </p>
+            <p className='font-semibold underline text-right'>
+              {orderData.paymentCount === 0 ? '주문이 승인될 때 결제됩니다.' : ''}
+            </p>
+          </>
+        );
+      case 'MONTH_SUBSCRIPTION':
+        return (
+          <>
+            <p className='flex justify-between'>
+              <span>총 상품 금액</span>
+              <span>{totalProductPrice.toLocaleString()}원</span>
+            </p>
+            <p className='flex justify-between text-red-500'>
+              <span>상품 할인 금액</span>
+              <span>-{totalDiscountAmount.toLocaleString()}원</span>
+            </p>
+            {orderData.couponName && (
+              <p className='flex justify-between text-red-500'>
+                <span>쿠폰 할인 ({orderData.couponName})</span>
+                <span>-{couponDiscountAmount.toLocaleString()}원</span>
+              </p>
+            )}
+            <p className='flex justify-between font-semibold border-t text-lg'>
+              <span>배송 1회당 상품 금액</span>
+              <span className='font-semibold text-primary'>
                 {orderData.perPrice.toLocaleString()}원
               </span>
             </p>
@@ -222,7 +226,7 @@ const OrderCompletedComponent = () => {
             <p className='flex justify-between'>
               <span>다음 결제일</span>
               <span
-                className={`font-semibold ${orderData.status === 'CANCEL' ? 'line-through text-gray-500' : 'text-brandOrange'}`}
+                className={`font-semibold ${orderData.status === 'CANCEL' ? 'line-through text-gray-500' : 'text-primary'}`}
               >
                 {orderData.nextPaymentDate === null
                   ? '주문이 승인될 때 결제됩니다.'
@@ -232,7 +236,7 @@ const OrderCompletedComponent = () => {
             <p className='flex justify-between'>
               <span>결제금액</span>
               <span
-                className={`font-semibold ${orderData.status === 'CANCEL' ? 'line-through text-gray-500' : 'text-brandOrange'}`}
+                className={`font-semibold ${orderData.status === 'CANCEL' ? 'line-through text-gray-500' : 'text-primary'}`}
               >
                 {(orderData.thisMonthDeliveryCount * orderData.perPrice).toLocaleString()}원
               </span>
@@ -258,7 +262,7 @@ const OrderCompletedComponent = () => {
             </p>
             <p className='flex justify-between font-semibold text-lg border-t pt-2'>
               <span>구독기간 결제될 총 금액</span>
-              <span className='text-brandOrange'>
+              <span className='text-primary'>
                 {(orderData.totalDeliveryCount * orderData.perPrice).toLocaleString()}원
               </span>
             </p>

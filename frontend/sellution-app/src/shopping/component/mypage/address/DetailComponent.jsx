@@ -84,55 +84,55 @@ const DetailComponent = () => {
         <form className='space-y-4'>
           <div className='flex items-center'>
             <label className='block text-sm font-medium w-24'>
-              <span className='text-brandOrange'>*</span> 배송지명
+              <span className='text-primary'>*</span> 배송지명
             </label>
             <input
               type='text'
               name='addressName'
               value={address.addressName}
               onChange={handleChange}
-              className='flex-grow border rounded-md p-2'
+              className='flex-grow border rounded-md p-2 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary'
             />
           </div>
           <div className='flex items-center'>
             <label className='block text-sm font-medium w-24'>
-              <span className='text-brandOrange'>*</span> 수령인
+              <span className='text-primary'>*</span> 수령인
             </label>
             <input
               type='text'
               name='name'
               value={address.name}
               onChange={handleChange}
-              className='flex-grow border rounded-md p-2'
+              className='flex-grow border rounded-md p-2 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary'
             />
           </div>
           <div className='flex items-center'>
             <label className='block text-sm font-medium w-24'>
-              <span className='text-brandOrange'>*</span> 휴대폰
+              <span className='text-primary'>*</span> 휴대폰
             </label>
             <input
               type='tel'
               name='phoneNumber'
               value={address.phoneNumber}
               onChange={handleChange}
-              className='flex-grow border rounded-md p-2'
+              className='flex-grow border rounded-md p-2 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary'
             />
           </div>
           <div className='flex items-center'>
             <label className='block text-sm font-medium w-24'>
-              <span className='text-brandOrange'>*</span> 우편번호
+              <span className='text-primary'>*</span> 우편번호
             </label>
             <input
               type='text'
               name='zipcode'
               value={address.zipcode}
               onChange={handleChange}
-              className='flex-grow border rounded-md p-2 bg-gray-100'
+              className='flex-grow border rounded-md p-2 bg-gray-100 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary'
               readOnly
             />
             <button
               type='button'
-              className='ml-2 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white px-4 py-2 text-sm'
+              className='ml-2 rounded border border-primary text-primary hover:bg-primary hover:text-white px-4 py-2 text-sm'
               onClick={handlePostcode}
             >
               우편번호 찾기
@@ -140,27 +140,27 @@ const DetailComponent = () => {
           </div>
           <div className='flex items-center'>
             <label className='block text-sm font-medium w-24'>
-              <span className='text-brandOrange'>*</span> 주소지
+              <span className='text-primary'>*</span> 주소지
             </label>
             <input
               type='text'
               name='streetAddress'
               value={address.streetAddress}
               onChange={handleChange}
-              className='flex-grow border rounded-md p-2 bg-gray-100'
+              className='flex-grow border rounded-md p-2 bg-gray-100 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary'
               readOnly
             />
           </div>
           <div className='flex items-center'>
             <label className='block text-sm font-medium w-24'>
-              <span className='text-brandOrange'>*</span> 상세주소
+              <span className='text-primary'>*</span> 상세주소
             </label>
             <input
               type='text'
               name='addressDetail'
               value={address.addressDetail}
               onChange={handleChange}
-              className='flex-grow border rounded-md p-2'
+              className='flex-grow border rounded-md p-2 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary'
             />
           </div>
           <div className='flex items-center mt-4'>

@@ -8,6 +8,7 @@ const useCategoryAdd = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
   const [companyId, setCompanyId] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const shopCompanyStorage = localStorage.getItem('shop-company-storage');
@@ -27,7 +28,7 @@ const useCategoryAdd = () => {
 
   const checkDuplicate = async () => {
     if (!companyId) {
-      alert('Company ID is not available. Please try again later.');
+      setErrorMessage('Company ID is not available. Please try again later.');
       return;
     }
     try {
@@ -36,21 +37,19 @@ const useCategoryAdd = () => {
       });
       setIsChecked(true);
       if (response.data) {
-        alert('이미 존재하는 카테고리입니다.');
         setIsAvailable(false);
+        setErrorMessage('이미 존재하는 카테고리입니다.');
       } else {
-        alert('사용 가능한 카테고리명입니다.');
         setIsAvailable(true);
+        setErrorMessage('');
       }
     } catch (error) {
       console.error('중복 확인 중 오류 발생:', error);
-      alert('중복 확인 중 오류가 발생했습니다.');
     }
   };
 
   const handleSubmit = async () => {
     if (!isChecked || !isAvailable) {
-      alert('중복 확인을 먼저 해주세요.');
       return;
     }
     if (!companyId) {
@@ -63,11 +62,11 @@ const useCategoryAdd = () => {
         name: categoryName,
         companyId: companyId,
       });
-      alert('카테고리가 등록되었습니다.');
-      moveList();
+      return true;
+      // moveList();
     } catch (error) {
       console.error('카테고리 등록 중 오류 발생:', error);
-      alert('카테고리 등록에 실패했습니다.');
+      setErrorMessage('카테고리 등록에 실패했습니다.');
     }
   };
 
@@ -81,6 +80,7 @@ const useCategoryAdd = () => {
     checkDuplicate,
     handleSubmit,
     moveList,
+    errorMessage,
   };
 };
 
