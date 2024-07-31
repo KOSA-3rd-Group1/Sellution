@@ -24,7 +24,7 @@ const ListComponent = () => {
     totalDataCount,
     tableState,
     dateRangeValue,
-    isAutoOrderApproved,
+    isAutoApproved,
     setTableState,
     handleChangeDateRangeValue,
     handleFilterReset,
@@ -42,10 +42,7 @@ const ListComponent = () => {
           />
           <div className='flex items-center gap-1'>
             <NotBorderBtn Icon={SimpleOrderIcon} label={'자동 주문 승인'} />
-            <ToggleButton
-              isToggled={isAutoOrderApproved}
-              handleToggle={handleToggleAutoOrderApproved}
-            />
+            <ToggleButton isToggled={isAutoApproved} handleToggle={handleToggleAutoOrderApproved} />
           </div>
         </div>
         <div className='flex-grow overflow-hidden'>
@@ -67,8 +64,8 @@ const ListComponent = () => {
                 />
               </div>
             }
-            ResetBtn={<ResetBtn label={'초기화'} onClick={handleFilterReset} />}
-            tableId={'onetime'}
+            ResetBtn={<ResetBtn label={'초기화'} onClick={() => handleFilterReset('orderlist')} />}
+            tableId={'orderlist'}
           />
         </div>
         <div className='h-12 flex-none flex justify-end items-end '>

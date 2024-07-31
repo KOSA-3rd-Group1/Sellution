@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import useDebounce from '@/client/business/common/useDebounce';
 import useAuthStore from '@/client/store/stores/useAuthStore';
+import useUserInfoStore from '@/client/store/stores/useUserInfoStore';
 import { formatPrice, priceInServerFormat } from '@/client/utility/functions/formatterFunction';
 import {
   formatPaymentStatus,
@@ -36,6 +37,7 @@ export const usePaymentHistoryList = ({
 }) => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const companyId = useUserInfoStore((state) => state.companyId);
 
   // 테이블 데이터
   const [data, setData] = useState([]); // 테이블 데이터

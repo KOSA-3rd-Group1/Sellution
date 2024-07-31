@@ -7,9 +7,11 @@ const useUserInfoStore = create(
       name: null,
       conmapyId: null,
       contractCompanyName: null,
+      isAutoApproved: false,
       id: null,
       userRole: null,
       setUserInfo: (userInfo) => set(userInfo),
+      setIsAutoApproved: (newIsAutoApproved) => set({ isAutoApproved: newIsAutoApproved }),
     }),
     {
       name: 'userInfo', // 로컬 스토리지에 저장될 키 이름
