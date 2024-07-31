@@ -1,16 +1,20 @@
 package shop.sellution.server.payment.dto.request;
 
-import lombok.Getter;
+import lombok.*;
 import shop.sellution.server.payment.domain.type.PaymentStatus;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
+@ToString
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class FindPaymentHistoryCond {
 
     String orderCode;
     String userName;
-    LocalDateTime startDate;
-    LocalDateTime endDate;
+    LocalDate startDate;
+    LocalDate endDate;
     PaymentStatus status;
 }
