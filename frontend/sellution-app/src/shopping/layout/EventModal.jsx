@@ -1,4 +1,4 @@
-import { DeleteIcon } from "../utility/assets/Icons";
+import { DeleteIcon } from '../utility/assets/Icons';
 
 const EventModal = ({ isOpen, onClose, onClick, onCloseForToday }) => {
   if (!isOpen) return null;
@@ -13,7 +13,9 @@ const EventModal = ({ isOpen, onClose, onClick, onCloseForToday }) => {
           <DeleteIcon className={'h-6 w-6'} />
         </button>
         <div className='text-center'>
-          <h1 className='text-[1.2rem] font-bold mb-4 text-brandOrange'>전 상품 최대 무제한 21% 쿠폰</h1>
+          <h1 className='text-[1.2rem] font-bold mb-4 text-primary'>
+            전 상품 최대 무제한 21% 쿠폰
+          </h1>
           <p className='text-gray-600 mb-6 text-[0.9rem]'>중복 쿠폰으로 추가 할인 받아보세요.</p>
           <div className='flex justify-center space-x-4'>
             <button
@@ -23,7 +25,7 @@ const EventModal = ({ isOpen, onClose, onClick, onCloseForToday }) => {
               오늘 하루 그만보기
             </button>
             <button
-              className='bg-brandOrange text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition duration-300 text-[0.8rem]'
+              className='bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary ransition duration-300 text-[0.8rem]'
               onClick={onClick}
             >
               이벤트 보기

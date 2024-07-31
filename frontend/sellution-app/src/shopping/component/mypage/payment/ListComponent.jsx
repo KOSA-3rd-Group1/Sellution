@@ -122,7 +122,7 @@ const ListComponent = () => {
       <div className='bg-white rounded-lg shadow-md p-4'>
         <h2 className='text-lg font-semibold mb-4'>결제 정보</h2>
         <div className='flex items-center mb-4'>
-          <div className='text-brandOrange mr-2'> *</div>
+          <div className='text-primary mr-2'> *</div>
           <span className='font-semibold'>등록된 계좌</span>
         </div>
 
