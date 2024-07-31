@@ -48,7 +48,7 @@ const HomeComponent = () => {
               {carouselItems.map((imageUrl, index) => (
                 <button
                   key={index}
-                  className={`w-2 h-2 rounded-full ${activeSlide === index + 1 ? 'bg-brandOrange' : 'bg-gray-300'}`}
+                  className={`w-2 h-2 rounded-full ${activeSlide === index + 1 ? 'bg-primary' : 'bg-gray-300'}`}
                   onClick={() => handleSlideChange(index + 1)}
                 ></button>
               ))}
@@ -56,12 +56,16 @@ const HomeComponent = () => {
           </div>
         </div>
         <div className='flex-1 flex flex-col'>
-          <div className='flex-1 bg-[#FFF8F4] rounded-[25px] mx-2 mb-2 p-4 flex flex-col justify-center items-start'>
+          <div
+            // className='flex-1 bg-[#FFF8F4] rounded-[25px] mx-2 mb-2 p-4 flex flex-col justify-center items-start'
+            className='flex-1 bg-accent rounded-[25px] mx-2 mb-2 p-4 flex flex-col justify-center items-start'
+          >
             <h3 className='text-lg font-bold'>{data && data.mainPromotion1Title}</h3>
             <p className='text-sm text-gray-600'>{data && data.mainPromotion1Content}</p>
           </div>
           <div
-            className={`flex-1 bg-brandOrange-light rounded-[25px] mx-2 mb-2 p-4 flex flex-col justify-center items-start`}
+            // className={`flex-1 bg-brandOrange-light rounded-[25px] mx-2 mb-2 p-4 flex flex-col justify-center items-start`}
+            className='flex-1 bg-neutral rounded-[25px] mx-2 mb-2 p-4 flex flex-col justify-center items-start'
           >
             <h3 className='text-lg font-bold'>{data && data.mainPromotion2Title}</h3>
             <p className='text-sm text-gray-600'>{data && data.mainPromotion2Content}</p>

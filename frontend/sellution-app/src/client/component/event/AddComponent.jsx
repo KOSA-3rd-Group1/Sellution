@@ -1,19 +1,38 @@
 import Select from 'react-select';
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import { InfoInput, InfoInputRight } from '@/client/layout/common/Input';
-import RadioButtonGroup from '@/client/layout/common/RadioButtonGroup';
+import AlertModal from '@/client/layout/common/modal/AlertModal';
+import AutoCloseModal from '@/client/layout/common/modal/AutoCloseModal';
+import { useMove } from '@/client/business/common/useMove';
+import { useModal } from '@/client/business/common/useModal';
 import { useEventAdd } from '@/client/business/event/useEventAdd';
 
 const AddComponent = () => {
+  const { moveToPathname } = useMove();
+  const {
+    alertModalState,
+    autoCloseModalState,
+    openAlertModal,
+    closeAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  } = useModal();
   const {
     data,
     selectTargetCustomerType,
     selectedTargetCustomerType,
     handleChangeInputValue,
     handleChangeSelectedTargetCustomerType,
-    moveList,
-    handleSaveData,
-  } = useEventAdd();
+    checkMoveList,
+    checkSaveContent,
+    scuccessCloseAutoCloseModal,
+    handleOnConfirm,
+  } = useEventAdd({
+    moveToPathname,
+    openAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  });
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -25,7 +44,7 @@ const AddComponent = () => {
           <ul className='w-full min-w-fit min-h-fit h-full flex flex-col text-sm border-t-2'>
             <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
               <div className='flex-1 min-w-32'>쿠폰 이름</div>
-              <div className='flex-1 min-w-[430px]'>
+              <div className='flex-1 min-w-96'>
                 <InfoInput
                   value={data.couponName || ''}
                   onChange={(e) => handleChangeInputValue('couponName', e.target.value)}
@@ -35,8 +54,9 @@ const AddComponent = () => {
             </li>
             <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
               <div className='flex-1 min-w-32'>적용 회원</div>
-              <div className='flex-1 min-w-[430px]'>
+              <div className='flex-1 min-w-96'>
                 <Select
+                  isSearchable={false}
                   className='selectItem indent-4'
                   classNamePrefix='select'
                   onChange={handleChangeSelectedTargetCustomerType}
@@ -59,7 +79,7 @@ const AddComponent = () => {
             </li>
             <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
               <div className='flex-1 min-w-32'>{'할인율(%)'}</div>
-              <div className='flex-1 min-w-[430px]'>
+              <div className='flex-1 min-w-96'>
                 <div className='flex items-center gap-2 text-right'>
                   <InfoInputRight
                     value={data.couponDiscountRate || ''}
@@ -67,48 +87,23 @@ const AddComponent = () => {
                     placeholder='할인율을 입력해주세요.'
                     maxLength={2}
                   />
-                  <div className='text-lg font-semibold'>%</div>
+                  <div className='text-base font-normal'>%</div>
                 </div>
               </div>
             </li>
             <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
               <div className='flex-1 min-w-32'>{'수량'}</div>
-              <div className='flex-1 min-w-[430px]'>
+              <div className='flex-1 min-w-96'>
                 <div className='flex items-center gap-2 text-right'>
                   <InfoInputRight
                     value={data.totalQuantity || ''}
                     onChange={(e) => handleChangeInputValue('totalQuantity', e.target.value)}
                     placeholder='수량을 입력해주세요.'
                   />
-                  <div className='text-lg font-semibold'>개</div>
+                  <div className='text-base font-normal'>개</div>
                 </div>
               </div>
             </li>
-            {/* <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
-              <div className='flex-1 min-w-32'>수량</div>
-              <div className='flex-1 min-w-[430px]'>
-                <div className='flex'>
-                  <RadioButtonGroup
-                    className='flex-1 flex justify-between items-center gap-6 px-4'
-                    data={data}
-                    options={[
-                      { label: '무제한', selectData: 0 },
-                      { label: '직접입력', selectData: 1 },
-                    ]}
-                    name='maxDownloadCountCheck'
-                    onChange={handleChangeInputValue}
-                  />
-                  <div className='flex-1'>
-                    <InfoInput
-                      value={data.maxDownloadCount || ''}
-                      onChange={(e) => handleChangeInputValue('maxDownloadCount', e.target.value)}
-                      placeholder='수량을 입력해주세요.'
-                      readOnly={!data?.maxDownloadCountCheck}
-                    />
-                  </div>
-                </div>
-              </div>
-            </li> */}
             <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
               <div className='flex-1 min-w-32'>이벤트 적용 기간</div>
               <div className='flex-1 min-w-96'>
@@ -133,8 +128,25 @@ const AddComponent = () => {
         </div>
       </section>
       <FooterComponent
-        btn1={{ label: '취소', event: moveList }}
-        btn2={{ label: '이벤트 등록', event: handleSaveData }}
+        btn1={{ label: '취소', event: checkMoveList }}
+        btn2={{ label: '이벤트 등록', event: checkSaveContent }}
+      />
+
+      <AlertModal
+        isOpen={alertModalState.isOpen}
+        onClose={closeAlertModal}
+        onConfirm={handleOnConfirm}
+        type={alertModalState.type}
+        title={alertModalState.title}
+        message={alertModalState.message}
+      />
+
+      <AutoCloseModal
+        isOpen={autoCloseModalState.isOpen}
+        onClose={scuccessCloseAutoCloseModal}
+        title={autoCloseModalState.title}
+        message={autoCloseModalState.message}
+        duration={1500}
       />
     </div>
   );

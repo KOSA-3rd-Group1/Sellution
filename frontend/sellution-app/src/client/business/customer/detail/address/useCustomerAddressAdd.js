@@ -16,7 +16,7 @@ export const useCustomerAddressAdd = ({
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   const { customerId } = useParams();
-  //   const [addressId, setAddressId] = useState();
+  const [addressId, setAddressId] = useState();
 
   const [data, setData] = useState({});
   const [isChange, setIsChange] = useState(false);
@@ -77,8 +77,7 @@ export const useCustomerAddressAdd = ({
         isDefaultAddress: 'N',
       };
       const response = await postCustomerAddressAdd(newData, setAccessToken, accessToken);
-      console.log(response);
-      //   setAddressId(response.data.addressId);
+      setAddressId(response.data);
       await openAutoCloseModal('배송지 등록 성공', '작업이 성공적으로 완료되었습니다.');
     } catch (error) {
       if (error instanceof ValidationError) {
@@ -91,8 +90,7 @@ export const useCustomerAddressAdd = ({
 
   // 변경사항 성공 시 성공 모달
   const scuccessCloseAutoCloseModal = () => {
-    closeAutoCloseModal(moveToPathname(`/customer/${customerId}/address`));
-    // closeAutoCloseModal(moveToPathname(`/customer/${customerId}/address/${addressId}`));
+    closeAutoCloseModal(moveToPathname(`/customer/${customerId}/address/${addressId}`));
   };
 
   // 목록으로 이동
