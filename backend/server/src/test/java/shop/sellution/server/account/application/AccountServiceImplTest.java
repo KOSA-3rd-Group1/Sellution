@@ -88,7 +88,7 @@
 //        ReflectionTestUtils.setField(customer, "id", 1L);
 //
 //        CheckAccountRes checkAccountRes = new CheckAccountRes("Test User");
-//
+//[K1P-230] back
 //        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
 //        when(accountAuthService.checkAccount(any(CheckAccountReq.class))).thenReturn(checkAccountRes);
 //        when(jasyptEncryptionUtil.encrypt(anyString())).thenReturn("encryptedAccountNumber");
