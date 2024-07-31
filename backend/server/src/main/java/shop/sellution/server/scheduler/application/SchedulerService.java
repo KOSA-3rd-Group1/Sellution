@@ -152,7 +152,7 @@ public class SchedulerService {
                     case MONTH_SUBSCRIPTION ->{
                         LocalDate startDate = LocalDate.now().plusDays(1);
                         LocalDate endDate = order.getNextPaymentDate().plusDays(7);
-                        PaymentUtil.DeliveryInfo deliveryInfo = paymentUtil.calculateDeliveryInfo(startDate, endDate, order.getWeekOption().getWeekValue(), paymentUtil.getDeliveryDays(order.getSelectedDays()));
+                        PaymentUtil.DeliveryInfo deliveryInfo = paymentUtil.calculateDeliveryInfo(startDate, endDate, order.getWeekOptionValue(), paymentUtil.getDeliveryDays(order.getSelectedDays()));
                         order.updateNextDeliveryDate(deliveryInfo.getNextDeliveryDate());
                     }
 
@@ -160,7 +160,7 @@ public class SchedulerService {
                     case COUNT_SUBSCRIPTION->{
                         LocalDate startDate = LocalDate.now().plusDays(1);
                         LocalDate farFutureDate = startDate.plusYears(1);
-                        PaymentUtil.DeliveryInfo deliveryInfo = paymentUtil.calculateDeliveryInfo(startDate, farFutureDate, order.getWeekOption().getWeekValue(), paymentUtil.getDeliveryDays(order.getSelectedDays()));
+                        PaymentUtil.DeliveryInfo deliveryInfo = paymentUtil.calculateDeliveryInfo(startDate, farFutureDate, order.getWeekOptionValue(), paymentUtil.getDeliveryDays(order.getSelectedDays()));
                         order.updateNextDeliveryDate(deliveryInfo.getNextDeliveryDate());
                     }
                 }

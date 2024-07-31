@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import useAuthStore from '@/client/store/stores/useAuthStore';
+import useUserInfoStore from '@/client/store/stores/useUserInfoStore';
 import {
   getDisplaySetting,
   putDisplaySetting,
@@ -7,23 +8,24 @@ import {
 import { generateShortFileName } from '@/client/utility/functions/formatterFunction';
 import { ValidationError } from '@/client/utility/error/ValidationError';
 
-const DUMMY = {
-  displayName: '테스트 회사명',
-  logoImg: '로고 이미지',
-  promotionImg: ['프로모션 이미지1', '프로모션 이미지1', '프로모션 이미지1'],
-  mainPromotion1Title: '함께, 건강하고 단건하게',
-  mainPromotion1Content: '최고의 퀄리티를 위해 아끼지 않고 가득 담았습니다',
-  mainPromotion2Title: '가정배송 서비스',
-  mainPromotion2Content: '지금 로그인 해주세요!',
-  themeColor: {
-    name: 'orange',
-    textColor: 'text-orange-700',
-    darkBgColor: 'bg-orange-900',
-    midBgColor: 'bg-orange-300',
-    lightBgColor: 'bg-orange-100',
-  },
-  serviceType: 'ONETIME',
-};
+// const DUMMY = {
+//   displayName: '테스트 회사명',
+//   logoImg: '로고 이미지',
+//   promotionImg: ['프로모션 이미지1', '프로모션 이미지1', '프로모션 이미지1'],
+//   mainPromotion1Title: '함께, 건강하고 단건하게',
+//   mainPromotion1Content: '최고의 퀄리티를 위해 아끼지 않고 가득 담았습니다',
+//   mainPromotion2Title: '가정배송 서비스',
+//   mainPromotion2Content: '지금 로그인 해주세요!',
+//   //   themeColor: {
+//   //     name: 'orange',
+//   //     textColor: 'text-orange-700',
+//   //     darkBgColor: 'bg-orange-900',
+//   //     midBgColor: 'bg-orange-300',
+//   //     lightBgColor: 'bg-orange-100',
+//   //   },
+//   themeColor: { name: 'Blue' },
+//   serviceType: 'ONETIME',
+// };
 
 export const useShopManagementDisplaySetting = ({
   openAlertModal,
@@ -32,26 +34,13 @@ export const useShopManagementDisplaySetting = ({
 }) => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const companyId = useUserInfoStore((state) => state.companyId);
 
   const [data, setData] = useState({}); // 회사명, 프로모션 문구
   const [logoImg, setLogoImg] = useState([]); //로고 이미지
   const [selectedLogoImg, setSelectedLogoImg] = useState(null);
   const [promotionImg, setPromotionImg] = useState([]); // 프로모션 이미지
   const [selectedPromotionImg, setSelectedPromotionImg] = useState(null);
-
-  //   console.log('logoImg>>>>', logoImg);
-  //   console.log('slelctedlogoImg>>>>', selectedLogoImg);
-  //   console.log('promotionImg>>>>', promotionImg);
-  //   console.log('selectedPromotionImg>>>>', selectedPromotionImg);
-
-  const [themeColor, setThemeColor] = useState({
-    name: 'orange',
-    textColor: 'text-orange-700',
-    darkBgColor: 'bg-orange-900',
-    midBgColor: 'bg-orange-300',
-    lightBgColor: 'bg-orange-100',
-  });
-  const [serviceType, setServiceType] = useState('BOTH');
 
   const [isChange, setIsChange] = useState(false); // 변경상태 감지
   const [refresh, setRefresh] = useState(false);
@@ -84,6 +73,7 @@ export const useShopManagementDisplaySetting = ({
   useEffect(() => {
     const fetch = async (companyId, setAccessToken, accessToken) => {
       const response = await getDisplaySetting(companyId, setAccessToken, accessToken);
+      console.log(response);
       setData(() => ({ ...response.data }));
       if (response.data.logoImageUrl) {
         const newImages = await convertImageUrlToFileAndBlob(response.data.logoImageUrl);
@@ -100,11 +90,7 @@ export const useShopManagementDisplaySetting = ({
       }
     };
 
-    const companyId = 1;
     fetch(companyId, setAccessToken, accessToken);
-
-    setThemeColor(DUMMY.themeColor);
-    setServiceType(DUMMY.serviceType);
   }, []);
 
   // 변경 가능한 값 변경 handler
@@ -125,12 +111,6 @@ export const useShopManagementDisplaySetting = ({
     console.log('Current images:', images);
     setLogoImg(images);
     // if (!isChange) setIsChange(true);
-  };
-
-  // themeColor 변경 시 사항
-  const handleChangeThemeColor = (color) => {
-    console.log('theme clolr:', color);
-    setThemeColor(color);
   };
 
   // 이미지 업데이트 시 이벤트 (선택)
@@ -216,8 +196,6 @@ export const useShopManagementDisplaySetting = ({
     selectedLogoImg,
     promotionImg,
     selectedPromotionImg,
-    themeColor,
-    serviceType,
     setLogoImg,
     setSelectedLogoImg,
     setPromotionImg,
@@ -225,7 +203,6 @@ export const useShopManagementDisplaySetting = ({
     handleChangeInputValue,
     handleChangePromotionImg,
     handleChangeLogoImg,
-    handleChangeThemeColor,
     handleUploadSuccess,
     handleBeforeRemove,
     handleEditImage,

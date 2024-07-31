@@ -42,9 +42,9 @@ const useDetail = () => {
 
   const addToOnetimeCart = () => {
     if (accessToken === null || accessToken === '') {
-      navigate(
-        `/shopping/${clientName}/login?redirectUrl=${encodeURIComponent(window.location.pathname)}`,
-      );
+      navigate(`/shopping/${clientName}/login`, {
+        state: { from: location.pathname },
+      });
     }
     //stock대신 quantity를 가진 newItem 객체 만들어서, 장바구니에 넣기
     else if (itemCountToAdd > 0) {
@@ -68,9 +68,9 @@ const useDetail = () => {
 
   const handleDirectOrder = () => {
     if (accessToken === null || accessToken === '') {
-      navigate(
-        `/shopping/${clientName}/login?redirectUrl=${encodeURIComponent(window.location.pathname)}`,
-      );
+      navigate(`/shopping/${clientName}/login`, {
+        state: { from: location.pathname },
+      });
     } else if (itemCountToAdd > 0) {
       const newItem = {
         id: productToShow.productId,

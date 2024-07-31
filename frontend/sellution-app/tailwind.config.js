@@ -73,7 +73,7 @@ export default {
     themes: [
       createTheme('Rose', '#e11d48', '#be123c', '#fda4af', '#fff1f2'),
       createTheme('Pink', '#d946ef', '#a21caf', '#f0abfc', '#fdf4ff'),
-      createTheme('Orange', '#f97316', '#c2410c', '#fdba74', '#fff7ed'),
+      createTheme('Orange', '#f97316', '#f37021', '#fce8db', '#fff8f4'),
       createTheme('Yellow', '#eab308', '#a16207', '#fde047', '#fefce8'),
       createTheme('Amber', '#f59e0b', '#b45309', '#fcd34d', '#fffbeb'),
       createTheme('Lime', '#84cc16', '#4d7c0f', '#bef264', '#f7fee7'),

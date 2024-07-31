@@ -60,8 +60,6 @@ export const useShopManagementSaleSetting = ({
     accessToken: state.accessToken,
     setAccessToken: state.setAccessToken,
   }));
-  //   const accessToken = useAuthStore((state) => state.accessToken);
-  //   const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   const companyId = useUserInfoStore((state) => state.companyId);
   const {

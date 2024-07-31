@@ -43,9 +43,9 @@ public class CouponEvent {
     @Column(nullable = false)
     private LocalDate eventEndDate;
 
-    //수량 제한
+    //수량 제한 (무제한 삭제)
     @Column(nullable = false)
-    private Integer initialQuantity = Integer.MAX_VALUE;
+    private Integer totalQuantity;
 
 //    @Column(nullable = false)
 //    private Integer remainingQuantity;
