@@ -76,12 +76,12 @@ public class JWTUtil {
             throw new AuthException(EXPIRED_JWT_TOKEN);
         } catch (UnsupportedJwtException e) {
             throw new AuthException(UNSUPPORTED_JWT_TOKEN);
-        } catch (MalformedJwtException e) {
-            throw new AuthException(INVALID_JWT_TOKEN);
         } catch (SignatureException e) {
             throw new AuthException(INVALID_JWT_SIGNATURE);
         } catch (IllegalArgumentException e) {
             throw new AuthException(EMPTY_JWT_CLAIMS);
+        } catch (Exception e) {
+            throw new AuthException(INTERNAL_SEVER_ERROR);
         }
     }
 }
