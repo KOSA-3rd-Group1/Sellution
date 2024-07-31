@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const useCategoryList = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedRows, setSelectedRows] = useState({});
   const [selectAll, setSelectAll] = useState(false);
   const itemsPerPage = 5;
   const navigate = useNavigate();
@@ -87,43 +87,42 @@ const useCategoryList = () => {
   };
 
   const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedItems([]);
+    if (Object.values(selectedRows).every(Boolean)) {
+      setSelectedRows({});
     } else {
-      setSelectedItems(categories.map((category) => category.categoryId));
+      const newSelectedRows = {};
+      categories.forEach((category) => {
+        newSelectedRows[category.categoryId] = true;
+      });
+      setSelectedRows(newSelectedRows);
     }
     setSelectAll(!selectAll);
   };
 
-  const handleSelectItem = (id) => {
-    if (selectedItems.includes(id)) {
-      setSelectedItems(selectedItems.filter((item) => item !== id));
-    } else {
-      setSelectedItems([...selectedItems, id]);
-    }
+  const handleSelectRow = (categoryId) => {
+    setSelectedRows((prev) => ({
+      ...prev,
+      [categoryId]: !prev[categoryId],
+    }));
   };
 
-  const handleDeleteSelectedCategories = async () => {
-    if (selectedItems.length === 0) {
-      alert('삭제할 카테고리를 선택해주세요.');
+  const handleDeleteCategories = async () => {
+    const selectedCategoryIds = Object.keys(selectedRows).filter((key) => selectedRows[key]);
+
+    if (selectedCategoryIds.length === 0) {
       return;
     }
 
-    // const confirmDelete = window.confirm(
-    //   `선택한 ${selectedItems.length}개의 카테고리를 정말 삭제하시겠습니까?`,
-    // );
-    // if (!confirmDelete) return;
-
     try {
-      for (const categoryId of selectedItems) {
+      for (const categoryId of selectedCategoryIds) {
         await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/categories/${categoryId}`);
       }
-      setSelectedItems([]);
+      setSelectedRows({});
       setSelectAll(false);
       fetchCategories();
     } catch (error) {
-      console.error('There was an error deleting the categories!', error);
-      alert('카테고리 삭제 중 오류가 발생했습니다.');
+      console.error('Error deleting categories:', error);
+      throw error;
     }
   };
 
@@ -133,7 +132,7 @@ const useCategoryList = () => {
 
   return {
     currentPage,
-    selectedItems,
+    selectedRows,
     selectAll,
     categories,
     totalPages,
@@ -143,9 +142,11 @@ const useCategoryList = () => {
     handleIsVisibleFilterChange,
     paginate,
     handleSelectAll,
-    handleSelectItem,
-    handleDeleteSelectedCategories,
+    handleSelectRow,
+    handleDeleteCategories,
     handleRowClick,
+    fetchCategories,
+    selectedCount: Object.values(selectedRows).filter(Boolean).length,
   };
 };
 
