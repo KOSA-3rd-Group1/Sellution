@@ -1,7 +1,6 @@
 package shop.sellution.server.event.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Getter;
 import shop.sellution.server.company.domain.Company;
@@ -17,6 +16,9 @@ public class SaveEventReq {
     private String couponName;
 
     @NotNull(message = "쿠폰 할인율은 필수입니다.")
+    @Digits(integer = 2, fraction = 0, message = "쿠폰 할인율은 2자리 이하의 정수여야 합니다.")
+    @Min(value = 1, message = "쿠폰 할인율은 1 이상이어야 합니다.")
+    @Max(value = 99, message = "쿠폰 할인율은 99 이하이어야 합니다.")
     private Integer couponDiscountRate;
 
     @NotNull(message = "대상 고객 유형은 필수입니다.")

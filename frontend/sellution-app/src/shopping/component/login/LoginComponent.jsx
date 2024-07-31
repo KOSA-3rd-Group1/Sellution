@@ -78,7 +78,7 @@ const LoginComponent = () => {
         </div>
       </div> */}
       <div className='relative w-full h-full bg-white'>
-        <div className='absolute w-full h-fit top-[10%] bg-red-500 flex items-start justify-center p-4 flex-1'>
+        <div className='absolute w-full h-fit top-[10%]  flex items-start justify-center p-4 flex-1'>
           <div className='w-full max-w-md min-h-[400px] max-h-[600px] p-8 flex flex-col justify-between bg-white shadow-md rounded-lg'>
             <div className='space-y-8'>
               <form onSubmit={handleSubmit} className='pt-10 space-y-6'>
@@ -96,7 +96,7 @@ const LoginComponent = () => {
                     autoComplete='username'
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-brandOrange focus:border-brandOrange'
+                    className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary'
                     placeholder='아이디를 입력하세요'
                   />
                 </div>
@@ -115,7 +115,7 @@ const LoginComponent = () => {
                       autoComplete='current-password'
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500'
+                      className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary'
                       placeholder='비밀번호를 입력하세요'
                     />
                     <button
@@ -135,7 +135,7 @@ const LoginComponent = () => {
                 <div className='pt-4'>
                   <button
                     type='submit'
-                    className='w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brandOrange hover:bg-brandOrange focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brandOrange transition-all duration-300 ease-in-out transform hover:scale-102'
+                    className='w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 ease-in-out transform hover:scale-102'
                     disabled={isLoading}
                   >
                     {isLoading ? '로그인 중...' : '로그인'}
@@ -144,13 +144,13 @@ const LoginComponent = () => {
               </form>
             </div>
             <div className='w-full text-center text-sm mt-8 flex justify-center items-center'>
-              <div className='font-medium text-brandOrange hover:text-brandOrange'>아이디 찾기</div>
-              <div className='divider divider-horizontal'></div>
-              <div className='font-medium text-brandOrange hover:text-brandOrange'>
-                비밀번호 찾기
+              <div className='font-medium text-primary hover:text-brandOprimaryrange'>
+                아이디 찾기
               </div>
               <div className='divider divider-horizontal'></div>
-              <div className='font-medium text-brandOrange hover:text-brandOrange'>아이디 생성</div>
+              <div className='font-medium text-primary hover:text-primary'>비밀번호 찾기</div>
+              <div className='divider divider-horizontal'></div>
+              <div className='font-medium text-primary hover:text-primary'>아이디 생성</div>
             </div>
           </div>
         </div>

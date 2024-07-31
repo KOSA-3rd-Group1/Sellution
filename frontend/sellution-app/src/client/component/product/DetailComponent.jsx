@@ -1,8 +1,10 @@
 import React from 'react';
+import { useState, useCallback } from 'react';
 import { EditIcon } from '@/client/utility/assets/Icons.jsx';
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import ImageUploader2 from '@/client/layout/common/ImageUploader2';
 import useProductDetail from '@/client/business/product/useProductDetail';
+import AlertModal from '@/client/layout/common/modal/AlertModal';
 
 const DetailComponent = () => {
   const {
@@ -30,7 +32,83 @@ const DetailComponent = () => {
     setIsCategoryDropdownOpen,
     DisplayStatus,
     DeliveryType,
+    formatPrice,
   } = useProductDetail();
+
+  const [alertModal, setAlertModal] = useState({ isOpen: false, type: '', title: '', message: '' });
+  const [deleteSuccessCallback, setDeleteSuccessCallback] = useState(null);
+
+  const openAlertModal = useCallback((type, title, message, callback = null) => {
+    setAlertModal({ isOpen: true, type, title, message });
+    if (callback) {
+      setDeleteSuccessCallback(() => callback);
+    }
+  }, []);
+
+  const closeAlertModal = useCallback(() => {
+    setAlertModal({ isOpen: false, type: '', title: '', message: '' });
+    setDeleteSuccessCallback(null);
+  }, []);
+
+  const handleSaveChanges = useCallback(() => {
+    openAlertModal(
+      'warning',
+      '변경 사항 저장',
+      '변경 사항을 저장하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
+    );
+  }, [openAlertModal]);
+
+  const handleDeleteProduct = useCallback(() => {
+    openAlertModal(
+      'warning',
+      '상품 삭제',
+      '정말로 이 상품을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
+    );
+  }, [openAlertModal]);
+
+  const handleConfirmSave = useCallback(async () => {
+    closeAlertModal();
+    try {
+      await updateProduct();
+      openAlertModal('success', '저장 완료', '변경 사항이 성공적으로 저장되었습니다.');
+    } catch (error) {
+      openAlertModal('error', '저장 실패', '변경 사항 저장 중 오류가 발생했습니다.');
+    }
+  }, [closeAlertModal, updateProduct, openAlertModal]);
+
+  const handleConfirmDelete = useCallback(async () => {
+    closeAlertModal();
+    try {
+      await deleteProduct();
+      openAlertModal('success', '삭제 완료', '상품이 성공적으로 삭제되었습니다.', moveList);
+    } catch (error) {
+      openAlertModal('error', '삭제 실패', '상품 삭제 중 오류가 발생했습니다.');
+    }
+  }, [closeAlertModal, deleteProduct, openAlertModal, moveList]);
+
+  const handleAlertConfirm = useCallback(() => {
+    if (alertModal.type === 'warning') {
+      if (alertModal.title === '변경 사항 저장') {
+        handleConfirmSave();
+      } else if (alertModal.title === '상품 삭제') {
+        handleConfirmDelete();
+      }
+    } else {
+      closeAlertModal();
+      if (alertModal.type === 'success') {
+        setTimeout(() => {
+          moveList();
+        }, 1500); // 1.5초 후 목록 페이지로 이동
+      }
+    }
+  }, [
+    alertModal.type,
+    alertModal.title,
+    handleConfirmSave,
+    handleConfirmDelete,
+    closeAlertModal,
+    moveList,
+  ]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -184,13 +262,13 @@ const DetailComponent = () => {
                 {/* 금액 입력 필드 */}
                 <div className='flex items-center'>
                   <label className='w-1/4 text-sm font-medium'>금액</label>
-                  <div className='flex-1 ml-4'>
+                  <div className='flex-1 ml-4 text-right'>
                     <input
                       type='text'
                       name='cost'
                       value={productInfo.cost}
                       onChange={handleInputChange}
-                      className='flex-grow border p-2 rounded-md'
+                      className='w-full border p-2 rounded-md text-right'
                       placeholder='금액을 입력해주세요.'
                     />
                     <span className='ml-2'>원</span>
@@ -200,7 +278,7 @@ const DetailComponent = () => {
                 {/* 할인 적용 여부 */}
                 <div className='flex items-center'>
                   <label className='w-1/4 text-sm font-medium'>할인 적용 여부</label>
-                  <div className='flex-1 flex items-center space-x-4'>
+                  <div className='flex-1 flex items-center justify-end space-x-4'>
                     <label className='flex items-center ml-4'>
                       <input
                         type='radio'
@@ -229,7 +307,7 @@ const DetailComponent = () => {
                 {/* 할인 기간 설정 */}
                 <div className='flex items-center'>
                   <label className='w-1/4 text-sm font-medium'>기간 설정</label>
-                  <div className='flex-1 flex items-center space-x-2 ml-4'>
+                  <div className='flex-1 flex items-center justify-end space-x-2'>
                     <input
                       type='date'
                       name='discountStartDate'
@@ -253,14 +331,14 @@ const DetailComponent = () => {
                 {/* 할인율 입력 */}
                 <div className='flex items-center'>
                   <label className='w-1/4 text-sm font-medium'>할인율</label>
-                  <div className='flex-1 flex items-center ml-4'>
+                  <div className='flex-1 ml-4 text-right'>
                     <input
                       type='text'
                       name='discountRate'
                       value={productInfo.discountRate}
                       onChange={handleInputChange}
-                      className='flex-grow border p-2 rounded-md'
-                      placeholder='할인율을 입력해주세요.'
+                      className='w-full border p-2 rounded-md text-right'
+                      placeholder='할인율을 입력해주세요. '
                       disabled={!isDiscountApplied}
                     />
                     <span className='ml-2'>%</span>
@@ -270,10 +348,12 @@ const DetailComponent = () => {
                 {/* 할인 후 적용 금액 */}
                 <div className='flex items-center'>
                   <label className='w-1/4 text-sm font-medium'>할인 후 적용 금액</label>
-                  <div className='flex-1 ml-4'>
-                    <span>
+                  <div className='flex-1 ml-4 text-right'>
+                    <span className='items-right'>
                       {productInfo.isDiscount === DisplayStatus.VISIBLE
-                        ? `${productInfo.cost - (productInfo.cost * productInfo.discountRate) / 100} 원`
+                        ? formatPrice(
+                            productInfo.cost - (productInfo.cost * productInfo.discountRate) / 100,
+                          )
                         : '- 원'}
                     </span>
                   </div>
@@ -289,8 +369,8 @@ const DetailComponent = () => {
               <div className='space-y-6'>
                 {/* 배송 가능 유형 */}
                 <div className='flex items-center'>
-                  <label className='w-1/4 text-sm font-medium'>배송 가능 유형</label>
-                  <div className='flex-1 flex items-center space-x-4'>
+                  <label className='w-1/4 text-sm font-medium items-center'>배송 가능 유형</label>
+                  <div className='flex-1 flex justify-end space-x-4'>
                     <label className='flex items-center ml-4'>
                       <input
                         type='radio'
@@ -336,7 +416,7 @@ const DetailComponent = () => {
                       name='stock'
                       value={productInfo.stock}
                       onChange={handleInputChange}
-                      className='flex-grow border p-2 rounded-md'
+                      className='w-full border p-2 rounded-md text-right'
                       placeholder='상품 재고를 입력해주세요.'
                     />
                     <span className='ml-2'>건</span>
@@ -349,9 +429,17 @@ const DetailComponent = () => {
         </section>
       </div>
       <FooterComponent
-        btn1={{ label: '상품 삭제', event: deleteProduct }}
-        btn2={{ label: '변경 사항 저장', event: updateProduct }}
+        btn1={{ label: '상품 삭제', event: handleDeleteProduct }}
+        btn2={{ label: '변경 사항 저장', event: handleSaveChanges }}
         back={{ label: '목록으로', event: moveList }}
+      />
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={closeAlertModal}
+        type={alertModal.type}
+        title={alertModal.title}
+        message={alertModal.message}
+        onConfirm={handleAlertConfirm}
       />
     </div>
   );

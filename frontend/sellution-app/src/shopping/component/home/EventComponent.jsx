@@ -1,5 +1,6 @@
 import useEvent from '../../business/home/useEvent';
 import HomeFooter from '../../layout/HomeFooter';
+import LoadingSpinner from '../../layout/LoadingSpinner';
 import Coupon from '../../layout/partials/Coupon';
 import { StarIcon } from '../../utility/assets/Icons';
 import MenuHeaderNav from './../../layout/MenuHeaderNav';

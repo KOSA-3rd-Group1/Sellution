@@ -109,14 +109,13 @@ const AddComponent = () => {
     }
   };
 
-
   return (
     <div className='p-4 max-w-md mx-auto'>
       <MenuHeaderNav title={'결제수단 등록'} />
 
       <div className='mb-6'>
         <h2 className='text-lg font-semibold mb-2'>
-          <span className='text-brandOrange mr-1'>*</span>
+          <span className='text-primary mr-1'>*</span>
           은행 선택
         </h2>
         <div className='grid grid-cols-3 gap-4'>
@@ -124,7 +123,7 @@ const AddComponent = () => {
             <button
               key={bank.code}
               className={`p-2 border rounded-lg flex flex-col items-center justify-center ${
-                selectedBank === bank.code ? 'border-brandOrange' : 'border-gray-300'
+                selectedBank === bank.code ? 'border-primary' : 'border-gray-300'
               }`}
               onClick={() => handleBankSelect(bank.code)}
             >
@@ -138,7 +137,7 @@ const AddComponent = () => {
       <form onSubmit={handleAccountAuth}>
         <div className='mb-4'>
           <h2 className='text-lg font-semibold mb-2'>
-            <span className='text-brandOrange mr-1'>*</span>
+            <span className='text-primary mr-1'>*</span>
             계좌 번호 입력
           </h2>
           <div className='mb-2'>
@@ -166,18 +165,20 @@ const AddComponent = () => {
         <div className='flex items-center justify-center'>
           <button
             type='submit'
-            className='bg-brandOrange text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition duration-300'
+            className='bg-primary text-white py-2 px-4 rounded-lg hover:bg- transition duration-300'
           >
             계좌 인증하기
           </button>
-          {isAuthenticated && <AccountAuthCheckIcon className='text-green-500 w-8 h-8 ml-2' />}
         </div>
       </form>
 
       {authMessage && (
-        <p className={`mt-2 text-sm ${isAuthenticated ? 'text-green-600' : 'text-red-600'}`}>
-          {authMessage}
-        </p>
+        <div
+          className={`mt-4 flex items-center justify-center ${isAuthenticated ? 'text-green-600' : 'text-red-600'}`}
+        >
+          {isAuthenticated && <AccountAuthCheckIcon className='w-6 h-6 mr-2' />}
+          <p className='text-center'>{authMessage}</p>
+        </div>
       )}
 
       <OneButtonFooterLayout

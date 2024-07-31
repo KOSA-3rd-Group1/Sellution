@@ -91,7 +91,7 @@ const CheckSmsAuthComponent = () => {
                 type='text'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className='w-full p-2 border rounded focus:ring-2 focus:ring-brandOrange focus:border-transparent'
+                className='w-full p-2 border rounded focus:ring-2 shadow-sm focus:outline-none focus:ring-primary focus:border-primary'
                 disabled={step !== 1}
               />
             </div>
@@ -99,18 +99,18 @@ const CheckSmsAuthComponent = () => {
               <label className='block text-sm font-medium text-gray-700 mb-1'>
                 <span className='text-brandOrange mr-1'>*</span>휴대폰 번호
               </label>
-              <div className='flex'>
+              <div className='flex items-center space-x-2'>
                 <input
                   type='tel'
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className='flex-grow p-2 border rounded-l focus:ring-2 focus:ring-brandOrange focus:border-transparent'
+                  className='flex-grow p-2 border rounded  focus:ring-primary focus:border-transparent shadow-sm focus:outline-none focus:ring-2  focus:border-primary'
                   placeholder='010********'
                   disabled={step !== 1}
                 />
                 <button
                   onClick={handleRequestAuth}
-                  className='bg-brandOrange text-white px-4 py-2 rounded-r hover:bg-orange-600 transition duration-300 text-sm'
+                  className=' border border-primary text-primary hover:bg-primary hover:text-white px-4 py-2 rounded transition duration-300 text-sm'
                 >
                   {step === 1 ? '인증번호 발급' : '인증번호 재발급'}
                 </button>
@@ -120,20 +120,20 @@ const CheckSmsAuthComponent = () => {
             {step >= 2 && (
               <div>
                 <label className='block text-sm font-medium text-gray-700 mb-1'>
-                  <span className='text-brandOrange mr-1'>*</span>인증번호
+                  <span className='text-primary mr-1'>*</span>인증번호
                 </label>
-                <div className='flex'>
+                <div className='flex items-center space-x-2'>
                   <input
                     type='text'
                     value={authCode}
                     onChange={(e) => setAuthCode(e.target.value)}
-                    className='flex-grow p-2 border rounded-l focus:ring-2 focus:ring-brandOrange focus:border-transparent'
+                    className='flex-grow p-2 border rounded focus:ring-2 focus:ring-primary focus:border-transparent shadow-sm focus:outline-none  focus:border-primary'
                     placeholder='* * * * * *'
                     disabled={isVerified}
                   />
                   <button
                     onClick={handleVerify}
-                    className='bg-brandOrange text-white px-4 py-2 rounded-r hover:bg-orange-600 transition duration-300 text-sm'
+                    className='border border-primary   px-4 py-2 rounded text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 ease-in-out transform hover:scale-102 text-sm'
                     disabled={isVerified}
                   >
                     인증
@@ -158,7 +158,7 @@ const CheckSmsAuthComponent = () => {
                 </div>
                 <button
                   onClick={handleConfirm}
-                  className='bg-brandOrange text-white px-6 py-2 rounded hover:bg-orange-600 transition duration-300'
+                  className='bg-primary text-white px-6 py-2 rounded hover:bg-primary transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary '
                 >
                   확인
                 </button>

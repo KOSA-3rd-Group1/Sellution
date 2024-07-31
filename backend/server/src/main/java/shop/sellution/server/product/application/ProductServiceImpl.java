@@ -161,9 +161,22 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.save(product);
 
-        saveProductImage(product, thumbnailImage, ProductImageType.THUMBNAIL);
-        saveProductImages(product, listImages, saveProductReq.getListImages(), ProductImageType.LIST);
-        saveProductImages(product, detailImages, saveProductReq.getDetailImages(), ProductImageType.DETAILS);
+        // 썸네일 이미지 처리
+        if (thumbnailImage != null && !thumbnailImage.isEmpty()) {
+            saveProductImage(product, thumbnailImage, ProductImageType.THUMBNAIL);
+        } else if (saveProductReq.getThumbnailImage() != null) {
+            // 기존 썸네일 이미지 유지
+            Optional<ProductImage> existingThumbnail = productImageRepository.findByProductAndPurposeOfUse(product, ProductImageType.THUMBNAIL);
+            existingThumbnail.ifPresent(thumbnail -> thumbnail.setImageUrl(saveProductReq.getThumbnailImage()));
+        }
+
+        // 상품 이미지 처리
+        List<String> remainingListImages = saveProductReq.getListImages() != null ? saveProductReq.getListImages() : new ArrayList<>();
+        saveProductImages(product, listImages, remainingListImages, ProductImageType.LIST);
+
+        // 상세 이미지 처리
+        List<String> remainingDetailImages = saveProductReq.getDetailImages() != null ? saveProductReq.getDetailImages() : new ArrayList<>();
+        saveProductImages(product, detailImages, remainingDetailImages, ProductImageType.DETAILS);
     }
 
 
@@ -213,7 +226,7 @@ public class ProductServiceImpl implements ProductService {
             }
         }
     }
-    private void saveProductImages(Product product, List<MultipartFile> imageFiles, List<String> remainingImageUrls, ProductImageType type) throws IOException {
+    private void saveProductImages(Product product, List<MultipartFile> newImageFiles, List<String> remainingImageUrls, ProductImageType type) throws IOException {
         List<ProductImage> existingImages = productImageRepository.findAllByProductAndPurposeOfUse(product, type);
 
         // 남아있어야 할 이미지만 유지하고 나머지는 삭제
@@ -225,18 +238,16 @@ public class ProductServiceImpl implements ProductService {
         }
 
         // 새로운 이미지 추가
-        if (imageFiles != null && !imageFiles.isEmpty()) {
-            List<ProductImage> newImages = new ArrayList<>();
-            for (MultipartFile imageFile : imageFiles) {
-                String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product",type);
+        if (newImageFiles != null && !newImageFiles.isEmpty()) {
+            for (MultipartFile imageFile : newImageFiles) {
+                String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product", type);
                 ProductImage newImage = ProductImage.builder()
                         .product(product)
                         .imageUrl(imageUrl)
                         .purposeOfUse(type)
                         .build();
-                newImages.add(newImage);
+                productImageRepository.save(newImage);
             }
-            productImageRepository.saveAll(newImages);
         }
     }
 

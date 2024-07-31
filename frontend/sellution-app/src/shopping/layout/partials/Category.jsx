@@ -3,7 +3,7 @@ const Category = ({ categoryList, onCategoryClick }) => {
   const categories = categoryList || [];
 
   return (
-    <div className='category-menu absolute top-[3.4375rem] left-0 w-1/3 bg-white border border-gray-200 shadow-lg z-20'>
+    <div className='category-menu absolute top-[3.4375rem] left-0 bg-white border border-gray-200 shadow-lg z-20'>
       <span className='category-title block font-bold p-3'>카테고리</span>
       <ul className='list-none p-0'>
         {categories.map((category) => (

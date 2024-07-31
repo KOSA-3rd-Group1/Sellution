@@ -1,43 +1,77 @@
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 
 const useList = () => {
   const [subscriptionProductList, setSubscriptionProductList] = useState([]);
   const [subscriptionCategoryList, setSubscriptionCategoryList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  const fetchProducts = useCallback(async (categoryId) => {
-    setIsLoading(true);
-    try{
-      const response = await axios.get(
-        `http://localhost:8080/products/company/1?deliveryType=SUBSCRIPTION${categoryId ? `&categoryId=${categoryId}` : ''}`,
-      );
-      setSubscriptionProductList(response.data.content);
-    }catch(err){
-      setError(err);
-    }finally{
-      setIsLoading(false);
-    }
-  }, []);
+  const [page, setPage] = useState(0); //페이지 번호 상태
+  const [hasMore, setHasMore] = useState(true); //더 많은 데이터가 있는지 여부
+  const companyId = useCompanyInfoStore((state) => state.companyId);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const fetchProducts = useCallback(
+    async (categoryId, resetPage = false) => {
+      if (resetPage) {
+        setPage(0);
+        setSubscriptionProductList([]);
+      }
+
+      setIsLoading(true);
+      try {
+        const url = categoryId
+          ? `http://localhost:8080/products/company/${companyId}?deliveryType=SUBSCRIPTION&categoryId=${categoryId}&page=${resetPage ? 0 : page}&size=20`
+          : `http://localhost:8080/products/company/${companyId}?deliveryType=SUBSCRIPTION&page=${resetPage ? 0 : page}&size=20`;
+        const response = await axios.get(url);
+        setSubscriptionProductList((prev) =>
+          resetPage ? response.data.content : [...prev, ...response.data.content],
+        );
+        setHasMore(!response.data.last); // 마지막 페이지인지 여부 확인
+      } catch (err) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [page, companyId],
+  );
+  useEffect(() => {
+    if (page === 0) return;
+    fetchProducts(selectedCategory ? selectedCategory.categoryId : null);
+  }, [page]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         const [productResponse, categoryResponse] = await Promise.all([
-          axios.get('http://localhost:8080/products/company/1?deliveryType=SUBSCRIPTION'),
-          axios.get('http://localhost:8080/categories/company/1'),
+          axios.get(
+            `http://localhost:8080/products/company/${companyId}?deliveryType=SUBSCRIPTION&page=0&size=20`,
+          ),
+          axios.get(`http://localhost:8080/categories/company/${companyId}`),
         ]);
         setSubscriptionProductList(productResponse.data.content);
-        setSubscriptionCategoryList(categoryResponse.data);
+        setSubscriptionCategoryList([
+          { categoryId: null, name: '정기배송 전체' },
+          ...categoryResponse.data,
+        ]);
+        setHasMore(!productResponse.data.last); // 마지막 페이지인지 여부 확인
       } catch (err) {
         setError(err);
       } finally {
         setIsLoading(false);
       }
     };
+
     fetchInitialData();
-  }, []);
+  }, [companyId]);
+
+  const loadMore = () => {
+    if (hasMore && !isLoading) {
+      setPage((prev) => prev + 1);
+    }
+  };
   // const dummyProductList = [
   //   {
   //     id: 1,
@@ -152,6 +186,10 @@ const useList = () => {
     isLoading,
     error,
     fetchProducts,
+    loadMore,
+    hasMore,
+    setSelectedCategory,
+    selectedCategory,
   };
 };
 

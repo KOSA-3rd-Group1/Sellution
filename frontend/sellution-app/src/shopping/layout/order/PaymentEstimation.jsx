@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { formatPrice } from '../../../client/utility/functions/formatterFunction';
 const PaymentEstimation = ({
   totalPrice = 0,
   productDiscountTotal = 0,
@@ -34,9 +34,9 @@ const PaymentEstimation = ({
     return date;
   };
 
-  const formatPrice = (price) => {
-    return price && price !== 0 ? `${price.toLocaleString()}원` : '-';
-  };
+  // const formatPrice = (price) => {
+  //   return price && price !== 0 ? `${price.toLocaleString()}원` : '-';
+  // };
 
   const formatCount = (count) => {
     return count && count !== 0 ? `${count.toLocaleString()}회` : '-';
