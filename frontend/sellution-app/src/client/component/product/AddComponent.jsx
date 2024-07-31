@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { EditIcon } from '@/client/utility/assets/Icons.jsx';
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import ImageUploader2 from '@/client/layout/common/ImageUploader2';
@@ -28,19 +28,25 @@ const AddComponent = () => {
 
   const [alertModal, setAlertModal] = useState({ isOpen: false, type: '', title: '', message: '' });
 
-  const openAlertModal = (type, title, message) => {
+  const openAlertModal = useCallback((type, title, message) => {
     setAlertModal({ isOpen: true, type, title, message });
-  };
+  }, []);
 
-  const closeAlertModal = () => {
+  const closeAlertModal = useCallback(() => {
     setAlertModal({ isOpen: false, type: '', title: '', message: '' });
-  };
+  }, []);
 
-  const handleRegisterProduct = () => {
+  const handleRegisterProduct = useCallback(() => {
     openAlertModal('warning', '상품 등록 확인', '상품을 등록하시겠습니까?');
-  };
+  }, [openAlertModal]);
 
-  const handleAlertConfirm = async () => {
+  const resetComponent = useCallback(() => {
+    // Reset all state here
+    // This is a placeholder - you need to implement the actual reset logic
+    window.location.reload();
+  }, []);
+
+  const handleAlertConfirm = useCallback(async () => {
     if (alertModal.type === 'warning') {
       try {
         await registerProduct();
@@ -48,10 +54,13 @@ const AddComponent = () => {
       } catch (error) {
         openAlertModal('error', '상품 등록 실패', '상품 등록 중 오류가 발생했습니다.');
       }
+    } else if (alertModal.type === 'success') {
+      closeAlertModal();
+      resetComponent();
     } else {
       closeAlertModal();
     }
-  };
+  }, [alertModal.type, registerProduct, openAlertModal, closeAlertModal, resetComponent]);
 
   return (
     <div className='relative w-full h-full flex flex-col'>
@@ -150,7 +159,7 @@ const AddComponent = () => {
               <div>
                 <h3 className='text-sm font-medium mb-2'>상품 대표 이미지</h3>
                 <ImageUploader2
-                  inputId={'file-upload-logo'}
+                  inputId={'file-upload-thumbnail'}
                   onUploadSuccess={handleUploadSuccess}
                   onBeforeRemove={handleBeforeRemove}
                   onEditImage={handleEditImage}
@@ -356,7 +365,7 @@ const AddComponent = () => {
 
       <AlertModal
         isOpen={alertModal.isOpen}
-        onClose={closeAlertModal}
+        onClose={alertModal.type === 'success' ? resetComponent : closeAlertModal}
         type={alertModal.type}
         title={alertModal.title}
         message={alertModal.message}

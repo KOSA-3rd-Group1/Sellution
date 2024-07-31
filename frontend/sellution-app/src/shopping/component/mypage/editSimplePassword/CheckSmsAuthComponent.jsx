@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx";
+import MenuHeaderNav from '@/shopping/layout/MenuHeaderNav.jsx';
 
 const CheckSmsAuthComponent = () => {
   const { clientName, customerId } = useParams();
@@ -65,8 +65,8 @@ const CheckSmsAuthComponent = () => {
     navigate(`/shopping/${clientName}/my/${customerId}/auth/edit`, {
       state: {
         returnTo: location.state?.returnTo,
-        orderData: location.state?.orderData
-      }
+        orderData: location.state?.orderData,
+      },
     });
   };
 
@@ -77,10 +77,10 @@ const CheckSmsAuthComponent = () => {
   };
 
   return (
-    <div className="flex flex-col  ">
+    <div className='flex flex-col  '>
       <MenuHeaderNav title='휴대폰 인증' />
-      <div className="flex-grow flex items-center justify-center px-4 py-8">
-        <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+      <div className='flex-grow flex items-center justify-center px-4 py-8'>
+        <div className='w-full max-w-md bg-white p-8 rounded-lg shadow-md'>
           <h1 className='text-2xl font-bold text-center mb-6'>휴대폰 인증</h1>
           <div className='space-y-4'>
             <div>

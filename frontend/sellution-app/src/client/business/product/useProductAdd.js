@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -97,8 +97,52 @@ const useProductAdd = () => {
     setIsCategoryDropdownOpen(false);
   };
 
-  const handleImageChange = (type) => (newImages) => {
-    setImages((prev) => ({ ...prev, [type]: newImages }));
+  const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
+    try {
+      const proxyUrl = `/s3-bucket${imageUrl}`;
+      const response = await fetch(proxyUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const blob = await response.blob();
+      const fileName = imageUrl.split('/').pop() || 'image.png';
+      const newImage = {
+        file: new File([blob], fileName, { type: blob.type }),
+        preview: URL.createObjectURL(blob),
+        id: Date.now() + Math.random(),
+      };
+      return newImage;
+    } catch (error) {
+      console.error('Error converting image:', error);
+      return null;
+    }
+  }, []);
+
+  const handleImageChange = (type) => async (newImages) => {
+    if (type === 'thumbnail') {
+      // 단일 이미지 처리
+      if (newImages && newImages.length > 0) {
+        const image = newImages[0];
+        const shortFileName = generateShortFileName(type, 0);
+        const newFile = new File([image.file], shortFileName, { type: image.file.type });
+        setImages((prev) => ({ ...prev, [type]: { ...image, file: newFile } }));
+      } else {
+        setImages((prev) => ({ ...prev, [type]: null }));
+      }
+    } else {
+      // 여러 이미지 처리 (product, detail)
+      const processedImages = await Promise.all(
+        newImages.map(async (image, index) => {
+          if (image.file instanceof File) {
+            const shortFileName = generateShortFileName(type, index);
+            const newFile = new File([image.file], shortFileName, { type: image.file.type });
+            return { ...image, file: newFile };
+          }
+          return image;
+        }),
+      );
+      setImages((prev) => ({ ...prev, [type]: processedImages }));
+    }
   };
 
   const handleUploadSuccess = (newImages) => {
@@ -138,16 +182,19 @@ const useProductAdd = () => {
 
     formData.append('product', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
 
-    if (images.thumbnail && images.thumbnail[0] && images.thumbnail[0].file) {
-      formData.append('thumbnailImage', images.thumbnail[0].file, images.thumbnail[0].file.name);
+    // thumbnail 이미지 처리
+    if (images.thumbnail && images.thumbnail.file) {
+      formData.append('thumbnailImage', images.thumbnail.file, images.thumbnail.file.name);
     }
 
+    // product 이미지들 처리
     images.product.forEach((image, index) => {
       if (image && image.file) {
         formData.append('listImages', image.file, image.file.name);
       }
     });
 
+    // detail 이미지들 처리
     images.detail.forEach((image, index) => {
       if (image && image.file) {
         formData.append('detailImages', image.file, image.file.name);
@@ -174,6 +221,8 @@ const useProductAdd = () => {
   return {
     productInfo,
     images,
+    handleImageChange,
+    convertImageUrlToFileAndBlob,
     categories,
     isCategoryDropdownOpen,
     isDiscountApplied,
@@ -181,7 +230,6 @@ const useProductAdd = () => {
     DeliveryType,
     handleInputChange,
     handleCategorySelect,
-    handleImageChange,
     handleUploadSuccess,
     handleBeforeRemove,
     handleEditImage,

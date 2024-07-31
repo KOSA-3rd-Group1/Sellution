@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { generateShortFileName } from '@/client/utility/functions/formatterFunction';
 
 const useProductDetail = () => {
   const { productId } = useParams();
@@ -139,24 +140,46 @@ const useProductDetail = () => {
     });
   };
 
-  const dataURItoBlob = (dataURI) => {
-    if (!dataURI || typeof dataURI !== 'string' || !dataURI.startsWith('data:')) {
-      console.error('Invalid data URI:', dataURI);
+  const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
+    try {
+      const proxyUrl = `/s3-bucket${imageUrl}`;
+      const response = await fetch(proxyUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const blob = await response.blob();
+      const fileName = imageUrl.split('/').pop() || 'image.png';
+      const newImage = {
+        file: new File([blob], fileName, { type: blob.type }),
+        preview: URL.createObjectURL(blob),
+        id: Date.now() + Math.random(),
+      };
+      return newImage;
+    } catch (error) {
+      console.error('Error converting image:', error);
       return null;
     }
+  }, []);
 
-    const splitDataURI = dataURI.split(',');
-    const byteString = atob(splitDataURI[1]);
-    const mimeString = splitDataURI[0].split(':')[1].split(';')[0];
+  const handleCategorySelect = (categoryName, categoryId) => {
+    setProductInfo((prev) => ({
+      ...prev,
+      categoryName,
+      categoryId,
+    }));
+    setIsCategoryDropdownOpen(false);
+  };
 
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
+  const handleThumbnailImageChange = (images) => setSelectedThumbnailImage(images);
+  const handleProductImagesChange = (images) => {
+    console.log('새로운 상품 이미지 설정:', images);
+    setProductImages(images);
+  };
 
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-
-    return new Blob([ab], { type: mimeString });
+  const handleDetailImagesChange = (images) => {
+    console.log('새로운 상세 이미지 설정:', images);
+    setProductDetailImages(images);
+    setProductDetailImageNames(images.map((_, index) => `상품 설명 이미지 ${index + 1}`));
   };
 
   const updateProduct = async () => {
@@ -181,35 +204,37 @@ const useProductDetail = () => {
           isVisible: productInfo.isVisible,
         };
 
+        // 썸네일 이미지 처리
+        if (selectedThumbnailImage.length > 0 && selectedThumbnailImage[0].file) {
+          formData.append('thumbnailImage', selectedThumbnailImage[0].file);
+        } else if (selectedThumbnailImage.length > 0) {
+          jsonData.thumbnailImage = selectedThumbnailImage[0].preview;
+        }
+
+        // 상품 이미지 처리
+        jsonData.listImages = [];
+        productImages.forEach((image, index) => {
+          if (image.file) {
+            formData.append(`listImages`, image.file);
+          } else {
+            jsonData.listImages.push(image.preview);
+          }
+        });
+
+        // 상세 이미지 처리
+        jsonData.detailImages = [];
+        productDetailImages.forEach((image, index) => {
+          if (image.file) {
+            formData.append(`detailImages`, image.file);
+          } else {
+            jsonData.detailImages.push(image.preview);
+          }
+        });
+
         formData.append(
           'product',
           new Blob([JSON.stringify(jsonData)], { type: 'application/json' }),
         );
-
-        if (selectedThumbnailImage.length > 0) {
-          const thumbnail = selectedThumbnailImage[0];
-          if (thumbnail.file) {
-            formData.append('thumbnailImage', thumbnail.file, 'thumbnail.jpg');
-          } else {
-            jsonData.thumbnailImage = thumbnail.preview;
-          }
-        }
-
-        jsonData.listImages = productImages.map((image) => image.preview);
-        productImages.forEach((image, index) => {
-          if (image.file) {
-            formData.append('listImages', image.file, `list_${index}.jpg`);
-          }
-        });
-
-        jsonData.detailImages = productDetailImages.map((image) => image.preview);
-        productDetailImages.forEach((image, index) => {
-          if (image.file) {
-            formData.append('detailImages', image.file, `detail_${index}.jpg`);
-          }
-        });
-
-        formData.set('product', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
 
         await axios.put(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -221,22 +246,6 @@ const useProductDetail = () => {
         openAlertModal('error', '상품 수정 실패', '상품 수정 중 오류가 발생했습니다.');
       }
     });
-  };
-
-  const handleCategorySelect = (categoryName, categoryId) => {
-    setProductInfo((prev) => ({
-      ...prev,
-      categoryName,
-      categoryId,
-    }));
-    setIsCategoryDropdownOpen(false);
-  };
-
-  const handleThumbnailImageChange = (images) => setSelectedThumbnailImage(images);
-  const handleProductImagesChange = (images) => setProductImages(images);
-  const handleDetailImagesChange = (images) => {
-    setProductDetailImages(images);
-    setProductDetailImageNames(images.map((_, index) => `상품 설명 이미지 ${index + 1}`));
   };
 
   const handleUploadSuccess = (newImages) => console.log('Uploaded images:', newImages);
@@ -273,27 +282,22 @@ const useProductDetail = () => {
           isVisible: product.isVisible,
         });
 
-        setProductDetailImages(
-          product.detailImages.map((url, index) => ({
-            id: `detail-${index}`,
-            preview: url,
-            file: null,
-          })),
-        );
-        setSelectedThumbnailImage(
-          product.thumbnailImage
-            ? [{ id: 'thumbnail', preview: product.thumbnailImage, file: null }]
-            : [],
-        );
-        setProductImages(
-          product.listImages.map((url, index) => ({
-            id: `list-${index}`,
-            preview: url,
-            file: null,
-          })),
-        );
+        // 썸네일 이미지 처리
+        if (product.thumbnailImage) {
+          const newImage = await convertImageUrlToFileAndBlob(product.thumbnailImage);
+          setSelectedThumbnailImage(newImage ? [newImage] : []);
+        }
 
-        setIsDiscountApplied(product.isDiscount === DisplayStatus.VISIBLE);
+        // 상품 이미지 처리
+        const productImagesPromises = product.listImages.map(convertImageUrlToFileAndBlob);
+        const productImages = await Promise.all(productImagesPromises);
+        setProductImages(productImages.filter(Boolean));
+
+        // 상세 이미지 처리
+        const detailImagesPromises = product.detailImages.map(convertImageUrlToFileAndBlob);
+        const detailImages = await Promise.all(detailImagesPromises);
+        setProductDetailImages(detailImages.filter(Boolean));
+
         setIsLoading(false);
       } catch (err) {
         console.error('Error fetching product data:', err);
@@ -303,7 +307,7 @@ const useProductDetail = () => {
     };
 
     fetchProductData();
-  }, [productId]);
+  }, [productId, convertImageUrlToFileAndBlob]);
 
   useEffect(() => {
     if (productInfo.isDiscount === 'Y') {
