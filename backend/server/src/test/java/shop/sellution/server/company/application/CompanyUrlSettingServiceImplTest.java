@@ -75,7 +75,6 @@
 //
 //        when(companyRepository.findById(anyLong())).thenReturn(Optional.of(company));
 //
-
 ////        byte[] mockQrCode = new byte[]{1, 2, 3};
 //        String mockQrCode = "mockQrCode";
 //        try (MockedStatic<QRCodeGenerator> qrCodeGeneratorMockedStatic = mockStatic(QRCodeGenerator.class)) {
@@ -90,7 +89,6 @@
 //            assertThat(company.getName()).isEqualTo("UpdatedCompany");
 //            assertThat(company.getShopUrl()).isEqualTo("https://www.sellution.shop/shopping/UpdatedCompany");
 //            assertThat(company.getIsShopVisible()).isEqualTo(DisplayStatus.N);
-
 //            assertThat(company.getQrCodeUrl()).isEqualTo(mockQrCode);
 //        }
 //    }
@@ -117,5 +115,4 @@
 //                    .hasMessage("QR Code generation failed");
 //        }
 //    }
-
 //}

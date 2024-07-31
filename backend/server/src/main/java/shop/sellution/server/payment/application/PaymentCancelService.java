@@ -100,7 +100,7 @@ public class PaymentCancelService {
             String payCancelMessage = String.format("""
                     [Sellution] 환불처리 되었습니다.
                     취소된 주문번호
-                    %d
+                    %s
                     환불된 금액
                     %d원
                     환불된 계좌 정보

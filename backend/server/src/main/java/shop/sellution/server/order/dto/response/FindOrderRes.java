@@ -27,9 +27,9 @@ public class FindOrderRes {
 
     private FindAddressSummaryRes address;
 
-    private Long orderId;
+    private String orderCode;
 
-    private Long orderCode;
+    private Long orderId;
 
     private OrderType type;
 

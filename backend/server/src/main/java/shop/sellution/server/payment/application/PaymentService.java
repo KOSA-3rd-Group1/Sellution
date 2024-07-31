@@ -51,7 +51,7 @@ public class PaymentService {
     private final SmsService smsService;
     private final CustomerRepository customerRepository;
     private final AccountServiceImpl accountService;
-    private final Duration TIMEOUT = Duration.ofSeconds(2);
+    private final Duration TIMEOUT = Duration.ofSeconds(4);
 
 
     @Transactional
@@ -119,7 +119,7 @@ public class PaymentService {
             String payMessage = String.format("""
                     [Sellution] 결제가 완료되었습니다.
                     결제된 주문번호
-                    %d
+                    %s
                     결제된 금액
                     %d원
                     결제된 계좌 정보

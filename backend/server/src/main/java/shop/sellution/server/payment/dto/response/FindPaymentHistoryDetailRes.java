@@ -27,7 +27,7 @@ public class FindPaymentHistoryDetailRes {
     private Integer thisMonthDeliveryCount;
 
 
-    public static FindPaymentHistoryDetailRes fromEntity(PaymentHistory paymentHistory) {
+    public static FindPaymentHistoryDetailRes fromEntity(PaymentHistory paymentHistory, String decryptedAccountNumber) {
         return FindPaymentHistoryDetailRes.builder()
                 .paymentHisoryId(paymentHistory.getId())
                 .price(paymentHistory.getPrice())
@@ -35,7 +35,7 @@ public class FindPaymentHistoryDetailRes {
                 .totalCountForPayment(paymentHistory.getTotalPaymentCount())
                 .paymentDate(paymentHistory.getCreatedAt())
                 .status(paymentHistory.getStatus())
-                .accountNumber(paymentHistory.getAccount().getAccountNumber())
+                .accountNumber(decryptedAccountNumber)
                 .orderType(paymentHistory.getType())
                 .thisSubMonthStartDate(paymentHistory.getThisSubMonthStartDate())
                 .thisSubMonthEndDate(paymentHistory.getThisSubMonthEndDate())
