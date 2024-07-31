@@ -5,7 +5,7 @@ import DateRange from '@/client/layout/common/DateRange';
 import ToggleButton from '@/client/layout/common/ToggleButton';
 import { useMove } from '@/client/business/common/useMove';
 import { useOrderList } from '@/client/business/order/useOrderList';
-import { SimpleOrderIcon } from '@/client/utility/assets/Icons';
+import { OrderApproveAllIcon, OrderCancelAllIcon } from '@/client/utility/assets/Icons';
 import { HEADERS, ROW_HEIGHT } from '@/client/utility/tableinfo/OrderListTableInfo';
 
 const ListComponent = () => {
@@ -30,6 +30,7 @@ const ListComponent = () => {
     handleFilterReset,
     handleToggleAutoOrderApproved,
     handleApproveAllSimpleOrderBtn,
+    handleApproveCancle,
   } = useOrderList({ queryParams, page, size, refresh, updateQueryParameter });
 
   return (
@@ -41,7 +42,7 @@ const ListComponent = () => {
             handleChangeDateRangeValue={handleChangeDateRangeValue}
           />
           <div className='flex items-center gap-1'>
-            <NotBorderBtn Icon={SimpleOrderIcon} label={'자동 주문 승인'} />
+            <NotBorderBtn Icon={OrderApproveAllIcon} label={'자동 주문 승인'} />
             <ToggleButton isToggled={isAutoApproved} handleToggle={handleToggleAutoOrderApproved} />
           </div>
         </div>
@@ -58,9 +59,14 @@ const ListComponent = () => {
               <div className='flex justify-center items-center gap-4'>
                 <CountOrderBtn label={'주문승인대기'} count={12} />
                 <EventBtn
-                  Icon={SimpleOrderIcon}
+                  Icon={OrderApproveAllIcon}
                   label={'간편주문승인'}
                   onClick={handleApproveAllSimpleOrderBtn}
+                />
+                <EventBtn
+                  Icon={OrderCancelAllIcon}
+                  label={'주문취소'}
+                  onClick={handleApproveCancle}
                 />
               </div>
             }

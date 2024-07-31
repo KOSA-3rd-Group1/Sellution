@@ -38,3 +38,15 @@ export const postAutoApproveToggle = async (companyId, setAccessToken, accessTok
   response = await instance.post(url);
   return response;
 };
+
+// 주문 승인 취소
+export const postCancleOrder = async (orderId, data, setAccessToken, accessToken) => {
+  let response = null;
+  const url = `${API_URL}/${orderId}/cancel`;
+
+  let instance = await BaseInstance();
+  instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
+
+  response = await instance.post(url, data);
+  return response;
+};

@@ -72,7 +72,8 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
   const [data, setData] = useState([]); // 테이블 데이터
   const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수
   const [totalDataCount, setTotalDataCount] = useState(0); // 데이터 총 개수
-  //   const [refresh, setRefresh] = useState(false);
+  const [orderInfo, setOrderInfo] = useState({});
+  const [isDataChange, setIsDataChange] = useState(false);
 
   // 테이블 상태 관리 - 검색, 필터, 정렬 기능
   const [tableState, setTableState] = useState(
@@ -199,6 +200,16 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
         const formattedContent = content.map((item, index) => {
           return formatData(item, index, pageable.pageNumber, size);
         });
+        // const newOrderInfo = {}
+        // content.forEach((item) => {
+        // 	newOrderInfo[item.orderId] = {
+        // 		customerId: item.customer.id,
+        // 		accountId: item
+        // 	}
+        // })
+        // const data = content.map((item, index) => {
+        // 	return {customerId: item.customerId, accountId}
+        // })
         setData(() => formattedContent);
         setTotalDataCount(totalElements);
         setTotalPages(totalPages);
@@ -216,7 +227,7 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
     return () => {
       clearTable('orderlist');
     };
-  }, [debouncedTableState, dateRangeValue, page, refresh]);
+  }, [debouncedTableState, dateRangeValue, page, refresh, isDataChange]);
 
   // 날짜 범위 조회 핸들러
   const handleChangeDateRangeValue = (newDataRangeValue) => {
@@ -243,22 +254,43 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
   // 간편 주문 승인 이벤트 (작업해야 할 부분: 간편 주문 승인 시, 서버로 api 요청, 이후 응답 받아서 성공하면 해당 데이터 변경)
   const handleApproveAllSimpleOrderBtn = async () => {
     if (tables !== undefined) {
+      //   total
       Object.entries(tables.selectedRows).forEach(async ([key, value]) => {
         if (value) {
-          console.log(key, value);
           await handleApproveSimpleOrder(key);
         }
       });
-      alert('간편 주문 일괄 승인');
-      //   setRefresh(!refresh);
     } else {
       alert('없음');
     }
+    // 모달로 처리
   };
 
   const handleApproveSimpleOrder = async (orderId) => {
     try {
       await postApproveOrder(orderId, setAccessToken, accessToken);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleApproveCancleAll = async () => {
+    if (tables !== undefined) {
+      Object.entries(tables.selectedRows).forEach(async ([key, value]) => {
+        if (value) {
+          await handleApproveCancle(key);
+        }
+      });
+      alert('간편 주문 일괄 승인');
+    } else {
+      alert('없음');
+    }
+  };
+
+  // 주문 승인 취소
+  const handleApproveCancle = async (orderId) => {
+    try {
+      // await
     } catch (error) {
       console.log(error);
     }
@@ -276,5 +308,6 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
     handleFilterReset,
     handleToggleAutoOrderApproved,
     handleApproveAllSimpleOrderBtn,
+    handleApproveCancle,
   };
 };
