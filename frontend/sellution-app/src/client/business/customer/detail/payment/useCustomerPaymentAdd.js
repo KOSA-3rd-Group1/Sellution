@@ -16,7 +16,7 @@ export const useCustomerPaymentAdd = ({
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   const { customerId } = useParams();
-  const [paymentId, setpaymentId] = useState();
+  const [paymentId, setPaymentId] = useState();
 
   const [data, setData] = useState({ paymentMethod: 'CMS' });
   const [isChange, setIsChange] = useState(false);
@@ -74,8 +74,8 @@ export const useCustomerPaymentAdd = ({
         setAccessToken,
         accessToken,
       );
-      // setpaymentId(response.data.accountId)
-      setpaymentId(1);
+
+      setPaymentId(response.data.split(':')[1].trim());
       await openAutoCloseModal('결제 수단 등록 성공', '작업이 성공적으로 완료되었습니다.');
     } catch (error) {
       if (error instanceof ValidationError) {

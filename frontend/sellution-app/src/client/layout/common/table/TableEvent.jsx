@@ -51,7 +51,7 @@ const TableEvent = ({ HEADERS, ROW_HEIGHT, data, totalDataCount, Btns, handleRow
                 <tr
                   key={row.id}
                   className={`relative w-full ${ROW_HEIGHT} border-b border-b-[#F1F1F4] group`}
-                  onClick={handleRowEvent ? () => handleRowEvent(row.id) : undefined}
+                  onClick={handleRowEvent ? () => handleRowEvent(`${row.id}`) : undefined}
                 >
                   <td
                     className='sticky min-w-14 w-14 max-w-14 p-3 z-10 left-[0px] bg-white group-hover:bg-brandOrange-light'
@@ -68,7 +68,7 @@ const TableEvent = ({ HEADERS, ROW_HEIGHT, data, totalDataCount, Btns, handleRow
                   </td>
                   <td className='sticky min-w-20 w-20 max-w-20 p-3 z-10 left-[56px] bg-white group-hover:bg-brandOrange-light'>
                     <div className='flex flex-col w-full justify-between items-center gap-3'>
-                      {row.id}
+                      {row.no}
                     </div>
                   </td>
                   {HEADERS.map((header) => (

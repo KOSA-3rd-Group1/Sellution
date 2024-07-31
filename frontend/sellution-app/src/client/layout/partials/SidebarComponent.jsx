@@ -18,7 +18,7 @@ const SidebarCompoent = (props) => {
         <div className='space-y-2'>
           <div className='w-full h-14 p-2 flex items-center text-base text-gray-900 font-normal rounded-lg'>
             <CompanyIcon className='w-6 h-6' />
-            <span className='ml-3'>{props.companyName}</span>
+            <span className='ml-3 font-medium '>{props.companyName}</span>
           </div>
         </div>
         <div className='space-y-2 pt-2'>

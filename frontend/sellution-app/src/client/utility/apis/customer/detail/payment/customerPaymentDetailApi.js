@@ -11,8 +11,7 @@ export const getCustomerPaymentDetail = async (accountId, setAccessToken, access
   let instance = await BaseInstance();
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
 
-  //   response = await instance.get(url);
-  //   console.log(response);
+  response = await instance.get(url);
   return response;
 };
 
@@ -24,6 +23,6 @@ export const deleteCustomerPaymentDetail = async (accountId, setAccessToken, acc
   let instance = await BaseInstance();
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
 
-  //   response = await instance.delete(url);
+  response = await instance.delete(url);
   return response;
 };

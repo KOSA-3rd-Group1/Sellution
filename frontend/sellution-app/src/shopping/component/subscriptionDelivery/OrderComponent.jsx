@@ -12,19 +12,17 @@ import PaymentEstimation from '../../layout/order/PaymentEstimation';
 import PaymentMethodSelection from '../../layout/order/PaymentMethodSelection';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
-import useAuthStore from "@/shopping/store/stores/useAuthStore.js";
-import { getMyCouponList } from "@/shopping/utility/apis/mypage/coupon/couponApi.js";
-
+import { getMyCouponList } from '@/shopping/utility/apis/mypage/coupon/couponApi';
+import useAuthStore from '@/shopping/store/stores/useAuthStore';
 const OrderComponent = () => {
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const accessToken = useAuthStore((state) => state.accessToken);
   const navigate = useNavigate();
   const { orderList } = useOrderListStore();
   const clientName = useCompanyInfoStore((state) => state.name);
   const customerId = useUserInfoStore((state) => state.id);
   const location = useLocation();
   const companyId = useCompanyInfoStore((state) => state.companyId);
-
-  const accessToken =useAuthStore((state) => state.accessToken);
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   //목록 선택
   const listToShow = orderList;
@@ -36,6 +34,7 @@ const OrderComponent = () => {
   const [subscriptionType, setSubscriptionType] = useState('');
   const [selectedDays, setSelectedDays] = useState([]);
   const [dayValues, setDayValues] = useState([]);
+  const [dayValueTypeList, setDayValueTypeList] = useState([]);
   const [weekValues, setWeekValues] = useState([]);
   const [monthValues, setMonthValues] = useState([]);
   const [minDeliveryCount, setMinDeliveryCount] = useState(0);
@@ -47,7 +46,7 @@ const OrderComponent = () => {
     totalDeliveryCount: 0,
     totalPrice: 0,
     deliveryNextDate: '',
-    deliveryEndDate: ''
+    deliveryEndDate: '',
   });
 
   const [selectedWeek, setSelectedWeek] = useState('');
@@ -65,6 +64,9 @@ const OrderComponent = () => {
   const [productDiscountTotal, setProductDiscountTotal] = useState(0); //상품 할인 금액
   const [couponDiscountTotal, setCouponDiscountTotal] = useState(0); // 쿠폰 할인 금액
   const [finalPrice, setFinalPrice] = useState(0);
+
+  const [isPasswordVerified, setIsPasswordVerified] = useState(false);
+  const [orderData, setOrderData] = useState(null);
 
   const BANK_CODES = {
     '004': '국민은행',
@@ -111,7 +113,7 @@ const OrderComponent = () => {
     saveState(); // 현재 상태 저장
     console.log('이동전 경로 : ', location.pathname);
     navigate(`/shopping/${clientName}/my/${customerId}/payment/add`, {
-      state: { returnUrl: location.pathname }
+      state: { returnUrl: location.pathname },
     });
   };
 
@@ -168,9 +170,9 @@ const OrderComponent = () => {
     );
     const couponDiscountTotal = selectedCoupon
       ? Math.floor(
-        listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
-        (selectedCoupon.couponDiscountRate / 100),
-      )
+          listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
+            (selectedCoupon.couponDiscountRate / 100),
+        )
       : 0;
 
     setTotalPrice(total);
@@ -178,7 +180,13 @@ const OrderComponent = () => {
     setCouponDiscountTotal(couponDiscountTotal);
     setFinalPrice(total - productDiscountTotal - couponDiscountTotal);
 
-    if (subscriptionType === 'MONTH' && selectedStartDate && selectedWeek && selectedMonth && selectedDays.length > 0) {
+    if (
+      subscriptionType === 'MONTH' &&
+      selectedStartDate &&
+      selectedWeek &&
+      selectedMonth &&
+      selectedDays.length > 0
+    ) {
       const monthlyPriceData = await calculateMonthlyPrice();
       if (monthlyPriceData) {
         setMonthlyPriceData(monthlyPriceData);
@@ -190,7 +198,7 @@ const OrderComponent = () => {
         totalDeliveryCount: 0,
         totalPrice: 0,
         deliveryNextDate: '',
-        deliveryEndDate: ''
+        deliveryEndDate: '',
       });
     }
   };
@@ -232,39 +240,31 @@ const OrderComponent = () => {
       addressId: selectedAddress.addressId, // 주소 ID
       accountId: paymentMethods.find((method) => method.isChecked).id, // 결제 수단 ID
       eventId: selectedCoupon ? selectedCoupon.id : null, // 쿠폰 ID (선택 사항)
-      monthOptionId: selectedMonth ? selectedMonth.id : null, // 월 옵션 ID (선택 사항)
-      weekOptionId: selectedWeek ? selectedWeek.id : null, // 주 옵션 ID (선택 사항)
+      monthOptionValue: selectedMonth ? Number(selectedMonth.value) : null, // 월 옵션 ID (선택 사항)
+      weekOptionValue: selectedWeek ? Number(selectedWeek.value) : null, // 주 옵션 ID (선택 사항)
       orderType: subscriptionType === 'COUNT' ? 'COUNT_SUBSCRIPTION' : 'MONTH_SUBSCRIPTION', // 주문 타입
       totalDeliveryCount: selectedCount, // 총 배송 횟수 (선택 사항)
       deliveryStartDate: selectedStartDate, // 배송 시작일
       orderedProducts: orderedProducts, // 주문한 상품들
-      dayOptionIds: selectedDays.map((day) => dayValues.find((d) => d.value === day).id), // 선택된 요일들 ID
+      dayValueTypeList: selectedDays.map((day) => dayValues.find((d) => d.value === day).value), // 선택된 요일들 값
+      // dayValueTypeList: selectedDays.map((day) => dayValues.find((d) => d.value === day).id), // 선택된 요일들 ID
     };
 
     console.log('주문 보내는 양식: ', saveOrderReq);
-    if (subscriptionType === 'MONTH' && monthlyPriceData) {
-      saveOrderReq.thisMonthDeliveryCount = monthlyPriceData.thisMonthDeliveryCount;
-      saveOrderReq.thisMonthPrice = monthlyPriceData.thisMonthPrice;
-      saveOrderReq.totalDeliveryCount = monthlyPriceData.totalDeliveryCount;
-      saveOrderReq.totalPrice = monthlyPriceData.totalPrice;
-      saveOrderReq.deliveryNextDate = monthlyPriceData.deliveryNextDate;
-      saveOrderReq.deliveryEndDate = monthlyPriceData.deliveryEndDate;
-    }
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/orders/customers/${customerId}`,
-        saveOrderReq,
-      );
-      if (response.data.startsWith('success')) {
-        const savedOrderId = response.data.split('success, 생성된 주문 아이디 : ')[1];
-        localStorage.removeItem('orderState'); // 주문 완료 후 저장된 상태 제거
-        navigate(`/shopping/${clientName}/subscription/order-completed/${savedOrderId}`);
-      }
-    } catch (error) {
-      console.error('Error creating order:', error);
-      alert('주문 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
-    }
+
+    setOrderData(saveOrderReq);
+
+    // 비밀번호 인증 페이지로 이동하면서 주문 데이터 전달
+    navigate(`/shopping/${clientName}/ordersheet/auth/${customerId}`, {
+      state: { orderData: saveOrderReq },
+    });
   };
+
+  useEffect(() => {
+    if (location.state && location.state.passwordVerified) {
+      setIsPasswordVerified(true);
+    }
+  }, [location]);
 
   //api
   const fetchAddresses = async () => {
@@ -284,10 +284,9 @@ const OrderComponent = () => {
 
   const fetchCoupons = async () => {
     try {
-      const response = await getMyCouponList(setAccessToken,accessToken);
-      setCoupons(response.data.content);
-      console.log('fetch한 쿠폰1: ', coupons);
-      console.log('fetch한 쿠폰2: ', response);
+      const response = await getMyCouponList(accessToken, setAccessToken);
+      setCoupons(response.data.content || []); // 페이지 응답에서 내용 추출
+      console.log('fetch한 쿠폰: ', response.data);
     } catch (error) {
       console.error('Error fetching coupons:', error);
     }
@@ -298,6 +297,7 @@ const OrderComponent = () => {
       console.log('여기', response.data);
       setSubscriptionType(response.data.subscriptionType);
       setDayValues(response.data.dayValues || []);
+      setDayValueTypeList(response.data.dayValues || []);
       setWeekValues(response.data.weekValues || []);
       setMonthValues(response.data.monthValues || []);
       setMinDeliveryCount(response.data.minDeliveryCount || 0);
@@ -373,6 +373,8 @@ const OrderComponent = () => {
       selectedWeek,
       selectedCount,
       selectedMonth,
+      dayValues,
+      dayValueTypeList,
     };
     localStorage.setItem('orderState', JSON.stringify(stateToSave));
   };
@@ -390,6 +392,8 @@ const OrderComponent = () => {
       setSelectedWeek(parsedState.selectedWeek);
       setSelectedCount(parsedState.selectedCount);
       setSelectedMonth(parsedState.selectedMonth);
+      setDayValueTypeList(parsedState.dayValueTypeList);
+      setDayValues(parsedState.dayValues);
     }
   };
 

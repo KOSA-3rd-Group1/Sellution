@@ -51,6 +51,16 @@ export const EventBtn = ({ Icon, label, ...attr }) => (
   </button>
 );
 
+export const DownloadBtn = ({ Icon, label, ...attr }) => (
+  <button
+    className={`h-8 w-fit min-w-fit px-2 row-center-position gap-3 text-xs text-gray-500 border border-gray-500 rounded-md bg-white hover:bg-gray-100 hover:text-gray-700`}
+    {...attr}
+  >
+    {Icon && <Icon className='object-contain h-5' />}
+    <div>{label}</div>
+  </button>
+);
+
 export const ResetBtn = ({ Icon, label, ...attr }) => (
   <button
     className={`h-8 w-fit min-w-fit px-2 row-center-position gap-3 text-xs font-light text-gray-500 border border-gray-400 bg-white rounded-md hover:bg-brandOrange-light hover:text-brandOrange hover:border-brandOrange-light `}

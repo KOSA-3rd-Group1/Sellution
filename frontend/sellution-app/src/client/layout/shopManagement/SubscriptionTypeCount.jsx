@@ -1,27 +1,25 @@
-import { useState } from 'react';
 import CheckboxGroup from '@/client/layout/common/CheckboxGroup';
 import CheckdayGroup from '@/client/layout/common/CheckdayGroup';
+import useSaleSettingStore from '@/client/store/stores/useSaleSettingStore';
 
 const SubscriptionTypeCount = () => {
-  const [data, setData] = useState({
-    subscriptionTypeMonth: { 1: false, 2: false, 3: false, 4: false, 5: false },
-    subscriptionTypeDayOption: { MON: false, TUE: false, WED: false, THU: false, FRI: false },
-  });
+  const { data, setData } = useSaleSettingStore((state) => ({
+    data: state.subscriptionTypeCount,
+    setData: state.setSubscriptionTypeCount,
+  }));
 
   const handleChangeValue = (key, value) => {
-    if ((key === 'minCount' || key === 'maxCount') && !/^\d*$/.test(value)) {
+    if ((key === 'minDeliveryCount' || key === 'maxDeliveryCount') && !/^\d*$/.test(value)) {
       return;
     }
-    setData((prev) => ({ ...prev, [key]: value }));
+    setData({ [key]: value });
   };
 
   const handleChangeCheckboxValue = (key, selectData) => {
     const updateData = data[key];
     updateData[selectData] = !updateData[selectData];
-    setData((prev) => ({ ...prev, [key]: updateData }));
+    setData({ [key]: updateData });
   };
-
-  console.log(data);
 
   return (
     <div>
@@ -32,16 +30,16 @@ const SubscriptionTypeCount = () => {
             <div>최소</div>
             <div className='relative'>
               <input
-                id='minValue'
+                id='minDeliveryCount'
                 className={`w-24 h-6 border bg-gray-100 placeholder:text-gray-400 outline-none focus:ring-1 focus:ring-brandOrange ring-offset-2 rounded-md text-right pl-2 pr-6`}
-                value={data?.minCount || ''}
-                onChange={(e) => handleChangeValue('minCount', e.target.value)}
+                value={data.minDeliveryCount || ''}
+                onChange={(e) => handleChangeValue('minDeliveryCount', e.target.value)}
                 placeholder='5'
                 maxLength={4}
               />
               <label
-                htmlFor='minValue'
-                className={`absolute top-1/2 translate-y-[-50%] right-2 ${data?.minCount ? 'text-slate-900' : 'text-gray-400'}`}
+                htmlFor='minDeliveryCount'
+                className={`absolute top-1/2 translate-y-[-50%] right-2 ${data.minDeliveryCount ? 'text-slate-900' : 'text-gray-400'}`}
               >
                 회
               </label>
@@ -51,17 +49,17 @@ const SubscriptionTypeCount = () => {
             <div>최대</div>
             <div className='relative'>
               <input
-                id='maxValue'
+                id='maxDeliveryCount'
                 className={` w-24 h-6 border bg-gray-100 placeholder:text-gray-400 outline-none focus:ring-1 focus:ring-brandOrange ring-offset-2 rounded-md text-right pl-2 pr-6 `}
-                value={data?.maxCount || ''}
-                onChange={(e) => handleChangeValue('maxCount', e.target.value)}
+                value={data?.maxDeliveryCount || ''}
+                onChange={(e) => handleChangeValue('maxDeliveryCount', e.target.value)}
                 type='text'
                 placeholder='30'
                 maxLength={4}
               />
               <label
-                htmlFor='maxValue'
-                className={`absolute top-1/2 translate-y-[-50%] right-2 ${data?.maxCount ? 'text-slate-900' : 'text-gray-400'}`}
+                htmlFor='maxDeliveryCount'
+                className={`absolute top-1/2 translate-y-[-50%] right-2 ${data?.maxDeliveryCount ? 'text-slate-900' : 'text-gray-400'}`}
               >
                 회
               </label>
@@ -89,7 +87,7 @@ const SubscriptionTypeCount = () => {
               { label: '4주마다', selectData: '4' },
               { label: '5주마다', selectData: '5' },
             ]}
-            name='subscriptionTypeMonth'
+            name='weekValues'
             onChange={handleChangeCheckboxValue}
           />
         </div>
@@ -111,7 +109,7 @@ const SubscriptionTypeCount = () => {
               { label: '목요일', selectData: 'THU' },
               { label: '금요일', selectData: 'FRI' },
             ]}
-            name='subscriptionTypeDayOption'
+            name='dayValues'
             onChange={handleChangeCheckboxValue}
           />
         </div>

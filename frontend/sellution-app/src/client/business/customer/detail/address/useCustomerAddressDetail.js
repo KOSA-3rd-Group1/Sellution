@@ -87,7 +87,7 @@ export const useCustomerAddressDetail = ({
       } else if (!data.addressDetail) {
         throw ValidationError('상세주소 입력은 필수입니다.');
       } else if (!data.phoneNumber) {
-        throw ValidationError('후대폰 번호 입력은 필수입니다.');
+        throw ValidationError('휴대폰 번호 입력은 필수입니다.');
       } else if (!data.addressName) {
         throw ValidationError('배송지명 입력은 필수입니다.');
       }

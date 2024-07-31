@@ -1,30 +1,45 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import { InfoInput } from '@/client/layout/common/Input';
-import ImageUploader from '@/client/layout/common/ImageUploader';
 import ColorPalette from '@/client/layout/common/ColorPalette';
 import ShoppingMallPreview from '@/client/layout/shopManagement/ShoppingMallPreview';
+import { useModal } from '@/client/business/common/useModal';
 import { useShopManagementDisplaySetting } from '@/client/business/shopManagement/useShopManagementDisplaySetting';
+import ImageBox from '@/client/layout/common/ImageBox';
 
 const DisplaySettingComponent = () => {
   const {
+    alertModalState,
+    autoCloseModalState,
+    openAlertModal,
+    closeAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  } = useModal();
+  const {
     data,
     logoImg,
+    selectedLogoImg,
     promotionImg,
-    themeColor,
-    serviceType,
+    selectedPromotionImg,
+    setLogoImg,
+    setSelectedLogoImg,
+    setPromotionImg,
+    setSelectedPromotionImg,
     handleChangeInputValue,
     handleChangePromotionImg,
     handleChangeLogoImg,
-    handleChangeThemeColor,
     handleUploadSuccess,
     handleBeforeRemove,
     handleEditImage,
     handleRestoreData,
     handleSaveData,
-  } = useShopManagementDisplaySetting();
+  } = useShopManagementDisplaySetting({ openAlertModal, openAutoCloseModal, closeAutoCloseModal });
 
   return (
-    <div className='relative w-full h-full justify-between'>
+    <div
+      className='relative w-full h-full justify-between'
+      data-theme={`Custom${data.themeColor}Theme`}
+    >
       <section className='absolute w-full h-[calc(100%-58px)] p-2 flex flex-col overflow-y-auto'>
         <div className='flex gap-10 px-4'>
           <div className='w-1/2 min-w-fit'>
@@ -42,7 +57,7 @@ const DisplaySettingComponent = () => {
                   />
                 </div>
               </li>
-              <ImageUploader
+              <ImageBox
                 TitleTag={<div>로고 이미지 </div>}
                 inputId={'file-upload-logo'}
                 onUploadSuccess={handleUploadSuccess}
@@ -53,9 +68,13 @@ const DisplaySettingComponent = () => {
                 maxImageCount={1}
                 containerHeight={'h-32'}
                 previewSize={'w-64 h-16'}
+                images={logoImg}
+                setImages={setLogoImg}
+                selectedImage={selectedLogoImg}
+                setSelectedImage={setSelectedLogoImg}
                 // multiple
               />
-              <ImageUploader
+              <ImageBox
                 TitleTag={
                   <div className='mb-6'>
                     프로모션 이미지{' '}
@@ -71,6 +90,10 @@ const DisplaySettingComponent = () => {
                 maxImageCount={5}
                 containerHeight={'h-40'}
                 previewSize={'w-28 h-28'}
+                images={promotionImg}
+                setImages={setPromotionImg}
+                selectedImage={selectedPromotionImg}
+                setSelectedImage={setSelectedPromotionImg}
                 multiple
               />
               <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
@@ -120,7 +143,7 @@ const DisplaySettingComponent = () => {
               <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
                 <div className='flex-1 min-w-32'>포인트 컬러</div>
                 <div className='flex-1 min-w-64'>
-                  <ColorPalette data={themeColor} onDataChange={handleChangeThemeColor} />
+                  <ColorPalette data={data.themeColor} onDataChange={handleChangeInputValue} />
                 </div>
               </li>
             </ul>
@@ -131,8 +154,7 @@ const DisplaySettingComponent = () => {
                 data={data}
                 logoImg={logoImg}
                 promotionImg={promotionImg}
-                themeColor={themeColor}
-                serviceType={serviceType}
+                serviceType={data.serviceType}
               />
             </div>
           </div>

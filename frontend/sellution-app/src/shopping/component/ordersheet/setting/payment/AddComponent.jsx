@@ -86,7 +86,7 @@ const AddComponent = () => {
         }, 1500); // Wait for 1.5 seconds before navigating
       } catch (error) {
         console.error('Failed to save account information:', error);
-        setAuthMessage('계좌 정보 저장에 실패했습니다. 다시 시도해주세요.');
+        setAuthMessage('이미 등록된 계좌입니다.');
         setIsAuthenticated(false);
       } finally {
         setIsSaving(false);

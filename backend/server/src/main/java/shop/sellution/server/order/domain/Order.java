@@ -5,8 +5,6 @@ import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.company.domain.Company;
-import shop.sellution.server.company.domain.MonthOption;
-import shop.sellution.server.company.domain.WeekOption;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.address.domain.Address;
 import shop.sellution.server.event.domain.CouponEvent;
@@ -54,13 +52,11 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "event_id", nullable = true)
     private CouponEvent couponEvent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "month_option_id", nullable = true)
-    private MonthOption monthOption;
+    @Column(nullable = true)
+    private Integer monthOptionValue;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "week_option_id", nullable = true)
-    private WeekOption weekOption;
+    @Column(nullable = true)
+    private Integer weekOptionValue;
 
     @Column(nullable = false, unique = true)
     private Long code;

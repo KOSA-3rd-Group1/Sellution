@@ -44,15 +44,20 @@ const banks = [
   { id: 9, name: '하나은행', code: '081', logo: <HanaBankIcon className='object-contain h-8' /> },
 ];
 
-const BankSelector = ({ onSelect }) => {
-  const { selectedBank, isOpen, dropdownRef, toggleDropdown, selectBank } =
-    useBankSelector(onSelect);
+const BankSelector = ({ onSelect, bankCodeIndex, isDisabled }) => {
+  const { selectedBank, isOpen, dropdownRef, toggleDropdown, selectBank } = useBankSelector({
+    onSelect,
+    bank: banks[bankCodeIndex],
+  });
 
   return (
     <div className='relative' ref={dropdownRef}>
       <button
         onClick={toggleDropdown}
-        className='w-full h-10 pl-1 pr-4 flex items-center justify-between text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brandOrange'
+        className='w-full h-10 pl-1 pr-4 flex items-center justify-between text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brandOrange
+		disabled:bg-gray-100 disabled:text-slate-600 disabled:ring-transparent
+		'
+        disabled={isDisabled}
       >
         {selectedBank ? (
           <div className='flex items-center'>
@@ -63,7 +68,7 @@ const BankSelector = ({ onSelect }) => {
         ) : (
           <span className='pl-4'>은행을 선택하세요</span>
         )}
-        <ChevronDownIcon className='w-5 h-5 ml-2 mr-1' />
+        {!isDisabled && <ChevronDownIcon className='w-5 h-5 ml-2 mr-1' />}
       </button>
 
       {isOpen && (

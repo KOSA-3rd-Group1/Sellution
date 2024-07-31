@@ -20,6 +20,7 @@ const mapFilterValues = {
 };
 
 export const useProductList = () => {
+  const [companyId, setCompanyId] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const [data, setData] = useState([]);
@@ -120,11 +121,31 @@ export const useProductList = () => {
 
   useEffect(() => {
     fetchCategories();
+
+    const storedCompanyData = localStorage.getItem('shop-company-storage');
+    console.log('Stored companyId:', storedCompanyData);
+    if (storedCompanyData) {
+      try {
+        const parsedData = JSON.parse(storedCompanyData);
+        if (parsedData.state && parsedData.state.companyId) {
+          setCompanyId(parsedData.state.companyId);
+          console.log('Set companyId:', parsedData.state.companyId);
+        } else {
+          console.error('CompanyId not found in stored data');
+        }
+      } catch (error) {
+        console.error('Error parsing stored company data:', error);
+      }
+    } else {
+      console.error('No company data found in localStorage');
+    }
   }, []);
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`);
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`, {
+        params: { companyId: companyId, size: 100 },
+      });
       const categoryData = Array.isArray(response.data)
         ? response.data
         : response.data.content || [];
@@ -144,6 +165,7 @@ export const useProductList = () => {
   const fetchProducts = async () => {
     try {
       const params = {
+        companyId: companyId,
         page: tableState.currentPage - 1,
         size: tableState.itemsPerPage,
       };
@@ -201,8 +223,16 @@ export const useProductList = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
-  }, [debouncedTableState]);
+    if (companyId) {
+      fetchCategories();
+    }
+  }, [companyId]);
+
+  useEffect(() => {
+    if (companyId !== null) {
+      fetchProducts();
+    }
+  }, [debouncedTableState, companyId]);
 
   const handleRowEvent = (id) => {
     navigate(`/product/${id}`);

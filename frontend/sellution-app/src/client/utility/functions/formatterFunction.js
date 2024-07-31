@@ -3,11 +3,12 @@ export const accountNumberInServerFormat = (number) => {
   return number.replace(/-/g, '');
 };
 
+// 전화 번호 변환함수 (클라이언트 -> 서버)
 export const phoneNumberInServerFormat = (number) => {
   return number.replace(/-/g, '');
 };
 
-//전화 번호 변환함수 (서버 -> 클라이언트)
+// 전화 번호 변환함수 (서버 -> 클라이언트)
 export const formatPhoneNumber = (phone) => {
   const digits = phone.replace(/\D/g, '');
   if (digits.length === 11) {
@@ -17,3 +18,19 @@ export const formatPhoneNumber = (phone) => {
   }
   return phone;
 };
+
+// 금액 변환함수 (클라이언트 -> 서버)
+export const priceInServerFormat = (price) => {
+  const num = parseInt(price.replace(/[^\d]/g, ''), 10);
+  return num.toString();
+};
+
+// 금액 변환함수 (서버 -> 클라이언트)
+export const formatPrice = (price) => {
+  const num = parseInt(price, 10);
+  return num.toLocaleString('ko-KR') + ' 원';
+};
+
+// 파일 이름 생성 함수
+export const generateShortFileName = (prefix, index) =>
+  `${prefix}_${index}_${Date.now().toString(36)}.jpg`;
