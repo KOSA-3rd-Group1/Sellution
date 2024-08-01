@@ -1,20 +1,18 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import useCategoryAdd from '@/client/business/product/category/useCategoryAdd';
 import AlertModal from '@/client/layout/common/modal/AlertModal';
 
 const AddComponent = () => {
-  const AddComponent = () => {
-    const {
-      categoryName,
-      handleCategoryNameChange,
-      checkDuplicate,
-      handleSubmit,
-      moveList,
-      isChecked,
-      isAvailable,
-    } = useCategoryAdd();
+  const {
+    categoryName,
+    handleCategoryNameChange,
+    checkDuplicate,
+    handleSubmit,
+    moveList,
+    isChecked,
+    isAvailable,
+  } = useCategoryAdd();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalConfig, setModalConfig] = useState({});
@@ -23,21 +21,19 @@ const AddComponent = () => {
     const isDuplicate = await checkDuplicate();
     if (isDuplicate) {
       setModalConfig({
-        type: 'error',
-        title: '중복 확인',
-        message: '이미 존재하는 카테고리입니다. 다른 이름을 사용해주세요.',
+        type: 'warning',
+        title: '카테고리 중복',
+        message: '이미 존재하는 카테고리입니다. 다른 이름을 입력해주세요.',
       });
     } else {
       setModalConfig({
         type: 'success',
         title: '중복 확인',
-        message: '사용 가능한 카테고리 이름입니다. ',
+        message: '사용 가능한 카테고리 이름입니다.',
       });
     }
     setIsModalOpen(true);
   };
-
- 
 
   const handleCategorySubmit = async () => {
     if (!isChecked) {
@@ -77,7 +73,6 @@ const AddComponent = () => {
     }
     setIsModalOpen(true);
   };
-
 
   return (
     <div className='relative w-full h-full flex flex-col'>
