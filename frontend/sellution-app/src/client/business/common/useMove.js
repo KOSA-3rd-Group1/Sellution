@@ -19,6 +19,13 @@ export const useMove = () => {
   queryParams.set('page', page);
   queryParams.set('size', size);
 
+  // 일반 경로 이동
+  const moveDefault = (pathname) => {
+    navigate({
+      pathname: pathname,
+    });
+  };
+
   // queryParams를 유지하면서 pathname으로 경로 이동
   const moveToPathname = (pathname) => {
     setRefresh(!refresh);
@@ -74,5 +81,6 @@ export const useMove = () => {
     moveToPagination,
     updateQueryParameter,
     moveToDefaultPath,
+    moveDefault,
   };
 };

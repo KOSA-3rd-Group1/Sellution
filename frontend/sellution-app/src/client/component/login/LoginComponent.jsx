@@ -83,11 +83,11 @@ const LoginComponent = () => {
           <Link to='/idInquiry' className='font-medium text-orange-600 hover:text-orange-500'>
             아이디 찾기
           </Link>
-          <div className='divider divider-horizontal'></div>
+          <div className='divider divider-neutral divider-horizontal'></div>
           <Link to='/pwInquiry' className='font-medium text-orange-600 hover:text-orange-500'>
             비밀번호 찾기
           </Link>
-          <div className='divider divider-horizontal'></div>
+          <div className='divider divider-neutral divider-horizontal'></div>
           <Link to='/join' className='font-medium text-orange-600 hover:text-orange-500'>
             아이디 생성
           </Link>
