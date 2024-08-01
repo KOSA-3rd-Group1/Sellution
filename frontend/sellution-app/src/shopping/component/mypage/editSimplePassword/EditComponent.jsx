@@ -123,57 +123,59 @@ const EditComponent = () => {
   }
 
   return (
-    <div className='container mx-auto h-full max-w-lg p-4 bg-white flex flex-col justify-between'>
+    <div className='container mx-auto h-full max-w-lg p-4 bg-white flex flex-col'>
       <MenuHeaderNav title='간편비밀번호' />
-      <div className='space-y-8'>
-        <h1 className='text-2xl font-bold text-center mt-8 mb-6'>
-          {step === 1 ? '간편 비밀번호 등록' : '간편 비밀번호 확인'}
-        </h1>
-        <div className='flex justify-center space-x-4 mb-2'>
-          {[...Array(6)].map((_, index) => (
-            <div
-              key={index}
-              className={`w-4 h-4 rounded-full ${
-                index < (step === 1 ? firstPassword.length : secondPassword.length)
-                  ? 'bg-primary'
-                  : 'bg-gray-300'
-              }`}
-            />
-          ))}
-        </div>
-        {step === 1 && !errorMessage && (
-          <p className='text-center mb-10'>
-            간편 비밀번호를 등록하시면,
-            <br /> 6자리 숫자 입력으로 결제가 가능합니다.
-          </p>
-        )}
-        {step === 2 && !errorMessage && (
-          <p className='text-center mb-10'>다시 한번 입력해주세요.</p>
-        )}
-        {errorMessage && <p className='text-red-500 text-center mb-4'>{errorMessage}</p>}
-      </div>
-
-      <div className='flex-grow flex items-center '>
-        <div className='bg-primary rounded-lg p-4 w-full flex-grow flex flex-col justify-center'>
-          <div className='grid grid-cols-3 gap-4 flex-grow'>
-            {shuffledNumbers.map((item, index) => (
-              <button
+      <div className='flex-grow flex flex-col'>
+        <div className='space-y-8 mb-8'>
+          <h1 className='text-2xl font-bold text-center mt-8 mb-6'>
+            {step === 1 ? '간편 비밀번호 등록' : '간편 비밀번호 확인'}
+          </h1>
+          <div className='flex justify-center space-x-4 mb-2'>
+            {[...Array(6)].map((_, index) => (
+              <div
                 key={index}
-                onClick={() => {
-                  if (item === '지움') handleClear();
-                  else handleNumberClick(item);
-                }}
-                className='text-white text-2xl font-bold py-4 rounded-lg h-20'
-              >
-                {item}
-              </button>
+                className={`w-4 h-4 rounded-full ${
+                  index < (step === 1 ? firstPassword.length : secondPassword.length)
+                    ? 'bg-primary'
+                    : 'bg-gray-300'
+                }`}
+              />
             ))}
-            <button
-              onClick={handleDelete}
-              className='text-white text-2xl font-bold py-4 rounded-lg h-20'
-            >
-              ⌫
-            </button>
+          </div>
+          {step === 1 && !errorMessage && (
+            <p className='text-center mb-10'>
+              간편 비밀번호를 등록하시면,
+              <br /> 6자리 숫자 입력으로 결제가 가능합니다.
+            </p>
+          )}
+          {step === 2 && !errorMessage && (
+            <p className='text-center mb-10'>다시 한번 입력해주세요.</p>
+          )}
+          {errorMessage && <p className='text-red-500 text-center mb-4'>{errorMessage}</p>}
+        </div>
+
+        <div className='mt-auto'>
+          <div className='bg-primary rounded-lg p-4 w-full'>
+            <div className='grid grid-cols-3 gap-4'>
+              {shuffledNumbers.map((item, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    if (item === '지움') handleClear();
+                    else handleNumberClick(item);
+                  }}
+                  className='text-white text-2xl font-bold py-4 rounded-lg h-20 transition duration-150 ease-in-out hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+                >
+                  {item}
+                </button>
+              ))}
+              <button
+                onClick={handleDelete}
+                className='text-white text-2xl font-bold py-4 rounded-lg h-20 transition duration-150 ease-in-out hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+              >
+                ⌫
+              </button>
+            </div>
           </div>
         </div>
       </div>

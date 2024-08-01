@@ -8,14 +8,14 @@ const MyCoupon = ({
 }) => (
   <div className='bg-white p-4 mb-4 border border-solid border-[1.5px] shadow'>
     <div className='flex justify-between items-center mb-2'>
-      <span className='text-xl font-bold text-brandOrange'>{couponDiscountRate}%</span>
+      <span className='text-xl font-bold text-primary'>{couponDiscountRate}%</span>
       <span className='text-gray-500 text-sm'>{`${calculateRemainingDays(eventEndDate)} 남음`}</span>
     </div>
     <p className='text-gray-800 mb-1'>{couponName}</p>
     <p className='text-gray-600 text-xs'>{`행사기간: ${eventStartDate} ~ ${eventEndDate}`}</p>
     <p className='text-gray-500 text-sm'></p>
     {state === 'ONGOING' && (
-      <button className='mt-2 text-brandOrange text-sm'>
+      <button className='mt-2 text-primary text-sm'>
         {getCustomerTypeText(targetCustomerType)}
       </button>
     )}

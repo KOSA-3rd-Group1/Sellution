@@ -61,7 +61,18 @@ const ListComponent = () => {
   };
 
   const handleSelectAddress = (address) => {
-    localStorage.setItem('selectedAddress', JSON.stringify(address));
+    // 주소 객체에서 필요한 정보만 추출
+    const addressToStore = {
+      addressId: address.addressId,
+      addressName: address.addressName,
+      name: address.name,
+      phoneNumber: address.phoneNumber,
+      streetAddress: address.streetAddress,
+      addressDetail: address.addressDetail,
+      isDefaultAddress: address.isDefaultAddress,
+    };
+
+    localStorage.setItem('selectedAddress', JSON.stringify(addressToStore));
     navigate(`/shopping/${clientName}/subscription/order/${customerId}`);
   };
 
@@ -86,8 +97,8 @@ const ListComponent = () => {
                   )}
                 </div>
                 <button
-                  className='bg-gray-200 text-gray-700 px-3 py-1 rounded-md text-sm'
-                  onClick={handleSelectAddress}
+                  className='bg-neutral text-primary px-3 py-1 rounded-md text-sm hover:bg-primary hover:text-white hover:border-primary'
+                  onClick={() => handleSelectAddress(address)}
                 >
                   선택
                 </button>

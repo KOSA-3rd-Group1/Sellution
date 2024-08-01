@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { generateShortFileName } from '@/client/utility/functions/formatterFunction';
 
 const useProductAdd = () => {
   const navigate = useNavigate();
@@ -22,6 +23,10 @@ const useProductAdd = () => {
     stock: 0,
     isVisible: DisplayStatus.VISIBLE,
   });
+
+  const formatPrice = (price) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
 
   const [images, setImages] = useState({
     thumbnail: null,
@@ -236,6 +241,7 @@ const useProductAdd = () => {
     moveList,
     registerProduct,
     setIsCategoryDropdownOpen,
+    formatPrice,
   };
 };
 
