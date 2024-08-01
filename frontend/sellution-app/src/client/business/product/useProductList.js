@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import useDebounce from '@/client/business/common/useDebounce';
@@ -64,10 +64,10 @@ export const useProductList = () => {
       },
       {
         key: 'cost',
-        label: '금액',
+        label: '금액(원)',
         type: 'none',
         width: 'min-w-36 w-36 max-w-36',
-        format: (value) => `${value.toLocaleString()}원`,
+        format: (value) => `${value.toLocaleString()}`,
       },
       {
         key: 'stock',
@@ -97,10 +97,10 @@ export const useProductList = () => {
       },
       {
         key: 'discountedPrice',
-        label: '할인 적용 후 금액',
+        label: '할인 적용 후 금액(원)',
         type: 'none',
         width: 'min-w-36 w-36 max-w-36 text-brandOrange',
-        format: (value) => `${value.toLocaleString()}원`,
+        format: (value) => `${value.toLocaleString()}`,
       },
     ],
     [categories],

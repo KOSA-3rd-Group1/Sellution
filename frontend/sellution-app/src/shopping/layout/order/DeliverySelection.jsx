@@ -18,7 +18,7 @@ const DeliverySelection = ({ addresses, selectedAddress, handleAddressChange }) 
         </span>
         <button
           onClick={handleAddressChange}
-          className='text-accent border border-accent rounded px-2 py-1 text-sm hover:bg-neutral'
+          className='bg-neutral text-primary px-3 py-1 rounded-md text-sm hover:bg-primary hover:text-white hover:border-primary'
         >
           {addresses.length > 0 ? '변경' : '추가'}
         </button>
@@ -26,7 +26,7 @@ const DeliverySelection = ({ addresses, selectedAddress, handleAddressChange }) 
       {selectedAddress ? (
         <div className='space-y-2'>
           <div>
-            <span className='text-primary mr-2'>*</span>이름: {selectedAddress.name}
+            <span className='text-primary mr-2 '>*</span>이름: {selectedAddress.name}
           </div>
           <div>
             <span className='text-primary mr-2'>*</span>연락처:{' '}

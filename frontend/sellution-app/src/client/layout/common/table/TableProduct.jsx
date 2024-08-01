@@ -127,7 +127,9 @@ const TableProduct = ({
                             '이미지 없음'
                           )
                         ) : (
-                          <div className='text-center w-full truncate'>{row[header.key]}</div>
+                          <div className='text-center w-full truncate'>
+                            {header.format ? header.format(row[header.key]) : row[header.key]}
+                          </div>
                         )}
                       </div>
                     </td>
