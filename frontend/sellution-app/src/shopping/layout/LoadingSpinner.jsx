@@ -4,7 +4,7 @@ const LoadingSpinner = () => (
       {[0, 1, 2].map((index) => (
         <div
           key={index}
-          className='w-4 h-4 bg-brandOrange rounded-full animate-bounce'
+          className='w-4 h-4 bg-primary rounded-full animate-bounce'
           style={{ animationDelay: `${index * 0.1}s` }}
         ></div>
       ))}

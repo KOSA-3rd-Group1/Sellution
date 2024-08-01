@@ -6,6 +6,7 @@ import OneButtonFooterLayout from './../../layout/OneButtonFooterLayout';
 import TwoButtonFooterLayout from '../../layout/TwoButtonFooterLayout';
 import DetailInformationLayout from '../../layout/DetailInformationLayout';
 import TwoButtonModal from '../../layout/partials/TwoButtonModal';
+import LoadingSpinner from './../../layout/LoadingSpinner';
 
 const DetailComponent = () => {
   const {
@@ -30,7 +31,7 @@ const DetailComponent = () => {
   const isButtonDisabled = itemCountToAdd === 0;
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   if (error) {

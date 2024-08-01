@@ -99,7 +99,7 @@ const AddComponent = () => {
   };
 
   return (
-    <div className='h-full flex justify-center items-center'>
+    <div className='h-full flex justify-center items-start my-10'>
       <MenuHeaderNav title={'배송지 등록'} />
       <div className='w-[90%]'>
         {error && (
