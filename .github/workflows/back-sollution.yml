@@ -14,59 +14,62 @@ on:
 env:
   S3_BUCKET_NAME: ${{ secrets.S3_SOLLUTION_CICD_BUCKET_NAME }}
   PROJECT_NAME: sollution-server
+  WORKING_DIRECTORY: ./backend/server
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
 
-      - name: Change to working directory
-        run: cd backend/server
+    - name: Create application.yml
+      run: |
+        echo "${{ secrets.SELLUTION_SERVER_PROD_YML }}" > ${{ env.WORKING_DIRECTORY }}/src/main/resources/application-prod.yml
+      shell: bash
 
-      - name: Create application.yml
-        run: |
-          echo "${{ secrets.SELLUTION_SERVER_PROD_YML }}" > ./backend/server/src/main/resources/application-prod.yml
-        shell: bash
+    - name: List directory contents
+      run: ls -la
+      working-directory: ${{ env.WORKING_DIRECTORY }}
 
-      - name: List directory contents
-        run: ls -la
-        working-directory: ./backend/server
+    - name: Grant execute permission for gradlew
+      run: chmod +x ./gradlew
+      working-directory: ${{ env.WORKING_DIRECTORY }}
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-        working-directory: ./backend/server
+    - name: Run tests
+      run: ./gradlew test
+      working-directory: ${{ env.WORKING_DIRECTORY }}
 
-      - name: Build with Gradle
-        run: ./gradlew build
-        working-directory: ./backend/server
+    - name: Build with Gradle
+      run: ./gradlew build
+      working-directory: ${{ env.WORKING_DIRECTORY }}
 
-      - name: Make zip file
-        run: zip -r ./$GITHUB_SHA.zip .
-        working-directory: ./backend/server
+    - name: Make zip file
+      run: zip -r ./$GITHUB_SHA.zip .
+      working-directory: ${{ env.WORKING_DIRECTORY }}
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Upload to S3
-        run: aws s3 cp ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
-        working-directory: ./backend/server
+    - name: Upload to S3
+      run: aws s3 cp ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
+      working-directory: ${{ env.WORKING_DIRECTORY }}
 
-      - name: Code Deploy
-        run: |
-          aws deploy create-deployment \
-            --application-name t1-code-deploy \
-            --deployment-config-name CodeDeployDefault.AllAtOnce \
-            --deployment-group-name t1-deploy-group \
-            --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
+    - name: Code Deploy
+      run: |
+        aws deploy create-deployment \
+        --application-name t1-code-deploy \
+        --deployment-config-name CodeDeployDefault.AllAtOnce \
+        --deployment-group-name t1-deploy-group \
+        --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
