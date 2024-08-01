@@ -6,9 +6,6 @@
 .gradle/8.8/excutionHistory/excutionHistory.lock
 .gradle/8.8/fileHashes/fileHashes.lock
 .gradle/buildOutputCleanup/buildOutputCleanup.lock
-./.gradle
-
-.gradle/
 
 .idea/**/workspace.xml
 .idea/**/tasks.xml
@@ -80,10 +77,7 @@ fabric.properties
 
 .idea
 
-.gradle/*
-gradle/*
-gradlew
-gradlew.bat
+
 
 .DS_Store
 
