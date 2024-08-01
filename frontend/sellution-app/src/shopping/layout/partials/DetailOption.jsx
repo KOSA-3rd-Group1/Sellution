@@ -45,7 +45,7 @@ const DetailOptionComponent = ({
         </div>
         <div className='right-box flex flex-col justify-center items-end'>
           <div className='discount-box flex items-center'>
-            <span className='discount-rate text-xs bg-primary text-white rounded-sm py-1 px-2 mr-2'>
+            <span className='discount-rate text-xs bg-red-500 text-white rounded-sm py-1 px-2 mr-2'>
               {productToShow.discountRate}%
             </span>
             <span className='price text-sm text-gray-400 line-through'>
@@ -58,8 +58,13 @@ const DetailOptionComponent = ({
         </div>
       </div>
       <div className='footer-box-3 flex justify-end items-center font-shadow mt-2'>
-        <span className='discount-price text-lg text-primary font-bold'>
-          {itemCountToAdd > 0 ? `${productToShow.discountedPrice * itemCountToAdd} 원` : ''}
+
+//         <span className='discount-price text-lg text-primary font-bold'>
+//           {itemCountToAdd > 0 ? `${productToShow.discountedPrice * itemCountToAdd} 원` : ''}
+
+        <span className='discount-price text-lg text-red-500 font-bold'>
+          {itemCountToAdd > 0 ? formatPrice(productToShow.discountedPrice * itemCountToAdd) : ''}
+
         </span>
       </div>
     </div>

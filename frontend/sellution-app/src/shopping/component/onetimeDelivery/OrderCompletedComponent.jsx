@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LogoHeaderNav from '@/shopping/layout/LogoHeaderNav.jsx';
 
@@ -57,11 +57,11 @@ const OrderCompletedComponent = () => {
         <>
           <div className=''>
             <p className='text-sm font-semibold text-brandOrange'>배송 주기</p>
-            <p className='text-base font-semibold'>{orderData.selectedWeekOption}주마다</p>
+            <p className='text-base'>{orderData.selectedWeekOption}주마다</p>
           </div>
           <div className=''>
             <p className='text-sm font-semibold text-brandOrange'>배송 요일</p>
-            <p className='text-base font-semibold'>{formatDayList(orderData.selectedDayList)}</p>
+            <p className='text-base'>{formatDayList(orderData.selectedDayList)}</p>
           </div>
           {orderData.type === 'MONTH_SUBSCRIPTION' && (
             <div className='mt-2 col-span-2'>
