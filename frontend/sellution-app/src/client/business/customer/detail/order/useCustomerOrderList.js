@@ -2,61 +2,23 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useAuthStore from '@/client/store/stores/useAuthStore';
 import useTableStore from '@/client/store/stores/useTableStore';
+import { formatPrice } from '@/client/utility/functions/formatterFunction';
 import { getCustomerOrderList } from '@/client/utility/apis/customer/detail/order/customerOrderListApi';
-
-// 더미 데이터 생성 함수
-const generateDummyDataSubscriptionData = (count) => {
-  return Array.from({ length: count }, (_, index) => ({
-    id: index + 1,
-    createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
-      .toISOString()
-      .split('T')[0],
-    orderId: `${Math.floor(10000000 + Math.random() * 90000000)}`,
-    productInfo: '[no.131] light melange gray ... 외 3',
-    totalPrice: `${Math.floor(100000 + Math.random() * 900000)}`,
-    type: ['정기(횟수 단위)', '정기(월 단위)'][Math.floor(Math.random() * 2)],
-    status: ['승인 대기', '주문 승인'][Math.floor(Math.random() * 2)],
-    dayOption: `${Math.floor(1 + Math.random() * 4)}주 간격 (월 / 금)`,
-    totalDeliveryCount: `${Math.floor(1 + Math.random() * 9)}`,
-    dateOption: `${Math.floor(1 + Math.random() * 12)}개월`,
-    deliveryStartDate: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
-      .toISOString()
-      .split('T')[0],
-    deliveryEndDate: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
-      .toISOString()
-      .split('T')[0],
-  }));
-};
-
-// 더미 데이터 생성 함수
-const generateDummyOneTimeOrderData = (count) => {
-  return Array.from({ length: count }, (_, index) => ({
-    id: index + 1,
-    createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
-      .toISOString()
-      .split('T')[0],
-    orderId: `${Math.floor(10000000 + Math.random() * 90000000)}`,
-    productInfo: '[no.131] light melange gray ... 외 3',
-    totalPrice: `${Math.floor(100000 + Math.random() * 900000)}`,
-    type: ['정기(횟수 단위)', '정기(월 단위)'][Math.floor(Math.random() * 2)],
-    status: ['승인 대기', '주문 승인'][Math.floor(Math.random() * 2)],
-    deliveryStartDate: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
-      .toISOString()
-      .split('T')[0],
-    deliveryEndDate: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
-      .toISOString()
-      .split('T')[0],
-  }));
-};
-
-//더미 데이터
-const DUMMY_DATA_SUBSCRIPTION = generateDummyDataSubscriptionData(10);
-const DUMMY_DATA_ONETIME = generateDummyOneTimeOrderData(10);
+import {
+  formatOrderType,
+  formatOrderStatus,
+  convertAndSortDays,
+  formatLocalDateTime,
+} from '@/client/utility/functions/orderDetailFunction';
+import {
+  postApproveOrder,
+  postCancleOrder,
+} from '@/client/utility/apis/customer/detail/order/customerOrderListApi';
 
 export const useCustomerOrderList = () => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
-  const { tables, setSelectedRows, setSelectAll } = useTableStore();
+  const { tables, setSelectedRows, setSelectAll, clearTable } = useTableStore();
 
   const { customerId } = useParams();
 
@@ -66,11 +28,31 @@ export const useCustomerOrderList = () => {
   const [onetimeData, setOnetimeData] = useState([]); // 단건 배송 테이블 데이터
   const [onetimeTotalDataCount, setOnetimeTotalDataCount] = useState(0); // 단건 배송 데이터 총 개수
 
+  const [orderInfo, setOrderInfo] = useState({}); // 주문 취소를 위한 주문 데이터
+  console.log(orderInfo);
+
   // 수정 필요
   const formatData = useCallback(
     (content) => ({
-      ...content,
+      //   ...content,
       id: content.orderId,
+      orderCreatedAt: formatLocalDateTime(content.orderCreatedAt),
+      orderCode: content.orderCode,
+      orderedProduct:
+        content.orderedProductList?.length > 1
+          ? `${content.orderedProductList[0].productName} ... 외 ${content.orderedProductList?.length - 1}건`
+          : `${content.orderedProductList[0].productName}`,
+      totalPrice: formatPrice(content.totalPrice),
+      orderType: formatOrderType(content.type),
+      status: formatOrderStatus(content.status),
+      dayOption: `${content.selectedWeekOption}주 간격 / ${convertAndSortDays(content.selectedDayList)}`,
+      subscriptionPeriod:
+        content.type === 'MONTH_SUBSCRIPTION'
+          ? `${content.selectedMonthOption} 개월`
+          : `${content.totalDeliveryCount} 회`, // 이용 기간
+      totalDeliveryCount: `${content.totalDeliveryCount} 회`, // 남은 배송 횟수
+      deliveryStartDate: content.deliveryStartDate,
+      deliveryEndDate: content.deliveryEndDate,
     }),
     [],
   );
@@ -105,45 +87,117 @@ export const useCustomerOrderList = () => {
 
       if (!empty) {
         separateData(content);
+        console.log(content);
+        const newOrderInfo = { onetime: {}, subscription: {} };
+        content.forEach((item) => {
+          if (item.type === 'ONETIME') {
+            newOrderInfo['onetime'][item.orderId] = {
+              customerId: item.customer.id,
+              accountId: item.accountId,
+            };
+          } else {
+            newOrderInfo['subscription'][item.orderId] = {
+              customerId: item.customer.id,
+              accountId: item.accountId,
+            };
+          }
+        });
+        setOrderInfo(() => ({ ...newOrderInfo }));
       }
-
-      // 아래 더미데이터 제거 예정
-      setSubscriptionData(DUMMY_DATA_SUBSCRIPTION);
-      setOnetimeData(DUMMY_DATA_ONETIME);
-
-      setSubscriptionTotalDataCount(10);
-      setOnetimeTotalDataCount(10);
     };
 
     fetch(customerId, setAccessToken, accessToken);
+
+    return () => {
+      clearTable('onetime');
+      clearTable('subscription');
+    };
   }, []);
 
   // 간편 주문 승인 이벤트
   // 간편 주문 승인 일관 승인 시, 선택한 항목 하나씩 서버로 api 요청, 이후 응답받아서 성공하면 해당하는 데이터만 변경
-  const handleApproveAllSimpleOrderBtn = (tableId) => {
-    console.log(tables[tableId]);
-    alert('간편 주문 일괄 승인');
-  };
+  //   const handleApproveAllSimpleOrderBtn = (tableId) => {
+  //     console.log(tables[tableId]);
+  //     alert('간편 주문 일괄 승인');
+  //   };
 
   // 간편 주문 승인 이벤트
   // 간편 주문 승인 시, 서버로 api 요청, 이후 응답 받아서 성공하면 해당 데이터 변경
-  const handleApproveSimpleOrderBtn = (orderId) => {
-    console.log('간편주문', orderId);
+  //   const handleApproveSimpleOrderBtn = (orderId) => {
+  //     console.log('간편주문', orderId);
 
-    alert(`간편 주문 승인 ${orderId}`);
+  //     alert(`간편 주문 승인 ${orderId}`);
+  //   };
+
+  //   const handleSelectedRows = (selectedRows) => {
+  //     console.log(selectedRows);
+  //   };
+
+  // 간편 주문 승인 일괄 처리(수정 필요)
+  const handleApproveAllSimpleOrderBtn = async (tableId) => {
+    if (tables !== undefined && tables[tableId] !== undefined) {
+      //   total
+      console.log('이것이 테이블 아이디다', tableId, tables[tableId]);
+      Object.entries(tables[tableId].selectedRows).forEach(async ([key, value]) => {
+        if (value) {
+          await handleApproveSimpleOrder(key);
+        }
+      });
+      alert('간편 주문 일괄 승인');
+    } else {
+      alert('없음');
+    }
+    // 모달로 처리
   };
 
-  const handleSelectedRows = (selectedRows) => {
-    console.log(selectedRows);
+  // 간편 주문 승인 개별 처리
+  const handleApproveOneSimpleOrderBtn = async (orderId) => {
+    await handleApproveSimpleOrder(orderId);
+    alert('간편 승인');
   };
 
+  // 간편 주문 승인
+  const handleApproveSimpleOrder = async (orderId) => {
+    try {
+      await postApproveOrder(orderId, setAccessToken, accessToken);
+      //     alert(`간편 주문 승인 ${orderId}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 주문 승인 일괄 처리
+  const handleApproveCancleAll = async (tableId) => {
+    if (tables !== undefined && tables[tableId] !== undefined) {
+      Object.entries(tables[tableId].selectedRows).forEach(([key, value]) => {
+        if (value) {
+          console.log(tableId, key, orderInfo);
+          handleApproveCancle(key, orderInfo[tableId][key]);
+        }
+      });
+      alert('간편 주문 일괄 승인');
+    } else {
+      alert('없음');
+    }
+  };
+
+  // 주문 승인 취소
+  const handleApproveCancle = async (orderId, data) => {
+    try {
+      await postCancleOrder(orderId, data, setAccessToken, accessToken);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return {
     subscriptionData,
     subscriptionTotalDataCount,
     onetimeData,
     onetimeTotalDataCount,
     handleApproveAllSimpleOrderBtn,
-    handleApproveSimpleOrderBtn,
-    handleSelectedRows,
+    handleApproveOneSimpleOrderBtn,
+    handleApproveCancleAll,
+    // handleApproveSimpleOrderBtn,
+    // handleSelectedRows,
   };
 };

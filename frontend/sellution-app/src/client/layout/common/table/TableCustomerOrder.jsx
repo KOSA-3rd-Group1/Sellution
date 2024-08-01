@@ -88,7 +88,7 @@ const TableCustomerOrder = ({
                     >
                       <div className='flex flex-col w-full justify-between items-center gap-3 px-2'>
                         <div className='text-center w-full truncate'>{row[header.key]}</div>
-                        {header.key === 'status' && row.status === '승인 대기' && (
+                        {header.key === 'status' && row.status === '승인대기' && (
                           <div className={`${visibleButtons[row.id] ? 'block' : 'hidden'}`}>
                             <div className='flex justify-center items-center gap-4'>
                               <EventBtn

@@ -3,6 +3,17 @@ export const phoneNumberInServerFormat = (number) => {
   return number.replace(/-/g, '');
 };
 
+// 전화 번호 변환함수 (서버 -> 클라이언트)
+export const formatPhoneNumber = (phone) => {
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length === 11) {
+    return digits.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+  } else if (digits.length === 10) {
+    return digits.replace(/(\d{2})(\d{4})(\d{4})/, '$1-$2-$3');
+  }
+  return phone;
+};
+
 // LocalDateTime 변환 함수 (yyyy-MM-dd HH:mm:ss)
 export const formatLocalDateTime = (isoDateString) => {
   const date = new Date(isoDateString); // Date 객체를 사용하여 ISO 8601 문자열을 파싱
