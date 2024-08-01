@@ -48,12 +48,12 @@ const PaymentEstimation = ({
         <span>총 상품 금액</span>
         <span>{formatPrice(totalPrice)}</span>
       </div>
-      <div className='flex justify-between text-red-500'>
+      <div className='flex justify-between text-secondary'>
         <span>상품 할인</span>
         <span>{productDiscountTotal > 0 ? `- ${formatPrice(productDiscountTotal)}` : '-'}</span>
       </div>
       {couponDiscountTotal > 0 && (
-        <div className='flex justify-between text-red-500'>
+        <div className='flex justify-between text-secondary'>
           <span>쿠폰 할인</span>
           <span>- {formatPrice(couponDiscountTotal)}</span>
         </div>
@@ -66,7 +66,7 @@ const PaymentEstimation = ({
       {renderCommonInfo()}
       <div className='flex justify-between font-bold mt-2 pt-2 border-t'>
         <span>총 결제 금액</span>
-        <span className='text-brandOrange'>{formatPrice(finalPrice)}</span>
+        <span className='text-red-500'>{formatPrice(finalPrice)}</span>
       </div>
     </>
   );
@@ -76,7 +76,7 @@ const PaymentEstimation = ({
       {renderCommonInfo()}
       <div className='flex justify-between font-bold mt-2 pt-2 border-t'>
         <span>배송 1회당 상품 금액</span>
-        <span className='text-brandOrange'>{formatPrice(perPrice)}</span>
+        <span className='text-red-500'>{formatPrice(perPrice)}</span>
       </div>
       <div className='mt-4 space-y-2'>
         <div className='flex justify-between'>
@@ -85,7 +85,7 @@ const PaymentEstimation = ({
         </div>
         <div className='flex justify-between font-bold mt-2 pt-2 border-t'>
           <span>총 결제 금액 </span>
-          <span className='text-brandOrange'> {formatPrice(perPrice * selectedCount)}</span>
+          <span className='text-red-500'> {formatPrice(perPrice * selectedCount)}</span>
         </div>
       </div>
     </>
@@ -96,7 +96,7 @@ const PaymentEstimation = ({
       {renderCommonInfo()}
       <div className='flex justify-between font-bold mt-2 pt-2 border-t'>
         <span>배송 1회당 상품 금액</span>
-        <span className='text-brandOrange'>{formatPrice(perPrice)}</span>
+        <span className='text-red-500'>{formatPrice(perPrice)}</span>
       </div>
       <br />
       <div className='mt-4 space-y-2'>
@@ -109,14 +109,18 @@ const PaymentEstimation = ({
           )}
           <span>{formatCount(monthlyPriceData.thisMonthDeliveryCount)}</span>
         </div>
-        <div className='flex justify-between font-bold mt-2 pt-2 border-t'>
-          <span>첫달 결제 금액</span>
-          {perPrice > 0 && monthlyPriceData.thisMonthDeliveryCount > 0 && (
-            <span className='text-gray-400'>
-              [{formatPrice(perPrice)} * {formatCount(monthlyPriceData.thisMonthDeliveryCount)}] →
-            </span>
-          )}
-          <span className='text-brandOrange'>{formatPrice(monthlyPriceData.thisMonthPrice)}</span>
+        <div className='flex justify-between mt-2 pt-2 border-t'>
+          <div className='flex gap-2'>
+            <span className='font-bold'>첫달 결제 금액</span>
+            {perPrice > 0 && monthlyPriceData.thisMonthDeliveryCount > 0 && (
+              <span className='text-red-400 text-md'>
+                [{formatPrice(perPrice)} x {formatCount(monthlyPriceData.thisMonthDeliveryCount)}] →
+              </span>
+            )}
+          </div>
+          <span className='text-red-500 font-bold'>
+            {formatPrice(monthlyPriceData.thisMonthPrice)}
+          </span>
         </div>
         <br />
         <div className='flex justify-between'>
@@ -125,7 +129,7 @@ const PaymentEstimation = ({
         </div>
         <div className='flex justify-between font-bold mt-2 pt-2 border-t'>
           <span>구독기간 결제될 총 금액</span>
-          <span className='text-brandOrange'>{formatPrice(monthlyPriceData.totalPrice)}</span>
+          <span className='text-red-500'>{formatPrice(monthlyPriceData.totalPrice)}</span>
         </div>
         <br />
         <div className='flex justify-between '>
@@ -134,7 +138,7 @@ const PaymentEstimation = ({
         </div>
         <div className='flex justify-between'>
           <span className='font-bold'>예상 마지막 배송일</span>
-          <span  className='font-semibold'>{formatDate(monthlyPriceData.deliveryEndDate)}</span>
+          <span className='font-semibold'>{formatDate(monthlyPriceData.deliveryEndDate)}</span>
         </div>
       </div>
     </>

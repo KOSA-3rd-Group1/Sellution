@@ -6,6 +6,7 @@ import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import useOrderListStore from '../../store/stores/useOrderListStore';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import { DeleteIcon, MinusIcon, PlusIcon } from '../../utility/assets/Icons';
+import { formatPrice } from '@/client/utility/functions/formatterFunction';
 
 const CartComponent = () => {
   const {
@@ -39,7 +40,7 @@ const CartComponent = () => {
           <div
             className={`font-bold py-2 px-3 text-sm cursor-pointer text-gray-500 bg-primary text-white`}
             onClick={() => {
-              navigate(`/shopping/${clientName}/subscription/cart`);
+              navigate(`/shopping/${clientName}/subscription/cart`, { replace: true });
             }}
           >
             정기 배송
@@ -47,7 +48,7 @@ const CartComponent = () => {
           <div
             className={`font-bold py-2 px-3 text-sm cursor-pointer text-gray-500 `}
             onClick={() => {
-              navigate(`/shopping/${clientName}/onetime/cart`);
+              navigate(`/shopping/${clientName}/onetime/cart`, { replace: true });
             }}
           >
             단건 배송
@@ -115,7 +116,16 @@ const CartComponent = () => {
                   </div>
                   <div className='product-item-2 flex-[5] flex flex-col justify-center px-4'>
                     <div className='product-name font-bold text-sm'>{item.name}</div>
-                    <div className='product-price text-primary my-2'>{item.cost} 원</div>
+                    <div className='product-price text-primary my-2'>
+                      <div className='flex gap-2 items-center'>
+                        <span className='text-gray-400 line-through text-xs'>
+                          {formatPrice(item.cost)}
+                        </span>
+                        <span className='text-black text-sm'>
+                          {formatPrice(item.discountedPrice)}
+                        </span>
+                      </div>
+                    </div>
                     <div className='quantity-control flex items-center border border-gray-300 w-20'>
                       <button
                         className='quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center'
