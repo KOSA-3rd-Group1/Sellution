@@ -240,7 +240,7 @@ export const useProductList = () => {
   }, [debouncedTableState, companyId]);
 
   const handleRowEvent = (id) => {
-    navigate(`/product/${id}`);
+    navigate(`/product/${id}?fromPage=${tableState.currentPage}`);
   };
 
   const handleAddProductBtn = () => {
