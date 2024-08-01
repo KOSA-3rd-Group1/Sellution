@@ -3,8 +3,7 @@ import TableCustomerOrder from '@/client/layout/common/table/TableCustomerOrder'
 import { EventBtn } from '@/client/layout/common/Button';
 import { useMove } from '@/client/business/common/useMove';
 import { useCustomerOrderList } from '@/client/business/customer/detail/order/useCustomerOrderList';
-// import { useCustomerOnetimeOrderList } from '@/client/business/customer/detail/order/useCustomerOnetimeOrderList';
-import { SimpleOrderIcon } from '@/client/utility/assets/Icons';
+import { SimpleOrderIcon, OrderCancelAllIcon } from '@/client/utility/assets/Icons';
 import {
   SUBSCRIPTION_HEADERS,
   SUBSCRIPTION_ROW_HEIGHT,
@@ -20,22 +19,9 @@ const ListComponent = () => {
     onetimeData,
     onetimeTotalDataCount,
     handleApproveAllSimpleOrderBtn,
-    handleApproveSimpleOrderBtn,
+    handleApproveOneSimpleOrderBtn,
+    handleApproveCancleAll,
   } = useCustomerOrderList();
-
-  //   const {
-  //     data: SUBSCRIPTION_data,
-  //     totalDataCount: SUBSCRIPTION_totalDataCount,
-  //     handleApproveAllSimpleOrderBtn: SUBSCRIPTION_handleApproveAllSimpleOrderBtn,
-  //     handleApproveSimpleOrderBtn: SUBSCRIPTION_handleApproveSimpleOrderBtn,
-  //   } = useCustomerOrderList();
-
-  //   const {
-  //     data: ONETIME_data,
-  //     totalDataCount: ONETIME_totalDataCount,
-  //     handleApproveAllSimpleOrderBtn: ONETIME_handleApproveAllSimpleOrderBtn,
-  //     handleApproveSimpleOrderBtn: ONETIME_handleApproveSimpleOrderBtn,
-  //   } = useCustomerOnetimeOrderList();
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -49,7 +35,7 @@ const ListComponent = () => {
             ROW_HEIGHT={SUBSCRIPTION_ROW_HEIGHT}
             data={subscriptionData}
             totalDataCount={subscriptionTotalDataCount}
-            handleApproveSimpleOrderBtn={handleApproveSimpleOrderBtn}
+            handleApproveSimpleOrderBtn={handleApproveOneSimpleOrderBtn}
             handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
@@ -57,6 +43,11 @@ const ListComponent = () => {
                   Icon={SimpleOrderIcon}
                   label={'간편 주문 승인'}
                   onClick={() => handleApproveAllSimpleOrderBtn('subscription')}
+                />
+                <EventBtn
+                  Icon={OrderCancelAllIcon}
+                  label={'주문 취소'}
+                  onClick={() => handleApproveCancleAll('subscription')}
                 />
               </div>
             }
@@ -73,7 +64,7 @@ const ListComponent = () => {
             ROW_HEIGHT={ONETIME_ROW_HEIGHT}
             data={onetimeData}
             totalDataCount={onetimeTotalDataCount}
-            handleApproveSimpleOrderBtn={handleApproveSimpleOrderBtn}
+            handleApproveSimpleOrderBtn={handleApproveOneSimpleOrderBtn}
             handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
@@ -81,6 +72,11 @@ const ListComponent = () => {
                   Icon={SimpleOrderIcon}
                   label={'간편 주문 승인'}
                   onClick={() => handleApproveAllSimpleOrderBtn('onetime')}
+                />
+                <EventBtn
+                  Icon={OrderCancelAllIcon}
+                  label={'주문 취소'}
+                  onClick={() => handleApproveCancleAll('onetime')}
                 />
               </div>
             }

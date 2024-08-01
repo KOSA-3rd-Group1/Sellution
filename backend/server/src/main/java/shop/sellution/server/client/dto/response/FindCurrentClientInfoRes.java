@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.sellution.server.customer.domain.type.CustomerType;
+import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.global.type.UserRole;
 
 @Getter
@@ -17,4 +18,5 @@ public class FindCurrentClientInfoRes {
     private String name;
     private UserRole userRole;
     private String contractCompanyName;
+    private DisplayStatus isAutoApproved;
 }

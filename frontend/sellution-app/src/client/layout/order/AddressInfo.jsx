@@ -10,25 +10,31 @@ const AddressInfo = ({ data }) => {
         <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
           <div className='flex-1 min-w-32'>수령인</div>
           <div className='flex-1 min-w-64'>
-            <InfoInput value={data.paymentMethod || ''} disabled textDefault={true} />
+            <InfoInput value={data.name || ''} disabled textDefault={true} />
           </div>
         </li>
         <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
           <div className='flex-1 min-w-32'>우편번호</div>
           <div className='flex-1 min-w-64'>
-            <InfoInput value={data.paymentMethod || ''} disabled textDefault={true} />
+            <InfoInput value={data.zipcode || ''} disabled textDefault={true} />
           </div>
         </li>
         <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
           <div className='flex-1 min-w-32'>배송지 주소</div>
           <div className='flex-1 min-w-64'>
-            <InfoInput value={data.paymentMethod || ''} disabled textDefault={true} />
+            <InfoInput value={data.address || ''} disabled textDefault={true} />
           </div>
         </li>
         <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
-          <div className='flex-1 min-w-32'>배송메세지</div>
+          <div className='flex-1 min-w-32'>수령인 휴대폰 전화</div>
           <div className='flex-1 min-w-64'>
-            <InfoInput value={data.paymentMethod || ''} disabled textDefault={true} />
+            <InfoInput value={data.phoneNumber || ''} disabled textDefault={true} />
+          </div>
+        </li>
+        <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
+          <div className='flex-1 min-w-32'>배송지 명</div>
+          <div className='flex-1 min-w-64'>
+            <InfoInput value={data.addressName || ''} disabled textDefault={true} />
           </div>
         </li>
       </ul>

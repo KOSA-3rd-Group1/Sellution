@@ -22,6 +22,12 @@ const useTableStore = create((set) => ({
         },
       },
     })),
+  clearTable: (tableId) =>
+    set((state) => {
+      const newTables = { ...state.tables };
+      delete newTables[tableId];
+      return { tables: newTables };
+    }),
 }));
 
 export default useTableStore;
