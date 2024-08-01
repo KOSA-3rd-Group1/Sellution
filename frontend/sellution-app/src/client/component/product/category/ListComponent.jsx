@@ -68,7 +68,44 @@ const ListComponent = () => {
   const itemsPerPage = 5;
 
   const renderPageNumbers = () => {
-    // ... (기존 코드 유지)
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+
+    if (endPage - startPage < 4) {
+      startPage = Math.max(1, endPage - 4);
+    }
+
+    return (
+      <div className='flex justify-end'>
+        <button
+          onClick={() => paginate(currentPage - 1)}
+          className='mx-1 px-3 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
+          disabled={currentPage === 1}
+        >
+          <FaChevronLeft />
+        </button>
+        {Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((number) => (
+          <button
+            key={number}
+            onClick={() => paginate(number)}
+            className={`mx-1 px-3 py-1 rounded border ${
+              currentPage === number
+                ? 'bg-brandOrange text-white'
+                : 'border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
+            }`}
+          >
+            {number}
+          </button>
+        ))}
+        <button
+          onClick={() => paginate(currentPage + 1)}
+          className='mx-1 px-3 py-1 rounded border border-brandOrange text-brandOrange hover:bg-brandOrange hover:text-white'
+          disabled={currentPage === totalPages}
+        >
+          <FaChevronRight />
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -93,7 +130,7 @@ const ListComponent = () => {
         </div>
       </div>
 
-      <div className='w-full relative overflow-x-auto overflow-y-auto'>
+      <div className='flex-grow overflow-auto'>
         <table className='min-w-full text-sm text-gray-500 table-fixed'>
           <thead className='sticky top-0 z-30 w-full h-[82px] text-xs text-gray-700 uppercase bg-gray-50'>
             <tr className='relative'>
@@ -150,9 +187,11 @@ const ListComponent = () => {
             ))}
           </tbody>
         </table>
-        <hr />
       </div>
-      <div className='mt-4'>{renderPageNumbers()}</div>
+
+      <div className='h-[50px] px-5 flex items-center justify-end  border-gray-200'>
+        {renderPageNumbers()}
+      </div>
       <AlertModal
         isOpen={alertModal.isOpen}
         onClose={closeAlertModal}

@@ -96,11 +96,11 @@ const AddComponent = () => {
   };
   const handleModalClose = () => {
     setIsModalVisible(false);
-    navigate(`/shopping/${clientName}/my/${customerId}/address`);
+    navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`);
   };
 
   return (
-    <div className='w-full h-full flex items-center justify-center'>
+    <div className='w-full h-full flex items-start my-10 justify-center'>
       <MenuHeaderNav title={'배송지 등록'} />
       {error && (
         <div

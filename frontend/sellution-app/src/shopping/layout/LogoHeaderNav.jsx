@@ -10,11 +10,11 @@ const LogoHeaderNav = () => {
         to={`/shopping/${clientName}/home`}
         className='h-full w-full flex justify-center items-center py-3'
       >
-        <img
-          src={logoImageUrl || '/image/shoppingmall_logo.png'}
-          alt='Shoppingmall Logo'
-          className='h-full'
-        />
+        {logoImageUrl ? (
+          <img src={logoImageUrl} alt='Shoppingmall Logo' className='h-full' />
+        ) : (
+          <div className='font-bold logo-text'>{clientName}</div>
+        )}
       </Link>
     </header>
   );

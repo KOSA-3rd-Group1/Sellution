@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const useCategoryDetail = () => {
@@ -12,6 +12,9 @@ const useCategoryDetail = () => {
   });
   const [isNameChecked, setIsNameChecked] = useState(false);
   const [isDuplicateName, setIsDuplicateName] = useState(false);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const fromPage = searchParams.get('page') || '1';
 
   useEffect(() => {
     const fetchCategory = async () => {
@@ -30,7 +33,7 @@ const useCategoryDetail = () => {
   }, [categoryId]);
 
   const moveList = () => {
-    navigate('/product/category');
+    navigate(`/product/category?page=${fromPage}`);
   };
 
   const handleInputChange = (e) => {
