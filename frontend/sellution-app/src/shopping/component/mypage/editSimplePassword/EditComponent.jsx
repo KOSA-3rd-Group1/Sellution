@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { SetPasswordIcon } from '@/shopping/utility/assets/Icons.jsx';
 import MenuHeaderNav from '@/shopping/layout/MenuHeaderNav.jsx';
+import ReusableOneButtonModal from '@/shopping/layout/partials/ReusableOneButtonModal';
 
 const EditComponent = () => {
   const [firstPassword, setFirstPassword] = useState('');
@@ -14,6 +15,9 @@ const EditComponent = () => {
   const navigate = useNavigate();
   const { clientName, customerId } = useParams();
   const location = useLocation();
+
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   useEffect(() => {
     shuffleNumbers();
@@ -87,7 +91,8 @@ const EditComponent = () => {
         setIsComplete(true);
       }
     } catch (error) {
-      setErrorMessage('비밀번호 등록에 실패했습니다. 다시 시도해주세요.');
+      setModalMessage('비밀번호 등록에 실패했습니다. 다시 시도해주세요.');
+      setShowModal(true);
       setStep(1);
       setFirstPassword('');
       setSecondPassword('');
@@ -179,6 +184,14 @@ const EditComponent = () => {
           </div>
         </div>
       </div>
+      <ReusableOneButtonModal
+        isVisible={showModal}
+        onClose={() => setShowModal(false)}
+        title='오류'
+        message={modalMessage}
+        buttonText='확인'
+        onButtonClick={() => setShowModal(false)}
+      />
     </div>
   );
 };

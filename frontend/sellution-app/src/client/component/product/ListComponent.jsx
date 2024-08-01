@@ -59,6 +59,10 @@ const ListComponent = () => {
     );
   };
 
+  const handleRowClick = (productId) => {
+    navigate(`/product/${productId}?fromPage=${tableState.currentPage}`);
+  };
+
   const handleAlertConfirm = async () => {
     if (alertModal.type === 'warning') {
       closeAlertModal();
@@ -112,10 +116,6 @@ const ListComponent = () => {
         </button>
       </div>
     );
-  };
-
-  const handleRowClick = (productId) => {
-    navigate(`/product/${productId}?fromPage=${tableState.currentPage}`);
   };
 
   return (
