@@ -1,4 +1,4 @@
-// 회원 유형 변환 함수
+// 주문 유형 변환 함수
 export const formatOrderType = (type) => {
   const types = {
     ONETIME: '단건',
@@ -11,18 +11,18 @@ export const formatOrderType = (type) => {
 // queryParams 변화
 export const transformOrderType = (type) => {
   switch (type) {
-    case 'ONETIME':
-      return '단건';
-    case 'MONTH_SUBSCRIPTION':
-      return '정기(월 단위)';
-    case 'COUNT_SUBSCRIPTION':
-      return '정기(횟수 단위)';
+    case '단건':
+      return 'ONETIME';
+    case '정기(월 단위)':
+      return 'MONTH_SUBSCRIPTION';
+    case '정기(횟수 단위)':
+      return 'COUNT_SUBSCRIPTION';
     default:
-      return 'ALL';
+      return 'All';
   }
 };
 
-// 회원 유형 변환 함수
+// 주문 상태 변환 함수
 export const formatOrderStatus = (type) => {
   const types = {
     HOLD: '승인대기',
@@ -35,13 +35,37 @@ export const formatOrderStatus = (type) => {
 // queryParams 변화
 export const transformOrderStatus = (type) => {
   switch (type) {
-    case 'HOLD':
-      return '승인대기';
-    case 'APPROVED':
-      return '승인';
-    case 'CANCEL':
-      return '주문취소';
+    case '승인대기':
+      return 'HOLD';
+    case '승인':
+      return 'APPROVED';
+    case '주문취소':
+      return 'CANCEL';
     default:
-      return 'ALL';
+      return 'All';
+  }
+};
+
+// 배송 상태 변환 함수
+export const formatDeliveryStatus = (type) => {
+  const types = {
+    BEFORE_DELIVERY: '배송전',
+    IN_PROGRESS: '배송중',
+    COMPLETE: '배송완료',
+  };
+  return types[type] || type;
+};
+
+// queryParams 변화
+export const transformDeliveryStatus = (type) => {
+  switch (type) {
+    case '배송전':
+      return 'BEFORE_DELIVERY';
+    case '배송중':
+      return 'IN_PROGRESS';
+    case '배송완료':
+      return 'COMPLETE';
+    default:
+      return 'All';
   }
 };

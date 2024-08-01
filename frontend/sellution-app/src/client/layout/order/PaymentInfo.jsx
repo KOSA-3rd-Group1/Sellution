@@ -1,4 +1,4 @@
-const PaymentInfo = () => {
+const PaymentInfo = ({ data }) => {
   return (
     <div className='w-full'>
       <div className='w-full min-h-20 h-20 max-h-20 text-base font-semibold flex items-center'>

@@ -34,3 +34,18 @@ export const formatPrice = (price) => {
 // 파일 이름 생성 함수
 export const generateShortFileName = (prefix, index) =>
   `${prefix}_${index}_${Date.now().toString(36)}.jpg`;
+
+// LocalDateTime 변환 함수 (yyyy-MM-dd HH:mm:ss)
+export const formatLocalDateTime = (isoDateString) => {
+  const date = new Date(isoDateString); // Date 객체를 사용하여 ISO 8601 문자열을 파싱
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더해줌
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  const formattedDateString = `${year}-${month}-${day} / ${hours}:${minutes}:${seconds}`;
+  return formattedDateString;
+};

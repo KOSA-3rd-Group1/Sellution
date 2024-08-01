@@ -10,15 +10,15 @@ const PaymentMethod = ({ data }) => {
         <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
           <div className='flex-1 min-w-32'>카드 결제</div>
           <div className='flex-1 min-w-64'>
-            <InfoInput value={data.paymentMethod || ''} disabled textDefault={true} />
+            <InfoInput value={data.perPrice || ''} disabled textDefault={true} />
           </div>
         </li>
-        <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
+        {/* <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
           <div className='flex-1 min-w-32'>정기 결제일</div>
           <div className='flex-1 min-w-64'>
             <InfoInput value={data.paymentMethod || ''} disabled textDefault={true} />
           </div>
-        </li>
+        </li> */}
       </ul>
     </div>
   );

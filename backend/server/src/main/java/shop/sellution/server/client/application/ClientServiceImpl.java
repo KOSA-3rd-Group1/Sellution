@@ -67,6 +67,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public FindCurrentClientInfoRes getCurrentUserInfo() {
         CustomUserDetails customUserDetails = getCustomUserDetailsFromSecurityContext();
         Client client = findClientByUsername(customUserDetails.getUsername());
@@ -78,6 +79,7 @@ public class ClientServiceImpl implements ClientService {
                 .name(client.getName())
                 .userRole(client.getUserRole())
                 .contractCompanyName(contractCompany.getContractCompanyName())
+                .isAutoApproved(client.getCompany().getIsAutoApproved())
                 .build();
     }
 
