@@ -3,11 +3,17 @@ import axios from 'axios';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import MenuHeaderNav from '../../../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../../../layout/OneButtonFooterLayout';
+import ReusableOneButtonModal from '@/shopping/layout/partials/ReusableOneButtonModal';
+import ReusableTwoButtonModal from '@/shopping/layout/partials/ReusableTwoButtonModal';
 
 const ListComponent = () => {
   const [addresses, setAddresses] = useState([]);
   const { clientName, customerId } = useParams();
   const navigate = useNavigate();
+
+  const [showDefaultAddressModal, setShowDefaultAddressModal] = useState(false);
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState(null);
 
   useEffect(() => {
     fetchAddresses();
@@ -42,22 +48,28 @@ const ListComponent = () => {
     return value;
   };
 
-  const handleDelete = async (address) => {
-    console.log('Address to delete:', address);
+  const handleDelete = (address) => {
     if (address.isDefaultAddress === DisplayStatus.Y) {
-      console.log('This is the default address:', address.isDefaultAddress);
-      alert('다른 배송지를 기본배송지로 설정 후 삭제해주세요.');
-      return;
+      setShowDefaultAddressModal(true);
+    } else {
+      setAddressToDelete(address);
+      setShowDeleteConfirmModal(true);
     }
+  };
 
-    if (window.confirm('정말로 이 배송지를 삭제하시겠습니까?')) {
+  const confirmDelete = async () => {
+    if (addressToDelete) {
       try {
-        await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/addresses/${address.addressId}`);
-        fetchAddresses(); // 삭제 후 목록 새로고침
+        await axios.delete(
+          `${import.meta.env.VITE_BACKEND_URL}/addresses/${addressToDelete.addressId}`,
+        );
+        fetchAddresses();
       } catch (error) {
         console.error('Error deleting address:', error);
       }
     }
+    setShowDeleteConfirmModal(false);
+    setAddressToDelete(null);
   };
 
   const handleSelectAddress = (address) => {
@@ -152,6 +164,25 @@ const ListComponent = () => {
         onClick={() => {
           navigate(`add`);
         }}
+      />
+      <ReusableOneButtonModal
+        isVisible={showDefaultAddressModal}
+        onClose={() => setShowDefaultAddressModal(false)}
+        title='알림'
+        message='다른 배송지를 기본배송지로 설정 후 삭제해주세요.'
+        buttonText='확인'
+        onButtonClick={() => setShowDefaultAddressModal(false)}
+      />
+
+      <ReusableTwoButtonModal
+        isVisible={showDeleteConfirmModal}
+        onClose={() => setShowDeleteConfirmModal(false)}
+        title='확인'
+        message='정말로 이 배송지를 삭제하시겠습니까?'
+        leftButtonText='취소'
+        rightButtonText='삭제'
+        onLeftButtonClick={() => setShowDeleteConfirmModal(false)}
+        onRightButtonClick={confirmDelete}
       />
     </div>
   );
