@@ -33,7 +33,7 @@ jobs:
 
       - name: Create application.yml
         run: |
-          echo "${{ secrets.SELLUTION_SERVER_PROD_YML }}" > ./backend/server/src/main/resources/application.yml
+          echo "${{ secrets.SELLUTION_SERVER_PROD_YML }}" > ./backend/server/src/main/resources/application-prod.yml
         shell: bash
 
       - name: List directory contents
