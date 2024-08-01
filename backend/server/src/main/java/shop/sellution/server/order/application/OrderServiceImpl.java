@@ -161,6 +161,10 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException(ALREADY_APPROVED_ORDER);
         }
 
+        if(order.getStatus() == OrderStatus.CANCEL){
+            throw new BadRequestException(ALREADY_CANCEL_ORDER);
+        }
+
         String approveMessage = String.format("""
                     [Sellution] 주문이 승인되었습니다. [ 수동 ]
                     승인된 주문번호
@@ -215,6 +219,11 @@ public class OrderServiceImpl implements OrderService {
         // 배송완료된 상태인지 확인
         if (order.getDeliveryStatus() == DeliveryStatus.COMPLETE) {
             throw new BadRequestException(ALREADY_DELIVERED);
+        }
+
+        // 승인된 주문인지 확인
+        if (order.getStatus() == OrderStatus.APPROVED) {
+            throw new BadRequestException(ALREADY_APPROVED_ORDER);
         }
 
 
