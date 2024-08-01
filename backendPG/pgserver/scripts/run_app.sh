@@ -27,8 +27,7 @@ fi
 echo "새로운 애플리케이션을 시작합니다."
 nohup java -jar \
     -Dserver.port=9091 \
-    -Dspring.profiles.active=prod \
-    /var/shop/sellution_pg/cicd_template/build/libs/server-0.0.1-SNAPSHOT.jar > "$LOG_FILE" 2>&1 &
+    /var/shop/sellution_pg/cicd_template/build/libs/pgserver-0.0.1-SNAPSHOT.jar > "$LOG_FILE" 2>&1 &
 
 echo "애플리케이션이 prod 프로파일로 시작되었습니다. 로그 파일: $LOG_FILE"
 

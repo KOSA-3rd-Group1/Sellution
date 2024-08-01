@@ -23,7 +23,6 @@ fi
 
 nohup java -jar \
     -Dserver.port=8081 \
-    -Dspring.profiles.active=prod \
     /var/shop/sellution/cicd_template/build/libs/server-0.0.1-SNAPSHOT.jar > "$LOG_FILE" 2>&1 &
     
 echo "> Now new WAS runs at ${TARGET_PORT}."
