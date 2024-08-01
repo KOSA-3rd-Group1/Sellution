@@ -24,7 +24,10 @@ export const login = async (username, password, setAccessToken, setUserInfo) => 
     instance = await addAuthInterceptor(newInstance, setAccessToken, accessToken);
     const newResponse = await instance.get(API_URL_2);
 
-    setUserInfo(newResponse.data.data);
+    setUserInfo(() => ({
+      ...newResponse.data.data,
+      isAutoApproved: newResponse.data.data.isAutoApproved === 'N' ? false : true,
+    }));
     return true;
   } catch (error) {
     console.error('Login faild:', error);

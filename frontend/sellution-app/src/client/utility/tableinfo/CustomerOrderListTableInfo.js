@@ -1,16 +1,16 @@
 export const SUBSCRIPTION_HEADERS = [
   {
-    key: 'createdAt',
+    key: 'orderCreatedAt',
     label: '주문일',
-    width: 'min-w-40 w-40 max-w-40',
+    width: 'min-w-44 w-44 max-w-44',
   },
   {
-    key: 'orderId',
+    key: 'orderCode',
     label: '주문번호',
     width: 'min-w-44 w-44 max-w-44',
   },
   {
-    key: 'productInfo',
+    key: 'orderedProduct',
     label: '상품 정보',
     width: 'min-w-72 w-72 max-w-72',
   },
@@ -20,7 +20,7 @@ export const SUBSCRIPTION_HEADERS = [
     width: 'min-w-40 w-40 max-w-40',
   },
   {
-    key: 'type',
+    key: 'orderType',
     label: '주문 유형', // 정기(월 단위) <-MONTH_SUBSCRIPTION, 정기(횟수 단위) <- COUNT_SUBSRIPTION
     width: 'min-w-40 w-40 max-w-40',
   },
@@ -35,13 +35,13 @@ export const SUBSCRIPTION_HEADERS = [
     width: 'min-w-40 w-40 max-w-40',
   },
   {
-    key: 'totalDeliveryCount', // 횟수 단위 정기 주문
-    label: '배송 횟수',
+    key: 'subscriptionPeriod', // 월 또는 주 단위 정기 주문
+    label: '구독 기간',
     width: 'min-w-40 w-40 max-w-40',
   },
   {
-    key: 'dateOption', // 월 또는 주 단위 정기 주문
-    label: '구독 기간',
+    key: 'totalDeliveryCount', // 횟수 단위 정기 주문
+    label: '총 배송 횟수',
     width: 'min-w-40 w-40 max-w-40',
   },
   {
@@ -60,17 +60,17 @@ export const SUBSCRIPTION_ROW_HEIGHT = 'min-h-12 h-12 max-h-12';
 
 export const ONETIME_HEADERS = [
   {
-    key: 'createdAt',
+    key: 'orderCreatedAt',
     label: '주문일',
-    width: 'min-w-40 w-40 max-w-40',
+    width: 'min-w-44 w-44 max-w-44',
   },
   {
-    key: 'orderId',
+    key: 'orderCode',
     label: '주문번호',
     width: 'min-w-44 w-44 max-w-44',
   },
   {
-    key: 'productInfo',
+    key: 'orderedProduct',
     label: '상품 정보',
     width: 'min-w-72 w-72 max-w-72',
   },
@@ -80,7 +80,7 @@ export const ONETIME_HEADERS = [
     width: 'min-w-40 w-40 max-w-40',
   },
   {
-    key: 'type',
+    key: 'orderType',
     label: '주문 유형', // 정기(월 단위) <-MONTH_SUBSCRIPTION, 정기(횟수 단위) <- COUNT_SUBSRIPTION
     width: 'min-w-40 w-40 max-w-40',
   },
