@@ -29,7 +29,7 @@ const useCategoryAdd = () => {
   const checkDuplicate = async () => {
     if (!companyId) {
       setErrorMessage('Company ID is not available. Please try again later.');
-      return;
+      return true; // 중복으로 처리
     }
     try {
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories/check`, {
@@ -39,22 +39,28 @@ const useCategoryAdd = () => {
       if (response.data) {
         setIsAvailable(false);
         setErrorMessage('이미 존재하는 카테고리입니다.');
+        return true; // 중복
       } else {
         setIsAvailable(true);
         setErrorMessage('');
+        return false; // 중복 아님
       }
     } catch (error) {
       console.error('중복 확인 중 오류 발생:', error);
+      setIsChecked(true);
+      setIsAvailable(false);
+      setErrorMessage('중복 확인 중 오류가 발생했습니다.');
+      return true; // 오류 발생 시 중복으로 처리
     }
   };
 
   const handleSubmit = async () => {
     if (!isChecked || !isAvailable) {
-      return;
+      return false;
     }
     if (!companyId) {
-      alert('Company ID is not available. Please try again later.');
-      return;
+      setErrorMessage('Company ID is not available. Please try again later.');
+      return false;
     }
 
     try {
@@ -63,10 +69,10 @@ const useCategoryAdd = () => {
         companyId: companyId,
       });
       return true;
-      // moveList();
     } catch (error) {
       console.error('카테고리 등록 중 오류 발생:', error);
       setErrorMessage('카테고리 등록에 실패했습니다.');
+      return false;
     }
   };
 
@@ -81,6 +87,8 @@ const useCategoryAdd = () => {
     handleSubmit,
     moveList,
     errorMessage,
+    isChecked,
+    isAvailable,
   };
 };
 

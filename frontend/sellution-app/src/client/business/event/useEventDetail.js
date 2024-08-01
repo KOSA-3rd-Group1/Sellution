@@ -9,25 +9,6 @@ import {
 import { ValidationError } from '@/client/utility/error/ValidationError';
 import { formatTargetCustomerType } from '@/client/utility/functions/eventListFunction';
 
-// 더미 데이터 생성 함수
-// const generateDummyData = (count) => {
-//   return Array.from({ length: count }, (_, index) => ({
-//     eventId: index + 1,
-//     id: index + 1,
-//     couponName: `user${index + 1}`,
-//     couponDiscountRate: `${Math.floor(10 + Math.random() * 50)}`,
-//     targetCustomerType: ['신규', '일반', '휴면'][Math.floor(Math.random() * 3)],
-//     maxDownloadCount: `${Math.floor(100 + Math.random() * 500)}`,
-//     startDate: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
-//       .toISOString()
-//       .split('T')[0],
-//     endDate: new Date(Date.now() - Math.floor(Math.random() * 10000000000))
-//       .toISOString()
-//       .split('T')[0],
-//     eventState: ['시작 전', '진행중', '종료'][Math.floor(Math.random() * 3)],
-//   }));
-// };
-
 export const useEventDetail = ({
   moveToPathname,
   moveToDefaultPath,

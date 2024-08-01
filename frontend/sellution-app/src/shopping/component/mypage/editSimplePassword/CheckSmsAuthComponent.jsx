@@ -105,7 +105,7 @@ const CheckSmsAuthComponent = () => {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className='flex-grow p-2 border rounded  focus:ring-primary focus:border-transparent shadow-sm focus:outline-none focus:ring-2  focus:border-primary'
-                  placeholder='010********'
+                  placeholder="휴대폰 번호 입력('-'제외 11자리 입력)"
                   disabled={step !== 1}
                 />
                 <button

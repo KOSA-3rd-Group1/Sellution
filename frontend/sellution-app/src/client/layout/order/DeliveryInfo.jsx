@@ -10,31 +10,45 @@ const DeliveryInfo = ({ data }) => {
         <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
           <div className='flex-1 min-w-32'>결제 단위</div>
           <div className='flex-1 min-w-64'>
-            <InfoInput value={data.paymentMethod || ''} disabled textDefault={true} />
+            <InfoInput value={data.type || ''} disabled textDefault={true} />
           </div>
         </li>
         <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
-          <div className='flex-1 min-w-32'>이용 기간</div>
+          <div className='flex-1 min-w-32'>
+            {data.type === '정기(월 단위)' ? '총 이용 기간' : '총 이용 횟수'}
+          </div>
           <div className='flex-1 min-w-64'>
-            <InfoInput value={data.paymentMethod || ''} disabled textDefault={true} />
+            <InfoInput value={data.subscriptionPeriod || ''} disabled textDefault={true} />
           </div>
         </li>
         <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
-          <div className='flex-1 min-w-32'>정기 배송 날짜</div>
+          <div className='flex-1 min-w-32'>남은 배송 횟수</div>
           <div className='flex-1 min-w-64'>
-            <InfoInput value={data.paymentMethod || ''} disabled textDefault={true} />
+            <InfoInput value={data.remainingDeliveryCount || ''} disabled textDefault={false} />
+          </div>
+        </li>
+        <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
+          <div className='flex-1 min-w-32'>정기 배송 주기</div>
+          <div className='flex-1 min-w-64'>
+            <InfoInput value={data.regularDeliveryDate || ''} disabled textDefault={true} />
           </div>
         </li>
         <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
           <div className='flex-1 min-w-32'>배송 시작일</div>
           <div className='flex-1 min-w-64'>
-            <InfoInput value={data.paymentMethod || ''} disabled textDefault={true} />
+            <InfoInput value={data.deliveryStartDate || ''} disabled textDefault={true} />
           </div>
         </li>
         <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
           <div className='flex-1 min-w-32'>배송 종료일</div>
           <div className='flex-1 min-w-64'>
-            <InfoInput value={data.createdAt || ''} disabled textDefault={true} />
+            <InfoInput value={data.deliveryEndDate || ''} disabled textDefault={true} />
+          </div>
+        </li>
+        <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
+          <div className='flex-1 min-w-32'>다음 배송일</div>
+          <div className='flex-1 min-w-64'>
+            <InfoInput value={data.nextDeliveryDate || ''} disabled textDefault={false} />
           </div>
         </li>
       </ul>
