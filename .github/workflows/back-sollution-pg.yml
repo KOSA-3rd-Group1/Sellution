@@ -1,19 +1,19 @@
-name: back-soulltion-cicd
+name: back-soulltion-pg-cicd
 
 on:
   workflow_dispatch:
   push:
     branches: [ main ]
     paths:
-      - 'backend/server/**'
+      - 'backendPG/pgserver/**'
   pull_request:
     branches: [ main ]
     paths:
-      - 'backend/server/**'
+      - 'backendPG/pgserver/**'
 
 env:
   S3_BUCKET_NAME: ${{ secrets.S3_SOLLUTION_CICD_BUCKET_NAME }}
-  PROJECT_NAME: sollution-server
+  PROJECT_NAME: sollution-pg-server
 
 jobs:
   build:
@@ -33,24 +33,24 @@ jobs:
 
       - name: Create application.yml
         run: |
-          echo "${{ secrets.SELLUTION_SERVER_PROD_YML }}" > ./backend/server/src/main/resources/application-prod.yml
+          echo "${{ secrets.SELLUTION_PG_SERVER_PROD_YML }}" > ./backendPG/pgserver/src/main/resources/application-prod.yml
         shell: bash
 
       - name: List directory contents
         run: ls -la
-        working-directory: ./backend/server
+        working-directory: ./backendPG/pgserver
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
-        working-directory: ./backend/server
+        working-directory: ./backendPG/pgserver
 
       - name: Build with Gradle
         run: ./gradlew build
-        working-directory: ./backend/server
+        working-directory: ./backendPG/pgserver
 
       - name: Make zip file
         run: zip -r ./$GITHUB_SHA.zip .
-        working-directory: ./backend/server
+        working-directory: ./backendPG/pgserver
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -61,7 +61,7 @@ jobs:
 
       - name: Upload to S3
         run: aws s3 cp ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
-        working-directory: ./backend/server
+        working-directory: ./backendPG/pgserver
 
       - name: Code Deploy
         run: |
