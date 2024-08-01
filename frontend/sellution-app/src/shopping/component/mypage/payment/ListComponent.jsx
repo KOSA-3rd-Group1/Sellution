@@ -11,7 +11,7 @@ import {
   HanaBankIcon,
 } from '@/client/utility/assets/BankIcons.jsx';
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MenuHeaderNav from '@/shopping/layout/MenuHeaderNav.jsx';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
@@ -26,7 +26,6 @@ const BANK_CODES = {
   '092': '토스뱅크',
   '071': '우체국은행',
   '011': '농협은행',
-  '081': '하나은행',
   '081': '하나은행',
 };
 // 은행 코드와 은행 로고 매핑하는 객체
@@ -53,7 +52,6 @@ const BANK_COLORS = {
   '071': 'bg-orange-400',
   '011': 'bg-green-200',
   '081': 'bg-green-500',
-  '081': 'bg-green-500',
 };
 
 const ListComponent = () => {
@@ -79,7 +77,6 @@ const ListComponent = () => {
           bank: BANK_CODES[account.bankCode] || '알 수 없는 은행',
           accountNumber: maskAccountNumber(account.accountNumber),
           bankCode: account.bankCode,
-          isChecked: false,
           isChecked: false,
         }));
         setPaymentMethods(accounts);

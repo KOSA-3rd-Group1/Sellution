@@ -44,7 +44,7 @@ const PaymentMethodSelection = ({
   return (
     <div className='bg-white py-4 w-[90%]'>
       <div className='flex items-center mb-4'>
-        <div className='text-brandOrange mr-2'> * </div>
+        <div className='text-primary mr-2'> * </div>
         <span className='font-semibold'>결제수단</span>
       </div>
 
@@ -67,9 +67,9 @@ const PaymentMethodSelection = ({
                 </div>
                 <button
                   onClick={() => handleCheckChange(method.id)}
-                  className='absolute top-3 right-3 w-6 h-6 bg-white rounded-full flex items-center justify-center'
+                  className='absolute top-3 right-3 w-6 h-6 bg-white border border-primary rounded-full flex items-center justify-center'
                 >
-                  {method.isChecked && <span className='text-brandOrange'>✓</span>}
+                  {method.isChecked && <span className='text-primary'>✓</span>}
                 </button>
                 <button
                   onClick={() => handleDeleteAccount(method.id)}

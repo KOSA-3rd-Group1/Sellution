@@ -6,6 +6,8 @@ import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import MenuHeaderNav from '../../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../../layout/OneButtonFooterLayout';
 import LogoHeaderNav from '@/shopping/layout/LogoHeaderNav';
+import ReusableOneButtonModal from '@/shopping/layout/partials/ReusableOneButtonModal';
+
 const AddComponent = () => {
   const navigate = useNavigate();
   const clientName = useCompanyInfoStore((state) => state.name);
@@ -45,7 +47,7 @@ const AddComponent = () => {
       oncomplete: handleComplete,
     }).open();
   };
-
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -64,7 +66,7 @@ const AddComponent = () => {
       zipcode,
       streetAddress,
       addressDetail,
-      isDefaultAddress: isDefaultAddress ? DisplayStatus.Y : DisplayStatus.N,
+      isDefaultAddress: isDefaultAddress,
     };
 
     try {
@@ -80,7 +82,7 @@ const AddComponent = () => {
 
       console.log('Address saved:', response.data);
       setError(''); // 성공 시 오류 메시지 초기화
-      setIsSaved(true); // 저장 상태 업데이트
+      setIsModalVisible(true);
     } catch (error) {
       console.error('Error saving address:', error);
       if (error.response && error.response.data && error.response.data.message) {
@@ -91,26 +93,10 @@ const AddComponent = () => {
     }
   };
 
-  if (isSaved) {
-    return (
-      <div className='w-full h-full flex justify-center items-center'>
-        <LogoHeaderNav />
-        <h1 className='text-xl font-bold text-center'>주소가 성공적으로 저장되었습니다!</h1>
-        {/* <Link
-          to={`/shopping/${clientName}/my/${customerId}/address`}
-          className='block w-full text-center bg-brandOrange text-white py-2 rounded-md hover:bg-orange-600'
-        >
-          배송지 목록으로 이동
-        </Link> */}
-        <OneButtonFooterLayout
-          footerText={'배송지 목록으로 이동'}
-          onClick={() => {
-            navigate(`/shopping/${clientName}/my/${customerId}/address`);
-          }}
-        />
-      </div>
-    );
-  }
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    navigate(`/shopping/${clientName}/my/${customerId}/address`);
+  };
 
   return (
     <div className='h-full flex justify-center items-center'>
@@ -158,7 +144,7 @@ const AddComponent = () => {
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               className='flex-grow border rounded-md p-2 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary'
-              placeholder='010********'
+              placeholder="휴대폰 번호 입력('-'제외 11자리 입력)"
               required
             />
           </div>
@@ -230,6 +216,14 @@ const AddComponent = () => {
         </form>
       </div>
       <OneButtonFooterLayout footerText={'저장하기'} onClick={handleSubmit} />
+      <ReusableOneButtonModal
+        isVisible={isModalVisible}
+        onClose={handleModalClose}
+        title='알림'
+        message='주소가 성공적으로 저장되었습니다!'
+        buttonText='확인'
+        onButtonClick={handleModalClose}
+      />
     </div>
   );
 };
