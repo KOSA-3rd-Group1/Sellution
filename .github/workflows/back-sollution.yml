@@ -1,0 +1,55 @@
+name: back-soulltion-cicd
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'backend/server/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'backend/server/**'
+
+env:
+  S3_BUCKET_NAME: ${{ secrets.S3_SOLLUTION_CICD_BUCKET_NAME }}
+  PROJECT_NAME: sollution-server
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+        working-directory: ./backend/server
+
+      - name: Build with Gradle
+        run: ./gradlew build
+        working-directory: ./backend/server
+
+      - name: Make zip file
+        run: zip -r ./$GITHUB_SHA.zip .
+        working-directory: ./backend/server
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload to S3
+        run: aws s3 cp ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
+        working-directory: ./backend/server
+
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name t1-code-deploy --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name t1-deploy-group --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip 
