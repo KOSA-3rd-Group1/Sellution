@@ -1,13 +1,14 @@
 package shop.sellution.server.scheduler.presentation;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.sellution.server.scheduler.application.SchedulerService;
 
 @RestController
-@RequestMapping("test")
+@RequestMapping("/test")
 @RequiredArgsConstructor
 public class SchedulerTestController {
 
@@ -16,5 +17,10 @@ public class SchedulerTestController {
     @PostMapping("scheduler")
     public void testScheduler() {
         schedulerService.regularProcess();
+    }
+
+    @GetMapping("/running")
+    public String applicationIsRunning() {
+        return "Success Application Running";
     }
 }
