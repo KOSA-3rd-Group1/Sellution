@@ -27,7 +27,7 @@ const SmsAuthComponent = () => {
   return (
     <div className='flex justify-center items-center min-h-screen bg-gray-100'>
       <div className='relative min-w-[470px] w-full max-w-md min-h-[540px] p-8 bg-white rounded-lg shadow-md'>
-        <h2 className='text-2xl font-bold mb-6 text-center'>휴대폰 본인 인증</h2>
+        <h2 className='text-xl font-bold mb-6 text-center'>휴대폰 본인 인증</h2>
         <div className='mb-4'>
           <label htmlFor='name' className='block text-sm font-medium text-gray-700 mb-1'>
             이름
@@ -108,13 +108,11 @@ const SmsAuthComponent = () => {
 
         <div className='absolute bottom-10 w-[calc(100%-64px)]'>
           <button
-            // to='/join/begin'
             className={`w-full text-center py-3 rounded-md transition duration-300 ${
               isVerified
                 ? 'bg-orange-500 text-white hover:bg-orange-600'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
-            // onClick={(e) => !isVerified && e.preventDefault()}
             onClick={(e) => moveNext(e)}
           >
             다음

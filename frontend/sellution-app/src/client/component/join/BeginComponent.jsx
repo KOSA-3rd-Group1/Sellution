@@ -19,7 +19,7 @@ const BeginComponent = () => {
   return (
     <div className='flex justify-center items-center min-h-screen bg-gray-100 p-4'>
       <div className='relative min-w-[600px] w-[600px] max-w-[600px] bg-white p-8 rounded-lg shadow-md'>
-        <h2 className='text-2xl font-bold mb-6 text-center'>아이디 생성</h2>
+        <h2 className='text-xl font-bold mb-6 text-center'>아이디 생성</h2>
 
         <div className='bg-gray-100 p-4 rounded-md mb-6 text-base'>
           <p className='font-bold mb-2'>* 회원가입 안내</p>
@@ -99,7 +99,7 @@ const BeginComponent = () => {
               value={data.confirmPassword}
               onChange={(e) => handleChangeInputValue('confirmPassword', e.target.value)}
               className='w-full p-2 border rounded-md text-sm'
-              placeholder='비밀번호를 다시 입력해주세요.'
+              placeholder='비밀번호를 다시 입력하세요.'
             />
             {data.password !== '' && data.confirmPassword !== '' && passwordMatch !== null && (
               <p className={`text-sm mt-1 ${passwordMatch ? 'text-green-500' : 'text-red-500'}`}>

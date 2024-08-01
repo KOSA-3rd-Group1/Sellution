@@ -1,32 +1,18 @@
 import { useEffect, useState } from 'react';
-import useSignupInfoStore from '@/client/store/stores/useSignupInfoStore';
-import {
-  postSendSignupSmsAuthNumber,
-  postVerifySignupSmsAuthNumber,
-} from '@/client/utility/apis/join/SmsAuthApi';
 import { validateInputNumber } from '@/client/utility/functions/validateFunction';
-import { formatPhoneNumber } from '@/client/utility/functions/formatterFunction';
+import {
+  postSendFindPasswordSmsAuthNumber,
+  postVerifyFindPasswordSmsAuthNumber,
+} from '@/client/utility/apis/pwInquiry/SmsAuthApi';
 
-export const useSmsAuth = ({ moveDefault }) => {
-  const { companyId, setSignupInfo } = useSignupInfoStore((state) => ({
-    companyId: state.companyId,
-    setSignupInfo: state.setSignupInfo,
-    resetSignupInfo: state.resetSignupInfo,
-  }));
-  console.log(companyId);
-
-  const [data, setData] = useState({ name: '', phoneNumber: '', authNumber: '' });
+export const useSmsAuth = ({ moveDefaultSearch }) => {
+  const [data, setData] = useState({ username: '', name: '', phoneNumber: '', authNumber: '' });
+  const [nextData, setNextData] = useState({});
 
   const [step, setStep] = useState(1);
   const [timeLeft, setTimeLeft] = useState(180); // 3분으로 해놨어요~
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
-
-  useEffect(() => {
-    if (companyId === null) {
-      moveDefault('/login');
-    }
-  }, []);
 
   useEffect(() => {
     let timer;
@@ -48,10 +34,14 @@ export const useSmsAuth = ({ moveDefault }) => {
 
   // 인증 번호 전송 요청
   const handleRequestAuth = async () => {
-    if (data.name.trim() !== '' && data.phoneNumber) {
-      const updateData = { companyId, phoneNumber: data.phoneNumber };
+    if (data.username.trim() !== '' && data.name.trim() !== '' && data.phoneNumber) {
+      const updateData = {
+        username: data.username,
+        name: data.name,
+        phoneNumber: data.phoneNumber,
+      };
       try {
-        await postSendSignupSmsAuthNumber(updateData);
+        await postSendFindPasswordSmsAuthNumber(updateData);
         setStep(2);
         setTimeLeft(180);
         setIsTimerRunning(true);
@@ -64,16 +54,15 @@ export const useSmsAuth = ({ moveDefault }) => {
 
   const handleVerify = async () => {
     const updateData = {
-      companyId,
       ...data,
     };
     try {
-      await postVerifySignupSmsAuthNumber(updateData);
-      setSignupInfo({ name: data.name, phoneNumber: formatPhoneNumber(data.phoneNumber) });
+      const response = await postVerifyFindPasswordSmsAuthNumber(updateData);
+      setNextData(response.data);
+      console.log(response);
       setIsVerified(true);
       setIsTimerRunning(false);
     } catch (error) {
-      console.log(error);
       alert('잘못된 인증번호입니다. 다시 시도해주세요.');
     }
   };
@@ -81,7 +70,7 @@ export const useSmsAuth = ({ moveDefault }) => {
   const moveNext = (e) => {
     e.preventDefault();
     if (isVerified) {
-      moveDefault('/join/begin');
+      moveDefaultSearch('/pwInquiry/reset', nextData);
     }
   };
 

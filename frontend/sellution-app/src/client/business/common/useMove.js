@@ -26,6 +26,21 @@ export const useMove = () => {
     });
   };
 
+  // 일반 경로 이동 시 데이터 전달
+  const moveDefaultSendState = (pathname, state) => {
+    navigate(pathname, {
+      state: state,
+    });
+  };
+
+  // 일반 경로 이동 시 param으로 이동
+  const moveDefaultSearch = (pathname, pageParam) => {
+    const queryParams = createSearchParams({ ...pageParam });
+    const newQueryParams = queryParams.toString(); // 새로운 쿼리 스트링 생성
+
+    navigate({ pathname, search: newQueryParams });
+  };
+
   // queryParams를 유지하면서 pathname으로 경로 이동
   const moveToPathname = (pathname) => {
     setRefresh(!refresh);
@@ -82,5 +97,7 @@ export const useMove = () => {
     updateQueryParameter,
     moveToDefaultPath,
     moveDefault,
+    moveDefaultSendState,
+    moveDefaultSearch,
   };
 };

@@ -17,7 +17,7 @@ const ContractAuthComponent = () => {
   return (
     <div className='flex justify-center items-center min-h-screen bg-gray-100'>
       <div className='relative min-w-[470px] w-full max-w-md min-h-[540px] p-8 bg-white rounded-lg shadow-md'>
-        <h2 className='text-2xl font-bold mb-6 text-center'>계약 고객 인증</h2>
+        <h2 className='text-xl font-bold mb-6 text-center'>계약 고객 인증</h2>
         <div className='mb-4'>
           <label htmlFor='id' className='block text-sm font-medium text-gray-700 mb-1'>
             아이디

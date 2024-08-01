@@ -35,7 +35,6 @@ export const useBegin = ({ moveDefault }) => {
   const [usernameConfirmErrorMessage, setUsernameConfirmErrorMessage] =
     useState('이미 사용중인 아이디입니다.');
   const [passwordMatch, setPasswordMatch] = useState(null);
-  //   const [isRegistrationComplete, setIsRegistrationComplete] = useState(false);
 
   useEffect(() => {
     if (signupInfo?.companyId === null) {
@@ -43,9 +42,7 @@ export const useBegin = ({ moveDefault }) => {
     }
 
     return () => {
-      //   if (isRegistrationComplete) {
       resetSignupInfo();
-      //   }
     };
   }, []);
 
@@ -101,7 +98,6 @@ export const useBegin = ({ moveDefault }) => {
         permissions: permissions,
       };
       await postRegisterClient(updateData);
-      //   setIsRegistrationComplete(true);
       await moveDefault('/login');
     } catch (error) {
       if (error instanceof ValidationError) {
