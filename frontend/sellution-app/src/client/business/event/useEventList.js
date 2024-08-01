@@ -1,47 +1,25 @@
 import { useCallback, useEffect, useState } from 'react';
 import useAuthStore from '@/client/store/stores/useAuthStore';
-import { getEventList } from '@/client/utility/apis/event/eventListApi';
+import useTableStore from '@/client/store/stores/useTableStore';
+import { getEventList, deleteEventList } from '@/client/utility/apis/event/eventListApi';
 import {
   formatEventState,
   formatTargetCustomerType,
 } from '@/client/utility/functions/eventListFunction';
 
-// 더미 데이터 생성 함수
-// const generateDummyData = (count) => {
-//   return Array.from({ length: count }, (_, index) => ({
-//     eventId: index + 1,
-//     id: index + 1,
-//     couponName: `user${index + 1}`,
-//     couponDiscountRate: `${Math.floor(10 + Math.random() * 50)}`,
-//     targetCustomerType: ['신규', '일반', '휴면'][Math.floor(Math.random() * 3)],
-//     maxDownloadCount: `${Math.floor(100 + Math.random() * 500)}`,
-//     eventDate:
-//       new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString().split('T')[0] +
-//       '  ~  ' +
-//       new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString().split('T')[0],
-//     state: ['시작 전', '진행중', '종료'][Math.floor(Math.random() * 3)],
-//   }));
-// };
-
-//eventId
-//No
-//couponName, 쿠폰 이름
-//couponDiscountRate, 할인율(%)
-//targetCustomerType, 적용회원 [신규 회원, 휴면 회원, 전체, 일반 회원] 0, 1, 2
-//maxDownloadCount, 수량 [무제한, ]
-//eventDate 이벤트 적용기간
-//eventState, 진행 상태 [시작 전, 진행중, 종료]
-
-// 이벤트 삭제, 이벤트 추가, 이벤트 상세 보기
-
-//더미 데이터
-// const DUMMY_DATA = generateDummyData(10);
-
 export const useEventList = ({ page, size, refresh, updateQueryParameter }) => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
-  // 테이블 데이터
+  const { tables, setSelectedRows, setSelectAll, clearTable } = useTableStore((state) => ({
+    tables: state.tables.eventlist,
+    setSelectedRows: state.setSelectedRows,
+    setSelectAll: state.setSelectAll,
+    clearTable: state.clearTable,
+  }));
+
+  console.log('tables', tables);
+
   const [data, setData] = useState([]); // 테이블 데이터
   const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수
   const [totalDataCount, setTotalDataCount] = useState(0); // 데이터 총 개수
@@ -111,6 +89,10 @@ export const useEventList = ({ page, size, refresh, updateQueryParameter }) => {
         setTotalPages(1);
         updateQueryParameter(pageParam, 1);
       }
+
+      return () => {
+        clearTable('eventlist');
+      };
     };
 
     fetch(setAccessToken, accessToken);
@@ -118,13 +100,23 @@ export const useEventList = ({ page, size, refresh, updateQueryParameter }) => {
 
   // 날짜 범위 조회 핸들러
   const handleChangeDateRangeValue = (newDataRangeValue) => {
-    console.log('newValue:', newDataRangeValue);
+    // console.log('newValue:', newDataRangeValue);
     setDateRangeValue(newDataRangeValue);
   };
 
   // 이벤트 삭제 버튼
   const handleDeleteBtn = () => {
+    console.log(tables);
     alert('이벤트 삭제 버튼 로직 로직');
+  };
+
+  // 이벤트 삭제
+  const handleDeleteEvent = async (eventId) => {
+    try {
+      await deleteEventList(eventId);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return {

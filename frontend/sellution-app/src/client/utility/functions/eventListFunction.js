@@ -11,12 +11,12 @@ export const formatEventState = (type) => {
 // // queryParams 변화 (클라이언트 -> 서버)
 // export const transformEventState = (type) => {
 //   switch (type) {
-//     case 'UPCOMING':
-//       return '진행예정';
-//     case 'ONGOING':
-//       return '진행중';
-//     case 'END':
-//       return '종료';
+//     case '진행예정':
+//       return 'UPCOMING';
+//     case '진행중':
+//       return 'ONGOING';
+//     case '종료':
+//       return 'END';
 //     default:
 //       return 'All';
 //   }
@@ -36,12 +36,14 @@ export const formatTargetCustomerType = (type) => {
 // // queryParams 변화
 // export const transformTargetCustomerType = (type) => {
 //   switch (type) {
-//     case 'NEW':
-//       return '신규';
-//     case 'NORMAL':
-//       return '일반';
-//     case 'DORMANT':
-//       return '휴면';
+//     case '신규':
+//       return 'NEW';
+//     case '일반':
+//       return 'NORMAL';
+//     case '휴면':
+//       return 'DORMANT';
+//     case '전체':
+//       return 'ALL';
 //     default:
 //       return 'All';
 //   }

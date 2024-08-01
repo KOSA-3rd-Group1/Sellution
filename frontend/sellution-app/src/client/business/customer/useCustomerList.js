@@ -4,9 +4,10 @@ import useAuthStore from '@/client/store/stores/useAuthStore';
 import { getCustomerList } from '@/client/utility/apis/customer/customerListApi';
 import {
   formatCustomerType,
-  formatPhoneNumber,
+  formatLatestDeliveryDate,
   transformCustomerType,
   transformLatestDeliveryDate,
+  formatPhoneNumber,
 } from '@/client/utility/functions/customerListFunction';
 import { HEADERS } from '@/client/utility/tableinfo/CustomerListTableInfo';
 
@@ -44,10 +45,10 @@ export const useCustomerList = ({ queryParams, page, size, refresh, updateQueryP
       const value = queryParams.get(header.key);
       switch (header.key) {
         case 'customerType':
-          acc[header.key] = value ? transformCustomerType(value) : 'All';
+          acc[header.key] = value ? formatCustomerType(value) : 'All';
           break;
         case 'latestDeliveryDate':
-          acc[header.key] = transformLatestDeliveryDate(queryParams.get('sortOption'));
+          acc[header.key] = formatLatestDeliveryDate(queryParams.get('sortOption'));
           break;
         default:
           acc[header.key] = value || '';
@@ -84,22 +85,14 @@ export const useCustomerList = ({ queryParams, page, size, refresh, updateQueryP
         switch (key) {
           case 'latestDeliveryDate':
             if (value !== null) {
-              if (value === '오름차순') {
-                acc['sortOption'] = 'LATEST_DELIVERY_DATE_ASC';
-              } else if (value === '내림차순') {
-                acc['sortOption'] = 'LATEST_DELIVERY_DATE_DESC';
-              }
+              const transformValue = transformLatestDeliveryDate(value);
+              if (transformValue !== 'All') acc['sortOption'] = transformValue;
             }
             break;
           case 'customerType':
-            if (value && value !== 'All') {
-              if (value === '신규') {
-                acc[key] = 'NEW';
-              } else if (value === '일반') {
-                acc[key] = 'NORMAL';
-              } else if (value === '휴면') {
-                acc[key] = 'DORMANT';
-              }
+            if (value) {
+              const transformValue = transformCustomerType(value);
+              if (transformValue !== 'All') acc[key] = transformValue;
             }
             break;
           case 'customerUsername':

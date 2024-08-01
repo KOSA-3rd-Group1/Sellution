@@ -1,15 +1,8 @@
+import OrderDetailProductImage from '@/client/layout/common/skeleton/OrderDetailProductImage';
+
 const TableOrderProduct = ({ HEADERS, ROW_HEIGHT, data }) => {
-  console.log(HEADERS);
-  console.log(data);
   return (
     <div className='w-full h-full flex flex-col'>
-      {/* table 위에 */}
-      {/* <div className='h-[45px] px-5 py-2 flex justify-between items-center bg-white text-sm font-medium text-gray-700 border-b-2 border-b-[#CCCDD3]'>
-        <div>
-          총 {totalDataCount} 건 / 선택 {selectedCount} 건
-        </div>
-      </div> */}
-      {/* table */}
       <div className='w-full relative overflow-x-auto overflow-y-auto '>
         <table className='relative w-full h-full text-sm text-left text-gray-500 table-fixed '>
           <thead className='sticky top-0 z-30 w-full h-14 text-xs text-gray-700 uppercase bg-gray-50 '>
@@ -21,7 +14,7 @@ const TableOrderProduct = ({ HEADERS, ROW_HEIGHT, data }) => {
               </th>
 
               {HEADERS.map((header, index) => (
-                <th key={index} className={`${header.width} h-full p-3 z-10`}>
+                <th key={'header_' + index} className={`${header.width} h-full p-3 z-10`}>
                   <div className='flex flex-col w-full h-full justify-center items-center gap-3 text-gray-700'>
                     <div>{header.label}</div>
                   </div>
@@ -34,12 +27,12 @@ const TableOrderProduct = ({ HEADERS, ROW_HEIGHT, data }) => {
             {data.length > 0 ? (
               data.map((row) => (
                 <tr
-                  key={row.id}
+                  key={row.productName}
                   className={`relative w-full ${ROW_HEIGHT} border-b border-b-[#F1F1F4] group`}
                 >
                   <td className='sticky min-w-20 w-20 max-w-20 p-3 z-10 left-[0px] bg-white group-hover:bg-brandOrange-light'>
                     <div className='flex flex-col w-full justify-between items-center gap-3'>
-                      {row.productImage}
+                      <OrderDetailProductImage src={row.productImage} />
                     </div>
                   </td>
                   {HEADERS.map((header) => (
