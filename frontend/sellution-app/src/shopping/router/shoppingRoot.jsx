@@ -1,9 +1,11 @@
 import homeRouter from '@/shopping/router/home/homeRouter';
 import loginRouter from '@/shopping/router/login/loginRouter';
+import signUpRouter from '@/shopping/router/signUp/signUpRouter';
+import idInquiryRouter from '@/shopping/router/idInquiry/idInquiryRouter';
+import pwInquiryRouter from '@/shopping/router/pwInquiry/pwInquiryRouter';
 import mypageRouter from '@/shopping/router/mypage/mypageRouter';
 import onetimeDeliveryRouter from '@/shopping/router/onetimeDelivery/onetimeDeliveryRouter';
 import ordersheetRouter from '@/shopping/router/ordersheet/ordersheetRouter';
-import signUpRouter from '@/shopping/router/signUp/signUpRouter';
 import subscriptionDeliveryRouter from '@/shopping/router/subscriptionDelivery/subscriptionDeliveryRouter';
 import BasicLayout from '@/shopping/layout/BasicLayout';
 
@@ -23,6 +25,14 @@ const shoppingRoot = () => [
       {
         path: 'signup',
         children: signUpRouter(),
+      },
+      {
+        path: 'idInquiry',
+        children: idInquiryRouter(),
+      },
+      {
+        path: 'pwInquiry',
+        children: pwInquiryRouter(),
       },
       {
         path: 'my',

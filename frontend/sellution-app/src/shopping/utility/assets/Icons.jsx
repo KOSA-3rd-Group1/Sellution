@@ -103,7 +103,7 @@ export const PaymentIcon = (props) => (
     viewBox='0 0 24 24'
     version='1.1'
     xmlns='http://www.w3.org/2000/svg'
-    xmlns:xlink='http://www.w3.org/1999/xlink'
+    // xmlns:xlink='http://www.w3.org/1999/xlink'
     fill='#000000'
     className={props.className}
   >
@@ -133,7 +133,7 @@ export const CouponIcon = (props) => (
     version='1.1'
     id='Layer_1'
     xmlns='http://www.w3.org/2000/svg'
-    xmlns:xlink='http://www.w3.org/1999/xlink'
+    // xmlns:xlink='http://www.w3.org/1999/xlink'
     viewBox='0 0 512 512'
     xmlSpace='preserve'
     className={props.className}
@@ -355,8 +355,8 @@ export const SetPasswordIcon = (props) => (
       fill='white'
     />
     <path
-      fill-rule='evenodd'
-      clip-rule='evenodd'
+      fillRule='evenodd'
+      clipRule='evenodd'
       d='M89 86C80.7157 86 74 92.7157 74 101C74 109.284 80.7157 116 89 116C97.2843 116 104 109.284 104 101C104 92.7157 97.2843 86 89 86ZM76.093 101C76.093 93.8717 81.8717 88.093 89 88.093C96.1283 88.093 101.907 93.8717 101.907 101C101.907 108.128 96.1283 113.907 89 113.907C81.8717 113.907 76.093 108.128 76.093 101Z'
       fill='#FDFDFD'
     />

@@ -62,6 +62,7 @@ export const useShopManagementSaleSetting = ({
   }));
 
   const companyId = useUserInfoStore((state) => state.companyId);
+
   const {
     saleTypes,
     sellTypeCategory,
