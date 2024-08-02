@@ -1,11 +1,12 @@
 import { useLocation } from 'react-router-dom';
 import useCompanyInfoStore from './../store/stores/useCompanyInfoStore';
-import useSubscriptionCartStore from './../store/stores/useSubscriptionCartStore';
-import useOnetimeCartStore from './../store/stores/useOnetimeCartStore';
+// import useSubscriptionCartStore from './../store/stores/useSubscriptionCartStore';
+// import useOnetimeCartStore from './../store/stores/useOnetimeCartStore';
+import useCartStore from '../store/stores/useCartStore';
 const OneButtonFooterLayout = ({ footerText, onClick, isDisabled = false }) => {
   const clientName = useCompanyInfoStore((state) => state.name);
-  const subscriptionCartCount = useSubscriptionCartStore((state) => state.subscriptionCart.length);
-  const onetimeCartCount = useOnetimeCartStore((state) => state.onetimeCart.length);
+  const subscriptionCartCount = useCartStore((state) => state.subscriptionCart.length);
+  const onetimeCartCount = useCartStore((state) => state.onetimeCart.length);
   let cartCount = 0;
   let isCountVisible = false;
   if (location.pathname === `/shopping/${clientName}/subscription`) {

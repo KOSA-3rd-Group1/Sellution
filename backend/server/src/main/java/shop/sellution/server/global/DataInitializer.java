@@ -1,6 +1,7 @@
 package shop.sellution.server.global;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -19,8 +20,10 @@ import shop.sellution.server.company.domain.type.DayValueType;
 import shop.sellution.server.company.domain.type.ImagePurposeType;
 import shop.sellution.server.company.domain.type.SellType;
 import shop.sellution.server.company.domain.type.SubscriptionType;
+import shop.sellution.server.contractcompany.application.ContractCompanyService;
 import shop.sellution.server.contractcompany.domain.ContractCompany;
 import shop.sellution.server.contractcompany.domain.ContractCompanyRepository;
+import shop.sellution.server.contractcompany.dto.request.SaveContractCompanyReq;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.customer.domain.type.CustomerType;
@@ -45,9 +48,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
-@Profile("data")
+@Profile("prod")
 @Component
 @RequiredArgsConstructor
+@Slf4j
 @Transactional
 public class DataInitializer implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -68,6 +72,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     private final EventRepository eventRepository;
     private final OrderCreationService orderCreationService;
     private final CompanyImageRepository companyImageRepository;
+    private final ContractCompanyService contractCompanyService;
     private final PasswordEncoder passwordEncoder;
 
     private final EventService eventService;
@@ -134,14 +139,14 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         createCategory();
         createProduct();
         createProduct2();
-        //createProductImages();
+//        createProductImages();
         createProductImages2();
         createCustomer();
-        createAccount();
-        createAddress();
+//        createAccount();
+//        createAddress();
         createCompanyOptions();
-        createCouponEvent();
-        createOrder();
+//        createCouponEvent();
+//        createOrder();
 
 
         alreadySetup = true;
@@ -198,18 +203,19 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     }
 
     private void createContractCompany() {
+
         ContractCompany contractCompany = ContractCompany.builder()
                 .company(포켓샐러드)
                 .contractCompanyName("PocketSalad")
-                .contractAuthId("PocketSalad-Auth001")
-                .contractAuthPassword("sellution1234")
                 .businessRegistrationNumber("346-88-00170")
-                .expiresAt(LocalDateTime.now().plusYears(1))
+                .contractAuthId("testtest")
+                .contractAuthPassword(passwordEncoder.encode("1q2w3e4r!!"))
+                .expiresAt(LocalDateTime.now().plusYears(17))
                 .build();
 
         contractCompanyRepository.save(contractCompany);
-    }
 
+    }
     private void createCompanyImage() {
 
     }
@@ -576,10 +582,13 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/12_1_1.jpg",
                 "https://t1-back-s3.s3.ap-northeast-2.amazonaws.com/PocketSalad/product/12_1_2.jpg"
         ));
-
+        log.info("사진들 hashmap size {}",productImageUrls.size());
+        log.info("hashmap 내용 {}", productImageUrls.keySet());
+        log.info("hashmap 내용 {}", productImageUrls.values());
+        log.info("치즈 샐러드 {}",productImageUrls.get("치즈 샐러드").toString())    ;
         for (Product product : allProducts) {
             List<String> imageUrls = productImageUrls.get(product.getName());
-            System.out.println(imageUrls.toString());
+//            System.out.println(imageUrls.toString());
             for (int i = 0; i <= 5; i++) {
                 if (i == 0) {
                     productImageRepository.save(ProductImage.builder()
