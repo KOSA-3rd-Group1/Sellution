@@ -1,23 +1,35 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const ViewComponent = () => {
-  const foundUserId = 'example_user';
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!location.state || !location.state.username) {
+      navigate('/login', { replace: true });
+    }
+  }, [location.state, navigate]);
+
+  if (!location.state || !location.state.username) {
+    return null; // 리다이렉트 중에는 아무것도 렌더링하지 않음
+  }
+
+  const foundUserId = location.state.username;
 
   return (
     <div className='flex justify-center items-center min-h-screen bg-gray-100'>
       <div className='bg-white p-8 rounded-lg shadow-md w-full max-w-md'>
-        <h2 className='text-2xl font-bold mb-6 text-center'>내 아이디 확인</h2>
+        <h2 className='text-xl font-bold mb-6 text-center'>내 아이디 확인</h2>
 
         <div className='mb-6'>
           <p className='text-center text-gray-600 mb-2'>회원님의 아이디는 다음과 같습니다:</p>
-          <p className='text-center text-xl font-bold text-orange-500'>{foundUserId}</p>
         </div>
 
         <div className='bg-gray-100 p-4 rounded-md mb-6'>
-          <p className='text-sm text-gray-600'>
-            여기는 무언가 허전해서 넣었는데, 필요없으면 지워도 될거 같아용
-          </p>
+          <div className='text-sm text-gray-600'>
+            <p className='text-center text-xl font-bold text-orange-500 my-4'>{foundUserId}</p>
+          </div>
         </div>
 
         <Link

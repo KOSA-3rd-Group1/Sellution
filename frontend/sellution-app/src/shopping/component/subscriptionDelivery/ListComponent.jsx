@@ -104,10 +104,14 @@ const ListComponent = () => {
         onCategoryClick={handleCategoryClick}
         selectedCategory={selectedCategory}
       />
-      <main className={`main-box w-full`}>
-        {isLoading && subscriptionProductList.length === 0 ? (
-          <LoadingSpinner />
-        ) : (
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : subscriptionProductList.length === 0 ? (
+        <main className={`main-box w-full`}>
+          <p>등록된 상품이 없습니다</p>
+        </main>
+      ) : (
+        <main className={`main-box w-full`}>
           <ul className='product-list w-[90%] mx-auto bg-white list-none p-0'>
             {subscriptionProductList.map((product, index) => {
               const productElement = (
@@ -138,9 +142,8 @@ const ListComponent = () => {
               );
             })}
           </ul>
-        )}
-        {isLoading && subscriptionProductList.length > 0 && <LoadingSpinner />}
-      </main>
+        </main>
+      )}
       <OneButtonFooterLayout footerText={'장바구니로 이동'} onClick={moveToSubscriptionCartPage} />
     </>
   );
