@@ -21,6 +21,6 @@ public class SchedulerTestController {
 
     @GetMapping("/running")
     public String applicationIsRunning() {
-        return "Success Application Running 세번째 테스트";
+        return "Success Application Running 네번째 테스트";
     }
 }
