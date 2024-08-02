@@ -72,11 +72,11 @@ public class AddressServiceImpl implements AddressService {
                 .build();
 
         try {
-            addressRepository.save(address);
+            address = addressRepository.save(address);
+            return address.getId();
         } catch (Exception e) {
             throw new BadRequestException(ExceptionCode.INVALID_ADDRESS_DATA);
         }
-        return address.getId();
     }
 
     @Override
