@@ -1,3 +1,4 @@
+APP_NAME="sellution"
 CURRENT_PORT=$(cat /home/ubuntu/service_url.inc | grep -Po '[0-9]+' | tail -1)
 
 
@@ -29,8 +30,8 @@ sudo chown $USER:$USER $LOG_DIR
 LOG_FILE="$LOG_DIR/app_$(date +%Y%m%d_%H%M%S).log"
 
 
-nohup java -jar -Dserver.port=${TARGET_PORT} /var/shop/sellution/cicd_template/build/libs/* > "$LOG_FILE" 2>&1 &
-    
+nohup java -jar -Dserver.port=${TARGET_PORT} /var/shop/sellution/cicd_template/build/libs/server-0.0.1-SNAPSHOT.jar > ${LOG_FILE} 2>&1 &
+
 echo "> Now new WAS runs at ${TARGET_PORT}."
 
 sleep 10s # 10초 대기
