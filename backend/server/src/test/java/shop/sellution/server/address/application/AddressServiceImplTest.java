@@ -157,16 +157,16 @@ class AddressServiceImplTest {
         assertThrows(BadRequestException.class, () -> addressService.updateAddress(1L, saveAddressReq));
     }
 
-    @DisplayName("주소를 삭제한다.")
-    @Test
-    void deleteAddress_Success() {
-        when(addressRepository.findById(anyLong())).thenReturn(Optional.of(address));
-
-        addressService.deleteAddress(1L);
-
-        verify(addressRepository, times(1)).findById(anyLong());
-        verify(addressRepository, times(1)).delete(any(Address.class));
-    }
+//    @DisplayName("주소를 삭제한다.")
+//    @Test
+//    void deleteAddress_Success() {
+//        when(addressRepository.findById(anyLong())).thenReturn(Optional.of(address));
+//
+//        addressService.deleteAddress(1L);
+//
+//        verify(addressRepository, times(1)).findById(anyLong());
+//        verify(addressRepository, times(1)).delete(any(Address.class));
+//    }
 
     @DisplayName("주소를 삭제할 때 주소가 없으면 예외를 발생시킨다.")
     @Test

@@ -1,4 +1,4 @@
-APP_NAME="sellution"
+APP_NAME="sellution_pg"
 CURRENT_PORT=$(cat /home/ubuntu/service_url.inc | grep -Po '[0-9]+' | tail -1)
 
 
@@ -6,10 +6,10 @@ TARGET_PORT=0
 
 echo "> Current port of running WAS is ${CURRENT_PORT}."
 
-if [ ${CURRENT_PORT} -eq 8080 ]; then  
-  TARGET_PORT=8081  
-elif [ ${CURRENT_PORT} -eq 8081 ]; then
-  TARGET_PORT=8080 
+if [ ${CURRENT_PORT} -eq 9090 ]; then
+  TARGET_PORT=9091
+elif [ ${CURRENT_PORT} -eq 9091 ]; then
+  TARGET_PORT=9090
 else
   echo "> No WAS is connected to nginx"
 fi
@@ -30,8 +30,8 @@ sudo chown $USER:$USER $LOG_DIR
 LOG_FILE="$LOG_DIR/app_$(date +%Y%m%d_%H%M%S).log"
 
 
-nohup java -jar -Dserver.port=${TARGET_PORT} /var/shop/sellution/cicd_template/build/libs/server-0.0.1-SNAPSHOT.jar > ${LOG_FILE} 2>&1 &
-
+nohup java -jar -Dserver.port=${TARGET_PORT} /var/shop/sellution_pg/cicd_template/build/libs/pgserver-0.0.1-SNAPSHOT.jar > ${LOG_FILE} 2>&1 &
+    
 echo "> Now new WAS runs at ${TARGET_PORT}."
 
 sleep 10s # 10초 대기

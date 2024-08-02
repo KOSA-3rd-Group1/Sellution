@@ -1,4 +1,4 @@
-APP_NAME="sellution"
+APP_NAME="sellution_pg"
 CURRENT_PORT=$(cat /home/ubuntu/service_url.inc | grep -Po '[0-9]+' | tail -1)
 
 # 로그 디렉토리 생성
@@ -23,9 +23,17 @@ if [ -n "$CURRENT_PID" ]; then
     fi
 fi
 
+# 로그 디렉토리 생성
+LOG_DIR="/var/log/$APP_NAME"
+sudo mkdir -p $LOG_DIR
+sudo chown $USER:$USER $LOG_DIR
+
+# 현재 날짜와 시간으로 로그 파일 이름 생성
+LOG_FILE="$LOG_DIR/app_$(date +%Y%m%d_%H%M%S).log"
+
 # Java 애플리케이션 실행 (prod 프로파일 사용)
 echo "새로운 애플리케이션을 시작합니다."
-nohup java -jar -Dserver.port=${CURRENT_PORT} /var/shop/sellution/cicd_template/build/libs/server-0.0.1-SNAPSHOT.jar > ${LOG_FILE} 2>&1 &
+nohup java -jar -Dserver.port=${CURRENT_PORT} /var/shop/sellution_pg/cicd_template/build/libs/pgserver-0.0.1-SNAPSHOT.jar > "$LOG_FILE" 2>&1 &
 
 echo "애플리케이션이 prod 프로파일로 시작되었습니다. 로그 파일: $LOG_FILE"
 
