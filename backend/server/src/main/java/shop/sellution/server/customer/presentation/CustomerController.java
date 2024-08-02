@@ -3,6 +3,7 @@ package shop.sellution.server.customer.presentation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import okhttp3.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,18 @@ public class CustomerController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("available", false));
         }
+    }
+
+    @PostMapping("/signup/verify-code/send")
+    public ResponseEntity<Boolean> sendSignupSmsAuthNumber(@Valid @RequestBody CheckCustomerPhoneNumberReq request) {
+        Boolean result = customerService.checkCustomerPhoneNumber(request);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @PostMapping("/signup/verify-code")
+    public ResponseEntity<Boolean> verifySignupSmsAuthNumber(@Valid @RequestBody FindCustomerSignupSmsAuthNumberReq request) {
+        Boolean result = customerService.verifyCustomerSmsAuthNumber(request);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @GetMapping("/me")

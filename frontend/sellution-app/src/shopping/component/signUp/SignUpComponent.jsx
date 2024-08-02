@@ -1,128 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import MenuHeaderNav from '@/shopping/layout/MenuHeaderNav.jsx';
-import HomeFooter from '../../layout/HomeFooter';
+import HomeFooter from '@/shopping/layout/HomeFooter';
+import { useMove } from '@/shopping/business/common/useMove';
+import { useSignUp } from '@/shopping/business/signUp/useSignUp';
 
 const SignupForm = () => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    id: '',
-    password: '',
-    confirmPassword: '',
-    name: '',
-    phone: '',
-  });
-  const [idAvailable, setIdAvailable] = useState(null);
-  const [passwordMatch, setPasswordMatch] = useState(null);
-  const [phoneVerified, setPhoneVerified] = useState(false);
-  const [smsConsent, setSmsConsent] = useState(false);
-  const [authStep, setAuthStep] = useState(0);
-  const [authCode, setAuthCode] = useState('');
-  const [timeLeft, setTimeLeft] = useState(300);
+  const { moveDefault } = useMove();
+  const {
+    data,
+    usernameConfirm, // 중복 아이디 확인
+    usernameConfirmErrorMessage,
+    passwordMatch, // 비밀번호 일치 여부
+    step, // 휴대폰 인증 요청 단계
+    isVerified, // 휴대폰 인증 여부
+    timeLeft, // 인증 남은 시간
+    isTimerRunning,
+    handleChangeInputValue, // 변경 가능한 값 변경 핸들러
+    handleCheckIdDuplicate, // 아이디 중봉 확인 요청
+    handleRequestAuth, // 인증 번호 요청
+    handleVerify, // 인증번호 비교 검사 요청
+    handleSubmit, // 회원가입 요청
+  } = useSignUp({ moveDefault });
 
-  useEffect(() => {
-    let timer;
-    if (authStep === 2 && timeLeft > 0) {
-      timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
-    } else if (timeLeft === 0) {
-      setAuthStep(0);
-    }
-    return () => clearInterval(timer);
-  }, [authStep, timeLeft]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-
-    if (name === 'confirmPassword') {
-      setPasswordMatch(value === formData.password);
-    }
-  };
-
-  const checkIdAvailability = async () => {
-    try {
-      // 이거 그냥 막 넣은거야..ㅎ.
-      const response = await axios.post('/check-id', { id: formData.id });
-      setIdAvailable(response.data.available);
-    } catch (error) {
-      console.error('ID 중복 확인 실패:', error);
-      setIdAvailable(false);
-    }
-  };
-
-  const handleRequestAuth = async () => {
-    try {
-      // 이거 그냥 막 넣은거야..ㅎ.
-      await axios.post('/api/send-auth-code', { phone: formData.phone });
-      setAuthStep(2);
-      setTimeLeft(300);
-    } catch (error) {
-      console.error('SMS 인증 요청 실패:', error);
-      alert('SMS 인증 요청에 실패했습니다. 다시 시도해주세요.');
-    }
-  };
-
-  const handleVerifyAuth = async () => {
-    try {
-      // 이거 그냥 막 넣은거야..ㅎ.
-      const response = await axios.post('/api/verify-auth-code', {
-        phone: formData.phone,
-        code: authCode,
-      });
-      if (response.data.verified) {
-        setPhoneVerified(true);
-        setAuthStep(3);
-      } else {
-        alert('인증번호가 일치하지 않습니다.');
-      }
-    } catch (error) {
-      console.error('인증 확인 실패:', error);
-      alert('인증 확인에 실패했습니다. 다시 시도해주세요.');
-    }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (idAvailable && passwordMatch && phoneVerified && smsConsent) {
-      console.log('회원가입 처리:', formData);
-      navigate('/join'); // 회원가입 성공 후 이동할 페이지
-    } else {
-      alert('모든 필수 항목을 완료해주세요.');
-    }
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
   return (
     <div className='justify-center items-center'>
       <MenuHeaderNav title={'회원가입'} />
-      <form onSubmit={handleSubmit} className='max-w-md mx-auto p-4 space-y-4'>
+      {/* <form onSubmit={handleSubmit} className='max-w-md mx-auto p-4 space-y-4'> */}
+      <form className='max-w-md mx-auto p-4 space-y-4'>
         <div className='space-y-2'>
-          <label className='block text-primary font-semibold'>
-            * 아이디
-            {idAvailable === true && (
-              <span className='ml-2 text-green-500 text-sm'>사용 가능한 아이디입니다.</span>
-            )}
-            {idAvailable === false && (
-              <span className='ml-2 text-red-500 text-sm'>사용할 수 없는 아이디입니다.</span>
-            )}
-          </label>
+          <label className='block text-primary font-semibold'>* 아이디</label>
           <div className='flex items-center space-x-2'>
             <input
               type='text'
               name='id'
-              value={formData.id}
-              onChange={handleChange}
+              value={data.username}
+              onChange={(e) => handleChangeInputValue('username', e.target.value)}
               placeholder='아이디 입력(6-20자)'
               className='flex-grow border rounded px-3 py-2 text-sm'
             />
             <button
               type='button'
-              onClick={checkIdAvailability}
-              className='bg-primary text-white rounded px-4 py-2 text-sm'
+              onClick={handleCheckIdDuplicate}
+              className='bg-primary text-white hover:bg-secondary rounded px-4 py-2 text-sm'
             >
               중복확인
             </button>
           </div>
+          {data.username !== '' && usernameConfirm !== null && (
+            <p className={`text-xs ml-2 ${usernameConfirm ? 'text-green-500' : 'text-red-500'}`}>
+              {usernameConfirm ? '사용 가능한 아이디입니다.' : `${usernameConfirmErrorMessage}`}
+            </p>
+          )}
         </div>
 
         <div className='space-y-2'>
@@ -130,8 +63,8 @@ const SignupForm = () => {
           <input
             type='password'
             name='password'
-            value={formData.password}
-            onChange={handleChange}
+            value={data.password}
+            onChange={(e) => handleChangeInputValue('password', e.target.value)}
             placeholder='비밀번호 입력(문자, 숫자, 특수문자 포함 8-20자)'
             className='w-full border rounded px-3 py-2 text-sm'
           />
@@ -142,16 +75,15 @@ const SignupForm = () => {
           <input
             type='password'
             name='confirmPassword'
-            value={formData.confirmPassword}
-            onChange={handleChange}
+            value={data.confirmPassword}
+            onChange={(e) => handleChangeInputValue('confirmPassword', e.target.value)}
             placeholder='비밀번호 재입력'
             className='w-full border rounded px-3 py-2 text-sm'
           />
-          {passwordMatch === false && (
-            <p className='text-xs text-red-500'>비밀번호가 일치하지 않습니다.</p>
-          )}
-          {passwordMatch === true && (
-            <p className='text-xs text-green-500'>비밀번호가 일치합니다.</p>
+          {data.password !== '' && data.confirmPassword !== '' && passwordMatch !== null && (
+            <p className={`text-xs mt-1 ml-2 ${passwordMatch ? 'text-green-500' : 'text-red-500'}`}>
+              {passwordMatch ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.'}
+            </p>
           )}
         </div>
 
@@ -160,8 +92,8 @@ const SignupForm = () => {
           <input
             type='text'
             name='name'
-            value={formData.name}
-            onChange={handleChange}
+            value={data.name}
+            onChange={(e) => handleChangeInputValue('name', e.target.value)}
             placeholder='이름을 입력하세요.'
             className='w-full border rounded px-3 py-2 text-sm'
           />
@@ -172,59 +104,60 @@ const SignupForm = () => {
           <div className='flex items-center space-x-2'>
             <input
               type='tel'
-              name='phone'
-              value={formData.phone}
-              onChange={handleChange}
+              name='phoneNumber'
+              value={data?.phoneNumber || ''}
+              onChange={(e) => handleChangeInputValue('phoneNumber', e.target.value)}
               placeholder="휴대폰 번호 입력('-'제외 11자리 입력)"
               className='flex-grow border rounded px-3 py-2 text-sm'
-              disabled={authStep > 0}
+              //   disabled={step > 0}
+              //   disabled={authStep > 0}
             />
             <button
               type='button'
               onClick={handleRequestAuth}
-              className='bg-gray-200 text-gray-700 rounded px-4 py-2 text-sm  hover:bg-primary hover:text-white '
-              disabled={authStep > 0}
+              className='bg-primary hover:bg-secondary text-white px-4 py-2 text-sm rounded'
+              //   className='bg-gray-200 text-gray-700 rounded px-4 py-2 text-sm  hover:bg-primary hover:text-white '
+              //   disabled={step > 1}
+              //   disabled={authStep > 0}
             >
               휴대폰 인증
             </button>
           </div>
         </div>
 
-        {authStep >= 2 && (
+        {step >= 2 && (
           <div className='space-y-2'>
             <label className='block text-primary font-semibold'>인증번호</label>
             <div className='flex items-center space-x-2'>
               <input
                 type='text'
-                value={authCode}
-                onChange={(e) => setAuthCode(e.target.value)}
+                value={data.authNumber}
+                onChange={(e) => handleChangeInputValue('authNumber', e.target.value)}
                 placeholder='인증번호 6자리 입력'
                 className='flex-grow border rounded px-3 py-2 text-sm'
               />
               <button
                 type='button'
-                onClick={handleVerifyAuth}
+                onClick={handleVerify}
                 className='bg-primary text-white rounded px-4 py-2 text-sm'
               >
                 확인
               </button>
             </div>
-            {timeLeft > 0 && (
-              <p className='text-xs text-gray-500'>
-                남은 시간: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-              </p>
+            {isTimerRunning && !isVerified && (
+              <p className='text-sm text-red-500 mt-1'>{formatTime(timeLeft)}</p>
             )}
           </div>
         )}
 
-        {phoneVerified && <p className='text-green-500 text-sm'>휴대폰 인증이 완료되었습니다.</p>}
+        {isVerified && <p className='text-green-500 text-xs ml-2'>휴대폰 인증이 완료되었습니다.</p>}
 
         <div className='flex items-center space-x-2'>
           <input
             type='checkbox'
             id='sms-consent'
-            checked={smsConsent}
-            onChange={(e) => setSmsConsent(e.target.checked)}
+            checked={data.smsConsent}
+            onChange={(e) => handleChangeInputValue('smsConsent', e.target.checked)}
             className='rounded text-primary'
           />
           <label htmlFor='sms-consent' className='text-sm'>
@@ -234,8 +167,13 @@ const SignupForm = () => {
 
         <button
           type='submit'
-          className='w-full bg-primary text-white rounded py-3 text-lg font-semibold'
-          disabled={!(idAvailable && passwordMatch && phoneVerified && smsConsent)}
+          className={`w-full rounded py-3 text-lg font-semibold ${
+            usernameConfirm && passwordMatch && isVerified && data.smsConsent
+              ? 'bg-primary hover:bg-secondary text-white'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }`}
+          disabled={!(usernameConfirm && passwordMatch && isVerified && data.smsConsent)}
+          onClick={(e) => handleSubmit(e)}
         >
           가입하기
         </button>

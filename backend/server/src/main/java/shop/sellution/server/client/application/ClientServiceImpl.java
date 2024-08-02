@@ -66,20 +66,20 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Boolean checkClientPhoneNumber(CheckClientPhoneNumberReq reqeust) {
+    public Boolean checkClientPhoneNumber(CheckClientPhoneNumberReq request) {
         // 전화 번호 중복 검사
-        validateUniquePhoneNumber(reqeust.getPhoneNumber());
+        validateUniquePhoneNumber(request.getPhoneNumber());
 
-        String prefixedNumber = "9" + reqeust.getPhoneNumber();
+        String prefixedNumber = "9" + request.getPhoneNumber();
         Long convertedNumber = Long.parseLong(prefixedNumber);
 
         // 인증 번호 요청
         SendSmsAuthNumberReq sendRequest = new SendSmsAuthNumberReq(
                 SIGNUP.getName(),
                 "ROLE_CLIENT",
-                reqeust.getCompanyId(),
+                request.getCompanyId(),
                 convertedNumber,
-                reqeust.getPhoneNumber()
+                request.getPhoneNumber()
         );
         smsAuthNumberService.sendSmsAuthNumber(sendRequest);
         return true;
