@@ -5,8 +5,10 @@ import { EyeOnIcon, EyeOffIcon } from '@/client/utility/assets/Icons';
 
 import LogoHeaderNav from '@/shopping/layout/LogoHeaderNav';
 import HomeFooter from '@/shopping/layout/HomeFooter';
+import { useMove } from '@/shopping/business/common/useMove';
 
 const LoginComponent = () => {
+  const { moveDefault } = useMove();
   const {
     username,
     password,
@@ -17,7 +19,10 @@ const LoginComponent = () => {
     setPassword,
     togglePasswordVisibility,
     handleSubmit,
-  } = useLogin();
+    moveIdInquiry,
+    movePwInquiry,
+    moveSignup,
+  } = useLogin({ moveDefault });
 
   return (
     <>
@@ -144,13 +149,29 @@ const LoginComponent = () => {
               </form>
             </div>
             <div className='w-full text-center text-sm mt-8 flex justify-center items-center'>
-              <div className='font-medium text-primary hover:text-brandOprimaryrange'>
-                아이디 찾기
+              <button
+                className='font-medium text-primary hover:text-brandOprimaryrange flex flex-wrap justify-center gap-1 cursor-pointer'
+                onClick={(e) => moveIdInquiry(e)}
+              >
+                <span>아이디</span>
+                <span>찾기</span>
+              </button>
+              <div className='divider divider-accent divider-horizontal'></div>
+              <button
+                className='font-medium text-primary hover:text-primary flex flex-wrap justify-center gap-1 '
+                onClick={(e) => movePwInquiry(e)}
+              >
+                <span>비밀번호</span>
+                <span>찾기</span>
+              </button>
+              <div className='divider divider-accent divider-horizontal'></div>
+              <div
+                className='font-medium text-primary hover:text-primary flex flex-wrap justify-center gap-1 cursor-pointer'
+                onClick={(e) => moveSignup(e)}
+              >
+                <span>아이디</span>
+                <span>생성</span>
               </div>
-              <div className='divider divider-horizontal'></div>
-              <div className='font-medium text-primary hover:text-primary'>비밀번호 찾기</div>
-              <div className='divider divider-horizontal'></div>
-              <div className='font-medium text-primary hover:text-primary'>아이디 생성</div>
             </div>
           </div>
         </div>
