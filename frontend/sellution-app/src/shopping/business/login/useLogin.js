@@ -4,12 +4,13 @@ import useAuthStore from '@/shopping/store/stores/useAuthStore';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import { login } from '@/shopping/utility/apis/login/loginApi';
+import useCartStore from '../../store/stores/useCartStore';
 
 export const useLogin = ({ moveDefault }) => {
   //   const navigate = useNavigate();
   const { clientName } = useParams(); // url 상 clientName <- 회사명
   const location = useLocation();
-
+  const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const setAllUserData = useUserInfoStore((state) => state.setAllUserData);
   //local에 저장된 회사명, 회사 id
@@ -17,6 +18,7 @@ export const useLogin = ({ moveDefault }) => {
     name: state.name,
     companyId: state.companyId,
   }));
+  const { findCart } = useCartStore();
 
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
@@ -44,6 +46,7 @@ export const useLogin = ({ moveDefault }) => {
       try {
         const success = await login(username, password, companyId, setAccessToken, setAllUserData);
         if (success) {
+          //장바구니 data 가져오기
           const from = location.state?.from || `/shopping/${name}/home`;
           moveDefault(from);
           //   navigate(from); // 로그인 성공 후 저장된 url로 이동
@@ -80,6 +83,14 @@ export const useLogin = ({ moveDefault }) => {
     e.preventDefault();
     moveDefault(`/shopping/${clientName}/signup`);
   };
+
+  // accessToken이 변경될 때마다 장바구니 데이터를 가져옴
+  useEffect(() => {
+    if (accessToken) {
+      findCart('ONETIME', accessToken, setAccessToken);
+      findCart('SUBSCRIPTION', accessToken, setAccessToken);
+    }
+  }, [accessToken, findCart, setAccessToken]);
 
   return {
     username,

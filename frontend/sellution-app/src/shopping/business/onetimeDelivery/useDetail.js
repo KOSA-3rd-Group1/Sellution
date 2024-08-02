@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import useOrderListStore from './../../store/stores/useOrderListStore';
-import useOnetimeCartStore from '../../store/stores/useOnetimeCartStore';
+//import useOnetimeCartStore from '../../store/stores/useOnetimeCartStore';
 import useAuthStore from '@/shopping/store/stores/useAuthStore';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
+import useCartStore from '../../store/stores/useCartStore';
 
 const useDetail = () => {
   const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const navigate = useNavigate();
   const clientName = useCompanyInfoStore((state) => state.name);
   const customerId = useUserInfoStore((state) => state.id);
@@ -36,8 +38,8 @@ const useDetail = () => {
     setActiveSlide(index + 1); // setActiveSlide는 1부터 시작하는 인덱스를 사용하므로 +1 해줍니다.
     setCurrentImageIndex(index);
   };
-
-  const { onetimeCart, updateOnetimeCart } = useOnetimeCartStore();
+  const { onetimeCart, addToCart } = useCartStore();
+  //const { onetimeCart, updateOnetimeCart } = useOnetimeCartStore();
   const [isDetailPageModalVisible, setIsDetailPageModalVisible] = useState(false);
 
   const addToOnetimeCart = () => {
@@ -48,22 +50,12 @@ const useDetail = () => {
     }
     //stock대신 quantity를 가진 newItem 객체 만들어서, 장바구니에 넣기
     else if (itemCountToAdd > 0) {
-      const newItem = {
-        id: productToShow.productId,
-        productId: productToShow.productId,
-        quantity: itemCountToAdd,
-        name: productToShow.name,
-        cost: productToShow.cost,
-        discountRate: productToShow.discountRate,
-        discountedPrice: productToShow.discountedPrice,
-        stock: productToShow.stock,
-        thumbnailImage: productToShow.thumbnailImage,
-      };
-      updateOnetimeCart(newItem);
+      addToCart('ONETIME', productToShow.productId, itemCountToAdd, accessToken, setAccessToken);
       console.log('단건배송 장바구니 목록: ', onetimeCart);
       setItemCountToAdd(0); //장바구니에 넣어준 다음에 수량 0으로 다시 변경 >> 장바구니 버튼 누르면 0으로 초기화 되는 것
       setIsDetailPageModalVisible(true);
     }
+    //updateOnetimeCart(newItem);
   };
 
   const handleDirectOrder = () => {
