@@ -70,6 +70,45 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
+    public Boolean checkCustomerPhoneNumber(CheckCustomerPhoneNumberReq request) {
+        // 전화번호 중복 검사
+        validateUniquePhoneNumber(request.getCompanyId(), request.getPhoneNumber());
+
+        String prefixedNumber = "9" + request.getPhoneNumber();
+        Long convertedNumber = Long.parseLong(prefixedNumber);
+
+        // 인증 번호 요청
+        SendSmsAuthNumberReq sendRequest = new SendSmsAuthNumberReq(
+                SIGNUP.getName(),
+                "ROLE_CUSTOMER",
+                request.getCompanyId(),
+                convertedNumber,
+                request.getPhoneNumber()
+        );
+        smsAuthNumberService.sendSmsAuthNumber(sendRequest);
+        return true;
+    }
+
+    @Override
+    public Boolean verifyCustomerSmsAuthNumber(FindCustomerSignupSmsAuthNumberReq request) {
+        // 전화 번호 중복 검사
+        validateUniquePhoneNumber(request.getCompanyId(), request.getPhoneNumber());
+
+        String prefixedNumber = "9" + request.getPhoneNumber();
+        Long convertedNumber = Long.parseLong(prefixedNumber);
+
+        VerifySmsAuthNumberReq verifyRequest = new VerifySmsAuthNumberReq(
+                SIGNUP.getName(),
+                "ROLE_CUSTOMER",
+                request.getCompanyId(),
+                convertedNumber,
+                request.getAuthNumber()
+        );
+        smsAuthNumberService.verifySmsAuthNumber(verifyRequest);
+        return true;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public FindCurrentCustomerInfoRes getCurrentUserInfo() {
         CustomUserDetails customUserDetails = getCustomUserDetailsFromSecurityContext();

@@ -17,6 +17,13 @@ public interface CustomerService {
     // 회원 아이디 중복 확인
     void checkCustomerUsername(CheckCustomerUsernameReq request);
 
+    // 회원 가입 전 휴대폰 본인 인증 번호 요청
+    Boolean checkCustomerPhoneNumber(CheckCustomerPhoneNumberReq request);
+
+    // 회원 가입 시 휴대폰 본인 인증 번호 확인
+    Boolean verifyCustomerSmsAuthNumber(FindCustomerSignupSmsAuthNumberReq request);
+
+
     // 현재 고객 정보 가져오기
     FindCurrentCustomerInfoRes getCurrentUserInfo();
 
