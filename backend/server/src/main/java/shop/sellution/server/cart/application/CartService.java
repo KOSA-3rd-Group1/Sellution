@@ -11,6 +11,7 @@ import java.util.Map;
 public interface CartService {
 
     List<FindCartProductRes> findCart(CartType cartType);
+//    Map<Long, Integer> findCartFromRedis(CartType cartType);
 
     void addToCart(CartType cartType, Long productId, int quantity);
 

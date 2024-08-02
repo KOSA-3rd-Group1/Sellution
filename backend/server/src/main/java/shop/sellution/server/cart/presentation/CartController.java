@@ -25,6 +25,13 @@ public class CartController {
         return ResponseEntity.ok(cartItems);
     }
 
+    //redis에서 장바구니 목록 조회
+//    @GetMapping("/redis/{cartType}")
+//    public ResponseEntity<Map<Long, Integer>> findCartFromRedis(@PathVariable CartType cartType) {
+//        Map<Long, Integer> cartItems = cartService.findCartFromRedis(cartType);
+//        return ResponseEntity.ok(cartItems);
+//    }
+
     // 장바구니에 상품 추가
     @PostMapping("/add/{cartType}")
     public ResponseEntity<String> addToCart(@PathVariable CartType cartType, @RequestParam Long productId, @RequestParam int quantity) {

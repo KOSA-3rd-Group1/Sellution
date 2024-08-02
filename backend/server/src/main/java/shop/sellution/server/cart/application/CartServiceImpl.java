@@ -68,10 +68,11 @@ public class CartServiceImpl implements CartService {
     }
 
 //    @Override
-//    public Map<Long, Integer> findCart(CartType cartType) {
+//    public Map<Long, Integer> findCartFromRedis(CartType cartType) {
 //        String cartKey = getCartKey(cartType);
-//        Map<Long, Integer> cartItems = hashOperations.entries(cartKey);
-//        return cartItems != null ? cartItems : new HashMap<>();
+//        log.info("Redis key: {}", cartKey);  // 로그 추가
+//        log.info("Cart items: {}", hashOperations.entries(cartKey));  // 로그 추가
+//        return hashOperations.entries(cartKey);
 //    }
 
     @Override
