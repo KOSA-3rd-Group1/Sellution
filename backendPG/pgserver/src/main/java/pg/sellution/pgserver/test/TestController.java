@@ -9,6 +9,6 @@ public class TestController {
 
     @RequestMapping("/running")
     public String applicationIsRunning() {
-        return "Success PG-Application Running";
+        return "Success PG-Application Running 테스트";
     }
 }
