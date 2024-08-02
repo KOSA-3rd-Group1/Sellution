@@ -50,7 +50,7 @@ jobs:
 
     - name: Deploy to S3
       run: |
-        aws s3 sync ./frontend/sellution-app/dist s3://${{ secrets.AWS_FRONT_S3_ARN }} --delete
+        aws s3 sync ./frontend/sellution-app/dist s3://${{ secrets.AWS_FRONT_HOSTING_S3_BUCKET_NAME }} --delete
 
     - name: Invalidate CloudFront Distribution
       run: |
