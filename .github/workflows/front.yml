@@ -1,0 +1,69 @@
+name: FRONT CI/CD
+
+on:
+  workflow_dispatch: 
+  push:
+    branches: [ main ]
+    paths:
+      - 'frontend/sellution-app/**'
+  pull_request:
+    types: [closed]
+    branches: [ main ]
+    paths:
+      - 'frontend/sellution-app/**'
+
+jobs:
+  build-and-deploy:
+    if: (github.event_name == 'pull_request' && github.event.pull_request.merged == true) || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.OS }}-node-
+
+    - name: Install dependencies
+      working-directory: ./frontend/sellution-app
+      run: npm ci
+
+    - name: Build React app
+      working-directory: ./frontend/sellution-app
+      run: npm run build
+      env:
+        CI: false
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+        aws-region: ap-northeast-2
+
+    - name: Deploy to S3
+      run: |
+        aws s3 sync ./frontend/sellution-app/dist s3://${{ secrets.AWS_FRONT_HOSTING_S3_BUCKET_NAME }} --delete
+
+    - name: Invalidate CloudFront Distribution
+      run: |
+        aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+    - name: Notify Deployment Status
+      if: always()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow
+        author_name: GitHub Actions
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
