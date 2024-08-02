@@ -35,7 +35,7 @@ public class PaymentController {
             throw new AuthException(INVALID_AUTH_HEADER);
         }
         String token = authHeader.substring(TOKEN_PREFIX.length());
-        accessTokenService.validateToken(token,"payment", paymentReq.getPrice(), request.getRemoteAddr());
+        accessTokenService.validateToken(token,"payment", paymentReq.getPrice(), getClientIp(request));
         accessTokenService.invalidateToken(token);
 
         accountAuthService.checkAccount(new CheckAccountReq(paymentReq.getBankCode(), paymentReq.getAccountNumber()));
@@ -51,11 +51,25 @@ public class PaymentController {
             throw new AuthException(INVALID_AUTH_HEADER);
         }
         String token = authHeader.substring(TOKEN_PREFIX.length());
-        accessTokenService.validateToken(token,"payment-cancel", paymentReq.getPrice(), request.getRemoteAddr());
+        accessTokenService.validateToken(token,"payment-cancel", paymentReq.getPrice(),getClientIp(request));
         accessTokenService.invalidateToken(token);
 
         accountAuthService.checkAccount(new CheckAccountReq(paymentReq.getBankCode(), paymentReq.getAccountNumber()));
         log.info("---------- 환불 종료 ----------");
         return ResponseEntity.ok().body("success");
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String clientIp = request.getHeader("X-Forwarded-For");
+        if (clientIp == null || clientIp.isEmpty() || "unknown".equalsIgnoreCase(clientIp)) {
+            clientIp = request.getHeader("Proxy-Client-IP");
+        }
+        if (clientIp == null || clientIp.isEmpty() || "unknown".equalsIgnoreCase(clientIp)) {
+            clientIp = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (clientIp == null || clientIp.isEmpty() || "unknown".equalsIgnoreCase(clientIp)) {
+            clientIp = request.getRemoteAddr();
+        }
+        return clientIp;
     }
 }
