@@ -21,9 +21,7 @@ if [ ! -z ${TARGET_PID} ]; then
 fi
 
 
-nohup java -jar \
-    -Dserver.port=9091 \
-    /var/shop/sellution_pg/cicd_template/build/libs/pgserver-0.0.1-SNAPSHOT.jar > "$LOG_FILE" 2>&1 &
+nohup java -jar -Dserver.port=${TARGET_PORT} /var/shop/sellution_pg/cicd_template/build/libs/pgserver-0.0.1-SNAPSHOT.jar > "$LOG_FILE" 2>&1 &
     
 echo "> Now new WAS runs at ${TARGET_PORT}."
 
