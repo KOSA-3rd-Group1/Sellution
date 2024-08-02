@@ -1,5 +1,6 @@
 import React from 'react';
 import { TableSearchInput } from '@/client/layout/common/Input';
+import ImageLoadTimeTest from '@/client/utility/ImageLoadTimeTest';
 
 const TableProduct = ({
   HEADERS,
@@ -118,16 +119,21 @@ const TableProduct = ({
                       <div className='flex flex-col w-full justify-between items-center gap-3 px-2'>
                         {header.key === 'thumbnailImage' ? (
                           row[header.key] ? (
-                            <img
-                              src={row[header.key]}
-                              alt={row.name}
-                              className='w-12 h-12 object-cover inline-block'
-                            />
+                            <>
+                              <img
+                                src={row[header.key]}
+                                alt={row.name}
+                                className='w-12 h-12 object-cover inline-block'
+                              />
+                              <ImageLoadTimeTest imageUrl={row[header.key]} />
+                            </>
                           ) : (
                             '이미지 없음'
                           )
                         ) : (
-                          <div className='text-center w-full truncate'>{row[header.key]}</div>
+                          <div className='text-center w-full truncate'>
+                            {header.format ? header.format(row[header.key]) : row[header.key]}
+                          </div>
                         )}
                       </div>
                     </td>

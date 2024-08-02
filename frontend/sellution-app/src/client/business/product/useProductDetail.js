@@ -45,7 +45,7 @@ const useProductDetail = () => {
   });
 
   useEffect(() => {
-    const shopCompanyStorage = localStorage.getItem('shop-company-storage');
+    const shopCompanyStorage = localStorage.getItem('userInfo');
     if (shopCompanyStorage) {
       const { state } = JSON.parse(shopCompanyStorage);
       if (state && state.companyId) {
@@ -86,16 +86,35 @@ const useProductDetail = () => {
       parsedValue = isNaN(numericValue) ? '' : formatPrice(numericValue);
     } else if (['stock', 'discountRate'].includes(name)) {
       parsedValue = value === '' ? 0 : parseInt(value, 10);
-    }
-
-    if (['stock', 'cost', 'discountRate'].includes(name)) {
+    } else if (['stock', 'cost', 'discountRate'].includes(name)) {
       parsedValue = value === '' ? 0 : parseInt(value, 10);
     }
 
     if (name === 'isDiscount') {
-      setIsDiscountApplied(value === DisplayStatus.VISIBLE);
-      parsedValue = value === 'Y' ? DisplayStatus.VISIBLE : DisplayStatus.INVISIBLE;
+      const isDiscountApplied = value === DisplayStatus.VISIBLE;
+      setIsDiscountApplied(isDiscountApplied);
+      parsedValue = isDiscountApplied ? DisplayStatus.VISIBLE : DisplayStatus.INVISIBLE;
+
+      // 할인 미적용 시 즉시 할인율을 0으로 설정
+      if (!isDiscountApplied) {
+        setProductInfo((prev) => ({
+          ...prev,
+          isDiscount: DisplayStatus.INVISIBLE,
+          discountRate: 0,
+          discountStartDate: '',
+          discountEndDate: '',
+        }));
+        return; // 여기서 함수 실행을 종료하여 아래 setProductInfo가 다시 실행되지 않도록 합니다.
+      }
     }
+
+    // if (name === 'isDiscount') {
+    //   if (!isDiscountApplied) {
+    //     setProductInfo((prev) => ({ ...prev, discountRate: 0 }));
+    //   }
+    //   setIsDiscountApplied(value === DisplayStatus.VISIBLE);
+    //   parsedValue = value === 'Y' ? DisplayStatus.VISIBLE : DisplayStatus.INVISIBLE;
+    // }
 
     if (name === 'deliveryType') {
       parsedValue = Object.values(DeliveryType).includes(value) ? value : '';
@@ -118,25 +137,25 @@ const useProductDetail = () => {
     }
   };
 
-  const dataURItoBlob = (dataURI) => {
-    if (!dataURI || typeof dataURI !== 'string' || !dataURI.startsWith('data:')) {
-      console.error('Invalid data URI:', dataURI);
-      return null;
-    }
+  // const dataURItoBlob = (dataURI) => {
+  //   if (!dataURI || typeof dataURI !== 'string' || !dataURI.startsWith('data:')) {
+  //     console.error('Invalid data URI:', dataURI);
+  //     return null;
+  //   }
 
-    const splitDataURI = dataURI.split(',');
-    const byteString = atob(splitDataURI[1]);
-    const mimeString = splitDataURI[0].split(':')[1].split(';')[0];
+  //   const splitDataURI = dataURI.split(',');
+  //   const byteString = atob(splitDataURI[1]);
+  //   const mimeString = splitDataURI[0].split(':')[1].split(';')[0];
 
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
+  //   const ab = new ArrayBuffer(byteString.length);
+  //   const ia = new Uint8Array(ab);
 
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
+  //   for (let i = 0; i < byteString.length; i++) {
+  //     ia[i] = byteString.charCodeAt(i);
+  //   }
 
-    return new Blob([ab], { type: mimeString });
-  };
+  //   return new Blob([ab], { type: mimeString });
+  // };
 
   const updateProduct = async () => {
     try {
@@ -224,61 +243,61 @@ const useProductDetail = () => {
     navigate(`/product?page=${fromPage}`);
   };
 
+  const fetchProductData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products/${productId}`);
+      const product = response.data;
+
+      setProductInfo({
+        name: product.name,
+        categoryName: product.categoryName,
+        productInformation: product.productInformation,
+        cost: product.cost,
+        isDiscount: product.isDiscount,
+        discountRate: product.discountRate,
+        discountedPrice: product.discountedPrice,
+        discountStartDate: product.discountStartDate ? product.discountStartDate.split('T')[0] : '',
+        discountEndDate: product.discountEndDate ? product.discountEndDate.split('T')[0] : '',
+        deliveryType: product.deliveryType,
+        stock: product.stock,
+        isVisible: product.isVisible,
+      });
+
+      setProductDetailImages(
+        product.detailImages.map((url, index) => ({
+          id: `detail-${index}`,
+          preview: url,
+          file: null,
+        })),
+      );
+      setSelectedThumbnailImage(
+        product.thumbnailImage
+          ? [{ id: 'thumbnail', preview: product.thumbnailImage, file: null }]
+          : [],
+      );
+      setProductImages(
+        product.listImages.map((url, index) => ({
+          id: `list-${index}`,
+          preview: url,
+          file: null,
+        })),
+      );
+
+      setIsDiscountApplied(product.isDiscount === DisplayStatus.VISIBLE);
+      setIsLoading(false);
+    } catch (err) {
+      console.error('Error fetching product data:', err);
+      setError('상품 정보를 불러오는 데 실패했습니다.');
+      setIsLoading(false);
+    }
+  };
+
+  const refreshProductData = async () => {
+    await fetchProductData();
+  };
+
   useEffect(() => {
-    const fetchProductData = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/products/${productId}`,
-        );
-        const product = response.data;
-
-        setProductInfo({
-          name: product.name,
-          categoryName: product.categoryName,
-          productInformation: product.productInformation,
-          cost: product.cost,
-          isDiscount: product.isDiscount,
-          discountRate: product.discountRate,
-          discountedPrice: product.discountedPrice,
-          discountStartDate: product.discountStartDate
-            ? product.discountStartDate.split('T')[0]
-            : '',
-          discountEndDate: product.discountEndDate ? product.discountEndDate.split('T')[0] : '',
-          deliveryType: product.deliveryType,
-          stock: product.stock,
-          isVisible: product.isVisible,
-        });
-
-        setProductDetailImages(
-          product.detailImages.map((url, index) => ({
-            id: `detail-${index}`,
-            preview: url,
-            file: null,
-          })),
-        );
-        setSelectedThumbnailImage(
-          product.thumbnailImage
-            ? [{ id: 'thumbnail', preview: product.thumbnailImage, file: null }]
-            : [],
-        );
-        setProductImages(
-          product.listImages.map((url, index) => ({
-            id: `list-${index}`,
-            preview: url,
-            file: null,
-          })),
-        );
-
-        setIsDiscountApplied(product.isDiscount === DisplayStatus.VISIBLE);
-        setIsLoading(false);
-      } catch (err) {
-        console.error('Error fetching product data:', err);
-        setError('상품 정보를 불러오는 데 실패했습니다.');
-        setIsLoading(false);
-      }
-    };
-
     fetchProductData();
   }, [productId]);
 
@@ -316,6 +335,7 @@ const useProductDetail = () => {
     DisplayStatus,
     DeliveryType,
     formatPrice,
+    refreshProductData,
   };
 };
 

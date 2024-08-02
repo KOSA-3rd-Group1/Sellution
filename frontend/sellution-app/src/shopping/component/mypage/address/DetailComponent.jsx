@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import MenuHeaderNav from '../../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../../layout/OneButtonFooterLayout';
+import ReusableOneButtonModal from '@/shopping/layout/partials/ReusableOneButtonModal';
 
 const DetailComponent = () => {
   const { clientName, customerId, addressId } = useParams();
@@ -23,6 +24,9 @@ const DetailComponent = () => {
     isDefaultAddress: DisplayStatus.N,
   });
 
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+
   useEffect(() => {
     const fetchAddress = async () => {
       try {
@@ -33,6 +37,7 @@ const DetailComponent = () => {
         setAddress(response.data);
       } catch (error) {
         console.error('Error fetching address:', error);
+        setShowErrorModal(true);
       }
     };
 
@@ -68,12 +73,21 @@ const DetailComponent = () => {
         ...address,
         customerId,
       });
-      alert('주소가 성공적으로 수정되었습니다.');
-      navigate(`/shopping/${clientName}/my/${customerId}/address`);
+      setShowSuccessModal(true);
+      //navigate(`/shopping/${clientName}/my/${customerId}/address`);
     } catch (error) {
       console.error('Error updating address:', error);
-      alert('주소 수정 중 오류가 발생했습니다.');
+      setShowErrorModal(true);
     }
+  };
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+    navigate(`/shopping/${clientName}/my/${customerId}/address`);
+  };
+
+  const handleErrorModalClose = () => {
+    setShowErrorModal(false);
   };
 
   return (
@@ -186,6 +200,25 @@ const DetailComponent = () => {
         </form>
       </div>
       <OneButtonFooterLayout footerText={'저장하기'} onClick={handleSubmit} />
+      <OneButtonFooterLayout footerText={'저장하기'} onClick={handleSubmit} />
+
+      <ReusableOneButtonModal
+        isVisible={showSuccessModal}
+        onClose={handleSuccessModalClose}
+        title='성공'
+        message='주소가 성공적으로 수정되었습니다.'
+        buttonText='확인'
+        onButtonClick={handleSuccessModalClose}
+      />
+
+      <ReusableOneButtonModal
+        isVisible={showErrorModal}
+        onClose={handleErrorModalClose}
+        title='오류'
+        message='주소 수정 중 오류가 발생했습니다.'
+        buttonText='확인'
+        onButtonClick={handleErrorModalClose}
+      />
     </div>
   );
 };

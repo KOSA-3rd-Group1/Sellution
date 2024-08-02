@@ -57,7 +57,9 @@ const HomeFooter = () => {
         className='flex-1 bg-white flex flex-col justify-center items-center relative'
       >
         <MypageIcon className='w-7 h-7 fill-current text-secondary stroke-secondary stroke-[10]' />
-        <p className='text-secondary text-xs font-bold pt-1'>마이페이지</p>
+        <p className='text-secondary text-xs font-bold pt-1'>
+          {accessToken === null || accessToken === '' ? '로그인' : '마이페이지'}
+        </p>
       </Link>
       <button
         className='flex-1 bg-white flex flex-col justify-center items-center'

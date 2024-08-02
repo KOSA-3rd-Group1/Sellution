@@ -27,8 +27,7 @@ import java.time.Duration;
 import java.util.UUID;
 
 import static shop.sellution.server.global.exception.ExceptionCode.*;
-import static shop.sellution.server.global.type.SmsAuthType.ID;
-import static shop.sellution.server.global.type.SmsAuthType.PASSWORD;
+import static shop.sellution.server.global.type.SmsAuthType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +63,45 @@ public class ClientServiceImpl implements ClientService {
     @Transactional(readOnly = true)
     public void checkClientUsername(CheckClientUsernameReq request) {
         validateUniqueUsername(request.getUsername());
+    }
+
+    @Override
+    public Boolean checkClientPhoneNumber(CheckClientPhoneNumberReq request) {
+        // 전화 번호 중복 검사
+        validateUniquePhoneNumber(request.getPhoneNumber());
+
+        String prefixedNumber = "9" + request.getPhoneNumber();
+        Long convertedNumber = Long.parseLong(prefixedNumber);
+
+        // 인증 번호 요청
+        SendSmsAuthNumberReq sendRequest = new SendSmsAuthNumberReq(
+                SIGNUP.getName(),
+                "ROLE_CLIENT",
+                request.getCompanyId(),
+                convertedNumber,
+                request.getPhoneNumber()
+        );
+        smsAuthNumberService.sendSmsAuthNumber(sendRequest);
+        return true;
+    }
+
+    @Override
+    public Boolean verifyClientSmsAuthNumber(FindClientSignupSmsAuthNumberReq request) {
+        // 전화 번호 중복 검사
+        validateUniquePhoneNumber(request.getPhoneNumber());
+
+        String prefixedNumber = "9" + request.getPhoneNumber();
+        Long convertedNumber = Long.parseLong(prefixedNumber);
+
+        VerifySmsAuthNumberReq verifyRequest = new VerifySmsAuthNumberReq(
+                SIGNUP.getName(),
+                "ROLE_CLIENT",
+                request.getCompanyId(),
+                convertedNumber,
+                request.getAuthNumber()
+        );
+        smsAuthNumberService.verifySmsAuthNumber(verifyRequest);
+        return true;
     }
 
     @Override

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.type.ImagePurposeType;
+import shop.sellution.server.global.util.MeasureExecutionTime;
 import shop.sellution.server.product.domain.ProductImageType;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.global.exception.BadRequestException;
@@ -32,6 +33,9 @@ public class S3Service {
     private final AmazonS3 amazonS3;
     private final CompanyRepository companyRepository;
 
+    @Value("${cloud.front.domain.name}")
+    private String CLOUD_FRONT_DOMAIN_NAME;
+
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
@@ -40,7 +44,7 @@ public class S3Service {
         this.amazonS3 = amazonS3;
         this.companyRepository = companyRepository;
     }
-
+    @MeasureExecutionTime
     public String uploadFile(MultipartFile file, Long companyId, String folderType, Enum<?> imageType) throws IOException {
         System.out.println("Uploading file: " + file.getOriginalFilename());
         System.out.println("Company ID: " + companyId);
@@ -70,7 +74,8 @@ public class S3Service {
 
         try (InputStream inputStream = resizedFile.getInputStream()) {
             amazonS3.putObject(new PutObjectRequest(bucket, filePath, inputStream, metadata));
-            String url = amazonS3.getUrl(bucket, filePath).toString();
+//            String url = amazonS3.getUrl(bucket, filePath).toString();
+            String url = CLOUD_FRONT_DOMAIN_NAME + "/" + filePath;
             System.out.println("Uploaded file URL: " + url);
             return url;
         } catch (AmazonServiceException e) {
@@ -170,7 +175,9 @@ public class S3Service {
 
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(qrCode)) {
             amazonS3.putObject(new PutObjectRequest(bucket, filePath, inputStream, metadata));
-            return amazonS3.getUrl(bucket, filePath).toString();
+//            return amazonS3.getUrl(bucket, filePath).toString();
+            return CLOUD_FRONT_DOMAIN_NAME + "/" + filePath;
+
         } catch (AmazonServiceException e) {
             throw e;
         }

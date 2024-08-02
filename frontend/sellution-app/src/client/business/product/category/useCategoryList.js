@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const useCategoryList = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+  //const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState({});
   const [selectAll, setSelectAll] = useState(false);
   const itemsPerPage = 5;
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const initialPage = parseInt(searchParams.get('page') || '1', 10);
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -14,6 +17,8 @@ const useCategoryList = () => {
   const [companyId, setCompanyId] = useState(null);
   const [isVisibleFilter, setIsVisibleFilter] = useState('전체');
   const [error, setError] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(initialPage);
 
   const mapFilterValues = {
     isVisible: {
@@ -24,7 +29,7 @@ const useCategoryList = () => {
   };
 
   useEffect(() => {
-    const shopCompanyStorage = localStorage.getItem('shop-company-storage');
+    const shopCompanyStorage = localStorage.getItem('userInfo');
     if (shopCompanyStorage) {
       const { state } = JSON.parse(shopCompanyStorage);
       if (state && state.companyId) {
@@ -38,6 +43,13 @@ const useCategoryList = () => {
       fetchCategories();
     }
   }, [companyId, currentPage, isVisibleFilter]);
+
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+      navigate(`/product/category?page=${pageNumber}`, { replace: true });
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -77,12 +89,6 @@ const useCategoryList = () => {
     } catch (error) {
       console.error('There was an error fetching the categories!', error);
       setError('카테고리를 불러오는 중 오류가 발생했습니다.');
-    }
-  };
-
-  const paginate = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
     }
   };
 
@@ -127,7 +133,7 @@ const useCategoryList = () => {
   };
 
   const handleRowClick = (id) => {
-    navigate(`/product/category/${id}`);
+    navigate(`/product/category/${id}?page=${currentPage}`);
   };
 
   return {

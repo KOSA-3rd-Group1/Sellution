@@ -96,7 +96,7 @@ const AddComponent = () => {
   };
   const handleModalClose = () => {
     setIsModalVisible(false);
-    navigate(`/shopping/${clientName}/my/${customerId}/address`);
+    navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`);
   };
 
   return (

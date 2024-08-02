@@ -7,17 +7,22 @@ import {
   OrderDetailIcon,
   ProfileIcon,
   SimplePasswordIcon,
-} from '@/shopping/utility/assets/Icons.jsx';
+} from '@/shopping/utility/assets/Icons';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import MenuHeaderNav from './../../layout/MenuHeaderNav';
 import HomeFooter from './../../layout/HomeFooter';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import { RightChevronIcon } from '../../utility/assets/Icons';
+import { useMove } from '@/shopping/business/common/useMove';
+import { useMypage } from '../../business/mypage/useMypage';
 
 const IndexComponent = () => {
   const customerId = useUserInfoStore((state) => state.id);
   const [customerInfo, setCustomerInfo] = useState({ name: '', customerType: '' });
+
+  const { moveDefault } = useMove();
+  const { handleLogout } = useMypage({ moveDefault });
 
   useEffect(() => {
     const fetchCustomerInfo = async () => {
@@ -95,18 +100,31 @@ const IndexComponent = () => {
               component: <ProfileIcon className='w-6 h-6 mr-3 text-gray-400' />,
               text: '로그아웃',
               link: `profile`,
+              event: handleLogout,
             },
-          ].map((item, index) => (
-            <Link key={index} to={item.link} className='block'>
-              <div className='flex items-center justify-between py-4 border-b'>
-                <div className='flex items-center'>
-                  {item.component}
-                  <span className='text-sm'>{item.text}</span>
+          ].map((item, index) =>
+            item.text !== '로그아웃' ? (
+              <Link key={index} to={item.link} className='block'>
+                <div className='flex items-center justify-between py-4 border-b'>
+                  <div className='flex items-center'>
+                    {item.component}
+                    <span className='text-sm'>{item.text}</span>
+                  </div>
+                  <RightChevronIcon className={'w-4 h-4 text-gray-400'} />
                 </div>
-                <RightChevronIcon className={'w-4 h-4 text-gray-400'} />
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ) : (
+              <Link key={index} className='block' onClick={handleLogout}>
+                <div className='flex items-center justify-between py-4 border-b'>
+                  <div className='flex items-center'>
+                    {item.component}
+                    <span className='text-sm'>{item.text}</span>
+                  </div>
+                  <RightChevronIcon className={'w-4 h-4 text-gray-400'} />
+                </div>
+              </Link>
+            ),
+          )}
         </div>
       </div>
       <HomeFooter />

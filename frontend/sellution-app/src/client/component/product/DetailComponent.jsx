@@ -32,6 +32,7 @@ const DetailComponent = () => {
     DisplayStatus,
     DeliveryType,
     formatPrice,
+    refreshProductData,
   } = useProductDetail();
 
   const [alertModal, setAlertModal] = useState({ isOpen: false, type: '', title: '', message: '' });
@@ -65,11 +66,12 @@ const DetailComponent = () => {
     closeAlertModal();
     try {
       await updateProduct();
+      await refreshProductData();
       openAlertModal('success', '저장 완료', '변경 사항이 성공적으로 저장되었습니다.');
     } catch (error) {
       openAlertModal('error', '저장 실패', '변경 사항 저장 중 오류가 발생했습니다.');
     }
-  }, [closeAlertModal, updateProduct, openAlertModal]);
+  }, [closeAlertModal, updateProduct, refreshProductData, openAlertModal]);
 
   const handleConfirmDelete = useCallback(async () => {
     closeAlertModal();
