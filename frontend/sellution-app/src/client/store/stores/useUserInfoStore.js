@@ -5,7 +5,7 @@ const useUserInfoStore = create(
   persist(
     (set) => ({
       name: null,
-      conmapyId: null,
+      companyId: null,
       contractCompanyName: null,
       isAutoApproved: false,
       id: null,

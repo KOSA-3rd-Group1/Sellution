@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import shop.sellution.server.client.application.ClientService;
 import shop.sellution.server.client.dto.request.*;
 import shop.sellution.server.client.dto.response.FindCurrentClientInfoRes;
-import shop.sellution.server.global.exception.AuthException;
-import shop.sellution.server.global.exception.BadRequestException;
 
 import java.util.Map;
 
@@ -37,6 +35,18 @@ public class ClientController {
 //        } catch (Exception e) {
 //            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("available", false));
 //        }
+    }
+
+    @PostMapping("/signup/verify-code/send")
+    public ResponseEntity<Boolean> sendSignupSmsAuthNumber(@Valid @RequestBody CheckClientPhoneNumberReq request) {
+        Boolean result = clientService.checkClientPhoneNumber(request);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @PostMapping("/signup/verify-code")
+    public ResponseEntity<Boolean> verifySignupSmsAuthNumber(@Valid @RequestBody FindClientSignupSmsAuthNumberReq request) {
+        Boolean result = clientService.verifyClientSmsAuthNumber(request);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @GetMapping("/me")

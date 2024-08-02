@@ -9,7 +9,7 @@ const useAuthStore = create(
       removeAccessToken: () => set({ accessToken: null }),
     }),
     {
-      name: 'auth-storage',
+      name: 'shop-auth-storage',
       getStorage: () => localStorage,
     },
   ),
