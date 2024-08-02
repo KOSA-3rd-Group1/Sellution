@@ -6,11 +6,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import shop.sellution.server.cart.dto.CartItem;
+
+import java.util.Map;
 
 @Configuration
 public class RedisConfig {
@@ -38,12 +40,17 @@ public class RedisConfig {
     
     //장바구니
     @Bean
-    public RedisTemplate<String, CartItem> cartItemRedisTemplate() {
-        RedisTemplate<String, CartItem> template = new RedisTemplate<>();
+    public RedisTemplate<String, Map<Long, Integer>> cartRedisTemplate() {
+        RedisTemplate<String, Map<Long, Integer>> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         return template;
+    }
+    //redis의 hash 자료구조에 접근하기위해 spring data redis의 hashoperations 인터페이스를 사용
+    @Bean
+    public HashOperations<String, Long, Integer> hashOperations() {
+        return cartRedisTemplate().opsForHash();
     }
 
 }
