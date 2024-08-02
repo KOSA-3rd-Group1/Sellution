@@ -18,7 +18,6 @@ import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.global.type.DisplayStatus;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -118,22 +117,34 @@ class AddressServiceImplTest {
         assertThrows(BadRequestException.class, () -> addressService.getAddressById(1L));
     }
 
-    @DisplayName("주소를 생성한다.")
+    @DisplayName("첫 번째 주소를 생성할 때 기본 주소로 설정한다.")
     @Test
-    void createAddress_Success() {
+    void createAddress_FirstAddress_SetAsDefault() {
         when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer));
+        when(addressRepository.findByCustomer_Id(anyLong())).thenReturn(List.of());
         when(addressRepository.save(any(Address.class))).thenReturn(address);
 
-        addressService.createAddress(saveAddressReq);
+        Long addressId = addressService.createAddress(saveAddressReq);
 
-        verify(customerRepository, times(1)).findById(anyLong());
-        verify(addressRepository, times(1)).save(any(Address.class));
+        assertThat(addressId).isEqualTo(address.getId());
+        verify(addressRepository, times(1)).save(argThat(savedAddress ->
+                savedAddress.getIsDefaultAddress() == DisplayStatus.Y));
     }
 
     @DisplayName("주소를 생성할 때 고객이 없으면 예외를 발생시킨다.")
     @Test
     void createAddress_CustomerNotFound_ThrowsException() {
         when(customerRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(BadRequestException.class, () -> addressService.createAddress(saveAddressReq));
+    }
+
+    @DisplayName("주소 생성 시 저장에 실패하면 예외를 발생시킨다.")
+    @Test
+    void createAddress_SaveFails_ThrowsException() {
+        when(customerRepository.findById(anyLong())).thenReturn(Optional.of(customer));
+        when(addressRepository.findByCustomer_Id(anyLong())).thenReturn(List.of());
+        when(addressRepository.save(any(Address.class))).thenThrow(new RuntimeException());
 
         assertThrows(BadRequestException.class, () -> addressService.createAddress(saveAddressReq));
     }
@@ -157,21 +168,41 @@ class AddressServiceImplTest {
         assertThrows(BadRequestException.class, () -> addressService.updateAddress(1L, saveAddressReq));
     }
 
-//    @DisplayName("주소를 삭제한다.")
-//    @Test
-//    void deleteAddress_Success() {
-//        when(addressRepository.findById(anyLong())).thenReturn(Optional.of(address));
-//
-//        addressService.deleteAddress(1L);
-//
-//        verify(addressRepository, times(1)).findById(anyLong());
-//        verify(addressRepository, times(1)).delete(any(Address.class));
-//    }
+    @DisplayName("주소 수정 시 저장에 실패하면 예외를 발생시킨다.")
+    @Test
+    void updateAddress_SaveFails_ThrowsException() {
+        when(addressRepository.findById(anyLong())).thenReturn(Optional.of(address));
+        doThrow(new RuntimeException()).when(addressRepository).save(any(Address.class));
+
+        assertThrows(BadRequestException.class, () -> addressService.updateAddress(1L, saveAddressReq));
+    }
+
+    @DisplayName("주소를 삭제한다.")
+    @Test
+    void deleteAddress_Success() {
+        Address nonDefaultAddress = Address.builder()
+                .isDefaultAddress(DisplayStatus.N)
+                .build();
+        when(addressRepository.findById(anyLong())).thenReturn(Optional.of(nonDefaultAddress));
+
+        addressService.deleteAddress(1L);
+
+        verify(addressRepository, times(1)).findById(anyLong());
+        verify(addressRepository, times(1)).delete(any(Address.class));
+    }
 
     @DisplayName("주소를 삭제할 때 주소가 없으면 예외를 발생시킨다.")
     @Test
     void deleteAddress_NotFound_ThrowsException() {
         when(addressRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(BadRequestException.class, () -> addressService.deleteAddress(1L));
+    }
+
+    @DisplayName("기본 주소를 삭제하려고 하면 예외를 발생시킨다.")
+    @Test
+    void deleteAddress_DefaultAddress_ThrowsException() {
+        when(addressRepository.findById(anyLong())).thenReturn(Optional.of(address));
 
         assertThrows(BadRequestException.class, () -> addressService.deleteAddress(1L));
     }
