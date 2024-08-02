@@ -124,7 +124,7 @@ export const useProductList = () => {
   useEffect(() => {
     fetchCategories();
 
-    const storedCompanyData = localStorage.getItem('shop-company-storage');
+    const storedCompanyData = localStorage.getItem('userInfo');
     console.log('Stored companyId:', storedCompanyData);
     if (storedCompanyData) {
       try {
