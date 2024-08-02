@@ -41,11 +41,9 @@ const AddComponent = () => {
     openAlertModal('warning', '상품 등록 확인', '상품을 등록하시겠습니까?');
   }, [openAlertModal]);
 
-  const resetComponent = useCallback(() => {
-    // Reset all state here
-    // This is a placeholder - you need to implement the actual reset logic
-    window.location.reload();
-  }, []);
+  // const resetComponent = useCallback(() => {
+  //   window.location.reload();
+  // }, []);
 
   const handleAlertConfirm = useCallback(async () => {
     if (alertModal.type === 'warning') {
@@ -57,11 +55,11 @@ const AddComponent = () => {
       }
     } else if (alertModal.type === 'success') {
       closeAlertModal();
-      resetComponent();
+      moveList();
     } else {
       closeAlertModal();
     }
-  }, [alertModal.type, registerProduct, openAlertModal, closeAlertModal, resetComponent]);
+  }, [alertModal.type, registerProduct, openAlertModal, closeAlertModal, moveList]);
 
   return (
     <div className='relative w-full h-full flex flex-col'>

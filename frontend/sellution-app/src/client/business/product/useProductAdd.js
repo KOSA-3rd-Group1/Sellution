@@ -40,7 +40,7 @@ const useProductAdd = () => {
   const [companyId, setCompanyId] = useState(null);
 
   useEffect(() => {
-    const shopCompanyStorage = localStorage.getItem('shop-company-storage');
+    const shopCompanyStorage = localStorage.getItem('userInfo');
     if (shopCompanyStorage) {
       const { state } = JSON.parse(shopCompanyStorage);
       if (state && state.companyId) {
@@ -158,7 +158,28 @@ const useProductAdd = () => {
 
   const handleEditImage = () => window.confirm('이미지를 변경하시겠습니까?');
 
-  const moveList = () => navigate('/product');
+  const getLastPageNumber = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
+        params: {
+          companyId: companyId,
+          size: 10, // 페이지당 상품 수, API에 맞게 조정하세요
+          page: 0, // 첫 페이지 요청
+        },
+      });
+
+      const totalPages = response.data.totalPages || 1;
+      return totalPages - 1; // 페이지 번호가 0부터 시작한다고 가정
+    } catch (error) {
+      console.error('마지막 페이지 번호를 가져오는데 실패했습니다:', error);
+      return 0; // 에러 발생 시 첫 페이지로 이동
+    }
+  };
+
+  const moveList = async () => {
+    const lastPage = await getLastPageNumber();
+    navigate(`/product?page=${lastPage + 1}`);
+  };
 
   const registerProduct = async () => {
     if (!companyId) {
@@ -193,23 +214,24 @@ const useProductAdd = () => {
     }
 
     // product 이미지들 처리
-    images.product.forEach((image, index) => {
+    images.product.forEach((image) => {
       if (image && image.file) {
         formData.append('listImages', image.file, image.file.name);
       }
     });
 
     // detail 이미지들 처리
-    images.detail.forEach((image, index) => {
+    images.detail.forEach((image) => {
       if (image && image.file) {
         formData.append('detailImages', image.file, image.file.name);
       }
     });
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/products`, {
-        method: 'POST',
-        body: formData,
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/products`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
       if (response.ok) {
@@ -217,9 +239,12 @@ const useProductAdd = () => {
         moveList();
       } else {
         console.error('상품 등록에 실패했습니다');
+        moveList();
+        throw new Error('상품 등록 실패');
       }
     } catch (error) {
       console.error('오류:', error);
+      throw error;
     }
   };
 
