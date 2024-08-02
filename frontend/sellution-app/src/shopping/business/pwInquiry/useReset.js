@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { postChangePassword } from '@/client/utility/apis/pwInquiry/ResetApi';
+import { postChangePassword } from '@/shopping/utility/apis/pwInquiry/ResetApi';
+import { useParams } from 'react-router-dom';
 
 export const useReset = ({ queryParams, moveDefault }) => {
   const [data, setData] = useState({
@@ -7,6 +8,8 @@ export const useReset = ({ queryParams, moveDefault }) => {
     confirmPassword: '',
   });
   const [passwordMatch, setPasswordMatch] = useState(null);
+
+  const { clientName } = useParams();
 
   useEffect(() => {
     if (data?.password.trim() !== '' && data?.confirmPassword.trim() !== '') {
@@ -27,9 +30,14 @@ export const useReset = ({ queryParams, moveDefault }) => {
       console.log('비밀번호 변경 완료');
       const updateData = { token: queryParams.get('token'), newPassword: data.password };
       await postChangePassword(updateData);
-      moveDefault('/login');
+      moveDefault(`/shopping/${clientName}/login`);
     }
   };
 
-  return { data, passwordMatch, handleChangeInputValue, handleSubmit };
+  const moveBack = (e) => {
+    e.preventDefault();
+    moveDefault(`/shopping/${clientName}/login`);
+  };
+
+  return { data, passwordMatch, handleChangeInputValue, handleSubmit, moveBack };
 };

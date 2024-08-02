@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import useAuthStore from '@/shopping/store/stores/useAuthStore';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import { login } from '@/shopping/utility/apis/login/loginApi';
 
-export const useLogin = () => {
-  const navigate = useNavigate();
+export const useLogin = ({ moveDefault }) => {
+  //   const navigate = useNavigate();
   const { clientName } = useParams(); // url 상 clientName <- 회사명
   const location = useLocation();
 
@@ -45,7 +45,8 @@ export const useLogin = () => {
         const success = await login(username, password, companyId, setAccessToken, setAllUserData);
         if (success) {
           const from = location.state?.from || `/shopping/${name}/home`;
-          navigate(from); // 로그인 성공 후 저장된 url로 이동
+          moveDefault(from);
+          //   navigate(from); // 로그인 성공 후 저장된 url로 이동
         } else {
           setError('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
         }
@@ -60,9 +61,25 @@ export const useLogin = () => {
   // url의 회사명과 localstorage에 저장된 회사명이 다른 경우, url 회사명에 대한 home으로 이동
   useEffect(() => {
     if (clientName !== name) {
-      navigate(`/shopping/${clientName}/home`);
+      moveDefault(`/shopping/${clientName}/home`);
+      //   navigate(`/shopping/${clientName}/home`);
     }
-  }, [clientName, name, navigate]);
+  }, [clientName, name]);
+
+  const moveIdInquiry = (e) => {
+    e.preventDefault();
+    moveDefault(`/shopping/${clientName}/idInquiry/sms-auth`);
+  };
+
+  const movePwInquiry = (e) => {
+    e.preventDefault();
+    moveDefault(`/shopping/${clientName}/pwInquiry/sms-auth`);
+  };
+
+  const moveSignup = (e) => {
+    e.preventDefault();
+    moveDefault(`/shopping/${clientName}/signup`);
+  };
 
   return {
     username,
@@ -74,5 +91,8 @@ export const useLogin = () => {
     setPassword,
     togglePasswordVisibility,
     handleSubmit,
+    moveIdInquiry,
+    movePwInquiry,
+    moveSignup,
   };
 };

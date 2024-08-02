@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
-import { validateInputNumber } from '@/client/utility/functions/validateFunction';
+import { useParams } from 'react-router-dom';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import {
   postSendFindIdSmsAuthNumber,
   postVerifyFindIdSmsAuthNumber,
-} from '@/client/utility/apis/idInquiry/SmsAuthApi';
+} from '@/shopping/utility/apis/idInquiry/SmsAuthApi';
+import { validateInputNumber } from '@/client/utility/functions/validateFunction';
 
-export const useSmsAuth = ({ moveDefaultSendState }) => {
+export const useSmsAuth = ({ moveDefault, moveDefaultSendState }) => {
+  const companyId = useCompanyInfoStore((state) => state.companyId);
+
   const [data, setData] = useState({ name: '', phoneNumber: '', authNumber: '' });
   const [nextData, setNextData] = useState({});
+
+  const { clientName } = useParams();
 
   const [step, setStep] = useState(1);
   const [timeLeft, setTimeLeft] = useState(180);
@@ -35,7 +41,7 @@ export const useSmsAuth = ({ moveDefaultSendState }) => {
   // 인증 번호 전송 요청
   const handleRequestAuth = async () => {
     if (data.name.trim() !== '' && data.phoneNumber) {
-      const updateData = { name: data.name, phoneNumber: data.phoneNumber };
+      const updateData = { companyId, name: data.name, phoneNumber: data.phoneNumber };
       try {
         await postSendFindIdSmsAuthNumber(updateData);
         setStep(2);
@@ -50,6 +56,7 @@ export const useSmsAuth = ({ moveDefaultSendState }) => {
 
   const handleVerify = async () => {
     const updateData = {
+      companyId,
       ...data,
     };
     try {
@@ -67,8 +74,13 @@ export const useSmsAuth = ({ moveDefaultSendState }) => {
   const moveNext = (e) => {
     e.preventDefault();
     if (isVerified) {
-      moveDefaultSendState('/idInquiry/view', nextData);
+      moveDefaultSendState(`/shopping/${clientName}/idInquiry/view`, nextData);
     }
+  };
+
+  const moveBack = (e) => {
+    e.preventDefault();
+    moveDefault(`/shopping/${clientName}/login`);
   };
 
   return {
@@ -81,5 +93,6 @@ export const useSmsAuth = ({ moveDefaultSendState }) => {
     handleRequestAuth,
     handleVerify,
     moveNext,
+    moveBack,
   };
 };

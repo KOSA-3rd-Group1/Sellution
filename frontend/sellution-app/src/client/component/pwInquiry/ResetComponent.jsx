@@ -1,5 +1,5 @@
 import { useMove } from '@/client/business/common/useMove';
-import { useReset } from '../../business/pwInquiry/useReset';
+import { useReset } from '@/client/business/pwInquiry/useReset';
 
 const ResetComponent = () => {
   const { queryParams, moveDefault } = useMove();
@@ -7,24 +7,6 @@ const ResetComponent = () => {
     queryParams,
     moveDefault,
   });
-  //   const [password, setPassword] = useState('');
-  //   const [confirmPassword, setConfirmPassword] = useState('');
-  //   const [passwordMatch, setPasswordMatch] = useState(null);
-
-  //   useEffect(() => {
-  //     if (password && confirmPassword) {
-  //       setPasswordMatch(password === confirmPassword);
-  //     } else {
-  //       setPasswordMatch(null);
-  //     }
-  //   }, [password, confirmPassword]);
-
-  //   const handleSubmit = (e) => {
-  //     e.preventDefault();
-  //     if (password === confirmPassword) {
-  //       console.log('비밀번호 변경 완료');
-  //     }
-  //   };
 
   return (
     <div className='flex justify-center items-center min-h-screen bg-gray-100'>
