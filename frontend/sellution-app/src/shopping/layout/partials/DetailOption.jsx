@@ -57,9 +57,12 @@ const DetailOptionComponent = ({
           </span>
         </div>
       </div>
-      <div className="footer-box-3 flex justify-end items-center font-shadow mt-2">
-        <span className="discount-price text-lg text-red-500 font-bold">
-          {itemCountToAdd > 0 ? formatPrice(productToShow.discountedPrice * itemCountToAdd) : ""}
+      <div className='footer-box-3 flex justify-end items-center font-shadow mt-2'>
+        {/* <span className='discount-price text-lg text-primary font-bold'>
+           {itemCountToAdd > 0 ? `${productToShow.discountedPrice * itemCountToAdd} 원` : ''} */}
+
+        <span className='discount-price text-lg text-red-500 font-bold'>
+          {itemCountToAdd > 0 ? formatPrice(productToShow.discountedPrice * itemCountToAdd) : ''}
         </span>
       </div>
     </div>

@@ -13,7 +13,7 @@ public interface ClientService {
     void checkClientUsername(CheckClientUsernameReq request);
 
     // 고객 가입 전 휴대폰 본인 인증 번호 요청
-    Boolean checkClientPhoneNumber(CheckClientPhoneNumberReq reqeust);
+    Boolean checkClientPhoneNumber(CheckClientPhoneNumberReq request);
 
     // 고객 가입 시 휴대폰 본인 인증 번호 확인
     Boolean verifyClientSmsAuthNumber(FindClientSignupSmsAuthNumberReq request);
