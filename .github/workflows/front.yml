@@ -7,12 +7,14 @@ on:
     paths:
       - 'frontend/sellution-app/**'
   pull_request:
+    types: [closed]
     branches: [ main ]
     paths:
       - 'frontend/sellution-app/**'
 
 jobs:
   build-and-deploy:
+    if: (github.event_name == 'pull_request' && github.event.pull_request.merged == true) || github.event_name == 'push'
     runs-on: ubuntu-latest
     
     steps:
