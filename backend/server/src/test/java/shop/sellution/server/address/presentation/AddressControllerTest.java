@@ -25,7 +25,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
 @WebMvcTest(AddressController.class)
 class AddressControllerTest extends BaseControllerTest {
 
@@ -49,6 +48,7 @@ class AddressControllerTest extends BaseControllerTest {
                         .phoneNumber("01012345678")
                         .streetAddress("서울시 강남구")
                         .addressDetail("123-456")
+                        .zipcode("12345")
                         .build(),
                 FindAllAddressRes.builder()
                         .addressId(2L)
@@ -58,6 +58,7 @@ class AddressControllerTest extends BaseControllerTest {
                         .phoneNumber("01087654321")
                         .streetAddress("서울시 서초구")
                         .addressDetail("789-012")
+                        .zipcode("67890")
                         .build()
         );
 
@@ -83,12 +84,12 @@ class AddressControllerTest extends BaseControllerTest {
                                 fieldWithPath("[].isDefaultAddress").type(JsonFieldType.STRING).description("기본 주소 여부"),
                                 fieldWithPath("[].name").type(JsonFieldType.STRING).description("수령인 이름"),
                                 fieldWithPath("[].phoneNumber").type(JsonFieldType.STRING).description("전화번호"),
+                                fieldWithPath("[].zipcode").type(JsonFieldType.STRING).description("우편번호"),
                                 fieldWithPath("[].streetAddress").type(JsonFieldType.STRING).description("도로명 주소"),
                                 fieldWithPath("[].addressDetail").type(JsonFieldType.STRING).description("상세 주소")
                         )
                 ));
     }
-
     @DisplayName("주소 ID로 주소 상세 정보를 조회한다")
     @Test
     void getAddressById_Success() throws Exception {
@@ -146,13 +147,15 @@ class AddressControllerTest extends BaseControllerTest {
                 .isDefaultAddress(DisplayStatus.N)
                 .build();
 
-        doNothing().when(addressService).createAddress(any(SaveAddressReq.class));
+        Long createdAddressId = 1L;
+        when(addressService.createAddress(any(SaveAddressReq.class))).thenReturn(createdAddressId);
 
         // when & then
         mockMvc.perform(post("/addresses")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(addressReq)))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
+                .andExpect(content().string(createdAddressId.toString()))
                 .andDo(document("Address/createAddress",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -165,7 +168,8 @@ class AddressControllerTest extends BaseControllerTest {
                                 fieldWithPath("streetAddress").type(JsonFieldType.STRING).description("도로명 주소"),
                                 fieldWithPath("addressDetail").type(JsonFieldType.STRING).description("상세 주소"),
                                 fieldWithPath("isDefaultAddress").type(JsonFieldType.STRING).description("기본 주소 여부")
-                        )
+                        ),
+                        responseBody()
                 ));
     }
 

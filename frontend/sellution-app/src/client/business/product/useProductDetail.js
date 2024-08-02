@@ -45,7 +45,7 @@ const useProductDetail = () => {
   });
 
   useEffect(() => {
-    const shopCompanyStorage = localStorage.getItem('shop-company-storage');
+    const shopCompanyStorage = localStorage.getItem('userInfo');
     if (shopCompanyStorage) {
       const { state } = JSON.parse(shopCompanyStorage);
       if (state && state.companyId) {
