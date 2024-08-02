@@ -1,9 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-.section_coupon {
-  position: relative;
+
+.logo-text {
+  font-family: 'Arial', sans-serif;
+  font-size: 1.6rem;
+  /* text-transform: uppercase; */
+  letter-spacing: 0.1em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+
 
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

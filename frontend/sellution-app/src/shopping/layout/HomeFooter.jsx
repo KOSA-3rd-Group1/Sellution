@@ -61,9 +61,12 @@ const HomeFooter = () => {
       <button
         className='flex-1 bg-white flex flex-col justify-center items-center'
         onClick={() => {
-          navigate(`/shopping/${clientName}/login`, {
-            state: { from: location.pathname },
-          });
+          const targetPath =
+            accessToken === null || accessToken === ''
+              ? `/shopping/${clientName}/login`
+              : `/shopping/${clientName}/subscription/cart`;
+
+          navigate(targetPath, { state: { from: location.pathname } });
         }}
       >
         <div className='relative inline-block'>

@@ -5,13 +5,19 @@ import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import MenuHeaderNav from './../../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from './../../../layout/OneButtonFooterLayout';
+import ReusableOneButtonModal from '@/shopping/layout/partials/ReusableOneButtonModal';
+import ReusableTwoButtonModal from '@/shopping/layout/partials/ReusableTwoButtonModal';
 
 const ListComponent = () => {
   const [addresses, setAddresses] = useState([]);
   const clientName = useCompanyInfoStore((state) => state.name);
   const customerId = useUserInfoStore((state) => state.id);
-
   const navigate = useNavigate();
+
+  const [showDefaultAddressModal, setShowDefaultAddressModal] = useState(false);
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState(null);
+
   const moveToAddPage = () => {
     navigate(`/shopping/${clientName}/my/${customerId}/address/add`);
   };
@@ -49,38 +55,33 @@ const ListComponent = () => {
     return value;
   };
 
-  const handleDelete = async (address) => {
-    console.log('Address to delete:', address);
+  const handleDelete = (address) => {
     if (address.isDefaultAddress === DisplayStatus.Y) {
-      console.log('This is the default address:', address.isDefaultAddress);
-      alert('다른 배송지를 기본배송지로 설정 후 삭제해주세요.');
-      return;
+      setShowDefaultAddressModal(true);
+    } else {
+      setAddressToDelete(address);
+      setShowDeleteConfirmModal(true);
     }
+  };
 
-    if (window.confirm('정말로 이 배송지를 삭제하시겠습니까?')) {
+  const confirmDelete = async () => {
+    if (addressToDelete) {
       try {
-        await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/addresses/${address.addressId}`);
-        fetchAddresses(); // 삭제 후 목록 새로고침
+        await axios.delete(
+          `${import.meta.env.VITE_BACKEND_URL}/addresses/${addressToDelete.addressId}`,
+        );
+        fetchAddresses();
       } catch (error) {
         console.error('Error deleting address:', error);
       }
     }
+    setShowDeleteConfirmModal(false);
+    setAddressToDelete(null);
   };
 
   return (
-    // <div>
-    //   <div className='flex justify-center h-screen'>
-    //     <div className='container-box relative w-full max-w-lg h-full flex justify-center pt-14 pb-14'>
     <div className='w-full p-4'>
       <MenuHeaderNav title={'배송지 목록'} />
-      {/* <div className='mt-4 w-[100%] mx-auto mb-3'>
-        <Link
-          to='add'
-          className='block w-full text-center bg-brandOrange text-white py-2 rounded-md hover:bg-orange-600'
-        >
-          새 배송지 추가
-        </Link>
-      </div> */}
 
       <div className='w-[100%] mx-auto'>
         {addresses.map((address, index) => (
@@ -139,6 +140,25 @@ const ListComponent = () => {
         ))}
       </div>
       <OneButtonFooterLayout footerText={'배송지 추가'} onClick={moveToAddPage} />
+      <ReusableOneButtonModal
+        isVisible={showDefaultAddressModal}
+        onClose={() => setShowDefaultAddressModal(false)}
+        title='알림'
+        message='다른 배송지를 기본배송지로 설정 후 삭제해주세요.'
+        buttonText='확인'
+        onButtonClick={() => setShowDefaultAddressModal(false)}
+      />
+
+      <ReusableTwoButtonModal
+        isVisible={showDeleteConfirmModal}
+        onClose={() => setShowDeleteConfirmModal(false)}
+        title='확인'
+        message='정말로 이 배송지를 삭제하시겠습니까?'
+        leftButtonText='취소'
+        rightButtonText='삭제'
+        onLeftButtonClick={() => setShowDeleteConfirmModal(false)}
+        onRightButtonClick={confirmDelete}
+      />
     </div>
     //     </div>
     //   </div>

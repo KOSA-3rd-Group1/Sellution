@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import MenuHeaderNav from '@/shopping/layout/MenuHeaderNav.jsx';
+import ReusableOneButtonModal from '@/shopping/layout/partials/ReusableOneButtonModal';
 
 const CheckSmsAuthComponent = () => {
   const { clientName, customerId } = useParams();
@@ -14,6 +15,10 @@ const CheckSmsAuthComponent = () => {
   const [timeLeft, setTimeLeft] = useState(300);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     let timer;
@@ -41,7 +46,10 @@ const CheckSmsAuthComponent = () => {
       setAuthCode('');
     } catch (error) {
       console.error('SMS 인증 요청 실패:', error);
-      alert(error.response?.data?.message || '정보가 일치하지 않습니다. 다시 확인해주세요.');
+      setModalMessage(
+        error.response?.data?.message || '정보가 일치하지 않습니다. 다시 확인해주세요.',
+      );
+      setShowModal(true);
     }
   };
 
@@ -54,14 +62,26 @@ const CheckSmsAuthComponent = () => {
       console.log('Verification response:', response.data);
       setIsVerified(true);
       setIsTimerRunning(false);
+      setShowSuccessModal(true);
     } catch (error) {
       console.error('SMS 인증 확인 실패:', error);
-      alert(error.response?.data?.message || '인증번호가 일치하지 않습니다.');
+      setModalMessage(error.response?.data?.message || '인증번호가 일치하지 않습니다.');
+      setShowModal(true);
       setAuthCode('');
     }
   };
 
   const handleConfirm = () => {
+    navigate(`/shopping/${clientName}/my/${customerId}/auth/edit`, {
+      state: {
+        returnTo: location.state?.returnTo,
+        orderData: location.state?.orderData,
+      },
+    });
+  };
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
     navigate(`/shopping/${clientName}/my/${customerId}/auth/edit`, {
       state: {
         returnTo: location.state?.returnTo,
@@ -167,6 +187,22 @@ const CheckSmsAuthComponent = () => {
           </div>
         </div>
       </div>
+      <ReusableOneButtonModal
+        isVisible={showModal}
+        onClose={() => setShowModal(false)}
+        title='알림'
+        message={modalMessage}
+        buttonText='확인'
+        onButtonClick={() => setShowModal(false)}
+      />
+      <ReusableOneButtonModal
+        isVisible={showSuccessModal}
+        onClose={handleSuccessModalClose}
+        title='인증 성공'
+        message='인증이 성공적으로 완료되었습니다.'
+        buttonText='확인'
+        onButtonClick={handleSuccessModalClose}
+      />
     </>
   );
 };
