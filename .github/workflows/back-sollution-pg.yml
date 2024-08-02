@@ -2,10 +2,10 @@ name: back-soulltion-pg-cicd
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
-    paths:
-      - 'backendPG/pgserver/**'
+  # push:
+  #   branches: [ main ]
+  #   paths:
+  #     - 'backendPG/pgserver/**'
   pull_request:
     types: [closed]
     branches: [ main ]
