@@ -48,7 +48,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
-@Profile("prod")
+@Profile("data")
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -142,10 +142,10 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 //        createProductImages();
         createProductImages2();
         createCustomer();
-//        createAccount();
-//        createAddress();
+        createAccount();
+        createAddress();
         createCompanyOptions();
-//        createCouponEvent();
+        createCouponEvent();
 //        createOrder();
 
 

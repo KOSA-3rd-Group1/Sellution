@@ -3,6 +3,7 @@ package shop.sellution.server.company.dto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,10 +20,10 @@ import java.util.List;
 public class SaveCompanySaleSettingReq {
     private Long companyId;
 
-    @NotBlank(message = "배송 유형 선택은 필수입니다.")
+    @NotNull
     private DeliveryType serviceType; //단건, 정기, 둘다
 
-    @NotBlank(message = "게시할 상품 선택은 필수입니다.")
+    @NotNull
     private SellType sellType; //전체 상품, 카테고리, 개별 상품
 
     private List<Long> categories; // sellType 카테고리일때 받아와야함

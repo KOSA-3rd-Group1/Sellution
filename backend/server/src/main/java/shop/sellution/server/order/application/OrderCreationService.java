@@ -18,9 +18,12 @@ import shop.sellution.server.company.domain.repository.WeekOptionRepository;
 import shop.sellution.server.company.domain.type.DayValueType;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
+import shop.sellution.server.event.domain.CouponBox;
+import shop.sellution.server.event.domain.CouponBoxRepository;
 import shop.sellution.server.event.domain.CouponEvent;
 import shop.sellution.server.event.domain.EventRepository;
 import shop.sellution.server.global.exception.BadRequestException;
+import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.order.domain.*;
 import shop.sellution.server.order.domain.repository.OrderRepository;
 import shop.sellution.server.order.domain.type.OrderStatus;
@@ -64,6 +67,7 @@ public class OrderCreationService {
     private final SmsServiceImpl smsService;
     private final EventRepository eventRepository;
     private final PaymentUtil paymentUtil;
+    private final CouponBoxRepository couponBoxRepository;
 
 
     private static final int ONETIME = 1;
@@ -106,6 +110,12 @@ public class OrderCreationService {
         if(saveOrderReq.getEventId()!=null){
             couponEvent = eventRepository.findById(saveOrderReq.getEventId()).
                     orElseThrow( ()-> new BadRequestException(NOT_FOUND_EVENT) );
+            CouponBox couponBox = couponBoxRepository.findByCouponEventAndCustomerId(couponEvent, customer)
+                    .orElseThrow(() -> new BadRequestException(NOT_FOUND_COUPON));
+            if(couponBox.getIsUsed() == DisplayStatus.Y){
+                throw new BadRequestException(ALREADY_USED_COUPON);
+            }
+            couponBox.useCoupon(); // 쿠폰 사용처리
         }
 
 

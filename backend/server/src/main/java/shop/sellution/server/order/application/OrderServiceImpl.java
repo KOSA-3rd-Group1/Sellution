@@ -12,8 +12,12 @@ import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.company.domain.type.DayValueType;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
+import shop.sellution.server.event.domain.CouponBox;
+import shop.sellution.server.event.domain.CouponBoxRepository;
+import shop.sellution.server.event.domain.CouponEvent;
 import shop.sellution.server.event.domain.EventRepository;
 import shop.sellution.server.global.exception.BadRequestException;
+import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.order.domain.*;
 import shop.sellution.server.order.domain.repository.OrderRepository;
 import shop.sellution.server.order.domain.repository.OrderedProductRepository;
@@ -66,6 +70,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderedProductRepository orderedProductRepository;
     private final EventRepository eventRepository;
     private final PaymentUtil paymentUtil;
+    private final CouponBoxRepository couponBoxRepository;
 
     // 특정 회원의 주문 목록 조회
     @Override
@@ -221,13 +226,19 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException(ALREADY_DELIVERED);
         }
 
-        // 승인된 주문인지 확인
-        if (order.getStatus() == OrderStatus.APPROVED) {
-            throw new BadRequestException(ALREADY_APPROVED_ORDER);
-        }
-
-
         order.cancelOrder();
+
+        // 배송전이라면 쿠폰 미사용으로 바꿔준다.
+        if (order.getDeliveryStatus() == DeliveryStatus.BEFORE_DELIVERY) {
+            CouponEvent couponEvent=null;
+            if(order.getCouponEvent()!=null){
+                couponEvent = eventRepository.findById(order.getCouponEvent().getId()).
+                        orElseThrow( ()-> new BadRequestException(NOT_FOUND_EVENT) );
+                CouponBox couponBox = couponBoxRepository.findByCouponEventAndCustomerId(couponEvent, customer)
+                        .orElseThrow(() -> new BadRequestException(NOT_FOUND_COUPON));
+                couponBox.unUseCoupon(); // 쿠폰 미사용처리
+            }
+        }
 
         /*
         결제를 진행해서 결제내역이 남아있고, 그 결제내역의 내용을 살펴봤을때
@@ -340,5 +351,21 @@ public class OrderServiceImpl implements OrderService {
             this.nextDeliveryDate = nextDeliveryDate;
             this.deliveryEndDate = deliveryEndDate;
         }
+    }
+
+    @Override
+    public boolean checkStock(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ORDER));
+
+        List<OrderedProduct> orderedProducts = orderedProductRepository.findAllByOrderIdIn(List.of(orderId));
+
+        for (OrderedProduct orderedProduct : orderedProducts) {
+            if (orderedProduct.getProduct().getStock() < orderedProduct.getCount()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
