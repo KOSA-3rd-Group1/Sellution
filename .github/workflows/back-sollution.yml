@@ -59,7 +59,7 @@ jobs:
     - name: Prepare docs for deployment
       run: |
         mkdir -p build/docs
-        cp -R backend/server/build/docs/asciidoc build/docs/server1
+        cp -R backend/server/build/docs/asciidoc build/docs/sollutionServer
 
     - name: Deploy REST Docs to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
