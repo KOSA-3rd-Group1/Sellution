@@ -51,6 +51,7 @@ jobs:
 
     - name: Create test application.yml
       run: |
+        mkdir -p ${{ env.WORKING_DIRECTORY }}/src/test/resources
         echo "${{ secrets.SELLUTION_SERVER_PROD_TEST_YML }}" > ${{ env.WORKING_DIRECTORY }}/src/test/resources/application.yml
       shell: bash
 
