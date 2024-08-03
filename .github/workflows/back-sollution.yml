@@ -33,6 +33,12 @@ jobs:
         echo "${{ secrets.SELLUTION_SERVER_PROD_YML }}" > ${{ env.WORKING_DIRECTORY }}/src/main/resources/application.yml
       shell: bash
 
+    - name: Create test application.yml
+      run: |
+        mkdir -p ${{ env.WORKING_DIRECTORY }}/src/test/resources
+        echo "${{ secrets.SELLUTION_SERVER_PROD_TEST_YML }}" > ${{ env.WORKING_DIRECTORY }}/src/test/resources/application.yml
+      shell: bash
+
     - name: List directory contents
       run: ls -la
       working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -40,20 +46,6 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x ./gradlew
       working-directory: ${{ env.WORKING_DIRECTORY }}
-
-    # - name: Run tests with detailed output
-    #   run: ./gradlew test --info
-    #   working-directory: ${{ env.WORKING_DIRECTORY }}
-    #   env:
-    #     SPRING_PROFILES_ACTIVE: test
-        
-
-
-    - name: Create test application.yml
-      run: |
-        mkdir -p ${{ env.WORKING_DIRECTORY }}/src/test/resources
-        echo "${{ secrets.SELLUTION_SERVER_PROD_TEST_YML }}" > ${{ env.WORKING_DIRECTORY }}/src/test/resources/application.yml
-      shell: bash
 
     - name: Build with Gradle
       run: ./gradlew build
@@ -67,14 +59,6 @@ jobs:
       run: |
         mkdir -p build/docs
         cp -R backend/server/build/docs/asciidoc build/docs/sollutionServer
-
-    - name: Deploy REST Docs to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./build/docs
-        destination_dir: .
-        keep_files: true
 
     - name: Make zip file
       run: zip -r ./$GITHUB_SHA.zip .
