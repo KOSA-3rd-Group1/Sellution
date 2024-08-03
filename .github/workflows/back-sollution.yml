@@ -2,10 +2,6 @@ name: back-soulltion-cicd
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches: [ main ]
-  #   paths:
-  #     - 'backend/server/**'
   pull_request:
     types: [closed]
     branches: [ main ]
@@ -65,16 +61,13 @@ jobs:
       env:
         SPRING_PROFILES_ACTIVE: test
         
-    # - name: Run tests
-    #   run: ./gradlew test
-    #   working-directory: ${{ env.WORKING_DIRECTORY }}
-
     - name: Build with Gradle
       run: ./gradlew build
       working-directory: ${{ env.WORKING_DIRECTORY }}
 
     - name: Generate REST Docs for Server
       run: ./gradlew asciidoctor
+      working-directory: ${{ env.WORKING_DIRECTORY }}
 
     - name: Prepare docs for deployment
       run: |
@@ -111,8 +104,6 @@ jobs:
         --deployment-config-name CodeDeployDefault.AllAtOnce \
         --deployment-group-name t1-deploy-group \
         --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
-
-
 
     - name: Notify Deployment Status
       if: always()
