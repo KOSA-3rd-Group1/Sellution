@@ -1,6 +1,5 @@
 package shop.sellution.server.order.presentation;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -86,6 +85,12 @@ public class OrderController {
     @PostMapping("/count/info")
     public ResponseEntity<CalculateRes> getCountOrderDeliveryInfo(@RequestBody CalculateReq calculateReq) {
         return ResponseEntity.ok(orderService.calculatePrice(calculateReq));
+    }
+
+    // 해당 주문의 재고가 충분한지 체크 하는 API
+    @GetMapping("/{orderId}/enough-stock")
+    public ResponseEntity<String> checkStock(@PathVariable Long orderId) {
+        return ResponseEntity.ok(orderService.checkStock(orderId) ? "true" : "false");
     }
 
 

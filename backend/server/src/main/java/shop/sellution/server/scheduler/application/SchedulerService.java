@@ -121,11 +121,14 @@ public class SchedulerService {
             PaymentHistory paymentHistory = paymentHistoryRepository.findFirstByOrderIdOrderByCreatedAtDesc(order.getId());
             if (paymentHistory != null && paymentHistory.getStatus() == PaymentStatus.COMPLETE) {
                 // 3. 재고가 남아있는지 확인한다.
-                order.getOrderedProducts().forEach(orderedProduct -> {
-                    if (orderedProduct.getProduct().getStock() < orderedProduct.getCount()) {
-                        throw new BadRequestException(NOT_ENOUGH_STOCK);
-                    }
-                });
+                boolean hasEnoughStock = order.getOrderedProducts().stream()
+                        .allMatch(orderedProduct -> orderedProduct.getProduct().getStock() >= orderedProduct.getCount());
+
+                if (!hasEnoughStock) {
+                    // 재고가 없다면 주문 취소시킨다.
+                    order.cancelOrder();
+                    continue;  // 다음 주문으로 넘어간다.
+                }
 
                 // 4. 배송처리를 한다.
                 order.changeDeliveryStatus(DeliveryStatus.IN_PROGRESS);

@@ -79,6 +79,9 @@ public enum ExceptionCode {
     INVALID_ORDER_INFO_FOR_ONETIME(5018,"단건 주문에 유효하지않은 정보값입니다." ),
     INVALID_ORDER_INFO_FOR_SUB(5018,"정기 주문에 유효하지않은 정보값입니다." ),
     ALREADY_ACCOUNT(5019,"이미 등록된 계좌입니다." ),
+    NOT_FOUND_COUPON(5020,"없는 쿠폰입니다." ),
+    ALREADY_USED_COUPON(5021,"이미 사용된 쿠폰입니다." ),
+    INVALID_EASY_PWD(5022,"간편비밀번호가 틀렸습니다." ),
 
 
 
@@ -128,7 +131,7 @@ public enum ExceptionCode {
 
 
     EXTERNAL_SEVER_ERROR(9998, "외부 서버 에러가 발생하였습니다. 관리자에게 문의해 주세요."),
-    INTERNAL_SEVER_ERROR(9999, "서버 에러가 발생하였습니다. 관리자에게 문의해 주세요.");
+    INTERNAL_SEVER_ERROR(9999, "서버 에러가 발생하였습니다. 관리자에게 문의해 주세요."), ;
 
     private final int code;
     private final String message;
