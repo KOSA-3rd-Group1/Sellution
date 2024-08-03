@@ -31,14 +31,12 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Page<FindProductRes>> getAllProducts(
             @RequestParam Long companyId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            Pageable pageable ,
             @RequestParam(required = false) String deliveryType,
             @RequestParam(required = false) String isDiscount,
             @RequestParam(required = false) String categoryName,
             @RequestParam(required = false) String isVisible,
             @RequestParam(required = false) String productName) {
-        Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(productService.getAllProducts(companyId, pageable, deliveryType, isDiscount, categoryName, isVisible, productName));
     }
 
