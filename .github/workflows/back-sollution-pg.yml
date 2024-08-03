@@ -50,6 +50,26 @@ jobs:
         run: ./gradlew build
         working-directory: ./backendPG/pgserver
 
+      - name: Create application-test.yml
+        run: |
+          echo "spring:
+            datasource:
+              url: jdbc:h2:mem:testdb
+              driver-class-name: org.h2.Driver
+              username: sa
+              password: 
+            jpa:
+              database-platform: org.hibernate.dialect.H2Dialect
+              hibernate:
+                ddl-auto: create-drop" > ${{ env.WORKING_DIRECTORY }}/src/test/resources/application-test.yml
+        shell: bash
+
+      - name: Run tests with detailed output
+        run: ./gradlew test --info
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          SPRING_PROFILES_ACTIVE: test
+
       - name: Generate REST Docs for Server
         run: ./gradlew asciidoctor
 
