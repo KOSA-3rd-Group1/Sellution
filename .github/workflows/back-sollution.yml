@@ -49,19 +49,9 @@ jobs:
         
 
 
-    - name: Create application-test.yml
+    - name: Create test application.yml
       run: |
-        mkdir -p ${{ env.WORKING_DIRECTORY }}/src/test/resources
-        echo "spring:
-          datasource:
-            url: jdbc:h2:mem:testdb
-            driver-class-name: org.h2.Driver
-            username: sa
-            password: 
-          jpa:
-            database-platform: org.hibernate.dialect.H2Dialect
-            hibernate:
-              ddl-auto: create-drop" > ${{ env.WORKING_DIRECTORY }}/src/test/resources/application-test.yml
+        echo "${{ secrets.SELLUTION_SERVER_PROD_TEST_YML }}" > ${{ env.WORKING_DIRECTORY }}/src/test/resources/application.yml
       shell: bash
 
     - name: Build with Gradle
