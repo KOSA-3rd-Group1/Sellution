@@ -16,7 +16,8 @@ public class SchedulerTestController {
 
     @PostMapping("scheduler")
     public void testScheduler() {
-        schedulerService.regularProcess();
+        schedulerService.regularProcessAt19();
+        schedulerService.regularProcessAt0();
     }
 
     @GetMapping("/running")
