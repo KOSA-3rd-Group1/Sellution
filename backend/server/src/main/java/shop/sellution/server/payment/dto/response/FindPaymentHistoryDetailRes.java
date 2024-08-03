@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 public class FindPaymentHistoryDetailRes {
 
-    private Long paymentHisoryId;
+    private Long paymentHistoryId;
     private int price;
     private int remainingPayCount; // 남은 결제 횟수
     private int totalCountForPayment; // 총 결제해야하는 횟수
@@ -29,7 +29,7 @@ public class FindPaymentHistoryDetailRes {
 
     public static FindPaymentHistoryDetailRes fromEntity(PaymentHistory paymentHistory, String decryptedAccountNumber) {
         return FindPaymentHistoryDetailRes.builder()
-                .paymentHisoryId(paymentHistory.getId())
+                .paymentHistoryId(paymentHistory.getId())
                 .price(paymentHistory.getPrice())
                 .remainingPayCount(paymentHistory.getRemainingPaymentCount())
                 .totalCountForPayment(paymentHistory.getTotalPaymentCount())
