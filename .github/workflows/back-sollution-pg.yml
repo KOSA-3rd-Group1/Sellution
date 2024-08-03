@@ -39,7 +39,7 @@ jobs:
       - name: Create test application.yml
         run: |
           mkdir -p ${{ env.WORKING_DIRECTORY }}/src/test/resources
-          echo "${{ secrets.SELLUTION_SERVER_PROD_TEST_YML }}" > ./backendPG/pgserver/src/test/resources/application.yml
+          echo "${{ secrets.SELLUTION_PG_SERVER_PROD_TEST_YMLL }}" > ./backendPG/pgserver/src/test/resources/application.yml
         shell: bash
         
       - name: List directory contents
