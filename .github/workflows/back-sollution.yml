@@ -43,6 +43,7 @@ jobs:
 
     - name: Create application-test.yml
       run: |
+        mkdir -p ${{ env.WORKING_DIRECTORY }}/src/test/resources
         echo "spring:
           datasource:
             url: jdbc:h2:mem:testdb
