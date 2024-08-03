@@ -41,6 +41,16 @@ jobs:
       run: chmod +x ./gradlew
       working-directory: ${{ env.WORKING_DIRECTORY }}
 
+    # - name: Run tests with detailed output
+    #   run: ./gradlew test --info
+    #   working-directory: ${{ env.WORKING_DIRECTORY }}
+    #   env:
+    #     SPRING_PROFILES_ACTIVE: test
+        
+    - name: Build with Gradle
+      run: ./gradlew build
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+
     - name: Create application-test.yml
       run: |
         mkdir -p ${{ env.WORKING_DIRECTORY }}/src/test/resources
@@ -55,17 +65,7 @@ jobs:
             hibernate:
               ddl-auto: create-drop" > ${{ env.WORKING_DIRECTORY }}/src/test/resources/application-test.yml
       shell: bash
-
-    - name: Run tests with detailed output
-      run: ./gradlew test --info
-      working-directory: ${{ env.WORKING_DIRECTORY }}
-      env:
-        SPRING_PROFILES_ACTIVE: test
-        
-    - name: Build with Gradle
-      run: ./gradlew build
-      working-directory: ${{ env.WORKING_DIRECTORY }}
-
+      
     - name: Generate REST Docs for Server
       run: ./gradlew asciidoctor
       working-directory: ${{ env.WORKING_DIRECTORY }}
