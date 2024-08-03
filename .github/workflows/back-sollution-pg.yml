@@ -50,6 +50,22 @@ jobs:
         run: ./gradlew build
         working-directory: ./backendPG/pgserver
 
+      - name: Generate REST Docs for Server
+        run: ./gradlew asciidoctor
+
+      - name: Prepare docs for deployment
+        run: |
+          mkdir -p build/docs
+          cp -R backendPG/server/build/docs/asciidoc build/docs/server1
+  
+      - name: Deploy REST Docs to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/docs
+          destination_dir: .
+          keep_files: true
+
       - name: Make zip file
         run: zip -r ./$GITHUB_SHA.zip .
         working-directory: ./backendPG/pgserver
