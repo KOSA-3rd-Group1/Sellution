@@ -2,10 +2,10 @@ name: back-soulltion-pg-cicd
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
-    paths:
-      - 'backendPG/pgserver/**'
+  # push:
+  #   branches: [ main ]
+  #   paths:
+  #     - 'backendPG/pgserver/**'
   pull_request:
     types: [closed]
     branches: [ main ]
@@ -15,10 +15,11 @@ on:
 env:
   S3_BUCKET_NAME: ${{ secrets.S3_SOLLUTION_CICD_BUCKET_NAME }}
   PROJECT_NAME: sollution-pg-server
+  WORKING_DIRECTORY: ./backendPG/pgserver
 
 jobs:
   build:
-    if: (github.event_name == 'pull_request' && github.event.pull_request.merged == true) || github.event_name == 'push'
+    # if: (github.event_name == 'pull_request' && github.event.pull_request.merged == true) || github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -30,14 +31,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Change to working directory
-        run: cd backend/server
-
       - name: Create application.yml
         run: |
           echo "${{ secrets.SELLUTION_PG_SERVER_PROD_YML }}" > ./backendPG/pgserver/src/main/resources/application.yml
         shell: bash
 
+      - name: Create test application.yml
+        run: |
+          mkdir -p ${{ env.WORKING_DIRECTORY }}/src/test/resources
+          echo "${{ secrets.SELLUTION_PG_SERVER_PROD_TEST_YMLL }}" > ./backendPG/pgserver/src/test/resources/application.yml
+        shell: bash
+        
       - name: List directory contents
         run: ls -la
         working-directory: ./backendPG/pgserver
@@ -49,6 +53,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
         working-directory: ./backendPG/pgserver
+
+      - name: Generate REST Docs for Server
+        run: ./gradlew asciidoctor
 
       - name: Make zip file
         run: zip -r ./$GITHUB_SHA.zip .
