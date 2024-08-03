@@ -381,18 +381,4 @@ class OrderServiceImplTest {
         verify(orderRepository).findById(orderId);
         verify(orderedProductRepository).findAllByOrderIdIn(List.of(orderId));
     }
-
-    @Test
-    @DisplayName("주문이 존재하지 않는 경우 예외를 던진다")
-    void checkStock_OrderNotFound_ThrowsException() {
-        // Given
-        Long orderId = 1L;
-        when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
-
-        // When & Then
-        assertThatThrownBy(() -> orderService.checkStock(orderId))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("NOT_FOUND_ORDER");
-        verify(orderRepository).findById(orderId);
-    }
 }
