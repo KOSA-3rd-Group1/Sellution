@@ -47,9 +47,7 @@ jobs:
     #   env:
     #     SPRING_PROFILES_ACTIVE: test
         
-    - name: Build with Gradle
-      run: ./gradlew build
-      working-directory: ${{ env.WORKING_DIRECTORY }}
+
 
     - name: Create application-test.yml
       run: |
@@ -65,6 +63,10 @@ jobs:
             hibernate:
               ddl-auto: create-drop" > ${{ env.WORKING_DIRECTORY }}/src/test/resources/application-test.yml
       shell: bash
+
+    - name: Build with Gradle
+      run: ./gradlew build
+      working-directory: ${{ env.WORKING_DIRECTORY }}
       
     - name: Generate REST Docs for Server
       run: ./gradlew asciidoctor
