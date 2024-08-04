@@ -1,6 +1,7 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import Accordion from '@/client/layout/common/Accodion';
 import RadioButtonGroup from '@/client/layout/common/RadioButtonGroup';
+import AlertModal from '@/client/layout/common/modal/AlertModal';
 import { useModal } from '@/client/business/common/useModal';
 import { useShopManagementSaleSetting } from '@/client/business/shopManagement/useShopManagementSaleSetting';
 import SellTypeCategory from '@/client/layout/shopManagement/SellTypeCategory';
@@ -17,7 +18,14 @@ const SaleSettingComponent = () => {
     openAutoCloseModal,
     closeAutoCloseModal,
   } = useModal();
-  const { saleTypes, handleChangeInputValue, handleSaveData } = useShopManagementSaleSetting({
+  const {
+    saleTypes,
+    handleChangeInputValue,
+    // handleSaveData,
+    checkResetContent,
+    checkSaveContent,
+    handleOnConfirm,
+  } = useShopManagementSaleSetting({
     openAlertModal,
     openAutoCloseModal,
     closeAutoCloseModal,
@@ -98,18 +106,18 @@ const SaleSettingComponent = () => {
         </div>
       </section>
       <FooterComponent
-        btn1={{ label: '취소', event: handleSaveData }}
-        btn2={{ label: '변경사항 적용', event: handleSaveData }}
+        btn1={{ label: '취소', event: checkResetContent }}
+        btn2={{ label: '변경사항 적용', event: checkSaveContent }}
       />
 
-      {/* <AlertModal
+      <AlertModal
         isOpen={alertModalState.isOpen}
         onClose={closeAlertModal}
         onConfirm={handleOnConfirm}
         type={alertModalState.type}
         title={alertModalState.title}
         message={alertModalState.message}
-      /> */}
+      />
     </div>
   );
 };

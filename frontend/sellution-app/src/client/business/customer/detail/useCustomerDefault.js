@@ -105,6 +105,7 @@ export const useCustomerDefault = ({
       } else {
         openAlertModal('error', '오류', `${error.response.data.message}`);
       }
+      setIsChange(false);
       setRefresh(!refresh);
     }
   };

@@ -101,8 +101,9 @@ export const useCustomerAddressDetail = ({
         openAlertModal('error', '오류', error.message);
       } else {
         openAlertModal('error', '오류', `${error.response.data.message}`);
-        setRefresh(!refresh);
       }
+      setIsChange(false);
+      setRefresh(!refresh);
     }
   };
 
