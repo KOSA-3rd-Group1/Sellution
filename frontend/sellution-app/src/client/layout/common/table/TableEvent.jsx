@@ -1,8 +1,17 @@
 import { useTable } from '@/client/business/common/useTable';
 
-const TableEvent = ({ HEADERS, ROW_HEIGHT, data, totalDataCount, Btns, handleRowEvent }) => {
+const TableEvent = ({
+  HEADERS,
+  ROW_HEIGHT,
+  data,
+  totalDataCount,
+  Btns,
+  handleRowEvent,
+  tableId,
+}) => {
   const { selectAll, selectedRows, selectedCount, handleSelectAll, handleSelectRow } = useTable({
     data,
+    tableId: tableId,
   });
 
   return (

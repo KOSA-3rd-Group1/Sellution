@@ -15,7 +15,7 @@ export const getSaleSetting = async (companyId, setAccessToken, accessToken) => 
   return response;
 };
 
-// Display Setting 변경
+// sale Setting 변경
 export const putSaleSetting = async (data, setAccessToken, accessToken) => {
   let response = null;
   const url = API_URL;
