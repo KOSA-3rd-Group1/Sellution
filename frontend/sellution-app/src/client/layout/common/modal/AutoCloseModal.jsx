@@ -3,21 +3,27 @@ import { InfoIcon, XIcon } from '../../../utility/assets/ModalIcons';
 import { ModalBtn } from '../Button';
 
 const AutoCloseModal = ({ isOpen, onClose, title, message, duration = 5000 }) => {
-  const [progress, setProgress] = useState(100);
+  // const [progress, setProgress] = useState(100); // 100% -> 0%
+  const [progress, setProgress] = useState(0);
   const modalRef = useRef();
 
   useEffect(() => {
     let interval;
     if (isOpen) {
-      setProgress(100);
+      //   setProgress(100); // 100% -> 0%
+      setProgress(0);
+
       interval = setInterval(() => {
         setProgress((prevProgress) => {
-          if (prevProgress <= 0) {
+          //   if (prevProgress <= 0) { // 100% -> 0%
+          if (prevProgress >= 100) {
             clearInterval(interval);
             onClose();
-            return 0;
+            // return 0; // 100% -> 0%
+            return 100;
           }
-          return prevProgress - 100 / (duration / 100);
+          //   return prevProgress - 100 / (duration / 100); // 100% -> 0%
+          return prevProgress + 100 / (duration / 100);
         });
       }, 100);
     }

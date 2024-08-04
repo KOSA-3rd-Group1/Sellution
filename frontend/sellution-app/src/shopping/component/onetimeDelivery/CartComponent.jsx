@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import useOnetimeCartStore from './../../store/stores/useOnetimeCartStore';
+//import useOnetimeCartStore from './../../store/stores/useOnetimeCartStore';
 import MenuHeaderNav from '../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import useOrderListStore from './../../store/stores/useOrderListStore';
@@ -7,30 +7,59 @@ import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import { DeleteIcon, MinusIcon, PlusIcon } from '../../utility/assets/Icons';
 import { formatPrice } from '@/client/utility/functions/formatterFunction';
+import useCartStore from '../../store/stores/useCartStore';
+import useAuthStore from './../../store/stores/useAuthStore';
+import { useEffect } from 'react';
 
 const CartComponent = () => {
+  //   const {
+  //     onetimeCart,
+  //     selectedOnetimeItems, // index는 productId를 사용함
+  //     selectAllOnetimeItems,
+  //     removeSelectedOnetimeItems,
+  //     toggleSelectedOnetimeItems,
+  //     increaseOnetimeCartQuantity,
+  //     decreaseOnetimeCartQuantity,
+  //     removeFromOnetimeCart,
+  //   } = useOnetimeCartStore();
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const {
     onetimeCart,
-    selectedOnetimeItems, // index는 productId를 사용함
-    selectAllOnetimeItems,
-    removeSelectedOnetimeItems,
-    toggleSelectedOnetimeItems,
-    increaseOnetimeCartQuantity,
-    decreaseOnetimeCartQuantity,
-    removeFromOnetimeCart,
-  } = useOnetimeCartStore();
+    selectedOnetimeItems,
+    findCart,
+    addToCart,
+    removeFromCart,
+    clearCart,
+    increaseCartItem,
+    decreaseCartItem,
+    toggleSelectedItems,
+    selectAllItems,
+    removeSelectedItems,
+    getVisibleItemsCount
+  } = useCartStore();
   const { updateOrderList } = useOrderListStore();
 
   const navigate = useNavigate();
   const clientName = useCompanyInfoStore((state) => state.name);
   const customerId = useUserInfoStore((state) => state.id);
   const allSelected = onetimeCart.length > 0 && selectedOnetimeItems.length === onetimeCart.length;
+  const visibleItemsCount = getVisibleItemsCount('ONETIME');
+  const isOrderButtonDisabled = selectedOnetimeItems.length === 0;
 
   const addToOrderList = () => {
-    updateOrderList(selectedOnetimeItems, onetimeCart);
+    const visibleSelectedItems = selectedOnetimeItems.filter((id) =>
+      onetimeCart.find((item) => item.productId === id && item.isVisible !== 'N'),
+    );
+    updateOrderList(visibleSelectedItems, onetimeCart);
     navigate(`/shopping/${clientName}/onetime/order/${customerId}`);
   };
-  const isOrderButtonDisabled = selectedOnetimeItems.length === 0;
+
+  useEffect(() => {
+    if (accessToken && clientName) {
+      findCart('ONETIME', accessToken, setAccessToken);
+    }
+  }, [accessToken, clientName, findCart, setAccessToken]);
 
   return (
     <>
@@ -61,19 +90,22 @@ const CartComponent = () => {
               <input
                 type='checkbox'
                 checked={allSelected}
-                onChange={(e) => selectAllOnetimeItems(e.target.checked)}
+                onChange={(e) => selectAllItems('ONETIME', e.target.checked)}
                 className='hidden-checkbox'
                 id='selectAll'
               />
               <label htmlFor='selectAll' className='custom-checkbox'>
                 <div className='custom-checkbox-box'></div>
                 <span className='font-bold ml-2 text-sm'>
-                  전체 선택 ({selectedOnetimeItems.length}/{onetimeCart.length})
+                  전체 선택 ({selectedOnetimeItems.length}/{visibleItemsCount})
                 </span>
               </label>
             </div>
             {selectedOnetimeItems.length > 0 && (
-              <button onClick={removeSelectedOnetimeItems} className='text-gray-400 text-sm'>
+              <button
+                onClick={() => removeSelectedItems('ONETIME', accessToken, setAccessToken)}
+                className='text-gray-400 text-sm'
+              >
                 선택 상품 삭제
               </button>
             )}
@@ -88,16 +120,19 @@ const CartComponent = () => {
               onetimeCart.map((item) => (
                 <li
                   key={item.productId}
-                  className='product-item py-4 border-gray-200 flex'
+                  className={`product-item py-4 border-gray-200 flex ${
+                    item.isVisible === 'N' ? 'opacity-50 bg-gray-200' : ''
+                  }`}
                   style={{ height: 'calc((100vh - 13.5rem) / 5)' }}
                 >
                   <div className='flex items-start'>
                     <input
                       type='checkbox'
                       checked={selectedOnetimeItems.includes(item.productId)}
-                      onChange={() => toggleSelectedOnetimeItems(item.productId)}
+                      onChange={() => toggleSelectedItems('ONETIME', item.productId)}
                       className='hidden-checkbox'
                       id={`checkbox-${item.productId}`}
+                      disabled={item.isVisible === 'N'}
                     />
                     <label htmlFor={`checkbox-${item.productId}`} className='custom-checkbox'>
                       <div className='custom-checkbox-box'></div>
@@ -105,17 +140,24 @@ const CartComponent = () => {
                   </div>
                   <div className='product-item-1 flex-[3] flex justify-center items-center '>
                     <div
-                      className='product-image h-full aspect-square rounded-lg bg-cover '
+                      className='product-image h-full aspect-square rounded-lg bg-cover'
                       style={{ backgroundImage: `url(${item.thumbnailImage})` }}
                     >
-                      <Link
-                        to={`/shopping/${clientName}/onetime/${item.productId}`}
-                        key={item.productId}
-                      ></Link>
+                      {item.isVisible !== 'N' && (
+                        <Link
+                          to={`/shopping/${clientName}/onetime/${item.productId}`}
+                          key={item.productId}
+                        ></Link>
+                      )}
                     </div>
                   </div>
                   <div className='product-item-2 flex-[5] flex flex-col justify-center px-4'>
-                    <div className='product-name font-bold text-sm'>{item.name}</div>
+                    <div className='product-name font-bold text-sm'>
+                      {item.name}
+                      {item.isVisible === 'N' && (
+                        <span className='text-red-500 ml-2'>(판매 중지)</span>
+                      )}
+                    </div>
                     <div className='product-price text-primary my-2'>
                       <div className='flex gap-2 items-center'>
                         <span className='text-gray-400 line-through text-xs'>
@@ -129,21 +171,32 @@ const CartComponent = () => {
                     <div className='quantity-control flex items-center border border-gray-300 w-20'>
                       <button
                         className='quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center'
-                        onClick={() => decreaseOnetimeCartQuantity(item.productId)}
+                        onClick={() =>
+                          decreaseCartItem('ONETIME', item.productId, accessToken, setAccessToken)
+                        }
+                        disabled={item.isVisible === 'N'}
                       >
                         <MinusIcon className={'minus w-4 h-4 stroke-current text-gray-600'} />
                       </button>
                       <div className='quantity flex-1 text-center'>{item.quantity}</div>
                       <button
                         className='quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center'
-                        onClick={() => increaseOnetimeCartQuantity(item.productId)}
+                        onClick={() =>
+                          increaseCartItem('ONETIME', item.productId, accessToken, setAccessToken)
+                        }
+                        disabled={item.isVisible === 'N'}
                       >
                         <PlusIcon className={'plus w-4 h-4 stroke-current text-gray-600'} />
                       </button>
                     </div>
                   </div>
                   <div className='product-item-3 flex-[1] flex justify-end items-start'>
-                    <button className='' onClick={() => removeFromOnetimeCart(item.productId)}>
+                    <button
+                      className=''
+                      onClick={() =>
+                        removeFromCart('ONETIME', item.productId, accessToken, setAccessToken)
+                      }
+                    >
                       <DeleteIcon className={'w-6 h-6'} />
                     </button>
                   </div>

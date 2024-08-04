@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import MenuHeaderNav from '@/shopping/layout/MenuHeaderNav.jsx';
+import useCartStore from '../../../store/stores/useCartStore';
+import useAuthStore from '@/shopping/store/stores/useAuthStore';
 
 const SimplePasswordComponent = () => {
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const [password, setPassword] = useState('');
   const [errorCount, setErrorCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
@@ -12,7 +16,7 @@ const SimplePasswordComponent = () => {
   const navigate = useNavigate();
   const { customerId, clientName } = useParams();
   const location = useLocation();
-
+  const { removeItemsFromCart } = useCartStore();
   useEffect(() => {
     checkPassword();
     shuffleNumbers();
@@ -122,11 +126,21 @@ const SimplePasswordComponent = () => {
       if (response.data.startsWith('success')) {
         const savedOrderId = response.data.split('success, 생성된 주문 아이디 : ')[1];
         if (orderData.orderType === 'ONETIME') {
+          //장바구니에서 제거
+          console.log('장바구니에서 제거하기 전', orderData.orderedProducts);
+          const productIds = orderData.orderedProducts.map((product) => product.productId);
+          removeItemsFromCart('ONETIME', productIds, accessToken, setAccessToken);
+
           navigate(`/shopping/${clientName}/onetime/order-completed/${savedOrderId}`);
         } else if (
           orderData.orderType === 'COUNT_SUBSCRIPTION' ||
           orderData.orderType === 'MONTH_SUBSCRIPTION'
         ) {
+          //장바구니에서 제거
+          console.log('장바구니에서 제거하기 전', orderData.orderedProducts);
+          const productIds = orderData.orderedProducts.map((product) => product.productId);
+          removeItemsFromCart('SUBSCRIPTION', productIds, accessToken, setAccessToken);
+
           navigate(`/shopping/${clientName}/subscription/order-completed/${savedOrderId}`);
         } else {
           throw new Error('주문 생성 실패');

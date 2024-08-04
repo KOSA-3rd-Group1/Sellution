@@ -78,17 +78,17 @@ const DefaultComponent = () => {
                 <InfoInput value={data.customerType || ''} disabled />
               </div>
             </li>
-            <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
+            {/* <li className='pl-4 flex-1 min-h-14 max-h-20 flex justify-between items-center gap-10 border-b'>
               <div className='flex-1 min-w-32'>최신 주문 일자</div>
               <div className='flex-1 min-w-64'>
                 <InfoInput value={data.latestDeliveryDate || '-'} disabled />
               </div>
-            </li>
+            </li> */}
           </ul>
         </div>
       </section>
       <FooterComponent
-        btn1={{ label: '회원 삭제', event: checkDeleteContent }}
+        // btn1={{ label: '회원 삭제', event: checkDeleteContent }}
         btn2={{ label: '변경사항 적용', event: checkSaveContent }}
         back={{ label: '목록으로', event: checkMoveList }}
       />

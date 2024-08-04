@@ -32,6 +32,10 @@ export const formatPrice = (price) => {
 };
 
 // 파일 이름 생성 함수
+export const generateShortFileName2 = (prefix, index, file) => {
+  const extension = file.type.split('/')[1];
+  return `${prefix}_${index}_${Date.now().toString(36)}.${extension}`;
+};
 export const generateShortFileName = (prefix, index) =>
   `${prefix}_${index}_${Date.now().toString(36)}.jpg`;
 

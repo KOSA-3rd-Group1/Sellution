@@ -1,36 +1,66 @@
 import { Link, useNavigate } from 'react-router-dom';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
-import useSubscriptionCartStore from './../../store/stores/useSubscriptionCartStore';
+//import useSubscriptionCartStore from './../../store/stores/useSubscriptionCartStore';
 import MenuHeaderNav from '../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import useOrderListStore from '../../store/stores/useOrderListStore';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import { DeleteIcon, MinusIcon, PlusIcon } from '../../utility/assets/Icons';
 import { formatPrice } from '@/client/utility/functions/formatterFunction';
+import useCartStore from '../../store/stores/useCartStore';
+import useAuthStore from './../../store/stores/useAuthStore';
+import { useEffect } from 'react';
 
 const CartComponent = () => {
+  // const {
+  //   subscriptionCart,
+  //   selectedSubscriptionItems,
+  //   selectAllSubscriptionItems,
+  //   removeSelectedSubscriptionItems,
+  //   toggleSelectedSubscriptionItems,
+  //   increaseSubscriptionCartQuantity,
+  //   decreaseSubscriptionCartQuantity,
+  //   removeFromSubscriptionCart,
+  // } = useSubscriptionCartStore();
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const {
     subscriptionCart,
     selectedSubscriptionItems,
-    selectAllSubscriptionItems,
-    removeSelectedSubscriptionItems,
-    toggleSelectedSubscriptionItems,
-    increaseSubscriptionCartQuantity,
-    decreaseSubscriptionCartQuantity,
-    removeFromSubscriptionCart,
-  } = useSubscriptionCartStore();
+    findCart,
+    addToCart,
+    removeFromCart,
+    clearCart,
+    increaseCartItem,
+    decreaseCartItem,
+    toggleSelectedItems,
+    selectAllItems,
+    removeSelectedItems,
+    getVisibleItemsCount,
+  } = useCartStore();
   const { updateOrderList } = useOrderListStore();
 
   const navigate = useNavigate();
   const clientName = useCompanyInfoStore((state) => state.name);
+  const customerId = useUserInfoStore((state) => state.id);
   const allSelected =
     subscriptionCart.length > 0 && selectedSubscriptionItems.length === subscriptionCart.length;
-  const customerId = useUserInfoStore((state) => state.id);
+  const visibleItemsCount = getVisibleItemsCount('SUBSCRIPTION');
+  const isOrderButtonDisabled = selectedSubscriptionItems.length === 0;
+
   const addToOrderList = () => {
+    const visibleSelectedItems = selectedSubscriptionItems.filter((id) =>
+      subscriptionCart.find((item) => item.productId === id && item.isVisible !== 'N'),
+    );
     updateOrderList(selectedSubscriptionItems, subscriptionCart);
     navigate(`/shopping/${clientName}/subscription/order/${customerId}`);
   };
-  const isOrderButtonDisabled = selectedSubscriptionItems.length === 0;
+
+  useEffect(() => {
+    if (accessToken && clientName) {
+      findCart('SUBSCRIPTION', accessToken, setAccessToken);
+    }
+  }, [accessToken, clientName, findCart, setAccessToken]);
 
   return (
     <>
@@ -61,19 +91,22 @@ const CartComponent = () => {
               <input
                 type='checkbox'
                 checked={allSelected}
-                onChange={(e) => selectAllSubscriptionItems(e.target.checked)}
+                onChange={(e) => selectAllItems('SUBSCRIPTION', e.target.checked)}
                 className='hidden-checkbox'
                 id='selectAll'
               />
               <label htmlFor='selectAll' className='custom-checkbox'>
                 <div className='custom-checkbox-box'></div>
                 <span className='font-bold ml-2 text-sm'>
-                  전체 선택 ({selectedSubscriptionItems.length}/{subscriptionCart.length})
+                  전체 선택 ({selectedSubscriptionItems.length}/{visibleItemsCount})
                 </span>
               </label>
             </div>
             {selectedSubscriptionItems.length > 0 && (
-              <button onClick={removeSelectedSubscriptionItems} className='text-gray-400 text-sm'>
+              <button
+                onClick={() => removeSelectedItems('SUBSCRIPTION', accessToken, setAccessToken)}
+                className='text-gray-400 text-sm'
+              >
                 선택 상품 삭제
               </button>
             )}
@@ -88,16 +121,17 @@ const CartComponent = () => {
               subscriptionCart.map((item) => (
                 <li
                   key={item.productId}
-                  className='product-item py-4 border-gray-200 flex'
+                  className={`product-item py-4 border-gray-200 flex ${item.isVisible === 'N' ? 'opacity-50 bg-gray-200' : ''}`}
                   style={{ height: 'calc((100vh - 13.5rem) / 5)' }}
                 >
                   <div className='flex items-start'>
                     <input
                       type='checkbox'
                       checked={selectedSubscriptionItems.includes(item.productId)}
-                      onChange={() => toggleSelectedSubscriptionItems(item.productId)}
+                      onChange={() => toggleSelectedItems('SUBSCRIPTION', item.productId)}
                       className='hidden-checkbox'
                       id={`checkbox-${item.productId}`}
+                      disabled={item.isVisible === 'N'}
                     />
                     <label htmlFor={`checkbox-${item.productId}`} className='custom-checkbox'>
                       <div className='custom-checkbox-box'></div>
@@ -108,14 +142,21 @@ const CartComponent = () => {
                       className='product-image h-full aspect-square rounded-lg bg-cover '
                       style={{ backgroundImage: `url(${item.thumbnailImage})` }}
                     >
-                      <Link
-                        to={`/shopping/${clientName}/Subscription/${item.productId}`}
-                        key={item.productId}
-                      ></Link>
+                      {item.isVisible !== 'N' && (
+                        <Link
+                          to={`/shopping/${clientName}/subscription/${item.productId}`}
+                          key={item.productId}
+                        ></Link>
+                      )}
                     </div>
                   </div>
                   <div className='product-item-2 flex-[5] flex flex-col justify-center px-4'>
-                    <div className='product-name font-bold text-sm'>{item.name}</div>
+                    <div className='product-name font-bold text-sm'>
+                      {item.name}
+                      {item.isVisible === 'N' && (
+                        <span className='text-red-500 ml-2'>(판매 중지)</span>
+                      )}
+                    </div>
                     <div className='product-price text-primary my-2'>
                       <div className='flex gap-2 items-center'>
                         <span className='text-gray-400 line-through text-xs'>
@@ -129,21 +170,42 @@ const CartComponent = () => {
                     <div className='quantity-control flex items-center border border-gray-300 w-20'>
                       <button
                         className='quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center'
-                        onClick={() => decreaseSubscriptionCartQuantity(item.productId)}
+                        onClick={() =>
+                          decreaseCartItem(
+                            'SUBSCRIPTION',
+                            item.productId,
+                            accessToken,
+                            setAccessToken,
+                          )
+                        }
+                        disabled={item.isVisible === 'N'}
                       >
                         <MinusIcon className={'minus w-4 h-4 stroke-current text-gray-600'} />
                       </button>
                       <div className='quantity flex-1 text-center'>{item.quantity}</div>
                       <button
                         className='quantity-button w-6 h-6 bg-gray-300 flex justify-center items-center'
-                        onClick={() => increaseSubscriptionCartQuantity(item.productId)}
+                        onClick={() =>
+                          increaseCartItem(
+                            'SUBSCRIPTION',
+                            item.productId,
+                            accessToken,
+                            setAccessToken,
+                          )
+                        }
+                        disabled={item.isVisible === 'N'}
                       >
                         <PlusIcon className={'plus w-4 h-4 stroke-current text-gray-600'} />
                       </button>
                     </div>
                   </div>
                   <div className='product-item-3 flex-[1] flex justify-end items-start'>
-                    <button className='' onClick={() => removeFromSubscriptionCart(item.productId)}>
+                    <button
+                      className=''
+                      onClick={() =>
+                        removeFromCart('SUBSCRIPTION', item.productId, accessToken, setAccessToken)
+                      }
+                    >
                       <DeleteIcon className={'w-6 h-6'} />
                     </button>
                   </div>

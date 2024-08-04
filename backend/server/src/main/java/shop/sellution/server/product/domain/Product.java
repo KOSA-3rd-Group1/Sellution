@@ -90,4 +90,12 @@ public class Product extends BaseEntity {
         log.info("상품 후 재고 : {}",stock);
     }
 
+    public void finishDiscount() {
+        this.isDiscount = N;
+        this.discountRate = 0;
+        this.discountedPrice = cost;
+        this.discountStartDate = null;
+        this.discountEndDate = null;
+    }
+
 }

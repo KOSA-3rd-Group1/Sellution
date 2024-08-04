@@ -1,7 +1,10 @@
 import FooterComponent from '@/client/layout/partials/FooterComponent';
 import TableCustomerOrder from '@/client/layout/common/table/TableCustomerOrder';
 import { EventBtn } from '@/client/layout/common/Button';
+import AlertModal from '@/client/layout/common/modal/AlertModal';
+import LoadingModal from '@/client/layout/common/modal/LodingModal';
 import { useMove } from '@/client/business/common/useMove';
+import { useModal } from '@/client/business/common/useModal';
 import { useCustomerOrderList } from '@/client/business/customer/detail/order/useCustomerOrderList';
 import { SimpleOrderIcon, OrderCancelAllIcon } from '@/client/utility/assets/Icons';
 import {
@@ -13,15 +16,18 @@ import {
 
 const ListComponent = () => {
   const { moveToPathname } = useMove();
+  const { alertModalState, openAlertModal, closeAlertModal } = useModal();
   const {
     subscriptionData,
     subscriptionTotalDataCount,
     onetimeData,
     onetimeTotalDataCount,
-    handleApproveAllSimpleOrderBtn,
-    handleApproveOneSimpleOrderBtn,
-    handleApproveCancleAll,
-  } = useCustomerOrderList();
+    isLoading,
+    checkAppoveOrderAll,
+    checkAppoveOrderOne,
+    checkCancleOrder,
+    handleOnConfirm,
+  } = useCustomerOrderList({ openAlertModal });
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -35,19 +41,19 @@ const ListComponent = () => {
             ROW_HEIGHT={SUBSCRIPTION_ROW_HEIGHT}
             data={subscriptionData}
             totalDataCount={subscriptionTotalDataCount}
-            handleApproveSimpleOrderBtn={handleApproveOneSimpleOrderBtn}
+            handleApproveSimpleOrderBtn={checkAppoveOrderOne}
             handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
                 <EventBtn
                   Icon={SimpleOrderIcon}
                   label={'간편 주문 승인'}
-                  onClick={() => handleApproveAllSimpleOrderBtn('subscription')}
+                  onClick={() => checkAppoveOrderAll('subscription')}
                 />
                 <EventBtn
                   Icon={OrderCancelAllIcon}
                   label={'주문 취소'}
-                  onClick={() => handleApproveCancleAll('subscription')}
+                  onClick={() => checkCancleOrder('subscription')}
                 />
               </div>
             }
@@ -64,19 +70,19 @@ const ListComponent = () => {
             ROW_HEIGHT={ONETIME_ROW_HEIGHT}
             data={onetimeData}
             totalDataCount={onetimeTotalDataCount}
-            handleApproveSimpleOrderBtn={handleApproveOneSimpleOrderBtn}
+            handleApproveSimpleOrderBtn={checkAppoveOrderOne}
             handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
                 <EventBtn
                   Icon={SimpleOrderIcon}
                   label={'간편 주문 승인'}
-                  onClick={() => handleApproveAllSimpleOrderBtn('onetime')}
+                  onClick={() => checkAppoveOrderAll('onetime')}
                 />
                 <EventBtn
                   Icon={OrderCancelAllIcon}
                   label={'주문 취소'}
-                  onClick={() => handleApproveCancleAll('onetime')}
+                  onClick={() => checkCancleOrder('onetime')}
                 />
               </div>
             }
@@ -85,6 +91,17 @@ const ListComponent = () => {
         </div>
       </section>
       <FooterComponent back={{ label: '목록으로', event: () => moveToPathname('/customer') }} />
+
+      <AlertModal
+        isOpen={alertModalState.isOpen}
+        onClose={closeAlertModal}
+        onConfirm={handleOnConfirm}
+        type={alertModalState.type}
+        title={alertModalState.title}
+        message={alertModalState.message}
+      />
+
+      <LoadingModal isOpen={isLoading} />
     </div>
   );
 };

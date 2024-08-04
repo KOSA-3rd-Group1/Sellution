@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx";
+import MenuHeaderNav from '@/shopping/layout/MenuHeaderNav.jsx';
+import LoadingSpinner from './../../layout/LoadingSpinner';
 
 const PaymentHistoryList = () => {
   const [paymentHistoryData, setPaymentHistoryData] = useState(null);
@@ -10,7 +11,9 @@ const PaymentHistoryList = () => {
   useEffect(() => {
     const fetchPaymentHistoryData = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/payment-histories/orders/${orderId}`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/payment-histories/orders/${orderId}`,
+        );
         setPaymentHistoryData(response.data);
       } catch (error) {
         console.error('Failed to fetch payment history data:', error);
@@ -22,18 +25,18 @@ const PaymentHistoryList = () => {
 
   const getOrderTypeText = (type) => {
     const types = {
-      'ONETIME': '단건 주문',
-      'MONTH_SUBSCRIPTION': '정기 주문(월단위)',
-      'COUNT_SUBSCRIPTION': '정기 주문(횟수 단위)'
+      ONETIME: '단건 주문',
+      MONTH_SUBSCRIPTION: '정기 주문(월단위)',
+      COUNT_SUBSCRIPTION: '정기 주문(횟수 단위)',
     };
     return types[type] || type;
   };
 
   const getStatusText = (status) => {
     const statuses = {
-      'COMPLETE': '결제완료',
-      'PENDING': '결제실패',
-      'CANCEL': '결제취소'
+      COMPLETE: '결제완료',
+      PENDING: '결제실패',
+      CANCEL: '결제취소',
     };
     return statuses[status] || status;
   };
@@ -46,7 +49,7 @@ const PaymentHistoryList = () => {
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
@@ -55,7 +58,7 @@ const PaymentHistoryList = () => {
     return '*'.repeat(accountNumber.length - 4) + accountNumber.slice(-4);
   };
 
-  if (!paymentHistoryData) return <div>Loading...</div>;
+  if (!paymentHistoryData) return <LoadingSpinner />;
 
   return (
     <div className='p-4'>

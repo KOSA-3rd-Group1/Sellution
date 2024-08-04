@@ -31,4 +31,7 @@ public interface OrderService {
     // 정기주문(월)을 위한 계산로직
     CalculateRes calculatePrice(CalculateReq calculateReq);
 
+    boolean checkStock(Long orderId);
+
+    Long getUnapprovedOrderCount(Long companyId);
 }

@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import useOrderListStore from '../../store/stores/useOrderListStore';
-import useSubscriptionCartStore from '../../store/stores/useSubscriptionCartStore';
+//import useSubscriptionCartStore from '../../store/stores/useSubscriptionCartStore';
 import useAuthStore from '@/shopping/store/stores/useAuthStore';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
+import useCartStore from '../../store/stores/useCartStore';
 
 const useDetail = () => {
   const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const navigate = useNavigate();
   const clientName = useCompanyInfoStore((state) => state.name);
   const customerId = useUserInfoStore((state) => state.id);
@@ -32,7 +34,8 @@ const useDetail = () => {
     setItemCountToAdd((prevQuantity) => Math.max(prevQuantity - 1, 0));
   };
 
-  const { subscriptionCart, updateSubscriptionCart } = useSubscriptionCartStore();
+  //const { subscriptionCart, updateSubscriptionCart } = useSubscriptionCartStore();
+  const { subscriptionCart, addToCart } = useCartStore();
   const [isDetailPageModalVisible, setIsDetailPageModalVisible] = useState(false);
   const addToSubscriptionCart = () => {
     if (accessToken === null || accessToken === '') {
@@ -40,18 +43,14 @@ const useDetail = () => {
         state: { from: location.pathname },
       });
     } else if (itemCountToAdd > 0) {
-      const newItem = {
-        id: productToShow.productId,
-        productId: productToShow.productId,
-        quantity: itemCountToAdd,
-        name: productToShow.name,
-        cost: productToShow.cost,
-        discountRate: productToShow.discountRate,
-        discountedPrice: productToShow.discountedPrice,
-        stock: productToShow.stock,
-        thumbnailImage: productToShow.thumbnailImage,
-      };
-      updateSubscriptionCart(newItem);
+      addToCart(
+        'SUBSCRIPTION',
+        productToShow.productId,
+        itemCountToAdd,
+        accessToken,
+        setAccessToken,
+      );
+      //updateSubscriptionCart(newItem);
       console.log('정기배송 장바구니 목록: ', subscriptionCart);
       setItemCountToAdd(0);
       setIsDetailPageModalVisible(true);
@@ -98,7 +97,7 @@ const useDetail = () => {
       try {
         console.log('id: ', `${subscriptionDeliveryId}`);
         const response = await axios.get(
-          `http://localhost:8080/products/${subscriptionDeliveryId}`,
+          `${import.meta.env.VITE_BACKEND_URL}/products/${subscriptionDeliveryId}`,
         );
         console.log(response.data);
         setProductToShow(response.data);

@@ -22,6 +22,8 @@ export const useCustomerPaymentAdd = ({
   const [isChange, setIsChange] = useState(false);
   const [confirmType, setConfirmType] = useState('moveList');
 
+  const [isLoading, setIsLoading] = useState(false);
+
   // 변경 가능한 값 변경 handler
   const handleChangeInputValue = (key, value) => {
     if (key == 'accountNumber' && !validateInputAccountNumber(value)) {
@@ -64,6 +66,10 @@ export const useCustomerPaymentAdd = ({
       if (!data.bank) {
         throw ValidationError('은행 정보가 필요합니다.');
       }
+
+      setIsLoading(true); // 로딩 상태 시작
+      const startTime = Date.now();
+
       const newData = {
         accountNumber: accountNumberInServerFormat(data.accountNumber),
         bankCode: data.bank,
@@ -75,13 +81,33 @@ export const useCustomerPaymentAdd = ({
         accessToken,
       );
 
+      await Promise.all([
+        response,
+        new Promise((resolve) => setTimeout(resolve, 1000)), // 최소 1초 대기
+      ]);
+
+      const endTime = Date.now();
+      const elapsedTime = endTime - startTime;
+
+      if (elapsedTime < 1000) {
+        // 1초 미만으로 걸렸다면, 남은 시간만큼 더 대기
+        await new Promise((resolve) => setTimeout(resolve, 1000 - elapsedTime));
+      }
+
+      setIsLoading(false);
       setPaymentId(response.data.split(':')[1].trim());
-      await openAutoCloseModal('결제 수단 등록 성공', '작업이 성공적으로 완료되었습니다.');
+      openAutoCloseModal('결제 수단 등록 성공', '작업이 성공적으로 완료되었습니다.');
     } catch (error) {
+      setIsLoading(false);
       if (error instanceof ValidationError) {
         openAlertModal('error', '오류', error.message);
       } else {
-        openAlertModal('error', '오류', `${error.response.data.message}`);
+        openAlertModal(
+          'error',
+          '오류',
+          `${error.response.data.message}` ||
+            '알 수 없는 오류가 발생했습니다. 반복적으로 문제가 발생하는 경우, 지원팀에 문의해 주세요.',
+        );
       }
     }
   };
@@ -111,6 +137,7 @@ export const useCustomerPaymentAdd = ({
 
   return {
     data,
+    isLoading,
     handleChangeInputValue,
     checkMoveList,
     checkSaveContent,

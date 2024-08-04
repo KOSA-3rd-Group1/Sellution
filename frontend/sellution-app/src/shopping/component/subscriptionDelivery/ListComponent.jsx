@@ -1,11 +1,11 @@
 import useList from '../../business/subscriptionDelivery/useList';
 import OneButtonFooterLayout from '../../layout/OneButtonFooterLayout';
 import MenuCategoryHeaderNav from '../../layout/MenuCategoryHeaderNav';
-import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import { Link, useNavigate } from 'react-router-dom';
+import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import LoadingSpinner from '../../layout/LoadingSpinner';
-import { useState, useRef, useCallback, useEffect } from 'react';
-import { formatPrice } from './../../../client/utility/functions/formatterFunction';
+import { useRef, useCallback, useEffect, useState } from 'react';
+import { formatPrice } from '../../../client/utility/functions/formatterFunction';
 
 const ListComponent = () => {
   const navigate = useNavigate();
@@ -21,6 +21,8 @@ const ListComponent = () => {
   } = useList();
   const clientName = useCompanyInfoStore((state) => state.name);
   const observer = useRef();
+  const scrollContainerRef = useRef(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   const moveToSubscriptionCartPage = () => {
     navigate(`/shopping/${clientName}/subscription/cart`);
@@ -42,6 +44,8 @@ const ListComponent = () => {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
+          setScrollPosition(scrollContainerRef.current.scrollTop); //스크롤 위 치 저장
+          console.log('현재 스크롤 위치: ', scrollContainerRef.current.scrollTop);
           loadMore();
         }
       });
@@ -50,9 +54,14 @@ const ListComponent = () => {
     [isLoading, hasMore, loadMore],
   );
 
+  // useEffect(() => {
+  //   fetchProducts(null, true); // 페이지를 리셋하고 제품을 가져옵니다.
+  // }, []);
   useEffect(() => {
-    fetchProducts(null, true); // 페이지를 리셋하고 제품을 가져옵니다.
-  }, []);
+    if (!isLoading && scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo(0, scrollPosition);
+    }
+  }, [isLoading, scrollPosition]);
 
   const renderProductContent = (product) => (
     <>
@@ -63,11 +72,11 @@ const ListComponent = () => {
         ></div>
       </div>
       <div className='product-item-2 flex-[7] flex flex-col justify-center px-4 relative'>
-        {product.stock === 0 && (
+        {/* {product.stock === 0 && (
           <span className='font-bold absolute bottom-0 right-0 text-white bg-gray-300 px-2 py-1 text-[10px]'>
             SOLD OUT
           </span>
-        )}
+        )} */}
         <div className='product-name font-bold text-[13px] flex-[3] flex items-end'>
           {product.name}
         </div>
@@ -111,7 +120,10 @@ const ListComponent = () => {
           <p>등록된 상품이 없습니다</p>
         </main>
       ) : (
-        <main className={`main-box w-full`}>
+        <main className={`main-box w-full h-[100%]`}
+          ref={scrollContainerRef}
+          style={{ overflowY: 'auto' }}
+        >
           <ul className='product-list w-[90%] mx-auto bg-white list-none p-0'>
             {subscriptionProductList.map((product, index) => {
               const productElement = (
