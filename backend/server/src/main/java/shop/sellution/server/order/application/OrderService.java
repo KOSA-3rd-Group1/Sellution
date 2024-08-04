@@ -32,4 +32,6 @@ public interface OrderService {
     CalculateRes calculatePrice(CalculateReq calculateReq);
 
     boolean checkStock(Long orderId);
+
+    Long getUnapprovedOrderCount(Long companyId);
 }
