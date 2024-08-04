@@ -55,7 +55,7 @@ jobs:
           IAMPORT_BASE_URL: https://api.iamport.kr
           IAMPORT_API_KEY: ${{ secrets.IAMPORT_API_KEY }}
           IAMPORT_API_SECRET_KEY: ${{ secrets.IAMPORT_API_SECRET_KEY }}
-          REDIS_HOST: ${{AWS_REDIS_HOST}}
+          REDIS_HOST: ${{secrets.AWS_REDIS_HOST}}
           REDIS_PORT: 6379
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_EXPIRATION: 1800000
