@@ -7,7 +7,6 @@ import LogoHeaderNav from '@/shopping/layout/LogoHeaderNav';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import ReusableOneButtonModal from '@/shopping/layout/partials/ReusableOneButtonModal';
-
 const AddComponent = () => {
   const navigate = useNavigate();
   const clientName = useCompanyInfoStore((state) => state.name);

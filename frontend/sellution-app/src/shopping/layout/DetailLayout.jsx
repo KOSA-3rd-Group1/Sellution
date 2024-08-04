@@ -1,16 +1,37 @@
 import { formatPrice } from '@/client/utility/functions/formatterFunction';
+import { useSwipeable } from 'react-swipeable';
 
 const DetailComponent = ({ productToShow, activeSlide, handleSlideChange }) => {
+  const handleSwipedLeft = () => {
+    if (activeSlide < productToShow.detailImages.length) {
+      handleSlideChange(activeSlide);
+    }
+  };
+
+  const handleSwipedRight = () => {
+    if (activeSlide > 1) {
+      handleSlideChange(activeSlide - 2);
+    }
+  };
+
+  const handlers = useSwipeable({
+    onSwipedLeft: handleSwipedLeft,
+    onSwipedRight: handleSwipedRight,
+    trackMouse: true,
+  });
+
   if (!productToShow) {
     return <div>Product not found</div>;
   }
+
   return (
     <div className='w-full h-full flex justify-center items-center relative'>
-      <main
-        className={`w-10/12 h-[90%] main-box detail-box rounded-lg flex flex-col shadow-md transform flex justify-around`}
-      >
+      <main className='w-10/12 h-[90%] main-box detail-box rounded-lg flex flex-col shadow-md transform flex justify-around'>
         {/* carousel start */}
-        <div className='carousel detail-box-1 image-box  flex flex-col justify-center items-center w-full'>
+        <div
+          className='carousel detail-box-1 image-box flex flex-col justify-center items-center w-full'
+          {...handlers}
+        >
           {productToShow.detailImages.map((imageUrl, index) => (
             <div
               key={index}

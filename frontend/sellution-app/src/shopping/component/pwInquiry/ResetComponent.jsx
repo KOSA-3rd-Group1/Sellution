@@ -10,7 +10,6 @@ const ResetComponent = () => {
     queryParams,
     moveDefault,
   });
-
   return (
     <>
       <LogoHeaderNav logoImageUrl={null} />
