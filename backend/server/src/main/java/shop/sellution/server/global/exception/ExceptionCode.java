@@ -82,6 +82,7 @@ public enum ExceptionCode {
     NOT_FOUND_COUPON(5020,"없는 쿠폰입니다." ),
     ALREADY_USED_COUPON(5021,"이미 사용된 쿠폰입니다." ),
     INVALID_EASY_PWD(5022,"간편비밀번호가 틀렸습니다." ),
+    NOT_VISIBLE_PRODUCT(5023,"공개처리된 상품이 아닙니다." ),
 
 
 
