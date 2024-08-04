@@ -93,5 +93,11 @@ public class OrderController {
         return ResponseEntity.ok(orderService.checkStock(orderId) ? "true" : "false");
     }
 
+    // 해당 회사의 주문들중 승인안된 주문 건수 조회
+    @GetMapping("/company/{companyId}/unapproved-count")
+    public ResponseEntity<Long> getUnapprovedOrderCount(@PathVariable Long companyId) {
+        return ResponseEntity.ok(orderService.getUnapprovedOrderCount(companyId));
+    }
+
 
 }

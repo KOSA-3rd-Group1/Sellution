@@ -368,4 +368,9 @@ public class OrderServiceImpl implements OrderService {
 
         return true;
     }
+
+    @Override
+    public Long getUnapprovedOrderCount(Long companyId) {
+        return orderRepository.countByCompanyIdAndStatus(companyId, OrderStatus.HOLD);
+    }
 }
