@@ -16,11 +16,12 @@ public class SchedulerTestController {
 
     @PostMapping("scheduler")
     public void testScheduler() {
-        schedulerService.regularProcess();
+        schedulerService.regularProcessAt19();
+        schedulerService.regularProcessAt0();
     }
 
     @GetMapping("/running")
     public String applicationIsRunning() {
-        return "Success Application Running";
+        return "Success Application Running 네번째 테스트";
     }
 }

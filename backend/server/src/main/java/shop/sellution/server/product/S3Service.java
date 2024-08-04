@@ -33,6 +33,9 @@ public class S3Service {
     private final AmazonS3 amazonS3;
     private final CompanyRepository companyRepository;
 
+    @Value("${cloud.front.domain.name}")
+    private String CLOUD_FRONT_DOMAIN_NAME;
+
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
@@ -71,7 +74,8 @@ public class S3Service {
 
         try (InputStream inputStream = resizedFile.getInputStream()) {
             amazonS3.putObject(new PutObjectRequest(bucket, filePath, inputStream, metadata));
-            String url = amazonS3.getUrl(bucket, filePath).toString();
+//            String url = amazonS3.getUrl(bucket, filePath).toString();
+            String url = CLOUD_FRONT_DOMAIN_NAME + "/" + filePath;
             System.out.println("Uploaded file URL: " + url);
             return url;
         } catch (AmazonServiceException e) {
@@ -171,7 +175,9 @@ public class S3Service {
 
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(qrCode)) {
             amazonS3.putObject(new PutObjectRequest(bucket, filePath, inputStream, metadata));
-            return amazonS3.getUrl(bucket, filePath).toString();
+//            return amazonS3.getUrl(bucket, filePath).toString();
+            return CLOUD_FRONT_DOMAIN_NAME + "/" + filePath;
+
         } catch (AmazonServiceException e) {
             throw e;
         }

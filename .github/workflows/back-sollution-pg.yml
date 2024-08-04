@@ -1,0 +1,91 @@
+name: back-soulltion-pg-cicd
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [ main ]
+  #   paths:
+  #     - 'backendPG/pgserver/**'
+  pull_request:
+    types: [closed]
+    branches: [ main ]
+    paths:
+      - 'backendPG/pgserver/**'
+
+env:
+  S3_BUCKET_NAME: ${{ secrets.S3_SOLLUTION_CICD_BUCKET_NAME }}
+  PROJECT_NAME: sollution-pg-server
+  WORKING_DIRECTORY: ./backendPG/pgserver
+
+jobs:
+  build:
+    # if: (github.event_name == 'pull_request' && github.event.pull_request.merged == true) || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Create application.yml
+        run: |
+          echo "${{ secrets.SELLUTION_PG_SERVER_PROD_YML }}" > ./backendPG/pgserver/src/main/resources/application.yml
+        shell: bash
+
+      - name: Create test application.yml
+        run: |
+          mkdir -p ${{ env.WORKING_DIRECTORY }}/src/test/resources
+          echo "${{ secrets.SELLUTION_PG_SERVER_PROD_TEST_YMLL }}" > ./backendPG/pgserver/src/test/resources/application.yml
+        shell: bash
+        
+      - name: List directory contents
+        run: ls -la
+        working-directory: ./backendPG/pgserver
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+        working-directory: ./backendPG/pgserver
+
+      - name: Build with Gradle
+        run: ./gradlew build
+        working-directory: ./backendPG/pgserver
+
+      - name: Generate REST Docs for Server
+        run: ./gradlew asciidoctor
+
+      - name: Make zip file
+        run: zip -r ./$GITHUB_SHA.zip .
+        working-directory: ./backendPG/pgserver
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload to S3
+        run: aws s3 cp ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
+        working-directory: ./backendPG/pgserver
+
+      - name: Code Deploy
+        run: |
+          aws deploy create-deployment \
+            --application-name t1-pg-code-deploy \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name t1-pg-code-deploy-group \
+            --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
+            
+      - name: Notify Deployment Status
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+          author_name: GitHub Actions
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}

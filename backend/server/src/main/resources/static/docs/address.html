@@ -463,13 +463,14 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 435
+Content-Length: 483
 
 [ {
   "addressId" : 1,
   "addressName" : "집",
   "isDefaultAddress" : "Y",
   "name" : "홍길동",
+  "zipcode" : "12345",
   "phoneNumber" : "01012345678",
   "streetAddress" : "서울시 강남구",
   "addressDetail" : "123-456"
@@ -478,6 +479,7 @@ Content-Length: 435
   "addressName" : "회사",
   "isDefaultAddress" : "N",
   "name" : "홍길동",
+  "zipcode" : "67890",
   "phoneNumber" : "01087654321",
   "streetAddress" : "서울시 서초구",
   "addressDetail" : "789-012"
@@ -530,6 +532,11 @@ Content-Length: 435
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].phoneNumber</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">전화번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].zipcode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">우편번호</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].streetAddress</code></p></td>
@@ -671,7 +678,11 @@ Host: localhost:8080
 <h4 id="_http_response_3">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created</code></pre>
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 1
+
+1</code></pre>
 </div>
 </div>
 </div>
@@ -859,7 +870,7 @@ Host: localhost:8080</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-07-16 12:58:50 +0900
+Last updated 2024-08-02 14:33:00 +0900
 </div>
 </div>
 </body>

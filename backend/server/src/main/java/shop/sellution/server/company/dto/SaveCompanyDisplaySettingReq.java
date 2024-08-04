@@ -40,22 +40,5 @@ public class SaveCompanyDisplaySettingReq {
         return company;
     }
 
-//    public CompanyImage toLogoImageEntity(Company company) {
-//            return CompanyImage.builder()
-//                .company(company)
-//                .imageUrl(this.logoImageUrl)
-//                .purposeOfUse(ImagePurposeType.LOGO)
-//                .build();
-//    }
-//
-//    public List<CompanyImage> toPromotionImageEntities(Company company) {
-//        return this.promotionImageUrls.stream()
-//                .map(imageUrl -> CompanyImage.builder()
-//                        .company(company)
-//                        .imageUrl(imageUrl)
-//                        .purposeOfUse(ImagePurposeType.PROMOTION)
-//                        .build())
-//                .collect(Collectors.toList());
-//    }
 
 }

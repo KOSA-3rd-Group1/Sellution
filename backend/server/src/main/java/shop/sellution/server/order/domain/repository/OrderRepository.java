@@ -9,6 +9,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import shop.sellution.server.order.domain.Order;
+import shop.sellution.server.order.domain.type.OrderStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -78,4 +79,10 @@ public interface OrderRepository extends
             """)
     int updateHoldOrderStatusToCancel(@Param("date") LocalDate date);
 
+    @Query("""
+            select count(o) from Order o
+            where o.company.companyId = :companyId
+            and o.status = :orderStatus
+            """)
+    Long countByCompanyIdAndStatus(Long companyId, OrderStatus orderStatus);
 }

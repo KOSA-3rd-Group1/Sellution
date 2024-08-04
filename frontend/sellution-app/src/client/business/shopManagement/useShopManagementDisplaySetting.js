@@ -52,7 +52,8 @@ export const useShopManagementDisplaySetting = ({
   const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
     try {
       // S3 버킷 URL을 프록시 URL로 변경
-      const proxyUrl = `/s3-bucket${imageUrl}`;
+      // const proxyUrl = `/s3-bucket${imageUrl}`;
+      const proxyUrl = `${imageUrl}`;
       const response = await fetch(proxyUrl);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

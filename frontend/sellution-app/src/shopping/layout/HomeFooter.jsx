@@ -9,8 +9,9 @@ import {
 import useAuthStore from '@/shopping/store/stores/useAuthStore';
 import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
-import useSubscriptionCartStore from './../store/stores/useSubscriptionCartStore';
-import useOnetimeCartStore from './../store/stores/useOnetimeCartStore';
+import useCartStore from '../store/stores/useCartStore';
+//import useSubscriptionCartStore from './../store/stores/useSubscriptionCartStore';
+//import useOnetimeCartStore from './../store/stores/useOnetimeCartStore';
 
 const HomeFooter = () => {
   const location = useLocation();
@@ -19,8 +20,10 @@ const HomeFooter = () => {
   console.log(accessToken);
   const clientName = useCompanyInfoStore((state) => state.name);
   const customerId = useUserInfoStore((state) => state.id);
-  const subscriptionCartCount = useSubscriptionCartStore((state) => state.subscriptionCart.length);
-  const onetimeCartCount = useOnetimeCartStore((state) => state.onetimeCart.length);
+  //const subscriptionCartCount = useSubscriptionCartStore((state) => state.subscriptionCart.length);
+  //const onetimeCartCount = useOnetimeCartStore((state) => state.onetimeCart.length);
+  const subscriptionCartCount = useCartStore((state) => state.subscriptionCart.length);
+  const onetimeCartCount = useCartStore((state) => state.onetimeCart.length);
   const totalCount = subscriptionCartCount + onetimeCartCount;
   return (
     <nav className='fixed bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-lg h-16 bg-white flex shadow-footer p-1.5'>

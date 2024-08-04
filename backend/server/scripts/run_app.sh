@@ -25,10 +25,7 @@ fi
 
 # Java 애플리케이션 실행 (prod 프로파일 사용)
 echo "새로운 애플리케이션을 시작합니다."
-nohup java -jar \
-    -Dserver.port=8081 \
-    -Dspring.profiles.active=prod \
-    /var/shop/sellution/cicd_template/build/libs/server-0.0.1-SNAPSHOT.jar > "$LOG_FILE" 2>&1 &
+nohup java -jar -Dserver.port=${CURRENT_PORT} /var/shop/sellution/cicd_template/build/libs/server-0.0.1-SNAPSHOT.jar > ${LOG_FILE} 2>&1 &
 
 echo "애플리케이션이 prod 프로파일로 시작되었습니다. 로그 파일: $LOG_FILE"
 

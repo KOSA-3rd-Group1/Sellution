@@ -18,6 +18,7 @@ import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.order.domain.Order;
+import shop.sellution.server.order.domain.OrderedProduct;
 import shop.sellution.server.order.domain.repository.OrderRepository;
 import shop.sellution.server.order.domain.repository.OrderedProductRepository;
 import shop.sellution.server.order.domain.type.DeliveryStatus;
@@ -29,6 +30,7 @@ import shop.sellution.server.payment.application.PaymentCancelService;
 import shop.sellution.server.payment.application.PaymentService;
 import shop.sellution.server.payment.domain.PaymentHistory;
 import shop.sellution.server.payment.domain.repository.PaymentHistoryRepository;
+import shop.sellution.server.product.domain.Product;
 import shop.sellution.server.product.domain.ProductImageRepository;
 
 import java.util.ArrayList;
@@ -78,21 +80,29 @@ class OrderServiceImplTest {
         Long customerId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
 
-        Customer mockCustomer = mock(Customer.class);
-        lenient().when(mockCustomer.getId()).thenReturn(customerId);
-        lenient().when(mockCustomer.getName()).thenReturn("Test Customer");
-        lenient().when(mockCustomer.getPhoneNumber()).thenReturn("010-1234-5678");
+        Customer mockCustomer = Customer.builder()
+                .id(customerId)
+                .name("Test Customer")
+                .phoneNumber("010-1234-5678")
+                .build();
 
-        Address mockAddress = mock(Address.class);
-        lenient().when(mockAddress.getId()).thenReturn(1L);
-        lenient().when(mockAddress.getAddress()).thenReturn("Test Address");
+        Address mockAddress = Address.builder()
+                .address("Test Address")
+                .build();
+        ReflectionTestUtils.setField(mockAddress, "id", 1L);
 
-        Order mockOrder = mock(Order.class);
-        lenient().when(mockOrder.getId()).thenReturn(1L);
-        lenient().when(mockOrder.getCustomer()).thenReturn(mockCustomer);
-        lenient().when(mockOrder.getAddress()).thenReturn(mockAddress);
-        lenient().when(mockOrder.getOrderedProducts()).thenReturn(new ArrayList<>());
-        lenient().when(mockOrder.getSelectedDays()).thenReturn(new ArrayList<>());
+        Account mockAccount = Account.builder()
+                .build();
+        ReflectionTestUtils.setField(mockAccount, "id", 1L);
+
+        Order mockOrder = Order.builder()
+                .id(1L)
+                .customer(mockCustomer)
+                .address(mockAddress)
+                .account(mockAccount)
+                .orderedProducts(new ArrayList<>())
+                .selectedDays(new ArrayList<>())
+                .build();
 
         List<Order> orderList = List.of(mockOrder);
         Page<Order> orderPage = new PageImpl<>(orderList, pageable, orderList.size());
@@ -111,6 +121,7 @@ class OrderServiceImplTest {
         assertThat(orderRes.getCustomer()).isNotNull();
         assertThat(orderRes.getCustomer().getId()).isEqualTo(customerId);
         assertThat(orderRes.getAddress()).isNotNull();
+        assertThat(orderRes.getAccountId()).isEqualTo(1L);
         verify(orderRepository).findAllOrderByCustomerId(customerId, pageable);
         verify(orderedProductRepository).findAllByOrderIdIn(any());
         verify(productImageRepository).findAllByProductIdIn(any());
@@ -135,12 +146,15 @@ class OrderServiceImplTest {
                 .build();
         ReflectionTestUtils.setField(address, "id", 1L);
 
+        Account account = Account.builder().build(); // Account 객체 생성
+        ReflectionTestUtils.setField(account, "id", 1L); // Account ID 설정
 
         List<Order> orders = List.of(
                 Order.builder()
                         .id(1L)
                         .customer(customer)
                         .address(address)
+                        .account(account) // Account 설정
                         .orderedProducts(new ArrayList<>())
                         .selectedDays(new ArrayList<>())
                         .build(),
@@ -148,6 +162,7 @@ class OrderServiceImplTest {
                         .id(2L)
                         .customer(customer)
                         .address(address)
+                        .account(account) // Account 설정
                         .orderedProducts(new ArrayList<>())
                         .selectedDays(new ArrayList<>())
                         .build()
@@ -155,6 +170,8 @@ class OrderServiceImplTest {
         Page<Order> orderPage = new PageImpl<>(orders, pageable, orders.size());
 
         when(orderRepository.findOrderByCompanyIdAndCondition(companyId, condition, pageable)).thenReturn(orderPage);
+        when(orderedProductRepository.findAllByOrderIdIn(anyList())).thenReturn(new ArrayList<>());
+        when(productImageRepository.findAllByProductIdIn(anyList())).thenReturn(new ArrayList<>());
 
         // when
         Page<FindOrderRes> result = orderService.findAllOrderByCompanyId(companyId, condition, pageable);
@@ -167,8 +184,11 @@ class OrderServiceImplTest {
         assertThat(result.getContent().get(0).getCustomer().getId()).isEqualTo(1L);
         assertThat(result.getContent().get(0).getAddress()).isNotNull();
         assertThat(result.getContent().get(0).getAddress().getAddress()).isEqualTo("Test Address");
+        assertThat(result.getContent().get(0).getAccountId()).isEqualTo(1L); // Account ID 확인
 
         verify(orderRepository).findOrderByCompanyIdAndCondition(companyId, condition, pageable);
+        verify(orderedProductRepository).findAllByOrderIdIn(anyList());
+        verify(productImageRepository).findAllByProductIdIn(anyList());
     }
 
     @DisplayName("주문을 승인한다")
@@ -270,10 +290,13 @@ class OrderServiceImplTest {
         Long orderId = 1L;
         Address address = Address.builder().address("Test Address").build();
         ReflectionTestUtils.setField(address, "id", 1L);
+        Account account = Account.builder().build(); // 계정 객체 생성
+        ReflectionTestUtils.setField(account, "id", 1L); // 계정 ID 설정
         Order order = Order.builder()
                 .id(orderId)
                 .customer(Customer.builder().id(1L).name("Test Customer").phoneNumber("010-1234-5678").build())
                 .address(address)
+                .account(account) // 계정 설정
                 .orderedProducts(new ArrayList<>())
                 .selectedDays(new ArrayList<>())
                 .build();
@@ -289,8 +312,73 @@ class OrderServiceImplTest {
         assertThat(result).isNotNull();
         assertThat(result.getCustomer().getId()).isEqualTo(1L);
         assertThat(result.getAddress().getId()).isEqualTo(1L);
+        assertThat(result.getAccountId()).isEqualTo(1L); // 계정 ID 확인
         verify(orderRepository).findById(orderId);
         verify(orderedProductRepository).findAllByOrderIdIn(List.of(orderId));
         verify(productImageRepository).findAllByProductIdIn(any());
+    }
+
+    @Test
+    @DisplayName("주문한 상품의 재고가 충분한 경우 true를 반환한다")
+    void checkStock_SufficientStock_ReturnsTrue() {
+        // Given
+        Long orderId = 1L;
+        Order mockOrder = mock(Order.class);
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(mockOrder));
+
+        OrderedProduct orderedProduct1 = mock(OrderedProduct.class);
+        OrderedProduct orderedProduct2 = mock(OrderedProduct.class);
+        List<OrderedProduct> orderedProducts = List.of(orderedProduct1, orderedProduct2);
+
+        Product product1 = mock(Product.class);
+        Product product2 = mock(Product.class);
+
+        when(orderedProductRepository.findAllByOrderIdIn(List.of(orderId))).thenReturn(orderedProducts);
+        when(orderedProduct1.getProduct()).thenReturn(product1);
+        when(orderedProduct2.getProduct()).thenReturn(product2);
+        when(orderedProduct1.getCount()).thenReturn(5);
+        when(orderedProduct2.getCount()).thenReturn(3);
+        when(product1.getStock()).thenReturn(10);
+        when(product2.getStock()).thenReturn(5);
+
+        // When
+        boolean result = orderService.checkStock(orderId);
+
+        // Then
+        assertThat(result).isTrue();
+        verify(orderRepository).findById(orderId);
+        verify(orderedProductRepository).findAllByOrderIdIn(List.of(orderId));
+    }
+
+    @Test
+    @DisplayName("주문한 상품 중 하나라도 재고가 부족한 경우 false를 반환한다")
+    void checkStock_InsufficientStock_ReturnsFalse() {
+        // Given
+        Long orderId = 1L;
+        Order mockOrder = mock(Order.class);
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(mockOrder));
+
+        OrderedProduct orderedProduct1 = mock(OrderedProduct.class);
+        OrderedProduct orderedProduct2 = mock(OrderedProduct.class);
+        List<OrderedProduct> orderedProducts = List.of(orderedProduct1, orderedProduct2);
+
+        Product product1 = mock(Product.class);
+        Product product2 = mock(Product.class);
+
+        when(orderedProductRepository.findAllByOrderIdIn(List.of(orderId))).thenReturn(orderedProducts);
+        when(orderedProduct1.getProduct()).thenReturn(product1);
+        when(orderedProduct2.getProduct()).thenReturn(product2);
+        when(orderedProduct1.getCount()).thenReturn(5);
+        when(orderedProduct2.getCount()).thenReturn(6);  // 재고 부족
+        when(product1.getStock()).thenReturn(10);
+        when(product2.getStock()).thenReturn(5);  // 재고 부족
+
+        // When
+        boolean result = orderService.checkStock(orderId);
+
+        // Then
+        assertThat(result).isFalse();
+        verify(orderRepository).findById(orderId);
+        verify(orderedProductRepository).findAllByOrderIdIn(List.of(orderId));
     }
 }

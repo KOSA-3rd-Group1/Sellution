@@ -438,36 +438,34 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Product(상품)</h1>
-<div class="details">
-<span id="revnumber">version 0.0.1-SNAPSHOT</span>
-</div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_상품_목록_조회">상품 목록 조회</h2>
+<h2 id="_product상품">Product(상품)</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_상품_목록_조회">상품 목록 조회</h3>
 <div class="paragraph">
 <p>/products</p>
 </div>
-<div class="sect2">
-<h3 id="_http_request">HTTP Request</h3>
+<div class="sect3">
+<h4 id="_http_request">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /products?page=0&amp;size=10 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /products?companyId=1&amp;page=0&amp;size=10&amp;deliveryType=%EC%A0%84%EC%B2%B4&amp;isDiscount=%EC%A0%84%EC%B2%B4&amp;categoryName=%EC%A0%84%EC%B2%B4&amp;isVisible=%EC%A0%84%EC%B2%B4&amp;productName= HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_http_response">HTTP Response</h3>
+<div class="sect3">
+<h4 id="_http_response">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -501,7 +499,6 @@ Content-Length: 843
     "sorted" : false,
     "unsorted" : true
   },
-  "numberOfElements" : 1,
   "first" : true,
   "last" : true,
   "pageable" : {
@@ -513,11 +510,13 @@ Content-Length: 843
       "unsorted" : true
     },
     "offset" : 0,
-    "paged" : true,
-    "unpaged" : false
+    "unpaged" : false,
+    "paged" : true
   },
+  "numberOfElements" : 1,
   "empty" : false
 }</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -632,6 +631,11 @@ Content-Length: 843
 <td class="tableblock halign-left valign-top"><p class="tableblock">정렬되지 않았는지 여부</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageable.offset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오프셋</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageable.pageNumber</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
@@ -640,11 +644,6 @@ Content-Length: 843
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageable.pageSize</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 크기</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageable.offset</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">오프셋</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageable.paged</code></p></td>
@@ -720,45 +719,61 @@ Content-Length: 843
 </table>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_상품_상세_조회">상품 상세 조회</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_상품_상세_조회">상품 상세 조회</h3>
 <div class="paragraph">
 <p>/products/{productId}</p>
 </div>
-<div class="sect2">
-<h3 id="_http_request_2">HTTP Request</h3>
+<div class="sect3">
+<h4 id="_http_request_2">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /products/1 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /products/1?companyId=1 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_http_response_2">HTTP Response</h3>
+<div class="sect3">
+<h4 id="_http_response_2">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 419
+Content-Length: 549
 
-{"code":1,"name":"Product Name","categoryName":"Category","productInformation":"Product Information","detailImages":["detail1.jpg","detail2.jpg"],"cost":10000,"isDiscount":"N","discountStartDate":null,"discountEndDate":null,"discountRate":0,"discountedPrice":10000,"thumbnailImage":"thumbnail.jpg","listImages":["list1.jpg","list2.jpg"],"isVisible":"Y","deliveryType":"SUBSCRIPTION","stock":100,"previousMonthSales":10}</code></pre>
+{
+  "productId" : 0,
+  "code" : 1,
+  "name" : "Product Name",
+  "categoryName" : "Category",
+  "productInformation" : "Product Information",
+  "detailImages" : [ "detail1.jpg", "detail2.jpg" ],
+  "cost" : 10000,
+  "isDiscount" : "N",
+  "discountStartDate" : null,
+  "discountEndDate" : null,
+  "discountRate" : 0,
+  "discountedPrice" : 10000,
+  "thumbnailImage" : "thumbnail.jpg",
+  "listImages" : [ "list1.jpg", "list2.jpg" ],
+  "isVisible" : "Y",
+  "deliveryType" : "SUBSCRIPTION",
+  "stock" : 100,
+  "previousMonthSales" : 10
+}</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_response_fields_2">Response Fields</h4>
+<div class="sect4">
+<h5 id="_response_fields_2">Response Fields</h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -773,6 +788,11 @@ Content-Length: 419
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 ID</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
@@ -863,15 +883,13 @@ Content-Length: 419
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_상품_생성">상품 생성</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_상품_생성">상품 생성</h3>
 <div class="paragraph">
 <p>/products</p>
 </div>
-<div class="sect2">
-<h3 id="_http_request_3">HTTP Request</h3>
+<div class="sect3">
+<h4 id="_http_request_3">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /products HTTP/1.1
@@ -912,8 +930,8 @@ image content
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_http_response_3">HTTP Response</h3>
+<div class="sect3">
+<h4 id="_http_response_3">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 204 No Content
@@ -928,111 +946,15 @@ Expires: 0
 X-Frame-Options: DENY</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_request_fields">Request Fields</h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">상품 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>categoryName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">카테고리 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productInformation</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">상품 정보</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cost</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">가격</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isDiscount</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">할인 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>discountStartDate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">할인 시작일</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>discountEndDate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">할인 종료일</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>discountRate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">할인율</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>thumbnailImage</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">썸네일 이미지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>listImages</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리스트 이미지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>detailImages</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">상세 이미지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isVisible</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">노출 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deliveryType</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">배송 타입</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stock</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">재고</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_상품_수정">상품 수정</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_상품_수정">상품 수정</h3>
 <div class="paragraph">
 <p>/products/{productId}</p>
 </div>
-<div class="sect2">
-<h3 id="_http_request_4">HTTP Request</h3>
+<div class="sect3">
+<h4 id="_http_request_4">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /products/1 HTTP/1.1
@@ -1073,8 +995,8 @@ image content
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_http_response_4">HTTP Response</h3>
+<div class="sect3">
+<h4 id="_http_response_4">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 204 No Content
@@ -1089,111 +1011,15 @@ Expires: 0
 X-Frame-Options: DENY</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_request_fields_2">Request Fields</h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">상품 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>categoryName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">카테고리 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>productInformation</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">상품 정보</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cost</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">가격</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isDiscount</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">할인 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>discountStartDate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">할인 시작일</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>discountEndDate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">할인 종료일</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>discountRate</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">할인율</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>thumbnailImage</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">썸네일 이미지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>listImages</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리스트 이미지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>detailImages</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">상세 이미지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isVisible</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">노출 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deliveryType</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">배송 타입</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>stock</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">재고</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_상품_삭제">상품 삭제</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_상품_삭제">상품 삭제</h3>
 <div class="paragraph">
 <p>/products/{productId}</p>
 </div>
-<div class="sect2">
-<h3 id="_http_request_5">HTTP Request</h3>
+<div class="sect3">
+<h4 id="_http_request_5">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">DELETE /products/1 HTTP/1.1
@@ -1201,12 +1027,12 @@ Content-Type: application/x-www-form-urlencoded
 Host: localhost:8080
 Content-Length: 102
 
-_csrf=eiKRxrglo6l1rmU4HKLiaX3iXOVL-HTaDYjqYcN9viI7rt-bGxGk9ogXk8hYyAALLo_WDR7acYR6zkb3Or7SWadIiUcLnLyr</code></pre>
+_csrf=jiy-3fY3o0Z_02GVtETI8mfUn8BU4wYKw5oU7KbQqPClvXo9uU2OuJRRxyBS5gD20Gn8kFLksqJshjQn9P4k25bkmZad2Btf</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_http_response_5">HTTP Response</h3>
+<div class="sect3">
+<h4 id="_http_response_5">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 204 No Content
@@ -1219,6 +1045,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -1228,7 +1055,7 @@ X-Frame-Options: DENY</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-07-16 12:58:50 +0900
+Last updated 2024-08-03 19:18:31 +0900
 </div>
 </div>
 </body>
