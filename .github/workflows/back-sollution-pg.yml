@@ -44,22 +44,22 @@ jobs:
         
       - name: List directory contents
         run: ls -la
-        working-directory: ./backendPG/pgserver
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
-        working-directory: ./backendPG/pgserver
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Build with Gradle
-        run: ./gradlew build
-        working-directory: ./backendPG/pgserver
+        run: ./gradlew build --info
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Generate REST Docs for Server
         run: ./gradlew asciidoctor
 
       - name: Make zip file
         run: zip -r ./$GITHUB_SHA.zip .
-        working-directory: ./backendPG/pgserver
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -70,7 +70,7 @@ jobs:
 
       - name: Upload to S3
         run: aws s3 cp ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
-        working-directory: ./backendPG/pgserver
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Code Deploy
         run: |
