@@ -45,7 +45,7 @@ const TablePaymentHistory = ({
                     {header.type === 'filter' && (
                       <div className='w-full px-1'>
                         <select
-                          value={tableState[header.key]}
+                          value={tableState[header.key] || 'All'}
                           onChange={(e) => handleTableStateChange(header.key, e.target.value)}
                           className='w-full p-1 text-sm border rounded-lg pl-2 text-gray-600'
                         >
@@ -77,10 +77,11 @@ const TablePaymentHistory = ({
             {data.length > 0 ? (
               data.map((row) => (
                 <tr
-                  key={row.id}
-                  className={`relative w-full ${ROW_HEIGHT} border-b border-b-[#F1F1F4] group`}
+                  key={row.no}
+                  className={`relative w-full ${ROW_HEIGHT} border-b border-b-[#F1F1F4] group focus:outline-none focus-within:outline-none`}
+                  tabIndex={0}
                 >
-                  <td className='sticky min-w-20 w-20 max-w-20 p-3 z-10 left-[0px] bg-white group-hover:bg-brandOrange-light'>
+                  <td className='sticky min-w-20 w-20 max-w-20 p-3 z-10 left-[0px] bg-white group-hover:bg-[#FFF8F4] group-focus-within:bg-brandOrange-light group-focus:bg-brandOrange-light'>
                     <div className='flex flex-col w-full justify-between items-center gap-3'>
                       {row.no}
                     </div>
@@ -88,14 +89,14 @@ const TablePaymentHistory = ({
                   {HEADERS.map((header) => (
                     <td
                       key={row.id + '_' + header.key}
-                      className={`${header.width} p-3 z-10 group-hover:bg-brandOrange-light`}
+                      className={`${header.width} p-3 z-10 group-hover:bg-[#FFF8F4] group-focus-within:bg-brandOrange-light group-focus:bg-brandOrange-light`}
                     >
                       <div className='flex flex-col w-full justify-between items-center gap-3 px-2'>
                         <div className='text-center w-full truncate'>{row[header.key]}</div>
                       </div>
                     </td>
                   ))}
-                  <td className='w-full group-hover:bg-brandOrange-light'></td>
+                  <td className='w-full group-hover:bg-[#FFF8F4] group-focus-within:bg-brandOrange-light group-focus:bg-brandOrange-light'></td>
                 </tr>
               ))
             ) : (

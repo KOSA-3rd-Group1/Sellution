@@ -28,7 +28,7 @@ const NavbarComponent = (props) => {
             </Link>
           </div>
           <div className='flex items-center gap-4 text-white'>
-            <div className='flex items-center gap-2 flex-shrink-0'>
+            {/* <div className='flex items-center gap-2 flex-shrink-0'>
               <div className='w-3 row-center-position'>
                 <ClockIcon />
               </div>
@@ -36,10 +36,10 @@ const NavbarComponent = (props) => {
               <div className='w-4 row-center-position'>
                 <PlusCircleIcon />
               </div>
-            </div>
-            <button className='w-9 h-9 p-2 bg-gray-500 hover:bg-gray-400 focus:ring-2 focus:ring-gray-200 rounded-lg'>
+            </div> */}
+            {/* <button className='w-9 h-9 p-2 bg-gray-500 hover:bg-gray-400 focus:ring-2 focus:ring-gray-200 rounded-lg'>
               <NotificationIcon />
-            </button>
+            </button> */}
             <div className='relative w-[150px] h-9 mr-3 lg:mr-1' ref={dropdownRef}>
               <button
                 onClick={toggleDropdown}

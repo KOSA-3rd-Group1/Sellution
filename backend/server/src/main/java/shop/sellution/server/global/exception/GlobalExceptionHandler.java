@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -87,6 +88,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return ResponseEntity.badRequest()
                 .body(new ExceptionResponse(e.getCode(), e.getMessage()));
+//        log.warn(e.getMessage(), e);
+//
+//        HttpStatus status;
+//        if (e.getCode() == ExceptionCode.EXPIRED_JWT_TOKEN.getCode() ||
+//                e.getCode() == ExceptionCode.EXPIRED_PERIOD_ACCESS_TOKEN.getCode()) {
+//            status = HttpStatus.UNAUTHORIZED; // 401
+//        } else {
+//            status = HttpStatus.FORBIDDEN; // 403
+//        }
+//
+//        return ResponseEntity
+//                .status(status)
+//                .body(new ExceptionResponse(e.getCode(), e.getMessage()));
     }
 
     @ExceptionHandler(BadRequestException.class)

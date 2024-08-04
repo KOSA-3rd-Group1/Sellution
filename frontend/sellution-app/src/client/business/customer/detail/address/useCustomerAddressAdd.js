@@ -22,6 +22,8 @@ export const useCustomerAddressAdd = ({
   const [isChange, setIsChange] = useState(false);
   const [confirmType, setConfirmType] = useState('moveList');
 
+  const [isLoading, setIsLoading] = useState(false);
+
   // 변경 가능한 값 변경 handler
   const handleChangeInputValue = (key, value) => {
     if (key === 'phoneNumber' && !validateInputPhoneNumber(value)) {
@@ -126,6 +128,7 @@ export const useCustomerAddressAdd = ({
 
   return {
     data,
+    isLoading,
     handleChangeInputValue,
     checkMoveList,
     checkSaveContent,

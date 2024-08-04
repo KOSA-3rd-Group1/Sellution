@@ -74,3 +74,27 @@ export const convertAndSortDays = (selectedDayList) => {
 
   return sortedAndTranslatedDays.join(', ');
 };
+
+// 배송 상태 변환 함수
+export const formatDeliveryStatus = (type) => {
+  const types = {
+    BEFORE_DELIVERY: '배송전',
+    IN_PROGRESS: '배송중',
+    COMPLETE: '배송완료',
+  };
+  return types[type] || type;
+};
+
+// queryParams 변화
+export const transformDeliveryStatus = (type) => {
+  switch (type) {
+    case '배송전':
+      return 'BEFORE_DELIVERY';
+    case '배송중':
+      return 'IN_PROGRESS';
+    case '배송완료':
+      return 'COMPLETE';
+    default:
+      return 'All';
+  }
+};

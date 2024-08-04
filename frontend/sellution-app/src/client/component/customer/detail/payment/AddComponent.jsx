@@ -4,6 +4,7 @@ import BankSelector from '@/client/layout/common/BankSelector';
 import RadioButtonGroup from '@/client/layout/common/RadioButtonGroup';
 import AlertModal from '@/client/layout/common/modal/AlertModal';
 import AutoCloseModal from '@/client/layout/common/modal/AutoCloseModal';
+import LoadingModal from '@/client/layout/common/modal/LodingModal';
 import { useMove } from '@/client/business/common/useMove';
 import { useModal } from '@/client/business/common/useModal';
 import { useCustomerPaymentAdd } from '@/client/business/customer/detail/payment/useCustomerPaymentAdd';
@@ -20,6 +21,7 @@ const AddComponent = () => {
   } = useModal();
   const {
     data,
+    isLoading,
     handleChangeInputValue,
     checkMoveList,
     checkSaveContent,
@@ -105,6 +107,8 @@ const AddComponent = () => {
         message={autoCloseModalState.message}
         duration={1500}
       />
+
+      <LoadingModal isOpen={isLoading} message={'결제수단 등록중...'} />
     </div>
   );
 };
