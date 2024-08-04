@@ -3,7 +3,10 @@ import TableOrder from '@/client/layout/common/table/TableOrder';
 import Pagination from '@/client/layout/common/Pagination';
 import DateRange from '@/client/layout/common/DateRange';
 import ToggleButton from '@/client/layout/common/ToggleButton';
+import AlertModal from '@/client/layout/common/modal/AlertModal';
+import LoadingModal from '@/client/layout/common/modal/LodingModal';
 import { useMove } from '@/client/business/common/useMove';
+import { useModal } from '@/client/business/common/useModal';
 import { useOrderList } from '@/client/business/order/useOrderList';
 import {
   SimpleOrderIcon,
@@ -22,20 +25,31 @@ const ListComponent = () => {
     moveToPagination,
     updateQueryParameter,
   } = useMove();
+  const { alertModalState, openAlertModal, closeAlertModal } = useModal();
   const {
     data,
+    // holdCount,
     totalPages,
     totalDataCount,
     tableState,
     dateRangeValue,
     isAutoApproved,
+    isLoading,
     setTableState,
     handleChangeDateRangeValue,
     handleFilterReset,
     handleToggleAutoOrderApproved,
-    handleApproveAllSimpleOrderBtn,
-    handleApproveCancleAll,
-  } = useOrderList({ queryParams, page, size, refresh, updateQueryParameter });
+    checkAppoveOrder,
+    checkCancleOrder,
+    handleOnConfirm,
+  } = useOrderList({
+    queryParams,
+    page,
+    size,
+    refresh,
+    updateQueryParameter,
+    openAlertModal,
+  });
 
   return (
     <div className='relative w-full h-full justify-between'>
@@ -61,17 +75,13 @@ const ListComponent = () => {
             handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
-                <CountOrderBtn label={'주문승인대기'} count={12} />
+                {/* <CountOrderBtn label={'주문승인대기'} count={holdCount} /> */}
                 <EventBtn
                   Icon={OrderApproveAllIcon}
                   label={'간편주문승인'}
-                  onClick={handleApproveAllSimpleOrderBtn}
+                  onClick={checkAppoveOrder}
                 />
-                <EventBtn
-                  Icon={OrderCancelAllIcon}
-                  label={'주문취소'}
-                  onClick={handleApproveCancleAll}
-                />
+                <EventBtn Icon={OrderCancelAllIcon} label={'주문취소'} onClick={checkCancleOrder} />
               </div>
             }
             ResetBtn={<ResetBtn label={'초기화'} onClick={() => handleFilterReset('orderlist')} />}
@@ -85,6 +95,17 @@ const ListComponent = () => {
             moveToPagination={moveToPagination}
           />
         </div>
+
+        <AlertModal
+          isOpen={alertModalState.isOpen}
+          onClose={closeAlertModal}
+          onConfirm={handleOnConfirm}
+          type={alertModalState.type}
+          title={alertModalState.title}
+          message={alertModalState.message}
+        />
+
+        <LoadingModal isOpen={isLoading} />
       </section>
     </div>
   );

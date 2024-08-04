@@ -9,13 +9,14 @@ import {
   formatOrderStatus,
   convertAndSortDays,
   formatLocalDateTime,
+  formatDeliveryStatus,
 } from '@/client/utility/functions/orderDetailFunction';
 import {
   postApproveOrder,
   postCancleOrder,
 } from '@/client/utility/apis/customer/detail/order/customerOrderListApi';
 
-export const useCustomerOrderList = () => {
+export const useCustomerOrderList = ({ openAlertModal }) => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const { tables, setSelectedRows, setSelectAll, clearTable } = useTableStore();
@@ -29,7 +30,13 @@ export const useCustomerOrderList = () => {
   const [onetimeTotalDataCount, setOnetimeTotalDataCount] = useState(0); // 단건 배송 데이터 총 개수
 
   const [orderInfo, setOrderInfo] = useState({}); // 주문 취소를 위한 주문 데이터
-  console.log(orderInfo);
+
+  const [isDataChange, setIsDataChange] = useState(false);
+  const [confirmType, setConfirmType] = useState('approveOrder');
+  const [orderType, setOrderType] = useState('onetime'); // subscription
+  const [selectedOrderId, setSelectedOrderId] = useState(0);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // 수정 필요
   const formatData = useCallback(
@@ -43,8 +50,9 @@ export const useCustomerOrderList = () => {
           ? `${content.orderedProductList[0].productName} ... 외 ${content.orderedProductList?.length - 1}건`
           : `${content.orderedProductList[0].productName}`,
       totalPrice: formatPrice(content.totalPrice),
-      orderType: formatOrderType(content.type),
       status: formatOrderStatus(content.status),
+      deliveryStatus: formatDeliveryStatus(content.deliveryStatus),
+      orderType: formatOrderType(content.type),
       dayOption: `${content.selectedWeekOption}주 간격 / ${convertAndSortDays(content.selectedDayList)}`,
       subscriptionPeriod:
         content.type === 'MONTH_SUBSCRIPTION'
@@ -87,7 +95,7 @@ export const useCustomerOrderList = () => {
 
       if (!empty) {
         separateData(content);
-        console.log(content);
+
         const newOrderInfo = { onetime: {}, subscription: {} };
         content.forEach((item) => {
           if (item.type === 'ONETIME') {
@@ -112,92 +120,194 @@ export const useCustomerOrderList = () => {
       clearTable('onetime');
       clearTable('subscription');
     };
-  }, []);
-
-  // 간편 주문 승인 이벤트
-  // 간편 주문 승인 일관 승인 시, 선택한 항목 하나씩 서버로 api 요청, 이후 응답받아서 성공하면 해당하는 데이터만 변경
-  //   const handleApproveAllSimpleOrderBtn = (tableId) => {
-  //     console.log(tables[tableId]);
-  //     alert('간편 주문 일괄 승인');
-  //   };
-
-  // 간편 주문 승인 이벤트
-  // 간편 주문 승인 시, 서버로 api 요청, 이후 응답 받아서 성공하면 해당 데이터 변경
-  //   const handleApproveSimpleOrderBtn = (orderId) => {
-  //     console.log('간편주문', orderId);
-
-  //     alert(`간편 주문 승인 ${orderId}`);
-  //   };
-
-  //   const handleSelectedRows = (selectedRows) => {
-  //     console.log(selectedRows);
-  //   };
+  }, [isDataChange]);
 
   // 간편 주문 승인 일괄 처리(수정 필요)
-  const handleApproveAllSimpleOrderBtn = async (tableId) => {
-    if (tables !== undefined && tables[tableId] !== undefined) {
-      //   total
-      console.log('이것이 테이블 아이디다', tableId, tables[tableId]);
-      Object.entries(tables[tableId].selectedRows).forEach(async ([key, value]) => {
+
+  // 간편 주문 승인 일괄 처리 여부 확인
+  const checkAppoveOrderAll = (tableId) => {
+    if (tables !== undefined && tables[tableId] !== undefined && tables[tableId]?.selectedRows) {
+      const hasTrueValue = Object.values(tables[tableId].selectedRows).some(
+        (value) => value === true,
+      );
+      if (hasTrueValue) {
+        setConfirmType('approveOrder');
+        setOrderType(tableId);
+
+        openAlertModal('warning', '주의', '선택한 주문들을 승인하시겠습니까?');
+        return;
+      }
+    }
+  };
+
+  // 간편 주문 승인 처리 여부 확인
+  const checkAppoveOrderOne = (orderId) => {
+    setConfirmType('approveOrderOne');
+    setSelectedOrderId(orderId);
+
+    openAlertModal('warning', '주의', '선택한 주문을 승인하시겠습니까?');
+  };
+
+  // 주문 취소 일괄 처리 여부 확인
+  const checkCancleOrder = (tableId) => {
+    if (tables !== undefined && tables[tableId] !== undefined && tables[tableId]?.selectedRows) {
+      const hasTrueValue = Object.values(tables[tableId].selectedRows).some(
+        (value) => value === true,
+      );
+      if (hasTrueValue) {
+        setConfirmType('cancleOrder');
+        setOrderType(tableId);
+
+        openAlertModal('warning', '주의', '선택한 주문들을 취소하시겠습니까?');
+        return;
+      }
+    }
+    openAlertModal('error', '오류', '선택한 주문이 없습니다.');
+  };
+
+  // 간편 주문 승인 일괄 처리
+  const handleApproveAllSimpleOrder = async () => {
+    setIsLoading(true);
+    const startTime = Date.now();
+
+    let successCnt = 0;
+    let errorCnt = 0;
+
+    const approvePromises = Object.entries(tables[orderType].selectedRows).map(
+      async ([key, value]) => {
         if (value) {
-          await handleApproveSimpleOrder(key);
+          try {
+            await postApproveOrder(key, setAccessToken, accessToken);
+            successCnt += 1;
+          } catch (err) {
+            errorCnt += 1;
+          }
         }
-      });
-      alert('간편 주문 일괄 승인');
-    } else {
-      alert('없음');
+      },
+    );
+
+    await Promise.all([
+      Promise.all(approvePromises),
+      new Promise((resolve) => setTimeout(resolve, 1000)), // 최소 1초 대기
+    ]);
+
+    const endTime = Date.now();
+    const elapsedTime = endTime - startTime;
+
+    if (elapsedTime < 1000) {
+      // 1초 미만으로 걸렸다면, 남은 시간만큼 더 대기
+      await new Promise((resolve) => setTimeout(resolve, 1000 - elapsedTime));
     }
-    // 모달로 처리
+
+    setIsLoading(false);
+    setIsDataChange(!isDataChange);
+
+    openAlertModal('success', '승인 완료', `성공 : ${successCnt}, 실패 : ${errorCnt}`);
   };
 
-  // 간편 주문 승인 개별 처리
-  const handleApproveOneSimpleOrderBtn = async (orderId) => {
-    await handleApproveSimpleOrder(orderId);
-    alert('간편 승인');
-  };
-
-  // 간편 주문 승인
-  const handleApproveSimpleOrder = async (orderId) => {
+  // 간편 주문 승인 처리
+  const handleApproveOneSimpleOrder = async () => {
     try {
-      await postApproveOrder(orderId, setAccessToken, accessToken);
-      //     alert(`간편 주문 승인 ${orderId}`);
+      setIsLoading(true);
+      const startTime = Date.now();
+
+      const approvePromises = await postApproveOrder(selectedOrderId, setAccessToken, accessToken);
+
+      await Promise.all([
+        approvePromises,
+        new Promise((resolve) => setTimeout(resolve, 1000)), // 최소 1초 대기
+      ]);
+
+      const endTime = Date.now();
+      const elapsedTime = endTime - startTime;
+
+      if (elapsedTime < 1000) {
+        // 1초 미만으로 걸렸다면, 남은 시간만큼 더 대기
+        await new Promise((resolve) => setTimeout(resolve, 1000 - elapsedTime));
+      }
+
+      setIsLoading(false);
+      setIsDataChange(!isDataChange);
+
+      openAlertModal('success', '성공', '작업이 성공적으로 완료되었습니다.');
     } catch (error) {
-      console.log(error);
+      setIsLoading(false);
+
+      openAlertModal(
+        'error',
+        '오류',
+        `${error.response.data.message}` ||
+          '알 수 없는 오류가 발생했습니다. 반복적으로 문제가 발생하는 경우, 지원팀에 문의해 주세요.',
+      );
     }
   };
 
-  // 주문 승인 일괄 처리
-  const handleApproveCancleAll = async (tableId) => {
-    if (tables !== undefined && tables[tableId] !== undefined) {
-      Object.entries(tables[tableId].selectedRows).forEach(([key, value]) => {
+  // 주문 취소 일괄 처리
+  const handleCancleAllOrder = async () => {
+    setIsLoading(true);
+    const startTime = Date.now();
+
+    let successCnt = 0;
+    let errorCnt = 0;
+
+    const approvePromises = Object.entries(tables[orderType].selectedRows).map(
+      async ([key, value]) => {
         if (value) {
-          console.log(tableId, key, orderInfo);
-          handleApproveCancle(key, orderInfo[tableId][key]);
+          try {
+            await postCancleOrder(key, orderInfo[orderType][key], setAccessToken, accessToken);
+            successCnt += 1;
+          } catch (err) {
+            errorCnt += 1;
+          }
         }
-      });
-      alert('간편 주문 일괄 승인');
-    } else {
-      alert('없음');
+      },
+    );
+
+    await Promise.all([
+      Promise.all(approvePromises),
+      new Promise((resolve) => setTimeout(resolve, 1000)), // 최소 1초 대기
+    ]);
+
+    const endTime = Date.now();
+    const elapsedTime = endTime - startTime;
+
+    if (elapsedTime < 1000) {
+      // 1초 미만으로 걸렸다면, 남은 시간만큼 더 대기
+      await new Promise((resolve) => setTimeout(resolve, 1000 - elapsedTime));
+    }
+    setIsLoading(false);
+    setIsDataChange(!isDataChange);
+
+    openAlertModal('success', '취소 완료', `성공 : ${successCnt}, 실패 : ${errorCnt}`);
+  };
+
+  // handle onConfirm
+  const handleOnConfirm = () => {
+    switch (confirmType) {
+      case 'approveOrder':
+        handleApproveAllSimpleOrder();
+        break;
+      case 'approveOrderOne':
+        handleApproveOneSimpleOrder();
+        break;
+      case 'cancleOrder':
+        handleCancleAllOrder();
+        break;
+      default:
+        // moveList();
+        break;
     }
   };
 
-  // 주문 승인 취소
-  const handleApproveCancle = async (orderId, data) => {
-    try {
-      await postCancleOrder(orderId, data, setAccessToken, accessToken);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   return {
     subscriptionData,
     subscriptionTotalDataCount,
     onetimeData,
     onetimeTotalDataCount,
-    handleApproveAllSimpleOrderBtn,
-    handleApproveOneSimpleOrderBtn,
-    handleApproveCancleAll,
-    // handleApproveSimpleOrderBtn,
-    // handleSelectedRows,
+    isLoading,
+    checkAppoveOrderAll,
+    checkAppoveOrderOne,
+    checkCancleOrder,
+    handleOnConfirm,
   };
 };

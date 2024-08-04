@@ -31,7 +31,7 @@ public class CustomSecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
-
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -71,6 +71,9 @@ public class CustomSecurityConfig {
         http.addFilterBefore(new JWTCheckFilter(jwtUtil), CustomLoginFilter.class);
         http.addFilterAt(new CustomLoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshTokenService), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenService), LogoutFilter.class);
+
+        http.exceptionHandling(exceptionHandling ->
+                        exceptionHandling.authenticationEntryPoint(authenticationEntryPoint));
 
         return http.build();
     }

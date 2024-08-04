@@ -19,8 +19,8 @@ import static shop.sellution.server.global.exception.ExceptionCode.*;
 public class JWTUtil {
 
     private final SecretKey SECRET_KEY;
-    public static final Long ACCESS_TOKEN_EXPIRE = 30 * 60 * 1000L; // 30분
-    public static final Long REFRESH_TOKEN_EXPIRE = 14 * 24 * 60 * 60 * 1000L; // 14일
+    public static final Long ACCESS_TOKEN_EXPIRE = 5 * 60 * 1000L; // 5분
+    public static final Long REFRESH_TOKEN_EXPIRE = 7 * 24 * 60 * 60 *1000L; // 7일
 
     public JWTUtil(@Value("${spring.jwt.secret}")String secret) {
         //JWT에서 더 이상 String key를 사용하지 않기 때문에 객체 키를 만들어서 사용

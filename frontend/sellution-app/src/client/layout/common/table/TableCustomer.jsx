@@ -66,7 +66,7 @@ const Table = ({
                     {header.type === 'filter' && (
                       <div className='w-full px-1'>
                         <select
-                          value={tableState[header.key]}
+                          value={tableState[header.key] || 'All'}
                           onChange={(e) => handleTableStateChange(header.key, e.target.value)}
                           className='w-full p-1 text-sm border rounded-lg pl-2 text-gray-600'
                         >

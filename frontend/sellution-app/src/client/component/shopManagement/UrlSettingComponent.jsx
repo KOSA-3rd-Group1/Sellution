@@ -83,7 +83,7 @@ const UrlSettingComponent = () => {
                   </div>
                 </div>
               </li>
-              <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
+              {/* <li className='pl-4 h-16 flex justify-between items-center gap-10 border-b'>
                 <div className='flex-1 min-w-32'>쇼핑몰 공개 여부</div>
                 <div className='flex-1 min-w-64'>
                   <RadioButtonGroup
@@ -97,7 +97,7 @@ const UrlSettingComponent = () => {
                     onChange={handleChangeInputValue}
                   />
                 </div>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

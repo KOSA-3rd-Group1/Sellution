@@ -57,6 +57,7 @@ export const TableSearchInput = (props) => {
         onChange={props.onChange}
         className=' bg-white border border-gray-300 text-gray-600 text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 w-full pl-10 pr-2 p-1 font-normal'
         placeholder='Search'
+        maxLength={19} // 필터 자리수 제한
       />
     </div>
   );

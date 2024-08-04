@@ -5,7 +5,10 @@ import {
   getDisplaySetting,
   putDisplaySetting,
 } from '@/client/utility/apis/shopManagement/shopManagementDisplaySettingApi';
-import { generateShortFileName } from '@/client/utility/functions/formatterFunction';
+import {
+  generateShortFileName,
+  generateShortFileName2,
+} from '@/client/utility/functions/formatterFunction';
 import { ValidationError } from '@/client/utility/error/ValidationError';
 
 // const DUMMY = {
@@ -162,14 +165,16 @@ export const useShopManagementDisplaySetting = ({
 
       // 로고 파일 추가
       if (logoImg.length > 0 && logoImg[0].file) {
-        const shortLogoName = generateShortFileName('logo', 0);
+        const shortLogoName = generateShortFileName2('logo', 0, logoImg[0].file);
+        // const shortLogoName = generateShortFileName('logo', 0);
         formData.append('logoFile', logoImg[0].file, shortLogoName);
       }
 
       // 프로모션 파일들 추가
       promotionImg.forEach((item, index) => {
         if (item.file) {
-          const shortPromotionName = generateShortFileName('promo', index);
+          const shortPromotionName = generateShortFileName2('promo', index, item.file);
+          //   const shortPromotionName = generateShortFileName('promo', index);
           formData.append('promotionFiles', item.file, shortPromotionName);
         }
       });

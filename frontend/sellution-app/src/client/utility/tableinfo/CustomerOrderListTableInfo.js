@@ -27,7 +27,12 @@ export const SUBSCRIPTION_HEADERS = [
   {
     key: 'status', //주문 승인 여부
     label: '주문 상태',
-    width: 'min-w-48 w-48 max-w-48 text-brandOrange',
+    width: 'min-w-40 w-40 max-w-40 text-brandOrange',
+  },
+  {
+    key: 'deliveryStatus', // 배송 상태
+    label: '배송 상태',
+    width: 'min-w-40 w-40 max-w-40 text-brandOrange',
   },
   {
     key: 'dayOption', // 선택한 요일
@@ -87,7 +92,12 @@ export const ONETIME_HEADERS = [
   {
     key: 'status', //주문 승인 여부
     label: '주문 상태',
-    width: 'min-w-48 w-48 max-w-48 text-brandOrange',
+    width: 'min-w-40 w-40 max-w-40 text-brandOrange',
+  },
+  {
+    key: 'deliveryStatus', // 배송 상태
+    label: '배송 상태',
+    width: 'min-w-40 w-40 max-w-40 text-brandOrange',
   },
   {
     key: 'deliveryStartDate',
