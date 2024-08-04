@@ -79,6 +79,8 @@ export const useShopManagementSaleSetting = ({
   const [refresh, setRefresh] = useState(false);
   const [confirmType, setConfirmType] = useState('resetContent');
 
+  const [isLoading, setIsLoading] = useState(false);
+
   // 서버에 데이터 요청
   useEffect(() => {
     const fetch = async (companyId, setAccessToken, accessToken) => {
@@ -102,7 +104,7 @@ export const useShopManagementSaleSetting = ({
 
       // 판매 설정 데이터 조회
       const response = await getSaleSetting(companyId, setAccessToken, accessToken);
-      console.log(response);
+      //   console.log(response);
 
       // 배송 유형 (ONETIME, SUBSCRIPTION, BOTH)
       setSaleTypes({ serviceType: response.data.serviceType });
@@ -112,8 +114,6 @@ export const useShopManagementSaleSetting = ({
 
       // 정기 배송 유형 (MONTH: 0, COUNT: 1)
       setSaleTypes({ subscriptionType: formatSubscriptionType(response.data.subscriptionType) });
-
-      //   console.log('..............', response);
 
       // 적용 상품이 카테고리이고, 적용된 카테고리가 있는 경우,
       if (response.data.categoryIds !== null) {
@@ -127,9 +127,8 @@ export const useShopManagementSaleSetting = ({
       // 적용 상품이 개별 상품이고, 적용된 개별 상품이 있는 경우,
       if (response.data.productIds !== null) {
         const newSelectedEachProductOptions = await formatSelectedEachProductOptions(
-          //   response.data.productIds,
-          [1, 2, 4],
-          newSelectEachProductOptions,
+          response.data.productIds,
+          newSelectEachProductOptions[response.data.serviceType],
         );
         setSellTypeEach({ selectedOptions: newSelectedEachProductOptions });
       }
@@ -196,6 +195,9 @@ export const useShopManagementSaleSetting = ({
   // 등록
   const handleSaveData = async () => {
     try {
+      setIsLoading(true);
+      const startTime = Date.now();
+
       const updateData = {
         companyId,
         serviceType: saleTypes.serviceType,
@@ -236,10 +238,24 @@ export const useShopManagementSaleSetting = ({
           updateData.dayOptions = transformDayValues(subscriptionTypeCount.dayValues);
         }
       }
-      console.log('updateData>>>>>>>>>>>>>>', updateData);
-      await putSaleSetting(updateData, setAccessToken, accessToken);
-      openAlertModal('success', '성공', '변경사항이 성공적으로 적용되었습니다.');
+
+      const approvePromise = await putSaleSetting(updateData, setAccessToken, accessToken);
+      await Promise.all([
+        approvePromise,
+        new Promise((resolve) => setTimeout(resolve, 1000)), // 최소 1초 대기
+      ]);
+
+      const endTime = Date.now();
+      const elapsedTime = endTime - startTime;
+
+      if (elapsedTime < 1000) {
+        // 1초 미만으로 걸렸다면, 남은 시간만큼 더 대기
+        await new Promise((resolve) => setTimeout(resolve, 1000 - elapsedTime));
+      }
+      setIsLoading(false);
       setRefresh(!refresh);
+
+      openAlertModal('success', '성공', '변경사항이 성공적으로 적용되었습니다.');
     } catch (error) {
       openAlertModal(
         'error',
@@ -265,6 +281,7 @@ export const useShopManagementSaleSetting = ({
 
   return {
     saleTypes,
+    isLoading,
     handleChangeInputValue,
     handleSaveData,
     checkResetContent,

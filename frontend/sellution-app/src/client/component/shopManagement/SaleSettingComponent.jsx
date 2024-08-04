@@ -2,6 +2,7 @@ import FooterComponent from '@/client/layout/partials/FooterComponent';
 import Accordion from '@/client/layout/common/Accodion';
 import RadioButtonGroup from '@/client/layout/common/RadioButtonGroup';
 import AlertModal from '@/client/layout/common/modal/AlertModal';
+import LoadingModal from '@/client/layout/common/modal/LodingModal';
 import { useModal } from '@/client/business/common/useModal';
 import { useShopManagementSaleSetting } from '@/client/business/shopManagement/useShopManagementSaleSetting';
 import SellTypeCategory from '@/client/layout/shopManagement/SellTypeCategory';
@@ -20,6 +21,7 @@ const SaleSettingComponent = () => {
   } = useModal();
   const {
     saleTypes,
+    isLoading,
     handleChangeInputValue,
     // handleSaveData,
     checkResetContent,
@@ -118,6 +120,8 @@ const SaleSettingComponent = () => {
         title={alertModalState.title}
         message={alertModalState.message}
       />
+
+      <LoadingModal isOpen={isLoading} />
     </div>
   );
 };
