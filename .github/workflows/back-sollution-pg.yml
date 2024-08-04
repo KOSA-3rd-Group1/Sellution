@@ -66,6 +66,7 @@ jobs:
 
       - name: Generate REST Docs for Server
         run: ./gradlew asciidoctor
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Make zip file
         run: zip -r ./$GITHUB_SHA.zip .
