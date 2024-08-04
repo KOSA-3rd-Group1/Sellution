@@ -30,13 +30,13 @@ export const HEADERS = [
     options: ['신규', '일반', '휴면'],
     width: 'min-w-36 w-36 max-w-36 text-brandOrange',
   },
-  {
-    key: 'latestDeliveryDate',
-    label: '최신 주문 일자',
-    type: 'filter',
-    options: ['오름차순', '내림차순'],
-    width: 'min-w-36 w-36 max-w-36 text-brandOrange',
-  },
+  //   {
+  //     key: 'latestDeliveryDate',
+  //     label: '최신 주문 일자',
+  //     type: 'filter',
+  //     options: ['오름차순', '내림차순'],
+  //     width: 'min-w-36 w-36 max-w-36 text-brandOrange',
+  //   },
 ];
 
 export const ROW_HEIGHT = 'min-h-14 h-14 max-h-14';

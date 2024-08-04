@@ -1,6 +1,7 @@
 package shop.sellution.server.auth.filter;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +32,8 @@ public class JWTCheckFilter extends OncePerRequestFilter {
 
             if (accessToken != null) {
 
+
+
                 Claims claims = jwtUtil.validateToken(accessToken);
                 validateAccessToken(claims);
 
@@ -46,12 +49,22 @@ public class JWTCheckFilter extends OncePerRequestFilter {
                 // 세션에 사용자 등록
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
+        } catch (ExpiredJwtException e) {
+//            SecurityContextHolder.clearContext();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Access token expired");
+            return;
         } catch (AuthException e) {
-            SecurityContextHolder.clearContext();
-            throw e;
+//            SecurityContextHolder.clearContext();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write(e.getMessage());
+            return;
         } catch (Exception e) {
-            SecurityContextHolder.clearContext();
-            throw new AuthException(INVALID_ACCESS_TOKEN);
+//            SecurityContextHolder.clearContext();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("Internal server error");
+            return;
+//            throw new AuthException(INVALID_ACCESS_TOKEN);
         }
         filterChain.doFilter(request, response);
     }

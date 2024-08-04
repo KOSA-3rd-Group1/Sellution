@@ -31,5 +31,15 @@ public class CouponBox {
     @Builder.Default
     private DisplayStatus isUsed = DisplayStatus.N;
 
+    // 쿠폰 사용처리
+    public void useCoupon() {
+        this.isUsed = DisplayStatus.Y;
+    }
+
+    // 쿠폰 미사용처리
+    public void unUseCoupon() {
+        this.isUsed = DisplayStatus.N;
+    }
+
 
 }

@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
@@ -11,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import shop.sellution.server.product.dto.response.FindProductRes;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -37,4 +39,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
     long countByCategoryName(@Param("categoryName") String categoryName);
 
     List<Product> findByProductIdIn(List<Long> productIds);
+
+    // discountEndDate +1일이 오늘인 상품들 조회
+    @Query("select p from Product p where p.discountEndDate = :date")
+    List<Product> findDiscountEndDateIsToday(LocalDateTime date);
 }

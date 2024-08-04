@@ -18,11 +18,15 @@ import shop.sellution.server.company.domain.repository.WeekOptionRepository;
 import shop.sellution.server.company.domain.type.DayValueType;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
+import shop.sellution.server.event.domain.CouponBox;
+import shop.sellution.server.event.domain.CouponBoxRepository;
 import shop.sellution.server.event.domain.CouponEvent;
 import shop.sellution.server.event.domain.EventRepository;
 import shop.sellution.server.global.exception.BadRequestException;
+import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.order.domain.*;
 import shop.sellution.server.order.domain.repository.OrderRepository;
+import shop.sellution.server.order.domain.repository.OrderedProductRepository;
 import shop.sellution.server.order.domain.type.OrderStatus;
 import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.order.dto.request.FindOrderedProductSimpleReq;
@@ -64,6 +68,8 @@ public class OrderCreationService {
     private final SmsServiceImpl smsService;
     private final EventRepository eventRepository;
     private final PaymentUtil paymentUtil;
+    private final CouponBoxRepository couponBoxRepository;
+    private final OrderedProductRepository orderedProductRepository;
 
 
     private static final int ONETIME = 1;
@@ -106,6 +112,12 @@ public class OrderCreationService {
         if(saveOrderReq.getEventId()!=null){
             couponEvent = eventRepository.findById(saveOrderReq.getEventId()).
                     orElseThrow( ()-> new BadRequestException(NOT_FOUND_EVENT) );
+            CouponBox couponBox = couponBoxRepository.findByCouponEventAndCustomerId(couponEvent, customer)
+                    .orElseThrow(() -> new BadRequestException(NOT_FOUND_COUPON));
+            if(couponBox.getIsUsed() == DisplayStatus.Y){
+                throw new BadRequestException(ALREADY_USED_COUPON);
+            }
+            couponBox.useCoupon(); // 쿠폰 사용처리
         }
 
 
@@ -211,6 +223,8 @@ public class OrderCreationService {
 //        smsService.sendSms(customer.getPhoneNumber(),message);
 
         if(order.getStatus()==OrderStatus.APPROVED){
+            // 해당 주문 상품들의 isVisible이 Y인지 확인
+            checkProductVisible(order);
             // 자동주문승인으로 인해 바로 승인이 된다면 , 즉시 결제 시도
             String approveMessage = String.format("""
                     [Sellution] 주문이 승인되었습니다. [ 자동 ]
@@ -424,6 +438,17 @@ private LocalDate getNextPaymentDate(Order order) {
         private int totalDeliveryCount;
         private LocalDate deliveryEndDate;
         private LocalDate nextDeliveryDate;
+    }
+
+    // 해당 주문의 상품들이 isVisible이 Y인지 확인
+    private void checkProductVisible(Order order) {
+        List<OrderedProduct> orderedProducts = orderedProductRepository.findAllByOrderIdIn(List.of(order.getId()));
+
+        for (OrderedProduct orderedProduct : orderedProducts) {
+            if (orderedProduct.getProduct().getIsVisible() == DisplayStatus.N) {
+                throw new BadRequestException(NOT_VISIBLE_PRODUCT);
+            }
+        }
     }
 
 

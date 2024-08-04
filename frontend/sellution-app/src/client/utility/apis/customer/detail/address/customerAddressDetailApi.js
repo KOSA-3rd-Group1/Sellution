@@ -12,7 +12,6 @@ export const getCustomerAddressDetail = async (addressId, setAccessToken, access
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
 
   response = await instance.get(url);
-  console.log(response);
   return response;
 };
 
@@ -25,7 +24,6 @@ export const putCustomerAddressDetail = async (addressId, data, setAccessToken, 
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
 
   response = await instance.put(url, { ...data });
-  console.log(response);
   return response;
 };
 

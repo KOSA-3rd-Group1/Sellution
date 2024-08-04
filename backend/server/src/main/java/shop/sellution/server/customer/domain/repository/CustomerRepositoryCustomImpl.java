@@ -100,6 +100,6 @@ public class CustomerRepositoryCustomImpl implements CustomerRepositoryCustom {
                     return customer.latestDeliveryDate.desc();
             }
         }
-        return customer.id.asc(); // 기본 정렬
+        return customer.createdAt.desc(); // 기본 정렬
     }
 }

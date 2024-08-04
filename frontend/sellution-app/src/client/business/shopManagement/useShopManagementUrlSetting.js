@@ -74,6 +74,7 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
     try {
       await putUrlSetting(data, setAccessToken, accessToken);
       openAlertModal('success', '성공', '변경사항이 성공적으로 적용되었습니다.');
+      setRefresh(!refresh);
     } catch (error) {
       if (error instanceof ValidationError) {
         openAlertModal('error', '오류', error.message);

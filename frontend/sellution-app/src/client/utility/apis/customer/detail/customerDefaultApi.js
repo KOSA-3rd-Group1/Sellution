@@ -12,7 +12,6 @@ export const getCustomerDefault = async (customerId, setAccessToken, accessToken
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
 
   responseData = await instance.get(url);
-  console.log(responseData);
   return responseData;
 };
 
