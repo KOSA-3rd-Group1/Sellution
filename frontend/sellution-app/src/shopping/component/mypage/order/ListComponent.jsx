@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams , useNavigate  } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx";
+import MenuHeaderNav from '@/shopping/layout/MenuHeaderNav.jsx';
+import { formatPrice } from './../../../../client/utility/functions/formatterFunction';
 
 const ListComponent = () => {
   const [orders, setOrders] = useState([]);
@@ -15,6 +16,7 @@ const ListComponent = () => {
         const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/orders/customers/${customerId}?sort=createdAt,desc`,
         );
+
         setOrders(response.data.content);
       } catch (error) {
         console.error('주문 정보를 가져오는데 실패했습니다:', error);
@@ -116,7 +118,7 @@ const ListComponent = () => {
                 '결제금액'
               )}
             </div>
-            <div className='flex items-center'>{order.totalPrice}원</div>
+            <div className='flex items-center'>{formatPrice(order.totalPrice)}</div>
             <div>주문상태</div>
             <div>{getOrderStatusText(order.status)}</div>
             <div>배송상태</div>

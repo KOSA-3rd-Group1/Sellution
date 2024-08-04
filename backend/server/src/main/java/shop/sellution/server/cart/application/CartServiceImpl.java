@@ -55,7 +55,7 @@ public class CartServiceImpl implements CartService {
         log.info("Redis key: {}", cartKey);  // 로그 추가
         log.info("Cart items: {}", cartItems);  // 로그 추가
         //이미 단건, 정기 구분된 채로 선택했기 때문에, customerProductRepository 대신 productRepository 사용
-        List<Product> products = productRepository.findAllById(cartItems.keySet());
+        List<Product> products = productRepository.findAllById(cartItems.keySet()); //TODO: 상품판매여부, 재고 확인필요
         List<FindCartProductRes> result = products.stream().map(product -> {
             String thumbnailImage = productImageRepository.findByProductProductIdAndPurposeOfUse(product.getProductId(), ProductImageType.THUMBNAIL).stream()
                     .map(ProductImage::getImageUrl)

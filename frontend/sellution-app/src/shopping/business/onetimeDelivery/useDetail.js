@@ -92,7 +92,9 @@ const useDetail = () => {
     const fetchProduct = async () => {
       try {
         console.log('id: ', `${onetimeDeliveryId}`);
-        const response = await axios.get(`http://localhost:8080/products/${onetimeDeliveryId}`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/products/${onetimeDeliveryId}`,
+        );
         console.log(response.data);
         setProductToShow(response.data);
       } catch (err) {
