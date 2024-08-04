@@ -10,6 +10,8 @@ import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import shop.sellution.server.company.domain.Company;
+import shop.sellution.server.global.type.DisplayStatus;
 import shop.sellution.server.product.dto.response.FindProductRes;
 
 import java.time.LocalDateTime;
@@ -43,4 +45,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
     // discountEndDate +1일이 오늘인 상품들 조회
     @Query("select p from Product p where p.discountEndDate = :date")
     List<Product> findDiscountEndDateIsToday(LocalDateTime date);
+
+    List<Product> findByCompanyAndIsVisible(Company company, DisplayStatus isVisible);
 }
