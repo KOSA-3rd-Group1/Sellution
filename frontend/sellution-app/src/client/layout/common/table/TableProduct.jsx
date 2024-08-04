@@ -34,7 +34,7 @@ const TableProduct = ({
                 <div className='flex flex-col w-full h-full justify-between items-center gap-1'>
                   <input
                     type='checkbox'
-                    checked={selectedCount === data.length && data.length > 0}
+                    checked={data.length > 0 && Object.keys(selectedRows).length === data.length}
                     onChange={handleSelectAll}
                     className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'
                   />

@@ -108,6 +108,13 @@ const ListComponent = () => {
     );
   };
 
+  const HEADERS = [
+    { key: 'no', label: 'NO.', width: 'w-24' },
+    { key: 'name', label: '카테고리명', width: 'w-1/3' },
+    { key: 'productCount', label: '상품 수', width: 'w-1/6' },
+    { key: 'isVisible', label: '쇼핑몰 표시 여부', width: 'w-1/4' },
+  ];
+
   return (
     <div className='w-full h-full flex flex-col'>
       <div className='h-[45px] px-5 py-2 flex justify-between items-center bg-white text-sm font-medium text-gray-700 border-b-2 border-b-[#CCCDD3]'>
@@ -142,64 +149,71 @@ const ListComponent = () => {
                   className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'
                 />
               </th>
-              <th>NO.</th>
-              <th>카테고리명</th>
-              <th>상품 수</th>
-              <th>
-                쇼핑몰 표시 여부
-                <div className='mt-1'>
-                  <select
-                    className='border p-1 text-sm rounded-lg text-gray-600'
-                    value={isVisibleFilter}
-                    onChange={handleIsVisibleFilterChange}
-                  >
-                    <option value='전체'>전체</option>
-                    <option value='표시'>표시</option>
-                    <option value='미표시'>미표시</option>
-                  </select>
-                </div>
-              </th>
+              {HEADERS.map((header) => (
+                <th key={header.key} className={`${header.width} p-3`}>
+                  {header.label}
+                  {header.key === 'isVisible' && (
+                    <div className='mt-1'>
+                      <select
+                        className='border p-1 text-sm rounded-lg text-gray-600'
+                        value={isVisibleFilter}
+                        onChange={handleIsVisibleFilterChange}
+                      >
+                        <option value='전체'>전체</option>
+                        <option value='표시'>표시</option>
+                        <option value='미표시'>미표시</option>
+                      </select>
+                    </div>
+                  )}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody className='relative w-full text-sm bg-white border-y border-y-[#CCCDD3] font-light'>
-            {categories.map((category, index) => (
-              <tr
-                key={category.categoryId}
-                className='hover:bg-brandOrange-light cursor-pointer relative w-full min-h-14 h-14 max-h-14 border-b border-b-[#F1F1F4] group'
-                onClick={() => handleRowClick(category.categoryId)}
-              >
-                <td className='p-2 text-center'>
-                  <input
-                    type='checkbox'
-                    checked={selectedRows[category.categoryId] || false}
-                    onChange={() => handleSelectRow(category.categoryId)}
-                    onClick={(e) => e.stopPropagation()}
-                    className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'
-                  />
-                </td>
-                <td className='p-2 text-center'>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                <td className='p-2 text-center'>{category.name}</td>
-                <td className='p-2 text-center'>{category.productCount}</td>
-                <td className='p-2 text-center text-brandOrange'>
-                  {category.isVisible === 'Y' ? '표시' : '미표시'}
+            {categories.length > 0 ? (
+              categories.map((category, index) => (
+                <tr
+                  key={category.categoryId}
+                  className='hover:bg-brandOrange-light cursor-pointer relative w-full min-h-14 h-14 max-h-14 border-b border-b-[#F1F1F4] group'
+                  onClick={() => handleRowClick(category.categoryId)}
+                >
+                  <td className='p-2 text-center w-24'>
+                    <input
+                      type='checkbox'
+                      checked={selectedRows[category.categoryId] || false}
+                      onChange={() => handleSelectRow(category.categoryId)}
+                      onClick={(e) => e.stopPropagation()}
+                      className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'
+                    />
+                  </td>
+                  {HEADERS.map((header) => (
+                    <td
+                      key={`${category.categoryId}-${header.key}`}
+                      className={`p-2 text-center ${header.width}`}
+                    >
+                      {header.key === 'no'
+                        ? (currentPage - 1) * itemsPerPage + index + 1
+                        : header.key === 'isVisible'
+                          ? category[header.key] === 'Y'
+                            ? '표시'
+                            : '미표시'
+                          : category[header.key]}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={HEADERS.length + 1} className='px-6 py-4 text-center text-gray-500'>
+                  데이터가 존재하지 않습니다.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
 
-      <div className='h-[50px] px-5 flex items-center justify-end  border-gray-200'>
-        {renderPageNumbers()}
-      </div>
-      <AlertModal
-        isOpen={alertModal.isOpen}
-        onClose={closeAlertModal}
-        type={alertModal.type}
-        title={alertModal.title}
-        message={alertModal.message}
-        onConfirm={handleAlertConfirm}
-      />
+      {/* ... (이후 코드는 그대로 유지) */}
     </div>
   );
 };

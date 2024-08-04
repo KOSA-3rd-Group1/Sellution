@@ -30,8 +30,8 @@ public class FindCompanySaleSettingRes {
     private List<FindOptionRes> weekValues;
     private List<FindOptionRes> dayValues;
 
-    public static FindCompanySaleSettingRes fromEntity(Company company, List<FindOptionRes> monthValues, List<FindOptionRes> weekValues, List<FindOptionRes> dayValues) {
-        return FindCompanySaleSettingRes.builder()
+    public static FindCompanySaleSettingRes fromEntity(Company company, List<FindOptionRes> monthValues, List<FindOptionRes> weekValues, List<FindOptionRes> dayValues, List<Long> categoryIds, List<Long> productIds) {
+        FindCompanySaleSettingRes.FindCompanySaleSettingResBuilder builder = FindCompanySaleSettingRes.builder()
                 .companyId(company.getCompanyId())
                 .serviceType(company.getServiceType())
                 .sellType(company.getSellType())
@@ -40,8 +40,15 @@ public class FindCompanySaleSettingRes {
                 .maxDeliveryCount(company.getMaxDeliveryCount())
                 .monthValues(monthValues)
                 .weekValues(weekValues)
-                .dayValues(dayValues)
-                .build();
+                .dayValues(dayValues);
+
+        if (company.getSellType() == SellType.CATEGORY) {
+            builder.categoryIds(categoryIds);
+        } else if (company.getSellType() == SellType.EACH) {
+            builder.productIds(productIds);
+        }
+
+        return builder.build();
     }
 
 }

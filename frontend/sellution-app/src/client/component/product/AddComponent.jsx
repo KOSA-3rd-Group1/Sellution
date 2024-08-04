@@ -5,6 +5,7 @@ import FooterComponent from '@/client/layout/partials/FooterComponent';
 import ImageUploader2 from '@/client/layout/common/ImageUploader2';
 import useProductAdd from '@/client/business/product/useProductAdd';
 import AlertModal from '@/client/layout/common/modal/AlertModal';
+import RadioButtonGroup from '@/client/layout/common/RadioButtonGroup';
 
 const AddComponent = () => {
   const {
@@ -25,6 +26,10 @@ const AddComponent = () => {
     registerProduct,
     setIsCategoryDropdownOpen,
     formatPrice,
+    parsePrice,
+    calculateDiscountedPrice,
+    getTodayDate,
+    MAX_VALUE,
   } = useProductAdd();
 
   const [alertModal, setAlertModal] = useState({ isOpen: false, type: '', title: '', message: '' });
@@ -38,12 +43,53 @@ const AddComponent = () => {
   }, []);
 
   const handleRegisterProduct = useCallback(() => {
+    if (!validateProductInfo()) {
+      openAlertModal('error', '입력 오류', '모든 필수 정보를 입력해주세요.');
+      return;
+    }
     openAlertModal('warning', '상품 등록 확인', '상품을 등록하시겠습니까?');
-  }, [openAlertModal]);
+  }, [openAlertModal, productInfo, images]);
 
   // const resetComponent = useCallback(() => {
   //   window.location.reload();
   // }, []);
+
+  const validateProductInfo = () => {
+    const requiredFields = [
+      'name',
+      'categoryName',
+      'productInformation',
+      'cost',
+      'deliveryType',
+      'stock',
+    ];
+
+    for (const field of requiredFields) {
+      if (!productInfo[field]) {
+        return false;
+      }
+    }
+
+    if (!images.thumbnail || images.product.length === 0 || images.detail.length === 0) {
+      return false;
+    }
+
+    if (productInfo.isDiscount === DisplayStatus.VISIBLE) {
+      if (
+        !productInfo.discountRate ||
+        !productInfo.discountStartDate ||
+        !productInfo.discountEndDate
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const handleRadioChange = (name, value) => {
+    handleInputChange({ target: { name, value } });
+  };
 
   const handleAlertConfirm = useCallback(async () => {
     if (alertModal.type === 'warning') {
@@ -212,30 +258,16 @@ const AddComponent = () => {
               <hr className='border-gray-200' />
               <div className='flex items-center'>
                 <label className='w-1/4 text-sm font-medium'>할인 적용 여부</label>
-                <div className='flex-1 flex items-center justify-end space-x-4 ml-4'>
-                  <label className='flex items-center'>
-                    <input
-                      type='radio'
-                      name='isDiscount'
-                      value={DisplayStatus.VISIBLE}
-                      checked={productInfo.isDiscount === DisplayStatus.VISIBLE}
-                      onChange={handleInputChange}
-                      className='mr-2'
-                    />
-                    <span>적용</span>
-                  </label>
-                  <label className='flex items-center'>
-                    <input
-                      type='radio'
-                      name='isDiscount'
-                      value={DisplayStatus.INVISIBLE}
-                      checked={productInfo.isDiscount === DisplayStatus.INVISIBLE}
-                      onChange={handleInputChange}
-                      className='mr-2'
-                    />
-                    <span>미적용</span>
-                  </label>
-                </div>
+                <RadioButtonGroup
+                  className='flex-1 flex items-center justify-end space-x-4 ml-4'
+                  data={productInfo}
+                  options={[
+                    { selectData: DisplayStatus.VISIBLE, label: '적용' },
+                    { selectData: DisplayStatus.INVISIBLE, label: '미적용' },
+                  ]}
+                  name='isDiscount'
+                  onChange={handleRadioChange}
+                />
               </div>
               <hr className='border-gray-200' />
               {/* 할인 기간 설정 */}
@@ -249,6 +281,7 @@ const AddComponent = () => {
                     onChange={handleInputChange}
                     className='border p-2 rounded-md'
                     disabled={!isDiscountApplied}
+                    min={getTodayDate()}
                   />
                   <span>-</span>
                   <input
@@ -258,6 +291,7 @@ const AddComponent = () => {
                     onChange={handleInputChange}
                     className='border p-2 rounded-md'
                     disabled={!isDiscountApplied}
+                    min={productInfo.discountStartDate || getTodayDate()}
                   />
                 </div>
               </div>
@@ -285,9 +319,7 @@ const AddComponent = () => {
                 <div className='flex-1 flex justify-end ml-4'>
                   <span>
                     {productInfo.isDiscount === DisplayStatus.VISIBLE
-                      ? formatPrice(
-                          productInfo.cost - (productInfo.cost * productInfo.discountRate) / 100,
-                        )
+                      ? `${formatPrice(calculateDiscountedPrice(parsePrice(productInfo.cost), productInfo.discountRate))} 원`
                       : '- 원'}
                   </span>
                 </div>
@@ -303,41 +335,17 @@ const AddComponent = () => {
               {/* 배송 가능 유형 */}
               <div className='flex items-center'>
                 <label className='w-1/4 text-sm font-medium'>배송 가능 유형</label>
-                <div className='flex-1 flex items-center space-x-4 justify-end'>
-                  <label className='flex items-center ml-4'>
-                    <input
-                      type='radio'
-                      name='deliveryType'
-                      value={DeliveryType.ONETIME}
-                      checked={productInfo.deliveryType === DeliveryType.ONETIME}
-                      onChange={handleInputChange}
-                      className='mr-2'
-                    />
-                    <span>단건 배송</span>
-                  </label>
-                  <label className='flex items-center'>
-                    <input
-                      type='radio'
-                      name='deliveryType'
-                      value={DeliveryType.SUBSCRIPTION}
-                      checked={productInfo.deliveryType === DeliveryType.SUBSCRIPTION}
-                      onChange={handleInputChange}
-                      className='mr-2'
-                    />
-                    <span>정기 배송</span>
-                  </label>
-                  <label className='flex items-center'>
-                    <input
-                      type='radio'
-                      name='deliveryType'
-                      value={DeliveryType.BOTH}
-                      checked={productInfo.deliveryType === DeliveryType.BOTH}
-                      onChange={handleInputChange}
-                      className='mr-2'
-                    />
-                    <span>단건 + 정기 배송</span>
-                  </label>
-                </div>
+                <RadioButtonGroup
+                  className='flex-1 flex items-center space-x-4 justify-end'
+                  data={productInfo}
+                  options={[
+                    { selectData: DeliveryType.ONETIME, label: '단건 배송' },
+                    { selectData: DeliveryType.SUBSCRIPTION, label: '정기 배송' },
+                    { selectData: DeliveryType.BOTH, label: '단건 + 정기 배송' },
+                  ]}
+                  name='deliveryType'
+                  onChange={handleRadioChange}
+                />
               </div>
               <hr className='border-gray-200' />
               {/* 재고 */}
@@ -366,7 +374,7 @@ const AddComponent = () => {
 
       <AlertModal
         isOpen={alertModal.isOpen}
-        onClose={alertModal.type === 'success' ? resetComponent : closeAlertModal}
+        onClose={closeAlertModal}
         type={alertModal.type}
         title={alertModal.title}
         message={alertModal.message}
