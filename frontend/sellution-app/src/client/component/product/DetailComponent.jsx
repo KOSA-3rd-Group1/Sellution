@@ -4,6 +4,7 @@ import FooterComponent from '@/client/layout/partials/FooterComponent';
 import ImageUploader2 from '@/client/layout/common/ImageUploader2';
 import useProductDetail from '@/client/business/product/useProductDetail';
 import AlertModal from '@/client/layout/common/modal/AlertModal';
+import RadioButtonGroup from '@/client/layout/common/RadioButtonGroup';
 
 const DetailComponent = () => {
   const {
@@ -32,7 +33,11 @@ const DetailComponent = () => {
     DisplayStatus,
     DeliveryType,
     formatPrice,
+    parsePrice,
+    calculateDiscountedPrice,
+    getTodayDate,
     refreshProductData,
+    MAX_VALUE,
   } = useProductDetail();
 
   const [alertModal, setAlertModal] = useState({ isOpen: false, type: '', title: '', message: '' });
@@ -68,6 +73,7 @@ const DetailComponent = () => {
       await updateProduct();
       await refreshProductData();
       openAlertModal('success', '저장 완료', '변경 사항이 성공적으로 저장되었습니다.');
+      moveList();
     } catch (error) {
       openAlertModal('error', '저장 실패', '변경 사항 저장 중 오류가 발생했습니다.');
     }
@@ -77,12 +83,14 @@ const DetailComponent = () => {
     closeAlertModal();
     try {
       await deleteProduct();
+      console.log('Product deleted successfully');
       setIsDeleteSuccessful(true);
       openAlertModal('success', '삭제 완료', '상품이 성공적으로 삭제되었습니다.');
     } catch (error) {
+      console.error('Error deleting product:', error);
       openAlertModal('error', '삭제 실패', '상품 삭제 중 오류가 발생했습니다.');
     }
-  }, [closeAlertModal, deleteProduct, openAlertModal]);
+  }, [closeAlertModal, deleteProduct, openAlertModal, setIsDeleteSuccessful]);
 
   const handleAlertConfirm = useCallback(() => {
     if (alertModal.type === 'warning') {
@@ -92,22 +100,23 @@ const DetailComponent = () => {
         handleConfirmDelete();
       }
     } else if (alertModal.type === 'success') {
-      closeAlertModal();
-      if (isDeleteSuccessful) {
+      if (alertModal.title === '삭제 완료') {
         moveList();
       }
-    } else {
-      closeAlertModal();
     }
+    closeAlertModal();
   }, [
     alertModal.type,
     alertModal.title,
     handleConfirmSave,
     handleConfirmDelete,
     closeAlertModal,
-    isDeleteSuccessful,
     moveList,
   ]);
+
+  const handleRadioChange = (name, value) => {
+    handleInputChange({ target: { name, value } });
+  };
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -265,7 +274,7 @@ const DetailComponent = () => {
                     <input
                       type='text'
                       name='cost'
-                      value={productInfo.cost}
+                      value={formatPrice(productInfo.cost)}
                       onChange={handleInputChange}
                       className='flex-grow border p-2 rounded-md text-right'
                       placeholder='금액을 입력해주세요.'
@@ -277,30 +286,16 @@ const DetailComponent = () => {
                 {/* 할인 적용 여부 */}
                 <div className='flex items-center'>
                   <label className='w-1/4 text-sm font-medium'>할인 적용 여부</label>
-                  <div className='flex-1 flex items-center justify-end space-x-4'>
-                    <label className='flex items-center ml-4'>
-                      <input
-                        type='radio'
-                        name='isDiscount'
-                        value={DisplayStatus.VISIBLE}
-                        checked={productInfo.isDiscount === DisplayStatus.VISIBLE}
-                        onChange={handleInputChange}
-                        className='mr-2'
-                      />
-                      <span>적용</span>
-                    </label>
-                    <label className='flex items-center'>
-                      <input
-                        type='radio'
-                        name='isDiscount'
-                        value={DisplayStatus.INVISIBLE}
-                        checked={productInfo.isDiscount === DisplayStatus.INVISIBLE}
-                        onChange={handleInputChange}
-                        className='mr-2'
-                      />
-                      <span>미적용</span>
-                    </label>
-                  </div>
+                  <RadioButtonGroup
+                    className='flex-1 flex items-center justify-end space-x-4 ml-4'
+                    data={productInfo}
+                    options={[
+                      { selectData: DisplayStatus.VISIBLE, label: '적용' },
+                      { selectData: DisplayStatus.INVISIBLE, label: '미적용' },
+                    ]}
+                    name='isDiscount'
+                    onChange={handleRadioChange}
+                  />
                 </div>
                 <hr className='border-gray-200' />
                 {/* 할인 기간 설정 */}
@@ -314,6 +309,7 @@ const DetailComponent = () => {
                       onChange={handleInputChange}
                       className='border p-2 rounded-md'
                       disabled={!isDiscountApplied}
+                      min={getTodayDate()}
                     />
                     <span>-</span>
                     <input
@@ -323,6 +319,7 @@ const DetailComponent = () => {
                       onChange={handleInputChange}
                       className='border p-2 rounded-md'
                       disabled={!isDiscountApplied}
+                      min={productInfo.discountStartDate || getTodayDate()}
                     />
                   </div>
                 </div>
@@ -350,7 +347,7 @@ const DetailComponent = () => {
                   <div className='flex-1 flex justify-end ml-4'>
                     <span className='items-right'>
                       {productInfo.isDiscount === DisplayStatus.VISIBLE
-                        ? `${formatPrice(productInfo.cost - (productInfo.cost * productInfo.discountRate) / 100)} 원`
+                        ? `${formatPrice(calculateDiscountedPrice(productInfo.cost, productInfo.discountRate))} 원`
                         : '- 원'}
                     </span>
                   </div>
@@ -367,41 +364,17 @@ const DetailComponent = () => {
                 {/* 배송 가능 유형 */}
                 <div className='flex items-center'>
                   <label className='w-1/4 text-sm font-medium items-center'>배송 가능 유형</label>
-                  <div className='flex-1 flex justify-end space-x-4'>
-                    <label className='flex items-center ml-4'>
-                      <input
-                        type='radio'
-                        name='deliveryType'
-                        value={DeliveryType.ONETIME}
-                        checked={productInfo.deliveryType === DeliveryType.ONETIME}
-                        onChange={handleInputChange}
-                        className='mr-2'
-                      />
-                      <span>단건 배송</span>
-                    </label>
-                    <label className='flex items-center'>
-                      <input
-                        type='radio'
-                        name='deliveryType'
-                        value={DeliveryType.SUBSCRIPTION}
-                        checked={productInfo.deliveryType === DeliveryType.SUBSCRIPTION}
-                        onChange={handleInputChange}
-                        className='mr-2'
-                      />
-                      <span>정기 배송</span>
-                    </label>
-                    <label className='flex items-center'>
-                      <input
-                        type='radio'
-                        name='deliveryType'
-                        value={DeliveryType.BOTH}
-                        checked={productInfo.deliveryType === DeliveryType.BOTH}
-                        onChange={handleInputChange}
-                        className='mr-2'
-                      />
-                      <span>단건 + 정기 배송</span>
-                    </label>
-                  </div>
+                  <RadioButtonGroup
+                    className='flex-1 flex items-center space-x-4 justify-end'
+                    data={productInfo}
+                    options={[
+                      { selectData: DeliveryType.ONETIME, label: '단건 배송' },
+                      { selectData: DeliveryType.SUBSCRIPTION, label: '정기 배송' },
+                      { selectData: DeliveryType.BOTH, label: '단건 + 정기 배송' },
+                    ]}
+                    name='deliveryType'
+                    onChange={handleRadioChange}
+                  />
                 </div>
                 <hr className='border-gray-200' />
                 {/* 재고 입력 */}
