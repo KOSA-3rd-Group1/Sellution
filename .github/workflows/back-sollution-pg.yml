@@ -36,11 +36,11 @@ jobs:
           echo "${{ secrets.SELLUTION_PG_SERVER_PROD_YML }}" > ./backendPG/pgserver/src/main/resources/application.yml
         shell: bash
 
-      - name: Create test application.yml
-        run: |
-          mkdir -p ${{ env.WORKING_DIRECTORY }}/src/test/resources
-          echo "${{ secrets.SELLUTION_PG_SERVER_PROD_TEST_YMLL }}" > ./backendPG/pgserver/src/test/resources/application.yml
-        shell: bash
+      # - name: Create test application.yml
+      #   run: |
+      #     mkdir -p ${{ env.WORKING_DIRECTORY }}/src/test/resources
+      #     echo "${{ secrets.SELLUTION_PG_SERVER_PROD_TEST_YMLL }}" > ./backendPG/pgserver/src/test/resources/application.yml
+      #   shell: bash
         
       - name: List directory contents
         run: ls -la
