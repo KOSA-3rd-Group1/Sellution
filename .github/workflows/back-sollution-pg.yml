@@ -51,6 +51,10 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Build with Gradle
+        env:
+          IAMPORT_BASE_URL: https://api.iamport.kr
+          IAMPORT_API_KEY: ${{ secrets.IAMPORT_API_KEY }}
+          IAMPORT_API_SECRET_KEY: ${{ secrets.IAMPORT_API_SECRET_KEY }}
         run: ./gradlew build --info
         working-directory: ${{ env.WORKING_DIRECTORY }}
 
