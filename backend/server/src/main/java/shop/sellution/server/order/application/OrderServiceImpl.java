@@ -170,6 +170,9 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException(ALREADY_CANCEL_ORDER);
         }
 
+        // 주문된 상품들이 isVisible이 Y인지 확인
+        checkProductVisible(order);
+
         String approveMessage = String.format("""
                     [Sellution] 주문이 승인되었습니다. [ 수동 ]
                     승인된 주문번호
@@ -372,5 +375,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Long getUnapprovedOrderCount(Long companyId) {
         return orderRepository.countByCompanyIdAndStatus(companyId, OrderStatus.HOLD);
+    }
+
+    // 해당 주문의 상품들이 isVisible이 Y인지 확인
+    private void checkProductVisible(Order order) {
+        List<OrderedProduct> orderedProducts = orderedProductRepository.findAllByOrderIdIn(List.of(order.getId()));
+
+        for (OrderedProduct orderedProduct : orderedProducts) {
+            if (orderedProduct.getProduct().getIsVisible() == DisplayStatus.N) {
+                throw new BadRequestException(NOT_VISIBLE_PRODUCT);
+            }
+        }
     }
 }
