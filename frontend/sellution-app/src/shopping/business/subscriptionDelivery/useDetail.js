@@ -97,7 +97,7 @@ const useDetail = () => {
       try {
         console.log('id: ', `${subscriptionDeliveryId}`);
         const response = await axios.get(
-          `http://localhost:8080/products/${subscriptionDeliveryId}`,
+          `${import.meta.env.VITE_BACKEND_URL}/products/${subscriptionDeliveryId}`,
         );
         console.log(response.data);
         setProductToShow(response.data);

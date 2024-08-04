@@ -6,7 +6,6 @@ import { useSmsAuth } from '@/shopping/business/pwInquiry/useSmsAuth';
 
 const SmsAuthComponent = () => {
   const { moveDefault, moveDefaultSearch } = useMove();
-
   const {
     data,
     step,

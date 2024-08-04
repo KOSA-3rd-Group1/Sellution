@@ -23,6 +23,7 @@
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.24.0",
     "react-select": "^5.8.0",
+    "react-swipeable": "^7.0.1",
     "react-tailwindcss-datepicker": "^1.6.6",
     "zustand": "^4.5.4"
   },
