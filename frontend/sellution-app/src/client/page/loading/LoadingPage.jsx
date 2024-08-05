@@ -1,9 +1,7 @@
+import LoadingComponent from '@/client/component/loading/LodingComponent';
+
 const LoadingPage = () => {
-  return (
-    <div>
-      <p>Loading...</p>
-    </div>
-  );
+  return <LoadingComponent />;
 };
 
 export default LoadingPage;
