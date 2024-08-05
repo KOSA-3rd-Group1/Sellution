@@ -2,10 +2,10 @@ name: FRONT CI/CD
 
 on:
   workflow_dispatch: 
-  push:
-    branches: [ main ]
-    paths:
-      - 'frontend/sellution-app/**'
+  # push:
+  #   branches: [ main ]
+  #   paths:
+  #     - 'frontend/sellution-app/**'
   pull_request:
     types: [closed]
     branches: [ main ]

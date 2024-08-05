@@ -102,9 +102,18 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
     }
   };
 
+
   const handleDownload = async (imageUrl) => {
     imageUrl = await convertImageUrlToFileAndBlob(imageUrl);
-    const fileName = imageUrl.split('/').pop(); // 파일 이름 추출 (URL의 마지막 부분)
+
+    // URL에서 파일 이름 추출
+    const urlParts = imageUrl.split('/');
+    let fileName = urlParts[urlParts.length - 1];
+
+    // 파일 이름에 확장자가 없으면 .png 추가
+    if (!fileName.toLowerCase().endsWith('.png')) {
+      fileName += '.png';
+    }
 
     const link = document.createElement('a'); // a 태그를 생성하고 설정
     link.href = imageUrl;
@@ -116,11 +125,10 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
     document.body.removeChild(link);
   };
 
-  const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
+  const convertImageUrlToFileAndBlob = async (imageUrl) => {
     try {
       // S3 버킷 URL을 프록시 URL로 변경
-      const proxyUrl = `/s3-bucket${imageUrl}`;
-      const response = await fetch(proxyUrl);
+      const response = await fetch(imageUrl);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -131,30 +139,7 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
       //   console.error('Error converting image:', error);
       return null;
     }
-  }, []);
-
-  // const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
-  //   try {
-  //     // S3 URL에서 경로 부분만 추출
-  //     const pathOnly = imageUrl.replace(/^https?:\/\/[^\/]+/, '');
-  //     console.log(pathOnly);
-  //
-  //     // 프록시 URL 생성
-  //     const proxyUrl = `/s3-bucket${pathOnly}`;
-  //     console.log(proxyUrl);
-  //
-  //     const response = await fetch(proxyUrl);
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-  //
-  //     const blob = await response.blob();
-  //     return URL.createObjectURL(blob);
-  //   } catch (error) {
-  //     console.error('Error converting image:', error);
-  //     return null;
-  //   }
-  // }, []);
+  };
 
   return {
     data,
