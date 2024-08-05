@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
 import axios from 'axios';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link , useLocation  } from 'react-router-dom';
 import MenuHeaderNav from '../../../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../../../layout/OneButtonFooterLayout';
 import ReusableOneButtonModal from '@/shopping/layout/partials/ReusableOneButtonModal';
@@ -14,10 +14,25 @@ const ListComponent = () => {
   const [showDefaultAddressModal, setShowDefaultAddressModal] = useState(false);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     fetchAddresses();
   }, [customerId]);
+
+  useEffect(() => {
+    const previousPath = location.state?.from || '';
+
+    // 배송지 추가 페이지 패턴을 정규표현식으로 정의
+    const addAddressPattern = /^\/shopping\/PocketSalad\/ordersheet\/setting\/address\/\d+\/add$/;
+
+    // 이전 경로가 배송지 추가 페이지 패턴과 일치하지 않을 때만 localStorage 업데이트
+    if (!addAddressPattern.test(previousPath)) {
+      const originOrderPath = previousPath || localStorage.getItem('originOrderPath') || '/default/path';
+      localStorage.setItem('originOrderPath', originOrderPath);
+    }
+  }, [location]);
+
 
   const DisplayStatus = {
     N: 'N',
@@ -85,7 +100,10 @@ const ListComponent = () => {
     };
 
     localStorage.setItem('selectedAddress', JSON.stringify(addressToStore));
-    navigate(`/shopping/${clientName}/subscription/order/${customerId}`);
+
+    // localStorage에서 원래 페이지 경로를 가져와 이동
+    const originOrderPath = localStorage.getItem('originOrderPath') || '/default/path';
+    navigate(originOrderPath, { state: { selectedAddress: address } });
   };
 
   return (

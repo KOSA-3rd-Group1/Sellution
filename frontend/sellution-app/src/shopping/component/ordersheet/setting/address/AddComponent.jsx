@@ -55,7 +55,7 @@ const AddComponent = () => {
     // 전화번호 유효성 검사 추가
     const phoneNumberPattern = /^\d{10,11}$/;
     if (!phoneNumberPattern.test(phoneNumber)) {
-      setError('유효하지 않은 전화 번호 형식입니다. 10-11자리 숫자로 입력해주세요.');
+      setError(<div>유효하지 않은 전화 번호 형식입니다. <br/> 10-11자리 숫자로 입력해주세요.</div>);
       return;
     }
 
@@ -99,17 +99,17 @@ const AddComponent = () => {
   };
 
   return (
-    <div className='w-full h-full flex items-start my-10 justify-center'>
+    <div className='w-full h-full flex items-start  justify-center'>
       <MenuHeaderNav title={'배송지 등록'} />
       {error && (
         <div
-          className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4'
+          className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 absolute bottom-20'
           role='alert'
         >
-          <span className='block sm:inline'>{error}</span>
+          <span className='block sm:inline '>{error}</span>
         </div>
       )}
-      <form className='space-y-4 w-[90%]'>
+      <form className='space-y-4 w-[90%] pt-10'>
         <div className='flex items-center'>
           <label className='block text-sm font-medium w-24'>
             <span className='text-primary'>*</span> 배송지명
@@ -151,20 +151,22 @@ const AddComponent = () => {
           <label className='block text-sm font-medium w-24'>
             <span className='text-primary'>*</span> 우편번호
           </label>
-          <input
-            type='text'
-            value={zipcode}
-            className='flex-grow border rounded-md p-2 bg-gray-100 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary'
-            readOnly
-            required
-          />
-          <button
-            type='button'
-            className='ml-2 rounded border border-primary text-primary hover:bg-primary hover:text-white px-4 py-2 text-[0.8rem]'
-            onClick={handlePostcode}
-          >
-            우편번호 찾기
-          </button>
+          <div className='flex items-center flex-grow relative'>
+            <input
+              type='text'
+              value={zipcode}
+              className=' flex-shrink flex-grow border rounded-md p-2 bg-gray-100 border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary'
+              readOnly
+              required
+            />
+            <button
+              type='button'
+              className='min-w-[1px] ml-2 rounded border border-primary text-primary hover:bg-primary hover:text-white px-4 py-2 text-xs'
+              onClick={handlePostcode}
+            >
+              우편번호 찾기
+            </button>
+          </div>
         </div>
         <div className='flex items-center'>
           <label className='block text-sm font-medium w-24'>

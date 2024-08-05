@@ -8,6 +8,7 @@ import {
   postApproveOrder,
   postAutoApproveToggle,
   postCancleOrder,
+  getHoldOrderCount,
 } from '@/client/utility/apis/order/orderListApi';
 import { formatPhoneNumber } from '@/client/utility/functions/formatterFunction';
 import {
@@ -49,7 +50,7 @@ export const useOrderList = ({
   const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수
   const [totalDataCount, setTotalDataCount] = useState(0); // 데이터 총 개수
   const [orderInfo, setOrderInfo] = useState({}); // 주문 취소를 위한 주문 데이터
-  //   const [holdCount, setHoldCount] = useState(0);
+    const [holdCount, setHoldCount] = useState(0);
   const [isDataChange, setIsDataChange] = useState(false);
   const [confirmType, setConfirmType] = useState('approveOrder');
 
@@ -95,7 +96,7 @@ export const useOrderList = ({
       customerName: content.customer.name, // 회원명
       customerPhoneNumber: formatPhoneNumber(content.customer.phoneNumber), // 휴대폰 번호
       orderCreatedAt: content.orderCreatedAt.split('T')[0],
-      deliveryStartDate: content.deliveryStartDate, // 주문 시작일
+      nextDeliveryDate: content.nextDeliveryDate ? content.nextDeliveryDate : '-', // 배송시작일
       deliveryEndDate: content.deliveryEndDate, // 주문 종료일
       orderedProduct:
         content.orderedProductList?.length > 1
@@ -186,13 +187,15 @@ export const useOrderList = ({
             accountId: item.accountId,
           };
         });
-        // const updateHoldCount = content.filter((item) => item.status === 'HOLD').length;
+        const responseHoldData = await getHoldOrderCount(companyId, setAccessToken, accessToken); // API 요청
+        const updateHoldCount = responseHoldData?.data;
+        // console.log(responseHoldData);
 
         setOrderInfo(() => ({ ...newOrderInfo }));
         setData(() => formattedContent);
         setTotalDataCount(totalElements);
         setTotalPages(totalPages);
-        // setHoldCount(updateHoldCount);
+        setHoldCount(updateHoldCount);
         updateQueryParameter(pageParam, page);
       } else {
         setData([]);
@@ -350,7 +353,7 @@ export const useOrderList = ({
 
   return {
     data,
-    // holdCount,
+    holdCount,
     totalPages,
     totalDataCount,
     tableState,

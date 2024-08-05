@@ -14,14 +14,6 @@ const PaymentInfo = ({ data }) => {
             <div>총 상품 금액</div>
             <div>{'47,000원'}</div>
           </div>
-          <div className='absolute top-36 w-full px-4 flex justify-between items-center text-base font-bold mb-6'>
-            <div>총 배송비</div>
-            <div>{'3,000원'}</div>
-          </div>
-          <div className='absolute top-44 w-full px-4 flex justify-between items-center text-gray-500 text-sm font-bold'>
-            <div className='pl-8'>ㄴ기본 배송비</div>
-            <div>{'3,000원'}</div>
-          </div>
         </div>
 
         <div className='divider divider-horizontal'></div>

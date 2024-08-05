@@ -27,7 +27,7 @@ const DetailComponent = () => {
   return (
     <div className='relative w-full h-full justify-between'>
       <section className='absolute w-full h-[calc(100%-58px)] p-2 flex flex-col overflow-y-auto gap-10'>
-        <div className='w-3/5'>
+        <div className='w-full'>
           <div className='w-full h-20 text-lg font-semibold flex items-center'>
             <div>주문 상세 조회</div>
           </div>
@@ -42,25 +42,25 @@ const DetailComponent = () => {
             </div>
           </div>
         </div>
-        <div className='flex-1 w-5/6'>
+        <div className='flex-1 w-full'>
           <ProductInfo data={orderProductData} />
         </div>
 
         {serviceType !== null && serviceType !== 'ONETIME' && (
-          <div className='flex-1 w-5/6'>
+          <div className='flex-1 w-full'>
             <DeliveryInfo data={deliveryInfoData} />
           </div>
         )}
-        <div className='flex-1 w-5/6'>
+        <div className='flex-1 w-full'>
           <PaymentInfo data={data} />
         </div>
-        <div className='flex-1 w-5/6'>
+        <div className='flex-1 w-full'>
           <AddressInfo data={addressInfo} />
         </div>
-        <div className='flex-1 w-5/6'>
+        <div className='flex-1 w-full'>
           <OrdererInfo data={ordererInfo} />
         </div>
-        <div className='flex-1 w-5/6'>
+        <div className='flex-1 w-full'>
           <PaymentMethod data={paymentMethod} />
         </div>
       </section>
