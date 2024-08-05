@@ -119,8 +119,7 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
   const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
     try {
       // S3 버킷 URL을 프록시 URL로 변경
-      // const proxyUrl = `/s3-bucket${imageUrl}`;
-      const proxyUrl = `${imageUrl}`;
+      const proxyUrl = `/s3-bucket${imageUrl}`;
       const response = await fetch(proxyUrl);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -133,6 +132,29 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
       return null;
     }
   }, []);
+
+  // const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
+  //   try {
+  //     // S3 URL에서 경로 부분만 추출
+  //     const pathOnly = imageUrl.replace(/^https?:\/\/[^\/]+/, '');
+  //     console.log(pathOnly);
+  //
+  //     // 프록시 URL 생성
+  //     const proxyUrl = `/s3-bucket${pathOnly}`;
+  //     console.log(proxyUrl);
+  //
+  //     const response = await fetch(proxyUrl);
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  //
+  //     const blob = await response.blob();
+  //     return URL.createObjectURL(blob);
+  //   } catch (error) {
+  //     console.error('Error converting image:', error);
+  //     return null;
+  //   }
+  // }, []);
 
   return {
     data,

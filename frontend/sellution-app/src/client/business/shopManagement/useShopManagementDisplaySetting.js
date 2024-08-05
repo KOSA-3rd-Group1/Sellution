@@ -74,12 +74,34 @@ export const useShopManagementDisplaySetting = ({
       return null;
     }
   }, []);
+  //
+  // const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
+  //   try {
+  //     // S3 URL에서 경로 부분만 추출
+  //     const pathOnly = imageUrl.replace(/^https?:\/\/[^\/]+/, '');
+  //     console.log(pathOnly);
+  //
+  //     // 프록시 URL 생성
+  //     const proxyUrl = `/s3-bucket${pathOnly}`;
+  //     console.log('proxy url : ',proxyUrl);
+  //
+  //     const response = await fetch(proxyUrl);
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  //
+  //     const blob = await response.blob();
+  //     return URL.createObjectURL(blob);
+  //   } catch (error) {
+  //     console.error('Error converting image:', error);
+  //     return null;
+  //   }
+  // }, []);
 
   // 서버에 데이터 요청
   useEffect(() => {
     const fetch = async (companyId, setAccessToken, accessToken) => {
       const response = await getDisplaySetting(companyId, setAccessToken, accessToken);
-
       setData(() => ({ ...response.data }));
       if (response.data.logoImageUrl) {
         const newImages = await convertImageUrlToFileAndBlob(response.data.logoImageUrl);
