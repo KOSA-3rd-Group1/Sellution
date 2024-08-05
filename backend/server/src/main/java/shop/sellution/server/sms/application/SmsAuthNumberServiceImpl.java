@@ -62,7 +62,7 @@ public class SmsAuthNumberServiceImpl implements SmsAuthNumberService {
          * 문자 한도 제한으로 인해 주석 처리 해두었습니다.
          * 실제 테스트 시에는 주석 제거하고 사용하고, 테스트가 끝나면 다시 주석처리 해주시길 바랍니다.
          */
-//         smsService.sendSms(request.getPhoneNumber(), sendMessage);
+         smsService.sendSms(request.getPhoneNumber(), sendMessage);
     }
 
     @Override

@@ -151,7 +151,7 @@ const OrderComponent = () => {
     const orderedProducts = listToShow.map((item) => ({
       productId: item.productId,
       count: item.quantity,
-      price: item.discountedPrice || item.cost,
+      price: item.cost,
       discountRate: item.discountRate || 0,
     }));
 
