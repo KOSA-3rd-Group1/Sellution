@@ -51,18 +51,53 @@ export const useShopManagementDisplaySetting = ({
 
   const [isLoading, setIsLoading] = useState(false);
 
+  // const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
+  //   try {
+  //     // S3 버킷 URL을 프록시 URL로 변경
+  //     const proxyUrl = `/s3-bucket${imageUrl}`;
+  //     //   const proxyUrl = `${imageUrl}`;
+  //     const response = await fetch(proxyUrl);
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+
+  //     const blob = await response.blob();
+  //     const fileName = imageUrl.split('/').pop() || 'image.png';
+  //     const newImages = {
+  //       file: new File([blob], fileName, { type: blob.type }),
+  //       preview: URL.createObjectURL(blob),
+  //       id: Date.now() + Math.random(),
+  //     };
+  //     return newImages;
+  //   } catch (error) {
+  //     //   console.error('Error converting image:', error);
+  //     return null;
+  //   }
+  // }, []);
+
   const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
     try {
       // S3 버킷 URL을 프록시 URL로 변경
-      const proxyUrl = `/s3-bucket${imageUrl}`;
+      //   const proxyUrl = `/s3-bucket${imageUrl}`;
       //   const proxyUrl = `${imageUrl}`;
-      const response = await fetch(proxyUrl);
+      //   const response = await fetch(proxyUrl);
+      const response = await fetch(imageUrl);
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
+      // URL에서 파일 이름 추출
+      const urlParts = imageUrl.split('/');
+      let fileName = urlParts[urlParts.length - 1];
+
+      //   // 파일 이름에 확장자가 없으면 .png 추가
+      //   if (!fileName.toLowerCase().endsWith('.png')) {
+      //     fileName += '.png';
+      //   }
+
       const blob = await response.blob();
-      const fileName = imageUrl.split('/').pop() || 'image.png';
+      //   const fileName = imageUrl.split('/').pop() || 'image.png';
       const newImages = {
         file: new File([blob], fileName, { type: blob.type }),
         preview: URL.createObjectURL(blob),
