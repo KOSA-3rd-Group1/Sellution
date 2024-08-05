@@ -99,6 +99,7 @@ const AddComponent = () => {
                     value={data.totalQuantity || ''}
                     onChange={(e) => handleChangeInputValue('totalQuantity', e.target.value)}
                     placeholder='수량을 입력해주세요.'
+                    maxLength={15}
                   />
                   <div className='text-base font-normal'>개</div>
                 </div>

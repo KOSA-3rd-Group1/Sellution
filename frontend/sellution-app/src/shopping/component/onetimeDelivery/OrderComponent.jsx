@@ -149,7 +149,7 @@ const OrderComponent = () => {
     if (isOrderButtonDisabled) return;
 
     const orderedProducts = listToShow.map((item) => ({
-      productId: item.id,
+      productId: item.productId,
       count: item.quantity,
       price: item.discountedPrice || item.cost,
       discountRate: item.discountRate || 0,

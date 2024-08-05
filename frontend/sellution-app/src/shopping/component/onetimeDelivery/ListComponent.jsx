@@ -4,7 +4,7 @@ import MenuCategoryHeaderNav from '../../layout/MenuCategoryHeaderNav';
 import { Link, useNavigate } from 'react-router-dom';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import LoadingSpinner from '../../layout/LoadingSpinner';
-import { useState, useRef, useCallback } from 'react';
+import { useRef, useCallback, useEffect, useState } from 'react';
 import { formatPrice } from '../../../client/utility/functions/formatterFunction';
 
 const ListComponent = () => {
@@ -21,12 +21,15 @@ const ListComponent = () => {
   } = useList();
   const clientName = useCompanyInfoStore((state) => state.name);
   const observer = useRef();
+  const scrollContainerRef = useRef(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   const moveToOnetimeCartPage = () => {
     navigate(`/shopping/${clientName}/onetime/cart`);
   };
 
   const handleCategoryClick = (categoryId) => {
+    setScrollPosition(0); // 새로운 카테고리를 클릭할 때 스크롤 위치를 초기화합니다.
     const selected = onetimeCategoryList.find((category) => category.categoryId === categoryId) || {
       name: '단건배송 상품 목록',
     };
@@ -40,6 +43,8 @@ const ListComponent = () => {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
+          setScrollPosition(scrollContainerRef.current.scrollTop); // 스크롤 위치 저장
+          console.log('현재 스크롤 위치:', scrollContainerRef.current.scrollTop);
           loadMore();
         }
       });
@@ -47,6 +52,29 @@ const ListComponent = () => {
     },
     [isLoading, hasMore, loadMore],
   );
+
+  useEffect(() => {
+    if (!isLoading && scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo(0, scrollPosition);
+    }
+  }, [isLoading, scrollPosition]);
+
+  // useEffect(() => {
+  //   const handleScroll = (e) => {
+  //     console.log('스크롤 위치 (이벤트 리스너):', e.target.scrollTop);
+  //   };
+
+  //   const scrollContainer = scrollContainerRef.current;
+  //   if (scrollContainer) {
+  //     scrollContainer.addEventListener('scroll', handleScroll);
+  //   }
+
+  //   return () => {
+  //     if (scrollContainer) {
+  //       scrollContainer.removeEventListener('scroll', handleScroll);
+  //     }
+  //   };
+  // }, []);
 
   const renderProductContent = (product) => (
     <>
@@ -57,11 +85,6 @@ const ListComponent = () => {
         ></div>
       </div>
       <div className='product-item-2 flex-[7] flex flex-col justify-center px-4 relative'>
-        {product.stock === 0 && (
-          <span className='absolute bottom-0 right-0 text-white bg-gray-300 px-2 py-1 text-[10px]'>
-            SOLD OUT
-          </span>
-        )}
         <div className='product-name font-bold text-[13px] flex-[3] flex items-end'>
           {product.name}
         </div>
@@ -106,7 +129,11 @@ const ListComponent = () => {
           <p>등록된 상품이 없습니다</p>
         </main>
       ) : (
-        <main className={`main-box w-full`}>
+        <main
+          className={`main-box w-full h-[100%]`}
+          ref={scrollContainerRef}
+          style={{ overflowY: 'auto' }}
+        >
           <ul className='product-list w-[90%] mx-auto bg-white list-none p-0'>
             {onetimeProductList.map((product, index) => {
               const productElement = (

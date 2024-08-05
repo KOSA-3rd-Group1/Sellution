@@ -10,7 +10,9 @@ const useEvent = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/events/company/${clientId}`); //사이트 진행중인 이벤트 조회
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/events/company/${clientId}`,
+        ); //사이트 진행중인 이벤트 조회
         setCoupons(response.data || []); // 데이터가 없을 경우 빈 배열로 설정
       } catch (error) {
         setError(error);

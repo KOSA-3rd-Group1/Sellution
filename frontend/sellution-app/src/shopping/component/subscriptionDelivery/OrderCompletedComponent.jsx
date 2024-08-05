@@ -8,9 +8,8 @@ const OrderCompletedComponent = () => {
   const navigate = useNavigate();
 
   const handleViewPaymentHistory = () => {
-    navigate(`/shopping/PocketSalad/onetime/payment-history/${orderId}`);
+    navigate(`/shopping/PocketSalad/subscription/payment-history/${orderId}`);
   };
-
   const formatDayList = (dayList) => {
     const dayMap = {
       MON: '월',

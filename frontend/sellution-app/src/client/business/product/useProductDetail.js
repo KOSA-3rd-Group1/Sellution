@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
@@ -24,8 +24,19 @@ const useProductDetail = () => {
   const DisplayStatus = { VISIBLE: 'Y', INVISIBLE: 'N' };
   const DeliveryType = { ONETIME: 'ONETIME', SUBSCRIPTION: 'SUBSCRIPTION', BOTH: 'BOTH' };
 
+  const MAX_VALUE = 1000000000;
+
   const formatPrice = (price) => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return Number(price).toLocaleString('ko-KR');
+  };
+
+  const parsePrice = (priceString) => {
+    return parseInt(priceString.replace(/[^\d]/g, ''), 10);
+  };
+
+  const calculateDiscountedPrice = (cost, discountRate) => {
+    const discountedPrice = cost - (cost * discountRate) / 100;
+    return Math.round(discountedPrice);
   };
 
   const [productInfo, setProductInfo] = useState({
@@ -78,16 +89,14 @@ const useProductDetail = () => {
     let parsedValue = value;
 
     if (name === 'cost') {
-      // 숫자와 콤마만 허용
-      parsedValue = value.replace(/[^\d,]/g, '');
-      // 콤마 제거 후 숫자로 변환
-      const numericValue = parseInt(parsedValue.replace(/,/g, ''), 10);
-      // 숫자를 다시 콤마가 포함된 문자열로 변환
-      parsedValue = isNaN(numericValue) ? '' : formatPrice(numericValue);
-    } else if (['stock', 'discountRate'].includes(name)) {
-      parsedValue = value === '' ? 0 : parseInt(value, 10);
-    } else if (['stock', 'cost', 'discountRate'].includes(name)) {
-      parsedValue = value === '' ? 0 : parseInt(value, 10);
+      const numericValue = parsePrice(value);
+      parsedValue = isNaN(numericValue) ? '' : Math.min(MAX_VALUE, numericValue);
+      parsedValue = formatPrice(parsedValue);
+    } else if (name === 'stock') {
+      const numericValue = parseInt(value.replace(/[^\d]/g, ''), 10);
+      parsedValue = isNaN(numericValue) ? '' : Math.min(MAX_VALUE, numericValue).toString();
+    } else if (name === 'discountRate') {
+      parsedValue = value === '' ? 0 : Math.min(100, Math.max(0, parseInt(value, 10)));
     }
 
     if (name === 'isDiscount') {
@@ -95,7 +104,6 @@ const useProductDetail = () => {
       setIsDiscountApplied(isDiscountApplied);
       parsedValue = isDiscountApplied ? DisplayStatus.VISIBLE : DisplayStatus.INVISIBLE;
 
-      // 할인 미적용 시 즉시 할인율을 0으로 설정
       if (!isDiscountApplied) {
         setProductInfo((prev) => ({
           ...prev,
@@ -104,23 +112,29 @@ const useProductDetail = () => {
           discountStartDate: '',
           discountEndDate: '',
         }));
-        return; // 여기서 함수 실행을 종료하여 아래 setProductInfo가 다시 실행되지 않도록 합니다.
+        return;
       }
     }
-
-    // if (name === 'isDiscount') {
-    //   if (!isDiscountApplied) {
-    //     setProductInfo((prev) => ({ ...prev, discountRate: 0 }));
-    //   }
-    //   setIsDiscountApplied(value === DisplayStatus.VISIBLE);
-    //   parsedValue = value === 'Y' ? DisplayStatus.VISIBLE : DisplayStatus.INVISIBLE;
-    // }
 
     if (name === 'deliveryType') {
       parsedValue = Object.values(DeliveryType).includes(value) ? value : '';
     }
 
-    setProductInfo((prev) => ({ ...prev, [name]: parsedValue }));
+    setProductInfo((prev) => {
+      const updatedInfo = { ...prev, [name]: parsedValue };
+      if (name === 'cost' || name === 'discountRate') {
+        updatedInfo.discountedPrice = calculateDiscountedPrice(
+          updatedInfo.cost,
+          updatedInfo.discountRate,
+        );
+      }
+      return updatedInfo;
+    });
+  };
+
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
   };
 
   const deleteProduct = async () => {
@@ -136,26 +150,6 @@ const useProductDetail = () => {
       throw error; // 오류 발생 시 에러를 throw
     }
   };
-
-  // const dataURItoBlob = (dataURI) => {
-  //   if (!dataURI || typeof dataURI !== 'string' || !dataURI.startsWith('data:')) {
-  //     console.error('Invalid data URI:', dataURI);
-  //     return null;
-  //   }
-
-  //   const splitDataURI = dataURI.split(',');
-  //   const byteString = atob(splitDataURI[1]);
-  //   const mimeString = splitDataURI[0].split(':')[1].split(';')[0];
-
-  //   const ab = new ArrayBuffer(byteString.length);
-  //   const ia = new Uint8Array(ab);
-
-  //   for (let i = 0; i < byteString.length; i++) {
-  //     ia[i] = byteString.charCodeAt(i);
-  //   }
-
-  //   return new Blob([ab], { type: mimeString });
-  // };
 
   const updateProduct = async () => {
     try {
@@ -239,9 +233,10 @@ const useProductDetail = () => {
   const handleBeforeRemove = (image, index) => window.confirm(`이미지를 제거하시겠습니까?`);
   const handleEditImage = (updatedImage, index) => window.confirm(`이미지를 변경하시겠습니까?`);
 
-  const moveList = () => {
+  const moveList = useCallback(() => {
+    console.log('moveList called');
     navigate(`/product?page=${fromPage}`);
-  };
+  }, [navigate, fromPage]);
 
   const fetchProductData = async () => {
     try {
@@ -303,11 +298,18 @@ const useProductDetail = () => {
 
   useEffect(() => {
     if (productInfo.isDiscount === 'Y') {
-      const discountedPrice =
-        productInfo.cost - (productInfo.cost * productInfo.discountRate) / 100;
+      const discountedPrice = Math.round(
+        productInfo.cost - (productInfo.cost * productInfo.discountRate) / 100,
+      );
       setProductInfo((prev) => ({ ...prev, discountedPrice }));
+    } else {
+      setProductInfo((prev) => ({ ...prev, discountedPrice: productInfo.cost }));
     }
   }, [productInfo.cost, productInfo.discountRate, productInfo.isDiscount]);
+
+  // const formatPrice = (price) => {
+  //   return price.toLocaleString('ko-KR');
+  // };
 
   return {
     productInfo,
@@ -335,6 +337,9 @@ const useProductDetail = () => {
     DisplayStatus,
     DeliveryType,
     formatPrice,
+    parsePrice,
+    calculateDiscountedPrice,
+    getTodayDate,
     refreshProductData,
   };
 };

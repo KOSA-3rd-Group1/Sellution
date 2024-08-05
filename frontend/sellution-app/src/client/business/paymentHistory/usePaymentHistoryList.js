@@ -138,7 +138,7 @@ export const usePaymentHistoryList = ({
         setAccessToken,
         accessToken,
       );
-      console.log('.................', response);
+
       const { content, empty, pageable, totalElements, totalPages } = response.data;
 
       // 필터링 시 현재 페이지에 데이터가 없는 경우 1page로 이동

@@ -85,7 +85,12 @@ export const useCustomerAddressAdd = ({
       if (error instanceof ValidationError) {
         openAlertModal('error', '오류', error.message);
       } else {
-        openAlertModal('error', '오류', `${error.response.data.message}`);
+        // openAlertModal('error', '오류', `${error.response.data.message}`);
+        openAlertModal(
+          'error',
+          '오류',
+          `${error.response?.data?.message || '알 수 없는 오류가 발생했습니다.'}`,
+        );
       }
     }
   };

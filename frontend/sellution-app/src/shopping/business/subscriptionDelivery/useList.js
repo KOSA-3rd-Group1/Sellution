@@ -22,8 +22,8 @@ const useList = () => {
       setIsLoading(true);
       try {
         const url = categoryId
-          ? `http://localhost:8080/products/company/${companyId}?deliveryType=SUBSCRIPTION&categoryId=${categoryId}&page=${resetPage ? 0 : page}&size=20`
-          : `http://localhost:8080/products/company/${companyId}?deliveryType=SUBSCRIPTION&page=${resetPage ? 0 : page}&size=20`;
+          ? `${import.meta.env.VITE_BACKEND_URL}/products/company/${companyId}?deliveryType=SUBSCRIPTION&categoryId=${categoryId}&page=${resetPage ? 0 : page}&size=20`
+          : `${import.meta.env.VITE_BACKEND_URL}/products/company/${companyId}?deliveryType=SUBSCRIPTION&page=${resetPage ? 0 : page}&size=20`;
         const response = await axios.get(url);
         setSubscriptionProductList((prev) =>
           resetPage ? response.data.content : [...prev, ...response.data.content],
@@ -47,9 +47,9 @@ const useList = () => {
       try {
         const [productResponse, categoryResponse] = await Promise.all([
           axios.get(
-            `http://localhost:8080/products/company/${companyId}?deliveryType=SUBSCRIPTION&page=0&size=20`,
+            `${import.meta.env.VITE_BACKEND_URL}/products/company/${companyId}?deliveryType=SUBSCRIPTION&page=0&size=20`,
           ),
-          axios.get(`http://localhost:8080/categories/company/${companyId}`),
+          axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories/company/${companyId}`),
         ]);
         setSubscriptionProductList(productResponse.data.content);
         setSubscriptionCategoryList([

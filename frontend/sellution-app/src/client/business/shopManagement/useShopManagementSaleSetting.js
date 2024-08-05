@@ -53,8 +53,8 @@ import {
 // };
 export const useShopManagementSaleSetting = ({
   openAlertModal,
-  openAutoCloseModal,
-  closeAutoCloseModal,
+  //   openAutoCloseModal,
+  //   closeAutoCloseModal,
 }) => {
   const { accessToken, setAccessToken } = useAuthStore((state) => ({
     accessToken: state.accessToken,
@@ -75,9 +75,11 @@ export const useShopManagementSaleSetting = ({
     setSubscriptionTypeMonth,
     setSubscriptionTypeCount,
   } = useSaleSettingStore();
-  const [isChange, setIsChange] = useState(false); // 변경상태 감지
+  //   const [isChange, setIsChange] = useState(false); // 변경상태 감지
   const [refresh, setRefresh] = useState(false);
   const [confirmType, setConfirmType] = useState('resetContent');
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // 서버에 데이터 요청
   useEffect(() => {
@@ -102,6 +104,7 @@ export const useShopManagementSaleSetting = ({
 
       // 판매 설정 데이터 조회
       const response = await getSaleSetting(companyId, setAccessToken, accessToken);
+      //   console.log(response);
 
       // 배송 유형 (ONETIME, SUBSCRIPTION, BOTH)
       setSaleTypes({ serviceType: response.data.serviceType });
@@ -111,8 +114,6 @@ export const useShopManagementSaleSetting = ({
 
       // 정기 배송 유형 (MONTH: 0, COUNT: 1)
       setSaleTypes({ subscriptionType: formatSubscriptionType(response.data.subscriptionType) });
-
-      //   console.log('..............', response);
 
       // 적용 상품이 카테고리이고, 적용된 카테고리가 있는 경우,
       if (response.data.categoryIds !== null) {
@@ -126,9 +127,8 @@ export const useShopManagementSaleSetting = ({
       // 적용 상품이 개별 상품이고, 적용된 개별 상품이 있는 경우,
       if (response.data.productIds !== null) {
         const newSelectedEachProductOptions = await formatSelectedEachProductOptions(
-          //   response.data.productIds,
-          [1, 2, 4],
-          newSelectEachProductOptions,
+          response.data.productIds,
+          newSelectEachProductOptions[response.data.serviceType],
         );
         setSellTypeEach({ selectedOptions: newSelectedEachProductOptions });
       }
@@ -166,7 +166,7 @@ export const useShopManagementSaleSetting = ({
     };
 
     fetch(companyId, setAccessToken, accessToken);
-  }, []);
+  }, [refresh]);
 
   // 변경 가능한 값 변경 handler
   const handleChangeInputValue = (key, value) => {
@@ -174,56 +174,118 @@ export const useShopManagementSaleSetting = ({
     setSellTypeEach({ selectedOptions: [] });
   };
 
+  // 초기화 여부 확인
+  const checkResetContent = () => {
+    setConfirmType('resetContent');
+    openAlertModal('warning', '주의', '변경 사항이 저장되지 않았습니다. 계속하시겠습니까?');
+  };
+
+  // 변경사항 적용 여부 확인
+  const checkSaveContent = () => {
+    setConfirmType('saveContent');
+    openAlertModal('warning', '주의', '변경사항을 적용하시겠습니까?');
+  };
+
+  // 변경 사항 초기화
+  const handleResetData = () => {
+    openAlertModal('success', '성공', '작업이 성공적으로 완료되었습니다.');
+    setRefresh(!refresh);
+  };
+
   // 등록
   const handleSaveData = async () => {
-    const updateData = {
-      companyId,
-      serviceType: saleTypes.serviceType,
-      sellType: transformSellType(saleTypes.sellType),
-      categories: null,
-      products: null,
-      subscriptionType: 'MONTH',
-      monthOptions: [],
-      weekOptions: [],
-      dayOptions: [],
-      minDeliveryCount: 5,
-      maxDeliveryCount: 30,
-    };
+    try {
+      setIsLoading(true);
+      const startTime = Date.now();
 
-    if (updateData.sellType === 'CATEGORY') {
-      //카테고리 미선택시 예외처리
-      updateData.categories = tranformSelectedOptions(sellTypeCategory.selectedOptions);
-    } else if (updateData.sellType === 'EACH') {
-      updateData.products = tranformSelectedOptions(sellTypeEach.selectedOptions);
-    }
+      const updateData = {
+        companyId,
+        serviceType: saleTypes.serviceType,
+        sellType: transformSellType(saleTypes.sellType),
+        categories: null,
+        products: null,
+        subscriptionType: 'MONTH',
+        monthOptions: [],
+        weekOptions: [],
+        dayOptions: [],
+        minDeliveryCount: 5,
+        maxDeliveryCount: 30,
+      };
 
-    if (saleTypes.serviceType !== 'ONETIME') {
-      // 월 단위 결제
-      if (saleTypes.subscriptionType == 0) {
-        updateData.subscriptionType = transformSubscriptionType(saleTypes.subscriptionType);
-        updateData.monthOptions = tranformSelectedOptions(
-          subscriptionTypeMonth.selectedMonthOptions,
-        );
-        updateData.weekOptions = transformWeekValues(subscriptionTypeMonth.weekValues);
-        updateData.dayOptions = transformDayValues(subscriptionTypeMonth.dayValues);
+      if (updateData.sellType === 'CATEGORY') {
+        updateData.categories = tranformSelectedOptions(sellTypeCategory.selectedOptions);
+      } else if (updateData.sellType === 'EACH') {
+        updateData.products = tranformSelectedOptions(sellTypeEach.selectedOptions);
       }
 
-      // 횟수 단위 결제
-      if (saleTypes.subscriptionType === 1) {
-        updateData.subscriptionType = transformSubscriptionType(saleTypes.subscriptionType);
-        updateData.minDeliveryCount = subscriptionTypeCount.minDeliveryCount;
-        updateData.maxDeliveryCount = subscriptionTypeCount.maxDeliveryCount;
-        updateData.weekOptions = transformWeekValues(subscriptionTypeCount.weekValues);
-        updateData.dayOptions = transformDayValues(subscriptionTypeCount.dayValues);
+      if (saleTypes.serviceType !== 'ONETIME') {
+        // 월 단위 결제
+        if (saleTypes.subscriptionType == 0) {
+          updateData.subscriptionType = transformSubscriptionType(saleTypes.subscriptionType);
+          updateData.monthOptions = tranformSelectedOptions(
+            subscriptionTypeMonth.selectedMonthOptions,
+          );
+          updateData.weekOptions = transformWeekValues(subscriptionTypeMonth.weekValues);
+          updateData.dayOptions = transformDayValues(subscriptionTypeMonth.dayValues);
+        }
+
+        // 횟수 단위 결제
+        if (saleTypes.subscriptionType === 1) {
+          updateData.subscriptionType = transformSubscriptionType(saleTypes.subscriptionType);
+          updateData.minDeliveryCount = subscriptionTypeCount.minDeliveryCount;
+          updateData.maxDeliveryCount = subscriptionTypeCount.maxDeliveryCount;
+          updateData.weekOptions = transformWeekValues(subscriptionTypeCount.weekValues);
+          updateData.dayOptions = transformDayValues(subscriptionTypeCount.dayValues);
+        }
       }
+
+      const approvePromise = await putSaleSetting(updateData, setAccessToken, accessToken);
+      await Promise.all([
+        approvePromise,
+        new Promise((resolve) => setTimeout(resolve, 1000)), // 최소 1초 대기
+      ]);
+
+      const endTime = Date.now();
+      const elapsedTime = endTime - startTime;
+
+      if (elapsedTime < 1000) {
+        // 1초 미만으로 걸렸다면, 남은 시간만큼 더 대기
+        await new Promise((resolve) => setTimeout(resolve, 1000 - elapsedTime));
+      }
+      setIsLoading(false);
+      setRefresh(!refresh);
+
+      openAlertModal('success', '성공', '변경사항이 성공적으로 적용되었습니다.');
+    } catch (error) {
+      openAlertModal(
+        'error',
+        '오류',
+        `${error.response?.data?.message || '알 수 없는 오류가 발생했습니다.'}`,
+      );
+      setRefresh(!refresh);
     }
-    await putSaleSetting(updateData, setAccessToken, accessToken);
-    alert('변경사항 적용');
+  };
+
+  // handle onConfirm
+  const handleOnConfirm = () => {
+    switch (confirmType) {
+      case 'saveContent':
+        handleSaveData();
+        break;
+      case 'resetContent':
+      default:
+        handleResetData();
+        break;
+    }
   };
 
   return {
     saleTypes,
+    isLoading,
     handleChangeInputValue,
     handleSaveData,
+    checkResetContent,
+    checkSaveContent,
+    handleOnConfirm,
   };
 };
