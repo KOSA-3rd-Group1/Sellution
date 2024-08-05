@@ -50,3 +50,15 @@ export const postCancleOrder = async (orderId, data, setAccessToken, accessToken
   response = await instance.post(url, data);
   return response;
 };
+
+// 주문 승인 대기 건수 조회
+export const getHoldOrderCount = async (companyId, setAccessToken, accessToken) => {
+  let response = null;
+  const url = `${API_URL}/company/${companyId}/unapproved-count`;
+
+  let instance = await BaseInstance();
+  instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
+
+  response = await instance.get(url);
+  return response;
+};

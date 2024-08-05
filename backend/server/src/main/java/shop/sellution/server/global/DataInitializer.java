@@ -990,7 +990,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 }
             }
             orderReqBuilder.dayValueTypeList(selectedDayValueType);
-            orderReqBuilder.eventId(random.nextLong(9)+1); // 이벤트 랜덤지정
+//            orderReqBuilder.eventId(random.nextLong(9)+1); // 이벤트 랜덤지정
 
             orderCreationService.createOrder(customer.getId(), orderReqBuilder.build());
         }
