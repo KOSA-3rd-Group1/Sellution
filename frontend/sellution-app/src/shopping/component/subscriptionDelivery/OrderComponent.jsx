@@ -81,6 +81,7 @@ const OrderComponent = () => {
   };
 
   const handleAddressChange = () => {
+    saveState(); // 현재 상태 저장
     navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
       state: { returnToOrder: true },
     });
@@ -365,10 +366,10 @@ const OrderComponent = () => {
     console.log('계산 변경: ', selectedCoupon);
   }, [selectedCoupon, orderList, selectedStartDate, selectedWeek, selectedMonth, selectedDays]);
 
-  // 상태 저장 함수
+  // 상태 로컬스토리지에 저장하는 함수
   const saveState = () => {
     const stateToSave = {
-      // selectedAddress,
+      //selectedAddress,
       selectedCoupon,
       selectedStartDate,
       subscriptionType,

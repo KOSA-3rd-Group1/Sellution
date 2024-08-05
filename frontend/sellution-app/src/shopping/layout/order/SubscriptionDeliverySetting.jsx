@@ -189,7 +189,7 @@ const SubscriptionDeliverySetting = ({
           className='w-full p-2 border rounded'
           value={selectedStartDate}
           min={getNextMonday()}
-          step={7}
+          // step={7}
           onChange={handleDateChange}
         />
       </div>

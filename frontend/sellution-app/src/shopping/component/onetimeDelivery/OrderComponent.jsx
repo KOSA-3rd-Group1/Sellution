@@ -55,6 +55,7 @@ const OrderComponent = () => {
   };
 
   const handleAddressChange = () => {
+    saveState();
     navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
       state: { returnToOrder: true },
     });
@@ -76,6 +77,7 @@ const OrderComponent = () => {
   };
 
   const handleAddPaymentMethod = () => {
+    saveState();
     navigate(`/shopping/${clientName}/my/customerId/payment/add`, {
       state: { returnUrl: `/shopping/${clientName}/onetime/order/${customerId}` },
     });
@@ -236,6 +238,7 @@ const OrderComponent = () => {
       await fetchAccounts();
       await fetchAccounts();
       checkForSavedAddress();
+      restoreState();
     };
     fetchData();
     return () => {
@@ -254,6 +257,25 @@ const OrderComponent = () => {
     calculateTotalPrice();
     console.log('계산 변경: ', selectedCoupon);
   }, [selectedCoupon, orderList]);
+
+  // 상태 로컬스토리지에 저장하는 함수
+  const saveState = () => {
+    const stateToSave = {
+      //selectedAddress,
+      selectedCoupon,
+    };
+    localStorage.setItem('orderState', JSON.stringify(stateToSave));
+  };
+
+  // 상태 복원 함수
+  const restoreState = () => {
+    const savedState = localStorage.getItem('orderState');
+    if (savedState) {
+      const parsedState = JSON.parse(savedState);
+      // setSelectedAddress(parsedState.selectedAddress);
+      setSelectedCoupon(parsedState.selectedCoupon);
+    }
+  };
 
   return (
     <>
