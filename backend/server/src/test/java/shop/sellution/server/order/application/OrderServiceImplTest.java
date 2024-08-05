@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.sellution.server.account.domain.Account;
 import shop.sellution.server.address.domain.Address;
@@ -32,6 +33,7 @@ import shop.sellution.server.payment.domain.PaymentHistory;
 import shop.sellution.server.payment.domain.repository.PaymentHistoryRepository;
 import shop.sellution.server.product.domain.Product;
 import shop.sellution.server.product.domain.ProductImageRepository;
+import shop.sellution.server.sms.application.SmsService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,6 +74,9 @@ class OrderServiceImplTest {
 
     @InjectMocks
     private OrderServiceImpl orderService;
+
+    @Mock
+    private SmsService smsService;
 
     @Test
     @DisplayName("고객 ID로 주문 목록을 조회한다")
@@ -272,6 +277,9 @@ class OrderServiceImplTest {
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
         when(paymentHistoryRepository.findFirstByOrderIdOrderByCreatedAtDesc(orderId)).thenReturn(null);
+        when(smsService.sendSms(eq(null), contains("주문이 취소되었습니다")))
+                .thenReturn(ResponseEntity.ok(Collections.singletonMap("result", "success")));
+
 
         // when
         orderService.cancelOrder(orderId, cancelOrderReq);
@@ -281,6 +289,7 @@ class OrderServiceImplTest {
         verify(orderRepository).findById(orderId);
         verify(customerRepository).findById(customerId);
         verify(paymentHistoryRepository).findFirstByOrderIdOrderByCreatedAtDesc(orderId);
+        verify(smsService).sendSms(eq(null), contains("주문이 취소되었습니다"));
     }
 
     @DisplayName("주문 ID로 주문을 조회한다")
