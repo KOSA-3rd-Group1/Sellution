@@ -74,7 +74,7 @@ public class EventServiceImpl implements EventService {
         //당일은 startdate가 불가능하게
         LocalDate now = LocalDate.now();
         LocalDate tomorrow = now.plusDays(1);
-        if(saveEventReq.getEventStartDate().isBefore(tomorrow)){
+        if(saveEventReq.getEventStartDate().isBefore(now)){//수정함!!
             throw new BadRequestException(ExceptionCode.INVALID_EVENT_SAVE_EVENTSTARTDATE);
             //throw new IllegalArgumentException("이벤트 시작일은 다음날부터 설정 가능합니다.");
         }
@@ -192,6 +192,71 @@ public class EventServiceImpl implements EventService {
         }catch(Exception e){
             //redis 롤백
             rollbackCouponCount(eventId, customerId);
+            throw new RuntimeException("쿠폰 발급 중 오류가 발생했습니다. 트랜잭션이 롤백됩니다.", e);
+        }
+
+        //5. 트랜잭션 commit (rdb)
+    }
+
+    public void downloadCoupon(Long eventId, Long customerId) {//Transactional으로 묶어서 RDB연산 보장
+        //1. rdb 트랜잭션 시작
+        CouponEvent event = getEventById(eventId);
+
+        //3. 쿠폰 발급량 증가 API 호출
+//        boolean success = tryIncreaseCouponCount(eventId, event.getTotalQuantity(), customerId);
+//        if(!success){
+//            //throw new IllegalArgumentException("쿠폰이 모두 소진되었습니다.");
+//            throw new BadRequestException(ExceptionCode.COUPON_EXHAUSTED);
+//        }
+        //2. 개수가 남았는지
+        long count = couponBoxRepository.countByCouponEvent_Id(eventId);
+        if(count >= event.getTotalQuantity()){
+            return;
+        }
+        //3. 발급 받은 적이 있는지
+        //4. 발급 가능한 경우 쿠폰 생성(rdb save)
+        try{
+            CouponBox couponBox = CouponBox.builder()
+                    .id(new CouponBoxId(customerId, eventId))
+                    .couponEvent(event)
+                    .customer(getCustomerById(customerId))
+                    .build();
+            couponBoxRepository.save(couponBox);
+        }catch(Exception e){
+            //redis 롤백
+            throw new RuntimeException("쿠폰 발급 중 오류가 발생했습니다. 트랜잭션이 롤백됩니다.", e);
+        }
+
+        //5. 트랜잭션 commit (rdb)
+    }
+
+    public void downloadCoupon2(Long eventId, Long customerId) {//Transactional으로 묶어서 RDB연산 보장
+        //1. rdb 트랜잭션 시작
+        CouponEvent event = getEventById(eventId);
+
+        //3. 쿠폰 발급량 증가 API 호출
+        boolean success = tryIncreaseCouponCount(eventId, event.getTotalQuantity(), customerId);
+        if(!success){
+            return;
+            //throw new IllegalArgumentException("쿠폰이 모두 소진되었습니다.");
+            //throw new BadRequestException(ExceptionCode.COUPON_EXHAUSTED);
+        }
+        //2. 개수가 남았는지
+//        long count = couponBoxRepository.countByCouponEvent_Id(eventId);
+//        if(count >= event.getTotalQuantity()){
+//            return;
+//        }
+        //3. 발급 받은 적이 있는지
+        //4. 발급 가능한 경우 쿠폰 생성(rdb save)
+        try{
+            CouponBox couponBox = CouponBox.builder()
+                    .id(new CouponBoxId(customerId, eventId))
+                    .couponEvent(event)
+                    .customer(getCustomerById(customerId))
+                    .build();
+            couponBoxRepository.save(couponBox);
+        }catch(Exception e){
+            //redis 롤백
             throw new RuntimeException("쿠폰 발급 중 오류가 발생했습니다. 트랜잭션이 롤백됩니다.", e);
         }
 

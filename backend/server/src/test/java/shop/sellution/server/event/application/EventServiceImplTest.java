@@ -1,281 +1,198 @@
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import shop.sellution.server.event.application.EventServiceImpl;
-//import shop.sellution.server.event.domain.EventRepository;
-//
-//import java.util.concurrent.CountDownLatch;
-//
-//import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-//
-//package shop.sellution.server.event.application;
-////
-////import org.junit.jupiter.api.AfterEach;
-////import org.junit.jupiter.api.BeforeEach;
-////import org.junit.jupiter.api.DisplayName;
-////import org.junit.jupiter.api.Test;
-////import org.junit.jupiter.api.extension.ExtendWith;
-////import org.mockito.InjectMocks;
-////import org.mockito.Mock;
-////import org.mockito.MockitoAnnotations;
-////import org.mockito.junit.jupiter.MockitoExtension;
-////import org.springframework.beans.factory.annotation.Autowired;
-////import org.springframework.boot.test.context.SpringBootTest;
-////import org.springframework.boot.test.mock.mockito.MockBean;
-////import org.springframework.data.redis.core.RedisTemplate;
-////import org.springframework.data.redis.core.ValueOperations;
-////import org.springframework.test.util.ReflectionTestUtils;
-////import shop.sellution.server.company.domain.Company;
-////import shop.sellution.server.customer.domain.Customer;
-////import shop.sellution.server.customer.domain.CustomerRepository;
-////import shop.sellution.server.event.domain.*;
-////import shop.sellution.server.event.domain.type.TargetCustomerType;
-////
-////import java.time.LocalDate;
-////import java.util.Optional;
-////import java.util.concurrent.CountDownLatch;
-////import java.util.concurrent.ExecutorService;
-////import java.util.concurrent.Executors;
-////
-////import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-////import static org.junit.jupiter.api.Assertions.*;
-////import static org.mockito.ArgumentMatchers.any;
-////import static org.mockito.ArgumentMatchers.anyLong;
-////import static org.mockito.Mockito.*;
-////
-////@ExtendWith(MockitoExtension.class)
-////class EventServiceImplTest {
-////    @Mock
-////    private EventRepository eventRepository;
-////
-////    @Mock
-////    private CouponBoxRepository couponBoxRepository;
-////
-////    @Mock
-////    private CustomerRepository customerRepository;
-////
-////    @Mock
-////    private CouponCountRepository couponCountRepository;
-////
-////    @Mock
-////    private RedisTemplate<String, String> redisTemplate;
-////
-////    @Mock
-////    private ValueOperations<String, String> valueOperations; //redis 서버와의 통신 없이 단위 테스트 수행 가능
-////
-////    @InjectMocks
-////    private EventServiceImpl eventServiceImpl;
-////
-////    @BeforeEach
-////    void setUp() {
-////        MockitoAnnotations.initMocks(this);
-////        when(redisTemplate.opsForValue()).thenReturn(valueOperations); //redisTemplate 객체의 opsForValue() 메서드가 호출될 때 valueOperations 객체 반환
-////        //redis에서 값을 설정하거나 가져올 때 사용할 valueOperations 인터페의 mock 객체를 설정하는 부분
-////    }
-////
-//////    @DisplayName("쿠폰 다운로드 한번 성공 테스트")
-//////    @Test
-//////    void 한번만_다운로드() {
-//////        //Given
-//////        Company company = Company.builder().build();
-//////        ReflectionTestUtils.setField(company, "companyId", 1L);
-//////
-//////        Customer customer = Customer.builder().build();
-//////        ReflectionTestUtils.setField(customer, "id", 1L);
-//////
-//////        CouponEvent couponEvent = CouponEvent.builder()
-//////                .company(company)
-//////                .couponName("Test Coupon")
-//////                .couponDiscountRate(10)
-//////                .targetCustomerType(TargetCustomerType.ALL)
-//////                .eventStartDate(LocalDate.now())
-//////                .eventEndDate(LocalDate.now().plusDays(10))
-//////                .initialQuantity(100)
-//////                .remainingQuantity(100)
-//////                .isDeleted(false)
-//////                .build();
-//////
-//////        ReflectionTestUtils.setField(couponEvent, "id", 1L);
-//////
-//////        // Mock 설정
-//////        when(eventRepository.findByIdAndIsDeletedFalse(couponEvent.getId())).thenReturn(Optional.of(couponEvent));
-//////        when(couponBoxRepository.existsByCustomerIdAndCouponEventId(customer.getId(), couponEvent.getId())).thenReturn(false);
-//////        when(customerRepository.findById(customer.getId())).thenReturn(Optional.of(customer));
-//////        when(couponBoxRepository.save(any(CouponBox.class))).thenAnswer(invocation -> invocation.getArgument(0)); //저장된 객체 반환
-//////
-//////        // When
-//////        eventServiceImpl.downloadCoupon(customer.getId(), couponEvent.getId());
-//////
-//////        // Then
-//////        assertEquals(99, couponEvent.getRemainingQuantity());
-//////        verify(couponBoxRepository, times(1)).save(any(CouponBox.class));
-//////    }
-////
-//////    @DisplayName("동시에 여러개의 요청")
-//////    @Test
-//////    void 동시에여러명_다운로드() throws InterruptedException {
-//////        // Given
-//////        Company company = Company.builder().build();
-//////        ReflectionTestUtils.setField(company, "companyId", 1L);
-//////
-//////        CouponEvent couponEvent = CouponEvent.builder()
-//////                .company(company)
-//////                .couponName("Test Coupon")
-//////                .couponDiscountRate(10)
-//////                .targetCustomerType(TargetCustomerType.ALL)
-//////                .eventStartDate(LocalDate.now())
-//////                .eventEndDate(LocalDate.now().plusDays(10))
-//////                .initialQuantity(100)
-//////                .remainingQuantity(100)
-//////                .isDeleted(false)
-//////                .build();
-//////
-//////        ReflectionTestUtils.setField(couponEvent, "id", 1L);
-//////
-//////        // Mock 설정
-//////        lenient().when(eventRepository.findByIdAndIsDeletedFalse(couponEvent.getId())).thenReturn(Optional.of(couponEvent));
-//////
-//////        int threadCount = 100;
-//////        ExecutorService executorService = Executors.newFixedThreadPool(32); // 병렬 작업 간단히 하게 도와주는 자바 api
-//////        CountDownLatch latch = new CountDownLatch(threadCount); // 다른 스레드에서 진행하는 작업 기다림
-//////
-//////        for (int i = 0; i < threadCount; i++) {
-//////            // 1000개의 요청
-//////            Customer customer = Customer.builder().build();
-//////            ReflectionTestUtils.setField(customer, "id", (long) i); // Long 타입으로 설정
-//////
-//////            // Mock 설정
-//////            lenient().when(customerRepository.findById(customer.getId())).thenReturn(Optional.of(customer));
-//////            lenient().when(couponBoxRepository.existsByCustomerIdAndCouponEventId(customer.getId(), couponEvent.getId())).thenReturn(false);
-//////            lenient().when(couponBoxRepository.save(any(CouponBox.class))).thenAnswer(invocation -> invocation.getArgument(0));
-//////
-//////            // When
-//////            executorService.submit(() -> {
-//////                try {
-//////                    eventServiceImpl.downloadCoupon(customer.getId(), couponEvent.getId());
-//////                } finally {
-//////                    latch.countDown();
-//////                }
-//////            });
-//////        }
-//////        latch.await(); // 모든 스레드가 끝날 때까지 대기
-//////        executorService.shutdown();
-//////
-//////        // Then
-//////        System.out.println("남은 수량: " + couponEvent.getRemainingQuantity());
-//////        //assertNotEquals(0, couponEvent.getRemainingQuantity(), "동시성 문제로 인해 남은 수량이 0이 아닐 수 있음");
-//////        assertThat(couponEvent.getRemainingQuantity()).isEqualTo(0);
-//////        //verify(couponBoxRepository, times(threadCount)).save(any(CouponBox.class));
-//////    }
-////    @DisplayName("동시에 여러개의 요청")
-////    @Test
-////    void 동시에여러명_다운로드() throws InterruptedException {
-////        // Given
-////        Company company = Company.builder().build();
-////        ReflectionTestUtils.setField(company, "companyId", 1L);
-////
-////        CouponEvent couponEvent = CouponEvent.builder()
-////                .company(company)
-////                .couponName("Test Coupon")
-////                .couponDiscountRate(10)
-////                .targetCustomerType(TargetCustomerType.ALL)
-////                .eventStartDate(LocalDate.now())
-////                .eventEndDate(LocalDate.now().plusDays(10))
-////                .initialQuantity(100)
-////                .isDeleted(false)
-////                .build();
-////
-////        ReflectionTestUtils.setField(couponEvent, "id", 1L);
-////
-////        lenient().when(eventRepository.findByIdAndIsDeletedFalse(couponEvent.getId())).thenReturn(Optional.of(couponEvent));
-////        lenient().when(customerRepository.findById(anyLong())).thenAnswer(invocation -> {
-////            Long id = invocation.getArgument(0);
-////            Customer customer = Customer.builder().build();
-////            ReflectionTestUtils.setField(customer, "id", id);
-////            return Optional.of(customer);
-////        });
-////        lenient().when(couponBoxRepository.existsByCustomerIdAndCouponEventId(anyLong(), eq(couponEvent.getId()))).thenReturn(false);
-////
-////        // Initialize Redis with initial quantity
-////        doNothing().when(couponCountRepository).setInitialQuantity(couponEvent.getId(), couponEvent.getInitialQuantity());
-////        lenient().when(valueOperations.get("couponCount:" + couponEvent.getId())).thenReturn("100");
-////        lenient().when(valueOperations.decrement("couponCount:" + couponEvent.getId())).thenAnswer(invocation -> {
-////            String redisKey = invocation.getArgument(0);
-////            String value = valueOperations.get(redisKey);
-////            Long quantity = value != null ? Long.parseLong(value) : null;
-////            if (quantity != null && quantity > 0) {
-////                quantity -= 1;
-////                valueOperations.set(redisKey, quantity.toString());
-////                return quantity;
-////            }
-////            return -1L;
-////        });
-////        System.out.println("couponEvent id 있니 없니: " + eventRepository.findByIdAndIsDeletedFalse(couponEvent.getId()).get().getId());
-////
-////        int threadCount = 100;
-////        ExecutorService executorService = Executors.newFixedThreadPool(32);
-////        CountDownLatch latch = new CountDownLatch(threadCount);
-////
-////        for (int i = 0; i < threadCount; i++) {
-////            Customer customer = Customer.builder().build();
-////            ReflectionTestUtils.setField(customer, "id", (long) i);
-////
-////            lenient().when(customerRepository.findById((long) i)).thenReturn(Optional.of(customer));
-////
-////            executorService.submit(() -> {
-////                try {
-////                    eventServiceImpl.downloadCoupon(customer.getId(), couponEvent.getId());
-////                } catch (Exception e) {
-////                    System.err.println("Exception occurred for customer ID " + customer.getId() + ": " + couponEvent.getId());
-////                } finally {
-////                    latch.countDown();
-////                }
-////            });
-////        }
-////        latch.await();
-////        executorService.shutdown();
-////
-////        // Then
-////        verify(couponBoxRepository, times(threadCount)).save(any(CouponBox.class));
-////        assertThat(valueOperations.get("couponCount:" + couponEvent.getId())).isEqualTo("0");
-////
-////        // Clean up Redis
-////        redisTemplate.delete("couponCount:" + couponEvent.getId());
-////    }
-////}
-////
-////
-////
-//@SpringBootTest
-//class EventServiceImplTest {
-//    @Autowired
-//    private EventServiceImpl eventServiceImpl;
-//    @Autowired
-//    EventRepository eventRepository;
-//
-//    @Test
-//    public void 한번만응모(){
-//
-//    }
-//
-//    @Test
-//    public void 여러명응모(){
-//        int threadCount = 1000;
-//        ExcutorService excutorService = Excutors.newfixedThreadPool(32);
-//        new CountDownLatch latch = new CountDownLatch(threadCount);
-//        for(int i = 0; i < threadCount; i++){
-//            long customerId = i;
-//            excutorService.submit(() -> {
-//                try{
-//                    eventServiceImpl.downloadCoupon(customerId, 1L);
-//                }finally{
-//                    latch.countDown();
-//                }
-//            });
-//        }
-//
-//        latch.await();
-//        long count = eventRepository.count();
-//        assertThat(count).isEqualTo(100);
-//    }
-//}
+package shop.sellution.server.event.application;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.annotation.Transactional;
+import shop.sellution.server.company.domain.Company;
+import shop.sellution.server.company.domain.CompanyImage;
+import shop.sellution.server.company.domain.repository.CompanyRepository;
+import shop.sellution.server.company.domain.type.ImagePurposeType;
+import shop.sellution.server.company.domain.type.SellType;
+import shop.sellution.server.company.domain.type.SubscriptionType;
+import shop.sellution.server.customer.domain.Customer;
+import shop.sellution.server.customer.domain.CustomerRepository;
+import shop.sellution.server.customer.domain.type.CustomerType;
+import shop.sellution.server.event.application.EventServiceImpl;
+import shop.sellution.server.event.domain.CouponBoxRepository;
+import shop.sellution.server.event.domain.CouponEvent;
+import shop.sellution.server.event.domain.EventRepository;
+import shop.sellution.server.event.domain.type.TargetCustomerType;
+import shop.sellution.server.global.type.DeliveryType;
+import shop.sellution.server.global.type.DisplayStatus;
+
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+@SpringBootTest
+class EventServiceImplTest {
+    @Autowired
+    private EventServiceImpl eventServiceImpl;
+    @Autowired
+    EventRepository eventRepository;
+    @Autowired
+    CouponBoxRepository couponBoxRepository;
+    @Autowired
+    CompanyRepository companyRepository; // 추가 필요
+    @Autowired
+    CustomerRepository customerRepository; // 추가 필요
+    @Autowired
+    RedisTemplate<String, String> redisTemplate;
+
+
+    @BeforeEach
+    public void setup() {
+        Company company = Company.builder()
+                .companyId(1L)
+                .displayName("Pocket Salad")
+                .name("PocketSalad")
+                .shopUrl("https://sellution/shopping/pocketsalad")
+                .isShopVisible(DisplayStatus.Y)
+                .isAutoApproved(DisplayStatus.N)
+                .isNewMemberEvent(DisplayStatus.N)
+                .serviceType(DeliveryType.BOTH)
+                .subscriptionType(SubscriptionType.MONTH)
+                .minDeliveryCount(5)
+                .maxDeliveryCount(30)
+                .themeColor("F37021")
+                .sellType(SellType.ALL)
+                .mainPromotion1Title("한끼, 건강하고 간단하게")
+                .mainPromotion1Content("최고의 퀄리티를 위해\n아끼지 않고 가득 담았습니다.")
+                .mainPromotion2Title("식단 관리 할 사람!")
+                .mainPromotion2Content("너랑!  나랑!")
+                .build();
+        companyRepository.save(company);
+
+
+        CouponEvent couponEvent = CouponEvent.builder()
+                .company(company)
+                .couponName("Test Coupon")
+                .couponDiscountRate(10)
+                .targetCustomerType(TargetCustomerType.ALL)
+                .eventStartDate(LocalDate.now())
+                .eventEndDate(LocalDate.now().plusDays(10))
+                .totalQuantity(100)
+                .isDeleted(false)
+                .build();
+        ReflectionTestUtils.setField(couponEvent, "id", 1L);
+        eventRepository.save(couponEvent); // 저장
+        String key = "event:" + couponEvent.getId();
+        try {
+            // Redis에 초기 set 생성 및 TTL 설정
+            redisTemplate.delete(key);  // 기존 키 삭제 (다시 create 할 때 중복 방지)
+            redisTemplate.opsForSet().add(key, "INIT");  // 빈 set 생성 + TTL 설정 위한 더미데이터 추가
+        } catch (Exception e) {
+            // Redis 설정 중 예외 발생 시 RDB 트랜잭션 롤백
+            eventRepository.delete(couponEvent);
+            throw new RuntimeException("Redis 설정 중 오류가 발생했습니다. 이벤트 생성이 취소되었습니다.", e);
+        }
+
+        for (int i = 1; i <= 1000; i++) {
+            Customer customer = Customer.builder()
+                    .company(company)
+                    .username("newCustomer")
+                    .password("newCustomer")
+                    .name("길재현" + i)
+                    .phoneNumber("01075985112")
+                    .type(CustomerType.NEW)
+                    .build();
+
+            ReflectionTestUtils.setField(customer, "id", (long) i); // Long 타입으로 설정
+
+            customerRepository.save(customer); // 저장
+        }
+    }
+
+    @DisplayName("쿠폰 다운로드 한번 성공 테스트")
+    @Test
+    @Transactional
+    @Rollback
+    void 하나만_다운로드() {
+        //given
+        Company company = companyRepository.findById(1L).get();
+
+        Customer customer = Customer.builder()
+                .company(company)
+                .username("newCustomer")
+                .password("newCustomer")
+                .name("길재현")
+                .phoneNumber("01075985112")
+                .type(CustomerType.NEW)
+                .build();
+
+        customerRepository.save(customer); // 저장
+
+        //when
+        eventServiceImpl.downloadCoupon(1L, 1L);
+
+        long count = couponBoxRepository.countByCouponEvent_Id(1L);
+        assertThat(count).isEqualTo(1);
+    }
+
+    @DisplayName("쿠폰 다운로드 여러명 성공 테스트")
+    @Test
+    void 여러명_다운로드() throws InterruptedException {
+        Company company = companyRepository.findById(1L).get();
+
+        int threadCount = 1000;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch countDownLatch = new CountDownLatch(threadCount);    //다른 스레드에서 사용하는 작업 기다리게 해줌
+
+        for(int i = 1; i <= threadCount; i++){
+            long customerId = i;
+            executorService.submit(() -> {
+                try {   //threadCount만큼의 요청 보내기
+                    eventServiceImpl.downloadCoupon(1L, customerId);
+                } catch (Exception e) {
+                    System.err.println("Exception occurred for customer ID " + customerId + ": " + 1L);
+                } finally {
+                    countDownLatch.countDown();
+                }
+            });
+        }
+
+        countDownLatch.await();
+        //모든 요청이 완료되면 생성된 쿠폰의 개수 확인
+        long count = couponBoxRepository.countByCouponEvent_Id(1L);
+        System.out.println("couponEvent 발급 수량: " + count);
+        assertThat(count).isEqualTo(eventRepository.findById(1L).get().getTotalQuantity());
+    }
+
+    @DisplayName("쿠폰 다운로드 동시성 성공 테스트")
+    @Test
+    void downloadCoupon2() throws InterruptedException {
+        Company company = companyRepository.findById(1L).get();
+
+        int threadCount = 1000;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch countDownLatch = new CountDownLatch(threadCount);
+
+        for (int i = 1; i <= threadCount ; i++) {
+            long customerId = i;
+            executorService.submit(() -> {
+                try {
+                    eventServiceImpl.downloadCoupon2(1L, customerId);
+                    //다운로드 과정에서
+                } catch (Exception e) {
+                    System.err.println("Exception occurred for customer ID " + customerId + ": " + 1L);
+                } finally {
+                    countDownLatch.countDown();
+                }
+            });
+        }
+        countDownLatch.await();
+        //모든 요청이 완료되면 생성된 쿠폰의 개수 확인
+        int count = (int) couponBoxRepository.countByCouponEvent_Id(1L);
+        System.out.println("couponEvent 발급 수량: " + count);
+        assertThat(count).isEqualTo(eventRepository.findById(1L).get().getTotalQuantity());
+    }
+}
