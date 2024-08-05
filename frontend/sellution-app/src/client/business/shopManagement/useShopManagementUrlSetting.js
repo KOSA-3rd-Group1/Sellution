@@ -104,7 +104,8 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
 
   const handleDownload = async (imageUrl) => {
     imageUrl = await convertImageUrlToFileAndBlob(imageUrl);
-    const fileName = imageUrl.split('/').pop(); // 파일 이름 추출 (URL의 마지막 부분)
+    const fileName = imageUrl;
+    // const fileName = imageUrl.split('/').pop(); // 파일 이름 추출 (URL의 마지막 부분)
 
     const link = document.createElement('a'); // a 태그를 생성하고 설정
     link.href = imageUrl;
@@ -132,26 +133,23 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
   //     return null;
   //   }
   // }, []);
-const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
-  try {
-    // S3 URL에서 경로 부분만 추출
-    const pathOnly = imageUrl.replace(/^https?:\/\/[^\/]+/, '');
-    
-    // 프록시 URL 생성
-    const proxyUrl = `/s3-bucket${pathOnly}`;
-    
-    const response = await fetch(proxyUrl);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
 
-    const blob = await response.blob();
-    return URL.createObjectURL(blob);
-  } catch (error) {
-    console.error('Error converting image:', error);
-    return null;
-  }
-}, []);
+  const convertImageUrlToFileAndBlob = async (imageUrl) => {
+    try {
+      // S3 버킷 URL을 프록시 URL로 변경
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      return URL.createObjectURL(blob);
+    } catch (error) {
+      //   console.error('Error converting image:', error);
+      return null;
+    }
+  };
+
 
   return {
     data,
