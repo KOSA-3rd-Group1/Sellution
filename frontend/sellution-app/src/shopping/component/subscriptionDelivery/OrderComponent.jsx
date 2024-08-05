@@ -234,12 +234,18 @@ const OrderComponent = () => {
   const handleOrderClick = async () => {
     if (isOrderButtonDisabled) return;
 
+    console.log('listToShow:', listToShow);
+
     const orderedProducts = listToShow.map((item) => ({
-      productId: item.productId,
+      productId: item.id,
       count: item.quantity,
-      price: item.discountedPrice || item.cost,
+      price: item.cost,
       discountRate: item.discountRate || 0,
     }));
+
+    console.log('orderedProducts:', orderedProducts);
+
+
 
     const saveOrderReq = {
       companyId: companyId, // 회사 ID

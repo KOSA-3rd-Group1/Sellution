@@ -113,8 +113,17 @@ const OrderComponent = () => {
   // 결제금액 계산
   const calculateTotalPrice = () => {
     const total = listToShow.reduce((sum, item) => sum + item.cost * item.quantity, 0);
+    // const productDiscountTotal = listToShow.reduce(
+    //   (sum, item) => sum + (item.cost - item.discountedPrice) * item.quantity,
+    //   0,
+    // );
+
     const productDiscountTotal = listToShow.reduce(
-      (sum, item) => sum + (item.cost - item.discountedPrice) * item.quantity,
+      (sum, item) => {
+        console.log('item.cost :' + item.cost);
+        console.log('item.discountedPrice :' + item.discountedPrice);
+        return sum + (item.cost - item.discountedPrice) * item.quantity
+      },
       0,
     );
     const couponDiscountTotal = selectedCoupon
@@ -151,7 +160,7 @@ const OrderComponent = () => {
     const orderedProducts = listToShow.map((item) => ({
       productId: item.productId,
       count: item.quantity,
-      price: item.discountedPrice || item.cost,
+      price: item.cost,
       discountRate: item.discountRate || 0,
     }));
 
