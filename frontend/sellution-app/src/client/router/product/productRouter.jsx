@@ -25,8 +25,8 @@ const productRouter = () => {
         >
           <MainHeaderNavLayout
             navMenus={[
-              { label: '상품 목록', link: '' },
-              { label: '카테고리 목록', link: 'category' },
+              { label: '상품 목록', link: '/product' },
+              { label: '카테고리 목록', link: '/product/category' },
             ]}
             isEnd={true}
           />
