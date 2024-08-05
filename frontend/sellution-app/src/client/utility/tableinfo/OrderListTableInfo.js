@@ -24,14 +24,14 @@ export const HEADERS = [
     width: 'min-w-36 w-36 max-w-36',
   },
   {
-    key: 'deliveryStartDate',
-    label: '주문 시작일',
+    key: 'nextDeliveryDate',
+    label: '다음 배송일',
     type: 'none',
     width: 'min-w-36 w-36 max-w-36',
   },
   {
     key: 'deliveryEndDate',
-    label: '주문 종료일',
+    label: '배송 종료일',
     type: 'none',
     width: 'min-w-36 w-36 max-w-36',
   },
