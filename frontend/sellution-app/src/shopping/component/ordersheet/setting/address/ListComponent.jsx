@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
 import axios from 'axios';
-import { useParams, useNavigate, Link , useLocation  } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import MenuHeaderNav from '../../../../layout/MenuHeaderNav';
 import OneButtonFooterLayout from '../../../../layout/OneButtonFooterLayout';
 import ReusableOneButtonModal from '@/shopping/layout/partials/ReusableOneButtonModal';
@@ -28,11 +28,11 @@ const ListComponent = () => {
 
     // 이전 경로가 배송지 추가 페이지 패턴과 일치하지 않을 때만 localStorage 업데이트
     if (!addAddressPattern.test(previousPath)) {
-      const originOrderPath = previousPath || localStorage.getItem('originOrderPath') || '/default/path';
+      const originOrderPath =
+        previousPath || localStorage.getItem('originOrderPath') || '/default/path';
       localStorage.setItem('originOrderPath', originOrderPath);
     }
   }, [location]);
-
 
   const DisplayStatus = {
     N: 'N',
@@ -111,8 +111,13 @@ const ListComponent = () => {
       <MenuHeaderNav title={'배송지 목록'} />
       <div className='w-[100%] mx-auto'>
         {addresses.length === 0 ? (
-          <div className='w-full h-full flex justify-center items-center'>
-            <div className='text-gray-500 py-3 text-center text-lg'>등록된 배송지가 없습니다</div>
+          <div className='w-full h-64 flex justify-center items-center'>
+            <div className='text-gray-500 py-3 text-center text-lg border-2 border-dashed border-gray-300 rounded-lg p-8'>
+              등록된 배송지가 없습니다.
+              <br />
+              아래의 '배송지 추가' 버튼을 눌러 <br />
+              새로운 배송지를 등록해주세요.
+            </div>
           </div>
         ) : (
           addresses.map((address, index) => (

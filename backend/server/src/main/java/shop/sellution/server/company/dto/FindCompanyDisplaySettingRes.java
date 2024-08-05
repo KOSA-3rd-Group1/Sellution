@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class FindCompanyDisplaySettingRes {
     private Long companyId;
     private String displayName;
-    private String logoImageUrl; //null이면 displayName 넣어줌
+    private String logoImageUrl;
     private List<String> promotionImageUrls;
     private DeliveryType serviceType;
     private String themeColor; //deflaut값 있음
