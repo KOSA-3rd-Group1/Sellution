@@ -2,10 +2,10 @@ name: FRONT CI/CD
 
 on:
   workflow_dispatch: 
-  push:
-    branches: [ main ]
-    paths:
-      - 'frontend/sellution-app/**'
+  # push:
+  #   branches: [ main ]
+  #   paths:
+  #     - 'frontend/sellution-app/**'
   pull_request:
     types: [closed]
     branches: [ main ]
@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-and-deploy:
-    # if: (github.event_name == 'pull_request' && github.event.pull_request.merged == true) || github.event_name == 'push'
+    if: (github.event_name == 'pull_request' && github.event.pull_request.merged == true) || github.event_name == 'push'
     runs-on: ubuntu-latest
     
     steps:
