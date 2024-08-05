@@ -157,7 +157,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         포켓샐러드 = Company.builder()
                 .displayName("Pocket Salad")
                 .name("PocketSalad")
-                .shopUrl("https://sellution/shopping/pocketsalad")
+                .shopUrl("https://sellution/shopping/PocketSalad")
                 .isShopVisible(DisplayStatus.Y)
                 .isAutoApproved(DisplayStatus.N)
                 .isNewMemberEvent(DisplayStatus.N)
