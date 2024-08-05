@@ -195,9 +195,12 @@ export const useProductList = () => {
 
       console.log('Fetching products with params:', params);
 
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
-        params,
-      });
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/products?sort=createdAt,DESC`,
+        {
+          params,
+        },
+      );
       console.log('response :', response.data);
 
       const updatedData = response.data.content.map((item) => ({
@@ -271,7 +274,8 @@ export const useProductList = () => {
   };
 
   const handleSelectAll = () => {
-    if (Object.values(selectedRows).every(Boolean)) {
+    const allSelected = data.length > 0 && Object.keys(selectedRows).length === data.length;
+    if (allSelected) {
       setSelectedRows({});
     } else {
       const newSelectedRows = {};

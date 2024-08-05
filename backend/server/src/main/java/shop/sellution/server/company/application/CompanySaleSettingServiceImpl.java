@@ -15,6 +15,7 @@ import shop.sellution.server.company.domain.repository.DayOptionRepository;
 import shop.sellution.server.company.domain.repository.MonthOptionRepository;
 import shop.sellution.server.company.domain.repository.WeekOptionRepository;
 import shop.sellution.server.company.domain.type.DayValueType;
+import shop.sellution.server.company.domain.type.SellType;
 import shop.sellution.server.company.domain.type.SubscriptionType;
 import shop.sellution.server.company.dto.FindCompanySaleSettingRes;
 import shop.sellution.server.company.dto.FindOptionRes;
@@ -68,8 +69,24 @@ public class CompanySaleSettingServiceImpl implements CompanySaleSettingService 
                 .map(FindOptionRes::fromEntity)
                 .collect(Collectors.toList());
 
-        return FindCompanySaleSettingRes.fromEntity(company, monthValues, weekValues, dayValues);
+        List<Long> categoryIds = null;
+        List<Long> productIds = null;
+
+        if (company.getSellType() == SellType.CATEGORY) {
+            categoryIds = categoryRepository.findByCompanyAndIsVisible(company, DisplayStatus.Y)
+                    .stream()
+                    .map(Category::getCategoryId)
+                    .collect(Collectors.toList());
+        } else if (company.getSellType() == SellType.EACH) {
+            productIds = productRepository.findByCompanyAndIsVisible(company, DisplayStatus.Y)
+                    .stream()
+                    .map(Product::getProductId)
+                    .collect(Collectors.toList());
+        }
+
+        return FindCompanySaleSettingRes.fromEntity(company, monthValues, weekValues, dayValues, categoryIds, productIds);
     }
+
 
     @Override
     @Transactional

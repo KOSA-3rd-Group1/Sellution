@@ -28,7 +28,7 @@ const ListComponent = () => {
   const { alertModalState, openAlertModal, closeAlertModal } = useModal();
   const {
     data,
-    // holdCount,
+    holdCount,
     totalPages,
     totalDataCount,
     tableState,
@@ -75,7 +75,7 @@ const ListComponent = () => {
             handleRowEvent={moveToPathname}
             Btns={
               <div className='flex justify-center items-center gap-4'>
-                {/* <CountOrderBtn label={'주문승인대기'} count={holdCount} /> */}
+                 <CountOrderBtn label={'주문승인대기'} count={holdCount} />
                 <EventBtn
                   Icon={OrderApproveAllIcon}
                   label={'간편주문승인'}

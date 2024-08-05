@@ -83,7 +83,10 @@ const OrderComponent = () => {
   const handleAddressChange = () => {
     saveState(); // 현재 상태 저장
     navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
-      state: { returnToOrder: true },
+      state: {
+        returnToOrder: true,
+        from: location.pathname // 현재 페이지의 경로를 저장
+      },
     });
   };
 

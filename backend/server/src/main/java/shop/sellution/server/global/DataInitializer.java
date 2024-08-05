@@ -138,14 +138,14 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         createContractCompany();
         createCategory();
         createProduct();
-        createProduct2();
-//        createProductImages();
-        createProductImages2();
+//        createProduct2();
+        createProductImages();
+//        createProductImages2();
         createCustomer();
-        createAccount();
+//        createAccount();
         createAddress();
         createCompanyOptions();
-        createCouponEvent();
+//        createCouponEvent();
 //        createOrder();
 
 
@@ -990,7 +990,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                 }
             }
             orderReqBuilder.dayValueTypeList(selectedDayValueType);
-            orderReqBuilder.eventId(random.nextLong(9)+1); // 이벤트 랜덤지정
+//            orderReqBuilder.eventId(random.nextLong(9)+1); // 이벤트 랜덤지정
 
             orderCreationService.createOrder(customer.getId(), orderReqBuilder.build());
         }

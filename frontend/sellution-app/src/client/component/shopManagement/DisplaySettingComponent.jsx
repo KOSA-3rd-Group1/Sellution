@@ -2,6 +2,8 @@ import FooterComponent from '@/client/layout/partials/FooterComponent';
 import { InfoInput } from '@/client/layout/common/Input';
 import ColorPalette from '@/client/layout/common/ColorPalette';
 import ShoppingMallPreview from '@/client/layout/shopManagement/ShoppingMallPreview';
+import AlertModal from '@/client/layout/common/modal/AlertModal';
+import LoadingModal from '@/client/layout/common/modal/LodingModal';
 import { useModal } from '@/client/business/common/useModal';
 import { useShopManagementDisplaySetting } from '@/client/business/shopManagement/useShopManagementDisplaySetting';
 import ImageBox from '@/client/layout/common/ImageBox';
@@ -9,7 +11,7 @@ import ImageBox from '@/client/layout/common/ImageBox';
 const DisplaySettingComponent = () => {
   const {
     alertModalState,
-    autoCloseModalState,
+    // autoCloseModalState,
     openAlertModal,
     closeAlertModal,
     openAutoCloseModal,
@@ -20,6 +22,7 @@ const DisplaySettingComponent = () => {
     logoImg,
     selectedLogoImg,
     promotionImg,
+    isLoading,
     selectedPromotionImg,
     setLogoImg,
     setSelectedLogoImg,
@@ -29,10 +32,11 @@ const DisplaySettingComponent = () => {
     handleChangePromotionImg,
     handleChangeLogoImg,
     handleUploadSuccess,
-    handleBeforeRemove,
-    handleEditImage,
-    handleRestoreData,
-    handleSaveData,
+    // handleBeforeRemove,
+    // handleEditImage,
+    checkResetContent,
+    checkSaveContent,
+    handleOnConfirm,
   } = useShopManagementDisplaySetting({ openAlertModal, openAutoCloseModal, closeAutoCloseModal });
 
   return (
@@ -61,8 +65,8 @@ const DisplaySettingComponent = () => {
                 TitleTag={<div>로고 이미지 </div>}
                 inputId={'file-upload-logo'}
                 onUploadSuccess={handleUploadSuccess}
-                onBeforeRemove={handleBeforeRemove}
-                onEditImage={handleEditImage}
+                // onBeforeRemove={handleBeforeRemove}
+                // onEditImage={handleEditImage}
                 onDataChange={handleChangeLogoImg}
                 isMultiImage={false}
                 maxImageCount={1}
@@ -83,8 +87,8 @@ const DisplaySettingComponent = () => {
                 }
                 inputId={'file-upload-promotion'}
                 onUploadSuccess={handleUploadSuccess}
-                onBeforeRemove={handleBeforeRemove}
-                onEditImage={handleEditImage}
+                // onBeforeRemove={handleBeforeRemove}
+                // onEditImage={handleEditImage}
                 onDataChange={handleChangePromotionImg}
                 isMultiImage={true}
                 maxImageCount={5}
@@ -161,9 +165,20 @@ const DisplaySettingComponent = () => {
         </div>
       </section>
       <FooterComponent
-        btn1={{ label: '취소', event: handleRestoreData }}
-        btn2={{ label: '변경사항 적용', event: handleSaveData }}
+        btn1={{ label: '취소', event: checkResetContent }}
+        btn2={{ label: '변경사항 적용', event: checkSaveContent }}
       />
+
+      <AlertModal
+        isOpen={alertModalState.isOpen}
+        onClose={closeAlertModal}
+        onConfirm={handleOnConfirm}
+        type={alertModalState.type}
+        title={alertModalState.title}
+        message={alertModalState.message}
+      />
+
+      <LoadingModal isOpen={isLoading} />
     </div>
   );
 };
