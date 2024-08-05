@@ -19,16 +19,16 @@ export default defineConfig({
   resolve: {
     alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
   },
-  server: {
-    proxy: {
-      // S3 버킷에 대한 프록시 설정 추가
-      '/s3-bucket': {
-        // target: 'https://t1-back-s3.s3.ap-northeast-2.amazonaws.com',
-        target: 'https://dn4dz12f3344k.cloudfront.net',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/s3-bucket/, ''),
-      },
-    },
-  },
+  //   server: {
+  //     proxy: {
+  //       // S3 버킷에 대한 프록시 설정 추가
+  //       '/s3-bucket': {
+  //         // target: 'https://t1-back-s3.s3.ap-northeast-2.amazonaws.com',
+  //         target: 'https://dn4dz12f3344k.cloudfront.net',
+  //         changeOrigin: true,
+  //         secure: false,
+  //         rewrite: (path) => path.replace(/^\/s3-bucket/, ''),
+  //       },
+  //     },
+  //   },
 });
