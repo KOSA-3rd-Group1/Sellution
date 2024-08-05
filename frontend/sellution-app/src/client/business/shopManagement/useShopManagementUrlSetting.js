@@ -102,10 +102,32 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
     }
   };
 
+  // const handleDownload = async (imageUrl) => {
+  //   imageUrl = await convertImageUrlToFileAndBlob(imageUrl);
+  //   const fileName = imageUrl;
+  //   // const fileName = imageUrl.split('/').pop(); // 파일 이름 추출 (URL의 마지막 부분)
+
+  //   const link = document.createElement('a'); // a 태그를 생성하고 설정
+  //   link.href = imageUrl;
+  //   link.download = fileName || 'qr_code.png'; // 파일 이름이 추출되지 않으면 기본값 사용
+  //   link.target = '_blank'; // 일부 브라우저에서 필요할 수 있음
+
+  //   document.body.appendChild(link); // 링크를 문서에 추가하고 클릭 이벤트를 발생시킨 후 제거
+  //   link.click();
+  //   document.body.removeChild(link);
+  // };
+
   const handleDownload = async (imageUrl) => {
     imageUrl = await convertImageUrlToFileAndBlob(imageUrl);
-    const fileName = imageUrl;
-    // const fileName = imageUrl.split('/').pop(); // 파일 이름 추출 (URL의 마지막 부분)
+
+    // URL에서 파일 이름 추출
+    const urlParts = imageUrl.split('/');
+    let fileName = urlParts[urlParts.length - 1];
+
+    // 파일 이름에 확장자가 없으면 .png 추가
+    if (!fileName.toLowerCase().endsWith('.png')) {
+      fileName += '.png';
+    }
 
     const link = document.createElement('a'); // a 태그를 생성하고 설정
     link.href = imageUrl;
