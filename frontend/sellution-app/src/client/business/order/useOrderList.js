@@ -20,10 +20,19 @@ import {
 } from '@/client/utility/functions/orderListFunction';
 import { HEADERS } from '@/client/utility/tableinfo/CustomerListTableInfo';
 
-export const useOrderList = ({ queryParams, page, size, refresh, updateQueryParameter }) => {
+export const useOrderList = ({
+  queryParams,
+  page,
+  size,
+  refresh,
+  updateQueryParameter,
+  openAlertModal,
+}) => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+
   const companyId = useUserInfoStore((state) => state.companyId);
+
   const { isAutoApproved, setIsAutoApproved } = useUserInfoStore((state) => ({
     isAutoApproved: state.isAutoApproved,
     setIsAutoApproved: state.setIsAutoApproved,
@@ -40,7 +49,11 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
   const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수
   const [totalDataCount, setTotalDataCount] = useState(0); // 데이터 총 개수
   const [orderInfo, setOrderInfo] = useState({}); // 주문 취소를 위한 주문 데이터
+  //   const [holdCount, setHoldCount] = useState(0);
   const [isDataChange, setIsDataChange] = useState(false);
+  const [confirmType, setConfirmType] = useState('approveOrder');
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // 테이블 상태 관리 - 검색, 필터, 정렬 기능
   const [tableState, setTableState] = useState(
@@ -155,7 +168,6 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
       const pageParam = prepareSearchParams(tableState, page, size);
       const responseData = await getOrderList(companyId, pageParam, setAccessToken, accessToken); // API 요청
 
-      console.log(responseData);
       const { content, empty, pageable, totalElements, totalPages } = responseData.data;
 
       // 필터링 시 현재 페이지에 데이터가 없는 경우 1page로 이동
@@ -174,15 +186,19 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
             accountId: item.accountId,
           };
         });
+        // const updateHoldCount = content.filter((item) => item.status === 'HOLD').length;
+
         setOrderInfo(() => ({ ...newOrderInfo }));
         setData(() => formattedContent);
         setTotalDataCount(totalElements);
         setTotalPages(totalPages);
+        // setHoldCount(updateHoldCount);
         updateQueryParameter(pageParam, page);
       } else {
         setData([]);
         setTotalDataCount(0);
         setTotalPages(1);
+        // setHoldCount(0);
         updateQueryParameter(pageParam, 1);
       }
     };
@@ -196,7 +212,6 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
 
   // 날짜 범위 조회 핸들러
   const handleChangeDateRangeValue = (newDataRangeValue) => {
-    console.log('newValue:', newDataRangeValue);
     setDateRangeValue(newDataRangeValue);
   };
 
@@ -212,70 +227,142 @@ export const useOrderList = ({ queryParams, page, size, refresh, updateQueryPara
       await postAutoApproveToggle(companyId, setAccessToken, accessToken);
       await setIsAutoApproved(!isAutoApproved);
     } catch (error) {
-      console.log(error);
+      //   console.log(error);
     }
   };
 
-  // 간편 주문 승인 일괄 처리(수정 필요)
-  const handleApproveAllSimpleOrderBtn = async () => {
-    if (tables !== undefined) {
-      //   total
-      Object.entries(tables.selectedRows).forEach(async ([key, value]) => {
-        if (value) {
-          await handleApproveSimpleOrder(key);
+  // 간편 주문 승인 일괄 처리 여부 확인
+  const checkAppoveOrder = () => {
+    if (tables !== undefined && tables?.selectedRows !== undefined) {
+      const hasTrueValue = Object.values(tables?.selectedRows).some((value) => value === true);
+      if (hasTrueValue) {
+        setConfirmType('approveOrder');
+        openAlertModal('warning', '주의', '선택한 주문들을 승인하시겠습니까?');
+        return;
+      }
+    }
+    openAlertModal('error', '오류', '선택한 주문이 없습니다.');
+  };
+
+  // 간편 주문 취소 일괄 처리 여부 확인
+  const checkCancleOrder = () => {
+    if (tables !== undefined && tables?.selectedRows !== undefined) {
+      const hasTrueValue = Object.values(tables?.selectedRows).some((value) => value === true);
+      if (hasTrueValue) {
+        setConfirmType('cancleOrder');
+        openAlertModal('warning', '주의', '선택한 주문들을 취소하시겠습니까?');
+        return;
+      }
+    }
+    openAlertModal('error', '오류', '선택한 주문이 없습니다.');
+  };
+
+  // 간편 주문 승인 일괄 처리
+  const handleApproveAllSimpleOrder = async () => {
+    setIsLoading(true);
+    const startTime = Date.now();
+
+    let successCnt = 0;
+    let errorCnt = 0;
+
+    const approvePromises = Object.entries(tables.selectedRows).map(async ([key, value]) => {
+      if (value) {
+        try {
+          await postApproveOrder(key, setAccessToken, accessToken);
+          successCnt += 1;
+        } catch (err) {
+          errorCnt += 1;
         }
-      });
-      alert('간편 주문 일괄 승인');
-    } else {
-      alert('없음');
+      }
+    });
+
+    await Promise.all([
+      Promise.all(approvePromises),
+      new Promise((resolve) => setTimeout(resolve, 1000)), // 최소 1초 대기
+    ]);
+
+    const endTime = Date.now();
+    const elapsedTime = endTime - startTime;
+
+    if (elapsedTime < 1000) {
+      // 1초 미만으로 걸렸다면, 남은 시간만큼 더 대기
+      await new Promise((resolve) => setTimeout(resolve, 1000 - elapsedTime));
     }
-    // 모달로 처리
+
+    setIsLoading(false);
+    setIsDataChange(!isDataChange);
+
+    openAlertModal('success', '승인 완료', `성공 : ${successCnt}, 실패 : ${errorCnt}`);
   };
 
-  // 간편 주문 승인
-  const handleApproveSimpleOrder = async (orderId) => {
-    try {
-      await postApproveOrder(orderId, setAccessToken, accessToken);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // 주문 취소 일괄 처리
+  const handleCancleAllOrder = async () => {
+    setIsLoading(true);
+    const startTime = Date.now();
 
-  // 주문 승인 일괄 처리
-  const handleApproveCancleAll = async () => {
-    if (tables !== undefined) {
-      Object.entries(tables.selectedRows).forEach(([key, value]) => {
-        if (value) {
-          handleApproveCancle(key, orderInfo[key]);
+    let successCnt = 0;
+    let errorCnt = 0;
+
+    const approvePromises = Object.entries(tables.selectedRows).map(async ([key, value]) => {
+      if (value) {
+        try {
+          await postCancleOrder(key, orderInfo[key], setAccessToken, accessToken);
+          successCnt += 1;
+        } catch (err) {
+          errorCnt += 1;
         }
-      });
-      alert('간편 주문 일괄 승인');
-    } else {
-      alert('없음');
+      }
+    });
+
+    await Promise.all([
+      Promise.all(approvePromises),
+      new Promise((resolve) => setTimeout(resolve, 1000)), // 최소 1초 대기
+    ]);
+
+    const endTime = Date.now();
+    const elapsedTime = endTime - startTime;
+
+    if (elapsedTime < 1000) {
+      // 1초 미만으로 걸렸다면, 남은 시간만큼 더 대기
+      await new Promise((resolve) => setTimeout(resolve, 1000 - elapsedTime));
     }
+
+    setIsLoading(false);
+    setIsDataChange(!isDataChange);
+
+    openAlertModal('success', '취소 완료', `성공 : ${successCnt}, 실패 : ${errorCnt}`);
   };
 
-  // 주문 승인 취소
-  const handleApproveCancle = async (orderId, data) => {
-    try {
-      await postCancleOrder(orderId, data, setAccessToken, accessToken);
-    } catch (error) {
-      console.log(error);
+  // handle onConfirm
+  const handleOnConfirm = () => {
+    switch (confirmType) {
+      case 'approveOrder':
+        handleApproveAllSimpleOrder();
+        break;
+      case 'cancleOrder':
+        handleCancleAllOrder();
+        break;
+      default:
+        // moveList();
+        break;
     }
   };
 
   return {
     data,
+    // holdCount,
     totalPages,
     totalDataCount,
     tableState,
     dateRangeValue,
     isAutoApproved,
+    isLoading,
     setTableState,
     handleChangeDateRangeValue,
     handleFilterReset,
     handleToggleAutoOrderApproved,
-    handleApproveAllSimpleOrderBtn,
-    handleApproveCancleAll,
+    checkAppoveOrder,
+    checkCancleOrder,
+    handleOnConfirm,
   };
 };

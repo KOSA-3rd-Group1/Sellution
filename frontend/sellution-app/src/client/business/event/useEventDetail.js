@@ -85,6 +85,8 @@ export const useEventDetail = ({
         eventEndDate: data.eventEndDate,
       };
       await putEventDetail(eventId, updateData, setAccessToken, accessToken);
+
+      setIsChange(false);
       openAlertModal('success', '성공', '변경사항이 성공적으로 적용되었습니다.');
     } catch (error) {
       if (error instanceof ValidationError) {
@@ -92,6 +94,8 @@ export const useEventDetail = ({
       } else {
         openAlertModal('error', '오류', `${error.response.data.message}`);
       }
+
+      setIsChange(false);
       setRefresh(!refresh);
     }
   };

@@ -24,8 +24,34 @@ const useProductAdd = () => {
     isVisible: DisplayStatus.VISIBLE,
   });
 
+  const MAX_VALUE = 1000000000;
+
   const formatPrice = (price) => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    if (typeof price === 'number') {
+      return price.toLocaleString('ko-KR');
+    }
+    return '';
+  };
+
+  const parsePrice = (priceString) => {
+    if (typeof priceString === 'number') {
+      return priceString;
+    }
+    if (typeof priceString !== 'string') {
+      return 0;
+    }
+    return parseInt(priceString.replace(/[^\d]/g, ''), 10) || 0;
+  };
+
+  const calculateDiscountedPrice = (cost, discountRate) => {
+    const parsedCost = parsePrice(cost);
+    const discountedPrice = parsedCost - (parsedCost * discountRate) / 100;
+    return Math.round(discountedPrice);
+  };
+
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
   };
 
   const [images, setImages] = useState({
@@ -80,21 +106,46 @@ const useProductAdd = () => {
     const { name, value } = e.target;
     let parsedValue = value;
 
-    if (['stock', 'cost', 'discountRate'].includes(name)) {
-      parsedValue = value === '' ? 0 : parseInt(value, 10);
+    if (name === 'cost') {
+      const numericValue = parsePrice(value);
+      parsedValue = isNaN(numericValue) ? '' : Math.min(MAX_VALUE, numericValue);
+      parsedValue = formatPrice(parsedValue);
+    } else if (name === 'stock') {
+      const numericValue = parseInt(value.replace(/[^\d]/g, ''), 10);
+      parsedValue = isNaN(numericValue) ? '' : Math.min(MAX_VALUE, numericValue).toString();
+    } else if (name === 'discountRate') {
+      parsedValue = value === '' ? 0 : Math.min(100, Math.max(0, parseInt(value, 10)));
     }
 
     if (name === 'isDiscount') {
-      setIsDiscountApplied(value === DisplayStatus.VISIBLE);
-      parsedValue =
-        value === DisplayStatus.VISIBLE ? DisplayStatus.VISIBLE : DisplayStatus.INVISIBLE;
+      const isDiscountApplied = value === DisplayStatus.VISIBLE;
+      setIsDiscountApplied(isDiscountApplied);
+      parsedValue = isDiscountApplied ? DisplayStatus.VISIBLE : DisplayStatus.INVISIBLE;
+
+      if (!isDiscountApplied) {
+        setProductInfo((prev) => ({
+          ...prev,
+          isDiscount: DisplayStatus.INVISIBLE,
+          discountRate: 0,
+          discountStartDate: '',
+          discountEndDate: '',
+        }));
+        return;
+      }
     }
 
     if (name === 'deliveryType') {
       parsedValue = Object.values(DeliveryType).includes(value) ? value : '';
     }
 
-    setProductInfo((prev) => ({ ...prev, [name]: parsedValue }));
+    setProductInfo((prev) => {
+      const updatedInfo = { ...prev, [name]: parsedValue };
+      if (name === 'cost' || name === 'discountRate') {
+        const cost = parsePrice(updatedInfo.cost);
+        updatedInfo.discountedPrice = calculateDiscountedPrice(cost, updatedInfo.discountRate);
+      }
+      return updatedInfo;
+    });
   };
 
   const handleCategorySelect = (categoryName, categoryId) => {
@@ -192,6 +243,8 @@ const useProductAdd = () => {
     const jsonData = {
       companyId: companyId,
       ...productInfo,
+      stock: Number(productInfo.stock), // stock을 숫자로 변환
+      cost: parsePrice(productInfo.cost), // cost를 숫자로 변환
       discountStartDate: productInfo.discountStartDate
         ? `${productInfo.discountStartDate}T00:00:00`
         : null,
@@ -205,6 +258,9 @@ const useProductAdd = () => {
       delete jsonData.categoryName;
       delete jsonData.categoryId;
     }
+
+    // 서버로 보내는 데이터 콘솔에 출력
+    console.log('서버로 보내는 JSON 데이터:', JSON.stringify(jsonData, null, 2));
 
     formData.append('product', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }));
 
@@ -267,6 +323,9 @@ const useProductAdd = () => {
     registerProduct,
     setIsCategoryDropdownOpen,
     formatPrice,
+    parsePrice,
+    calculateDiscountedPrice,
+    getTodayDate,
   };
 };
 

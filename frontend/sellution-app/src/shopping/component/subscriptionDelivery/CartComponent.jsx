@@ -36,19 +36,25 @@ const CartComponent = () => {
     toggleSelectedItems,
     selectAllItems,
     removeSelectedItems,
+    getVisibleItemsCount,
   } = useCartStore();
   const { updateOrderList } = useOrderListStore();
 
   const navigate = useNavigate();
   const clientName = useCompanyInfoStore((state) => state.name);
+  const customerId = useUserInfoStore((state) => state.id);
   const allSelected =
     subscriptionCart.length > 0 && selectedSubscriptionItems.length === subscriptionCart.length;
-  const customerId = useUserInfoStore((state) => state.id);
+  const visibleItemsCount = getVisibleItemsCount('SUBSCRIPTION');
+  const isOrderButtonDisabled = selectedSubscriptionItems.length === 0;
+
   const addToOrderList = () => {
+    const visibleSelectedItems = selectedSubscriptionItems.filter((id) =>
+      subscriptionCart.find((item) => item.productId === id && item.isVisible !== 'N'),
+    );
     updateOrderList(selectedSubscriptionItems, subscriptionCart);
     navigate(`/shopping/${clientName}/subscription/order/${customerId}`);
   };
-  const isOrderButtonDisabled = selectedSubscriptionItems.length === 0;
 
   useEffect(() => {
     if (accessToken && clientName) {
@@ -92,7 +98,7 @@ const CartComponent = () => {
               <label htmlFor='selectAll' className='custom-checkbox'>
                 <div className='custom-checkbox-box'></div>
                 <span className='font-bold ml-2 text-sm'>
-                  전체 선택 ({selectedSubscriptionItems.length}/{subscriptionCart.length})
+                  전체 선택 ({selectedSubscriptionItems.length}/{visibleItemsCount})
                 </span>
               </label>
             </div>
@@ -115,7 +121,7 @@ const CartComponent = () => {
               subscriptionCart.map((item) => (
                 <li
                   key={item.productId}
-                  className='product-item py-4 border-gray-200 flex'
+                  className={`product-item py-4 border-gray-200 flex ${item.isVisible === 'N' ? 'opacity-50 bg-gray-200' : ''}`}
                   style={{ height: 'calc((100vh - 13.5rem) / 5)' }}
                 >
                   <div className='flex items-start'>
@@ -125,6 +131,7 @@ const CartComponent = () => {
                       onChange={() => toggleSelectedItems('SUBSCRIPTION', item.productId)}
                       className='hidden-checkbox'
                       id={`checkbox-${item.productId}`}
+                      disabled={item.isVisible === 'N'}
                     />
                     <label htmlFor={`checkbox-${item.productId}`} className='custom-checkbox'>
                       <div className='custom-checkbox-box'></div>
@@ -135,14 +142,21 @@ const CartComponent = () => {
                       className='product-image h-full aspect-square rounded-lg bg-cover '
                       style={{ backgroundImage: `url(${item.thumbnailImage})` }}
                     >
-                      <Link
-                        to={`/shopping/${clientName}/subscription/${item.productId}`}
-                        key={item.productId}
-                      ></Link>
+                      {item.isVisible !== 'N' && (
+                        <Link
+                          to={`/shopping/${clientName}/subscription/${item.productId}`}
+                          key={item.productId}
+                        ></Link>
+                      )}
                     </div>
                   </div>
                   <div className='product-item-2 flex-[5] flex flex-col justify-center px-4'>
-                    <div className='product-name font-bold text-sm'>{item.name}</div>
+                    <div className='product-name font-bold text-sm'>
+                      {item.name}
+                      {item.isVisible === 'N' && (
+                        <span className='text-red-500 ml-2'>(판매 중지)</span>
+                      )}
+                    </div>
                     <div className='product-price text-primary my-2'>
                       <div className='flex gap-2 items-center'>
                         <span className='text-gray-400 line-through text-xs'>
@@ -164,6 +178,7 @@ const CartComponent = () => {
                             setAccessToken,
                           )
                         }
+                        disabled={item.isVisible === 'N'}
                       >
                         <MinusIcon className={'minus w-4 h-4 stroke-current text-gray-600'} />
                       </button>
@@ -178,6 +193,7 @@ const CartComponent = () => {
                             setAccessToken,
                           )
                         }
+                        disabled={item.isVisible === 'N'}
                       >
                         <PlusIcon className={'plus w-4 h-4 stroke-current text-gray-600'} />
                       </button>

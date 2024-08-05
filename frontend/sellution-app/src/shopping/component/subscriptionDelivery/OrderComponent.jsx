@@ -147,13 +147,16 @@ const OrderComponent = () => {
   //월별 결제 >> 결제금액 계산 함수
   const calculateMonthlyPrice = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/orders/month/calculate-price', {
-        selectedDays: selectedDays,
-        weekOptionValue: selectedWeek.value,
-        monthOptionValue: selectedMonth.value,
-        perPrice: finalPrice,
-        startDate: selectedStartDate,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/orders/month/calculate-price`,
+        {
+          selectedDays: selectedDays,
+          weekOptionValue: selectedWeek.value,
+          monthOptionValue: selectedMonth.value,
+          perPrice: finalPrice,
+          startDate: selectedStartDate,
+        },
+      );
       return response.data;
     } catch (error) {
       console.error('Error calculating monthly price:', error);
@@ -229,7 +232,7 @@ const OrderComponent = () => {
     if (isOrderButtonDisabled) return;
 
     const orderedProducts = listToShow.map((item) => ({
-      productId: item.id,
+      productId: item.productId,
       count: item.quantity,
       price: item.discountedPrice || item.cost,
       discountRate: item.discountRate || 0,
@@ -293,7 +296,7 @@ const OrderComponent = () => {
   };
   const fetchSaleSettings = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/sale-setting/1');
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/sale-setting/1`);
       console.log('여기', response.data);
       setSubscriptionType(response.data.subscriptionType);
       setDayValues(response.data.dayValues || []);

@@ -22,6 +22,8 @@ export const useCustomerAddressAdd = ({
   const [isChange, setIsChange] = useState(false);
   const [confirmType, setConfirmType] = useState('moveList');
 
+  const [isLoading, setIsLoading] = useState(false);
+
   // 변경 가능한 값 변경 handler
   const handleChangeInputValue = (key, value) => {
     if (key === 'phoneNumber' && !validateInputPhoneNumber(value)) {
@@ -83,7 +85,12 @@ export const useCustomerAddressAdd = ({
       if (error instanceof ValidationError) {
         openAlertModal('error', '오류', error.message);
       } else {
-        openAlertModal('error', '오류', `${error.response.data.message}`);
+        // openAlertModal('error', '오류', `${error.response.data.message}`);
+        openAlertModal(
+          'error',
+          '오류',
+          `${error.response?.data?.message || '알 수 없는 오류가 발생했습니다.'}`,
+        );
       }
     }
   };
@@ -126,6 +133,7 @@ export const useCustomerAddressAdd = ({
 
   return {
     data,
+    isLoading,
     handleChangeInputValue,
     checkMoveList,
     checkSaveContent,

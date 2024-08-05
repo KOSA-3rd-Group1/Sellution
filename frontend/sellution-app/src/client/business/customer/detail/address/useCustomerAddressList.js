@@ -47,7 +47,7 @@ export const useCustomerAddressList = () => {
   useEffect(() => {
     const fetch = async (customerId, setAccessToken, accessToken) => {
       const response = await getCustomerAddressList(customerId, setAccessToken, accessToken); // API 요청
-      console.log(response);
+
       // API 받은 요청을 data에 입력
       if (response && response.data && response.data.length !== 0) {
         const formattedContent = response.data.map((item) => {

@@ -21,7 +21,7 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
   useEffect(() => {
     const fetch = async (companyId, setAccessToken, accessToken) => {
       const response = await getUrlSetting(companyId, setAccessToken, accessToken);
-      console.log(response);
+      //   console.log(response);
       setData(() => ({ ...response.data }));
     };
 
@@ -66,6 +66,7 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
   // 변경 사항 초기화
   const handleResetData = () => {
     openAlertModal('success', '성공', '작업이 성공적으로 완료되었습니다.');
+    setIsChange(false);
     setRefresh(!refresh);
   };
 
@@ -74,13 +75,17 @@ export const useShopManagementUrlSetting = ({ openAlertModal }) => {
     try {
       await putUrlSetting(data, setAccessToken, accessToken);
       openAlertModal('success', '성공', '변경사항이 성공적으로 적용되었습니다.');
+
+      setIsChange(false);
+      setRefresh(!refresh);
     } catch (error) {
       if (error instanceof ValidationError) {
         openAlertModal('error', '오류', error.message);
       } else {
         openAlertModal('error', '오류', `${error.response.data.message}`);
-        setRefresh(!refresh);
       }
+      setIsChange(false);
+      setRefresh(!refresh);
     }
   };
 

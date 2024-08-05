@@ -41,7 +41,7 @@ const TableOrder = ({
                 <div className='flex flex-col w-full h-full justify-between items-center gap-1'>
                   <input
                     type='checkbox'
-                    checked={selectAll}
+                    checked={!!selectAll}
                     onChange={handleSelectAll}
                     className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'
                   />
@@ -67,7 +67,7 @@ const TableOrder = ({
                     {header.type === 'filter' && (
                       <div className='w-full px-1'>
                         <select
-                          value={tableState[header.key]}
+                          value={tableState[header.key] || 'All'}
                           onChange={(e) => handleTableStateChange(header.key, e.target.value)}
                           className='w-full p-1 text-sm border rounded-lg pl-2 text-gray-600'
                         >
@@ -110,7 +110,7 @@ const TableOrder = ({
                     <div className='flex flex-col w-full justify-between items-center gap-3'>
                       <input
                         type='checkbox'
-                        checked={selectedRows[row.id] || false}
+                        checked={!!selectedRows[row.id]}
                         onChange={() => handleSelectRow(row.id)}
                         className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'
                       />

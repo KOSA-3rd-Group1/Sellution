@@ -75,6 +75,19 @@ const useCartStore = create((set, get) => ({
     });
   },
 
+  //여러개 한번에 삭제
+  removeItemsFromCart: async (cartType, productIds, accessToken, setAccessToken) => {
+    for (let productId of productIds) {
+      await removeFromCart(cartType, productId, accessToken, setAccessToken);
+    }
+    set((state) => {
+      const cartKey = cartType === 'ONETIME' ? 'onetimeCart' : 'subscriptionCart';
+      return {
+        [cartKey]: state[cartKey].filter((item) => !productIds.includes(item.productId)),
+      };
+    });
+  },
+
   clearCart: async (cartType, accessToken, setAccessToken) => {
     await clearCart(cartType, accessToken, setAccessToken);
     //get().findCart(cartType, accessToken, setAccessToken);
@@ -115,16 +128,22 @@ const useCartStore = create((set, get) => ({
   //selectedItems 생성, 수정 ( 특정 상품의 선택 상태를 선택/해제 )
   toggleSelectedItems: (cartType, productId) => {
     set((state) => {
+      const cartKey = cartType === 'ONETIME' ? 'onetimeCart' : 'subscriptionCart';
       const selectedItemsKey =
-        cartType === 'ONEIME' ? 'selectedOnetimeItems' : 'selectedSubscriptionItems';
+        cartType === 'ONETIME' ? 'selectedOnetimeItems' : 'selectedSubscriptionItems';
       const selectedItems = state[selectedItemsKey];
-      const isSelected = selectedItems.includes(productId); //현재 선택된 항목에 포함된 product인지 확인
-      return {
-        //포함되어있다면 선택해제, 없다면 선택
-        [selectedItemsKey]: isSelected
-          ? selectedItems.filter((id) => id !== productId)
-          : [...selectedItems, productId],
-      };
+      const item = state[cartKey].find((item) => item.productId === productId);
+
+      // Only toggle if the item is visible
+      if (item && item.isVisible !== 'N') {
+        const isSelected = selectedItems.includes(productId);
+        return {
+          [selectedItemsKey]: isSelected
+            ? selectedItems.filter((id) => id !== productId)
+            : [...selectedItems, productId],
+        };
+      }
+      return {};
     });
   },
 
@@ -133,8 +152,12 @@ const useCartStore = create((set, get) => ({
       const cartKey = cartType === 'ONETIME' ? 'onetimeCart' : 'subscriptionCart';
       const selectedItemsKey =
         cartType === 'ONETIME' ? 'selectedOnetimeItems' : 'selectedSubscriptionItems';
+
+      // Filter out items that are not visible
+      const visibleItems = state[cartKey].filter((item) => item.isVisible !== 'N');
+
       return {
-        [selectedItemsKey]: select ? state[cartKey].map((item) => item.productId) : [],
+        [selectedItemsKey]: select ? visibleItems.map((item) => item.productId) : [],
       };
     });
   },
@@ -146,9 +169,6 @@ const useCartStore = create((set, get) => ({
     for (let productId of selectedItems) {
       await get().removeFromCart(cartType, productId, accessToken, setAccessToken);
     }
-    //get().fetchCartItems(cartType, accessToken, setAccessToken);
-    //수정한 결과를 반환하기 위함
-    //await get().findCart(cartType, accessToken, setAccessToken); // 서버와 동기화
     set((state) => {
       const cartKey = cartType === 'ONETIME' ? 'onetimeCart' : 'subscriptionCart';
       return {
@@ -156,6 +176,13 @@ const useCartStore = create((set, get) => ({
         [selectedItemsKey]: [],
       };
     });
+  },
+
+  // New method to get visible items count
+  getVisibleItemsCount: (cartType) => {
+    const state = get();
+    const cartKey = cartType === 'ONETIME' ? 'onetimeCart' : 'subscriptionCart';
+    return state[cartKey].filter((item) => item.isVisible !== 'N').length;
   },
 }));
 //장바구니 페이지에 방문할 때마다 api를 부르는 게 아니라 전역객체에서 가져와서 띄워주는 것

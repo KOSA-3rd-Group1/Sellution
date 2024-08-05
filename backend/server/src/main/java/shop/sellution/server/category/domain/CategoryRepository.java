@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.global.type.DisplayStatus;
 
 import java.util.List;
@@ -22,5 +23,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findAllById(Iterable<Long> ids);
     Page<Category> findByCompanyCompanyId(Long companyId, Pageable pageable);
     Optional<Category> findByName(String name);
+    List<Category> findByCompanyAndIsVisible(Company company, DisplayStatus isVisible);
 
 }

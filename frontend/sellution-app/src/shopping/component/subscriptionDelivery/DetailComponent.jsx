@@ -57,15 +57,11 @@ const DetailComponent = () => {
             isDetailOptionVisible={isDetailOptionVisible}
             toggleDetailOption={toggleDetailOption}
           />
-          {productToShow.stock > 0 ? (
-            <TwoButtonFooterLayout
-              addToCart={addToSubscriptionCart}
-              handleDirectOrder={handleDirectOrder}
-              isDisabled={isButtonDisabled}
-            />
-          ) : (
-            <OneButtonFooterLayout footerText={'SOLD OUT'} isDisabled={true} />
-          )}
+          <TwoButtonFooterLayout
+            addToCart={addToSubscriptionCart}
+            handleDirectOrder={handleDirectOrder}
+            isDisabled={isButtonDisabled}
+          />
           <TwoButtonModal
             isDetailPageModalVisible={isDetailPageModalVisible}
             onClickLeft={moveToSubscriptionList}

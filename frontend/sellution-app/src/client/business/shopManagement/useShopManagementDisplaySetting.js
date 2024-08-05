@@ -5,7 +5,10 @@ import {
   getDisplaySetting,
   putDisplaySetting,
 } from '@/client/utility/apis/shopManagement/shopManagementDisplaySettingApi';
-import { generateShortFileName } from '@/client/utility/functions/formatterFunction';
+import {
+  generateShortFileName,
+  generateShortFileName2,
+} from '@/client/utility/functions/formatterFunction';
 import { ValidationError } from '@/client/utility/error/ValidationError';
 
 // const DUMMY = {
@@ -46,11 +49,13 @@ export const useShopManagementDisplaySetting = ({
   const [refresh, setRefresh] = useState(false);
   const [confirmType, setConfirmType] = useState('resetContent');
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
     try {
       // S3 버킷 URL을 프록시 URL로 변경
-      // const proxyUrl = `/s3-bucket${imageUrl}`;
-      const proxyUrl = `${imageUrl}`;
+      const proxyUrl = `/s3-bucket${imageUrl}`;
+      //   const proxyUrl = `${imageUrl}`;
       const response = await fetch(proxyUrl);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -74,7 +79,7 @@ export const useShopManagementDisplaySetting = ({
   useEffect(() => {
     const fetch = async (companyId, setAccessToken, accessToken) => {
       const response = await getDisplaySetting(companyId, setAccessToken, accessToken);
-      console.log(response);
+
       setData(() => ({ ...response.data }));
       if (response.data.logoImageUrl) {
         const newImages = await convertImageUrlToFileAndBlob(response.data.logoImageUrl);
@@ -92,31 +97,31 @@ export const useShopManagementDisplaySetting = ({
     };
 
     fetch(companyId, setAccessToken, accessToken);
-  }, []);
+  }, [refresh]);
 
   // 변경 가능한 값 변경 handler
   const handleChangeInputValue = (key, value) => {
     setData((prev) => ({ ...prev, [key]: value }));
-    // if (!isChange) setIsChange(true);
+    if (!isChange) setIsChange(true);
   };
 
   // promotionImg 변경 시 사항
   const handleChangePromotionImg = (images) => {
-    console.log('Current images:', images);
-    // if (!isChange) setIsChange(true);
+    // console.log('Current images:', images);
     setPromotionImg(images);
+    if (!isChange) setIsChange(true);
   };
 
   // logoImg 변경 시 사항
   const handleChangeLogoImg = (images) => {
-    console.log('Current images:', images);
+    // console.log('Current images:', images);
     setLogoImg(images);
-    // if (!isChange) setIsChange(true);
+    if (!isChange) setIsChange(true);
   };
 
   // 이미지 업데이트 시 이벤트 (선택)
   const handleUploadSuccess = (newImages) => {
-    console.log('Uploaded images:', newImages);
+    // console.log('Uploaded images:', newImages);
   };
 
   // 이미지 제거 전 이벤트 (선택)
@@ -152,6 +157,15 @@ export const useShopManagementDisplaySetting = ({
   // 등록
   const handleSaveData = async () => {
     try {
+      if (!data.displayName) {
+        throw ValidationError('회사명 입력은 필수입니다.');
+      } else if (promotionImg?.length === 0) {
+        throw ValidationError('프로모션 이미지는 1개 이상 등록해야 합니다.');
+      }
+
+      setIsLoading(true);
+      const startTime = Date.now();
+
       const formData = new FormData();
 
       // requestDTO 데이터 추가
@@ -163,33 +177,75 @@ export const useShopManagementDisplaySetting = ({
 
       // 로고 파일 추가
       if (logoImg.length > 0 && logoImg[0].file) {
-        const shortLogoName = generateShortFileName('logo', 0);
+        const shortLogoName = generateShortFileName2('logo', 0, logoImg[0].file);
+        // const shortLogoName = generateShortFileName('logo', 0);
         formData.append('logoFile', logoImg[0].file, shortLogoName);
       }
 
       // 프로모션 파일들 추가
       promotionImg.forEach((item, index) => {
         if (item.file) {
-          const shortPromotionName = generateShortFileName('promo', index);
+          const shortPromotionName = generateShortFileName2('promo', index, item.file);
+          //   const shortPromotionName = generateShortFileName('promo', index);
           formData.append('promotionFiles', item.file, shortPromotionName);
         }
       });
 
       // FormData 내용 로깅 (디버깅 목적)
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value instanceof File ? value.name : value}`);
+      //   for (let [key, value] of formData.entries()) {
+      //     console.log(`${key}: ${value instanceof File ? value.name : value}`);
+      //   }
+
+      const approvePromise = await putDisplaySetting(formData, setAccessToken, accessToken);
+
+      await Promise.all([
+        approvePromise,
+        new Promise((resolve) => setTimeout(resolve, 1000)), // 최소 1초 대기
+      ]);
+
+      const endTime = Date.now();
+      const elapsedTime = endTime - startTime;
+
+      if (elapsedTime < 1000) {
+        // 1초 미만으로 걸렸다면, 남은 시간만큼 더 대기
+        await new Promise((resolve) => setTimeout(resolve, 1000 - elapsedTime));
       }
 
-      await putDisplaySetting(formData, setAccessToken, accessToken);
-      console.log('Display settings updated successfully');
+      setIsLoading(false);
+      setIsChange(false);
+      setRefresh(!refresh);
+
+      openAlertModal('success', '성공', '변경사항이 성공적으로 적용되었습니다.');
     } catch (error) {
-      console.error('Error updating display settings:', error);
-      // 에러 처리 로직 (예: 사용자에게 알림)
+      if (error instanceof ValidationError) {
+        openAlertModal('error', '오류', error.message);
+      } else {
+        openAlertModal('error', '오류', `${error.response.data.message}`);
+      }
+      setIsChange(false);
+      setRefresh(!refresh);
     }
   };
 
   // 이전 상태로 복구
-  const handleRestoreData = () => {};
+  const handleResetData = () => {
+    openAlertModal('success', '성공', '작업이 성공적으로 완료되었습니다.');
+    setIsChange(false);
+    setRefresh(!refresh);
+  };
+
+  // handle onConfirm
+  const handleOnConfirm = () => {
+    switch (confirmType) {
+      case 'saveContent':
+        handleSaveData();
+        break;
+      case 'resetContent':
+      default:
+        handleResetData();
+        break;
+    }
+  };
 
   return {
     data,
@@ -197,6 +253,7 @@ export const useShopManagementDisplaySetting = ({
     selectedLogoImg,
     promotionImg,
     selectedPromotionImg,
+    isLoading,
     setLogoImg,
     setSelectedLogoImg,
     setPromotionImg,
@@ -207,7 +264,8 @@ export const useShopManagementDisplaySetting = ({
     handleUploadSuccess,
     handleBeforeRemove,
     handleEditImage,
-    handleRestoreData,
-    handleSaveData,
+    checkResetContent,
+    checkSaveContent,
+    handleOnConfirm,
   };
 };
