@@ -19,7 +19,7 @@ env:
 
 jobs:
   build:
-     if: (github.event_name == 'pull_request' && github.event.pull_request.merged == true) || github.event_name == 'push'
+    if: (github.event_name == 'pull_request' && github.event.pull_request.merged == true) || github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -36,30 +36,41 @@ jobs:
           echo "${{ secrets.SELLUTION_PG_SERVER_PROD_YML }}" > ./backendPG/pgserver/src/main/resources/application.yml
         shell: bash
 
-      - name: Create test application.yml
-        run: |
-          mkdir -p ${{ env.WORKING_DIRECTORY }}/src/test/resources
-          echo "${{ secrets.SELLUTION_PG_SERVER_PROD_TEST_YMLL }}" > ./backendPG/pgserver/src/test/resources/application.yml
-        shell: bash
+      # - name: Create test application.yml
+      #   run: |
+      #     mkdir -p ${{ env.WORKING_DIRECTORY }}/src/test/resources
+      #     echo "${{ secrets.SELLUTION_PG_SERVER_PROD_TEST_YMLL }}" > ./backendPG/pgserver/src/test/resources/application.yml
+      #   shell: bash
         
       - name: List directory contents
         run: ls -la
-        working-directory: ./backendPG/pgserver
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
-        working-directory: ./backendPG/pgserver
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Build with Gradle
-        run: ./gradlew build
-        working-directory: ./backendPG/pgserver
+        env:
+          IAMPORT_BASE_URL: https://api.iamport.kr
+          IAMPORT_API_KEY: ${{ secrets.IAMPORT_API_KEY }}
+          IAMPORT_API_SECRET_KEY: ${{ secrets.IAMPORT_API_SECRET_KEY }}
+          REDIS_HOST: ${{secrets.AWS_REDIS_HOST}}
+          REDIS_PORT: 6379
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRATION: 1800000
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          
+        run: ./gradlew build --info
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Generate REST Docs for Server
         run: ./gradlew asciidoctor
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Make zip file
         run: zip -r ./$GITHUB_SHA.zip .
-        working-directory: ./backendPG/pgserver
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -70,7 +81,7 @@ jobs:
 
       - name: Upload to S3
         run: aws s3 cp ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
-        working-directory: ./backendPG/pgserver
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Code Deploy
         run: |
