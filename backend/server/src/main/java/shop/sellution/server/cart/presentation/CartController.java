@@ -26,10 +26,10 @@ public class CartController {
     }
 
     //redis에서 장바구니 목록 조회
-//    @GetMapping("/redis/{cartType}")
-//    public ResponseEntity<Map<Long, Integer>> findCartFromRedis(@PathVariable CartType cartType) {
-//        Map<Long, Integer> cartItems = cartService.findCartFromRedis(cartType);
-//        return ResponseEntity.ok(cartItems);
+//    @GetMapping("/redis/{cartType}/length")
+//    public ResponseEntity<Integer> getCartLength(@PathVariable CartType cartType) {
+//        int cartLength = cartService.getCartLength(cartType);
+//        return ResponseEntity.ok(cartLength);
 //    }
 
     // 장바구니에 상품 추가

@@ -22,4 +22,5 @@ public interface CartService {
     void increaseCartItem(CartType cartType, Long productId);
 
     void decreaseCartItem(CartType cartType, Long productId);
+
 }

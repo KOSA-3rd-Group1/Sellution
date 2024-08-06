@@ -45,7 +45,7 @@ public enum ExceptionCode {
 
     // ---------------------------- Event 3000~3499 ---------------------------------------
     NOT_FOUND_EVENT(3000, "요청한 ID에 해당하는 이벤트를 찾을 수 없습니다."),
-    INVALID_EVENT_SAVE_EVENTSTARTDATE(3001, "이벤트 시작일은 다음날부터 설정 가능합니다."),
+    INVALID_EVENT_SAVE_EVENTSTARTDATE(3001, "이벤트 시작일은 당일부터 설정 가능합니다."),
     INVALID_EVENT_SAVE_EVENTENDDATE(3002, "이벤트 종료일 설정이 잘못되었습니다."),
     INVALID_EVENT_UPDATE_EVENTENDDATE(3003, "이벤트 종료일은 이전 종료일보다 늦어야 합니다."),
     INVALID_EVENT_UPDATE_ENDED_EVENT(3004, "종료된 이벤트는 수정할 수 없습니다."),

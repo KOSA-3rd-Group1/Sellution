@@ -6,6 +6,8 @@ import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.event.domain.type.EventState;
 import shop.sellution.server.event.domain.type.TargetCustomerType;
 import shop.sellution.server.event.dto.request.UpdateEventReq;
+import shop.sellution.server.global.exception.BadRequestException;
+import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.global.type.DisplayStatus;
 
 import java.time.LocalDate;
@@ -51,12 +53,24 @@ public class CouponEvent {
 //    private Integer remainingQuantity;
 
     @Enumerated(EnumType.STRING) //스케줄러로 업데이트
-    @Column(nullable = false, columnDefinition = "ENUM('UPCOMING','ONGOING','END') default 'UPCOMING'")
-    @Builder.Default
-    private EventState state = EventState.UPCOMING;
+    @Column(nullable = false, columnDefinition = "ENUM('UPCOMING','ONGOING','END')")
+    private EventState state;
 
     @Column(nullable = false)
     private boolean isDeleted = false; //논리적 삭제 플래그
+
+//    @Builder
+//    public CouponEvent(Company company, String couponName, Integer couponDiscountRate, TargetCustomerType targetCustomerType, LocalDate eventStartDate, LocalDate eventEndDate, Integer totalQuantity) {
+//        this.company = company;
+//        this.couponName = couponName;
+//        this.couponDiscountRate = couponDiscountRate;
+//        this.targetCustomerType = targetCustomerType;
+//        this.eventStartDate = eventStartDate;
+//        this.eventEndDate = eventEndDate;
+//        this.totalQuantity = totalQuantity;
+//        this.isDeleted = false;
+//        this.state = determineInitialState(eventStartDate);
+//    }
 
     public void markAsDeleted() {
         this.isDeleted = true;
