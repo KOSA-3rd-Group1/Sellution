@@ -1,8 +1,19 @@
+import AlertModal from '@/client/layout/common/modal/AlertModal';
+import AutoCloseModal from '@/client/layout/common/modal/AutoCloseModal';
 import { useMove } from '@/client/business/common/useMove';
+import { useModal } from '@/client/business/common/useModal';
 import { useBegin } from '@/client/business/join/useBegin';
 
 const BeginComponent = () => {
   const { moveDefault } = useMove();
+  const {
+    alertModalState,
+    autoCloseModalState,
+    openAlertModal,
+    closeAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  } = useModal();
   const {
     signupInfo,
     data,
@@ -12,8 +23,12 @@ const BeginComponent = () => {
     handleChangeInputValue,
     handleCheckIdDuplicat,
     handleSubmit,
+    scuccessCloseAutoCloseModal,
   } = useBegin({
     moveDefault,
+    openAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
   });
 
   return (
@@ -126,6 +141,23 @@ const BeginComponent = () => {
           </div>
         </div>
       </div>
+
+      <AlertModal
+        isOpen={alertModalState.isOpen}
+        onClose={closeAlertModal}
+        // onConfirm={handleOnConfirm}
+        type={alertModalState.type}
+        title={alertModalState.title}
+        message={alertModalState.message}
+      />
+
+      <AutoCloseModal
+        isOpen={autoCloseModalState.isOpen}
+        onClose={scuccessCloseAutoCloseModal}
+        title={autoCloseModalState.title}
+        message={autoCloseModalState.message}
+        duration={3000}
+      />
     </div>
   );
 };

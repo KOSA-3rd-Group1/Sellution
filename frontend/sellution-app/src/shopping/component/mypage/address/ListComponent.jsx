@@ -84,60 +84,71 @@ const ListComponent = () => {
       <MenuHeaderNav title={'배송지 목록'} />
 
       <div className='w-[100%] mx-auto'>
-        {addresses.map((address, index) => (
-          <div key={index} className='bg-white rounded-lg shadow-md p-4 mb-4'>
-            <div className='flex justify-between items-center mb-2'>
-              <div className='flex items-center'>
-                <span className='font-semibold'>{address.addressName}</span>
-                {address.isDefaultAddress === DisplayStatus.Y && (
-                  <span className='text-primary border border-primary rounded px-2 py-1 text-xs ml-2'>
-                    기본 배송지
-                  </span>
-                )}
-              </div>
-            </div>
-            <hr className='border-t border-gray-300 my-3' />
-            <div className='text-sm text-gray-600 space-y-1'>
-              <div className='flex justify-between'>
-                <span className='flex items-center'>
-                  <span className='text-primary'>*</span>
-                  <span className='font-bold ml-1'>수령인</span>
-                </span>
-                <span>{address.name}</span>
-              </div>
-              <div className='flex justify-between'>
-                <span className='flex items-center'>
-                  <span className='text-primary'>*</span>
-                  <span className='font-bold ml-1'>연락처</span>
-                </span>
-                <span>{formatPhoneNumber(address.phoneNumber)}</span>
-              </div>
-              <div className='flex justify-between'>
-                <span className='flex items-center'>
-                  <span className='text-primary'>*</span>
-                  <span className='font-bold ml-1'>주소</span>
-                </span>
-                <span>
-                  {address.streetAddress} {address.addressDetail}
-                </span>
-              </div>
-            </div>
-            <div className='mt-3 flex justify-end space-x-2'>
-              <Link
-                to={`${address.addressId}`}
-                className='text-primary hover:text-secondary text-sm'
-              >
-                수정
-              </Link>
-              <button
-                className='text-primary hover:text-secondary text-sm mr-3'
-                onClick={() => handleDelete(address)}
-              >
-                삭제
-              </button>
+        {addresses.length === 0 ? (
+          <div className='w-full h-64 flex justify-center items-center'>
+            <div className='text-gray-500 py-3 text-center text-lg border-2 border-dashed border-gray-300 rounded-lg p-8'>
+              등록된 배송지가 없습니다.
+              <br />
+              아래의 '배송지 추가' 버튼을 눌러 <br />
+              새로운 배송지를 등록해주세요.
             </div>
           </div>
-        ))}
+        ) : (
+          addresses.map((address, index) => (
+            <div key={index} className='bg-white rounded-lg shadow-md p-4 mb-4'>
+              <div className='flex justify-between items-center mb-2'>
+                <div className='flex items-center'>
+                  <span className='font-semibold'>{address.addressName}</span>
+                  {address.isDefaultAddress === DisplayStatus.Y && (
+                    <span className='text-primary border border-primary rounded px-2 py-1 text-xs ml-2'>
+                      기본 배송지
+                    </span>
+                  )}
+                </div>
+              </div>
+              <hr className='border-t border-gray-300 my-3' />
+              <div className='text-sm text-gray-600 space-y-1'>
+                <div className='flex justify-between'>
+                  <span className='flex items-center'>
+                    <span className='text-primary'>*</span>
+                    <span className='font-bold ml-1'>수령인</span>
+                  </span>
+                  <span>{address.name}</span>
+                </div>
+                <div className='flex justify-between'>
+                  <span className='flex items-center'>
+                    <span className='text-primary'>*</span>
+                    <span className='font-bold ml-1'>연락처</span>
+                  </span>
+                  <span>{formatPhoneNumber(address.phoneNumber)}</span>
+                </div>
+                <div className='flex justify-between'>
+                  <span className='flex items-center'>
+                    <span className='text-primary'>*</span>
+                    <span className='font-bold ml-1'>주소</span>
+                  </span>
+                  <span>
+                    {address.streetAddress} {address.addressDetail}
+                  </span>
+                </div>
+              </div>
+              <div className='mt-3 flex justify-end space-x-2'>
+                <Link
+                  to={`${address.addressId}`}
+                  className='text-primary hover:text-secondary text-sm'
+                >
+                  수정
+                </Link>
+                <button
+                  className='text-primary hover:text-secondary text-sm mr-3'
+                  onClick={() => handleDelete(address)}
+                >
+                  삭제
+                </button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
       <OneButtonFooterLayout footerText={'배송지 추가'} onClick={moveToAddPage} />
       <ReusableOneButtonModal
@@ -160,9 +171,6 @@ const ListComponent = () => {
         onRightButtonClick={confirmDelete}
       />
     </div>
-    //     </div>
-    //   </div>
-    // </div>
   );
 };
 

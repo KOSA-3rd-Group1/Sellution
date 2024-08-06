@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const useCategoryList = () => {
-  //const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState({});
-  const [selectAll, setSelectAll] = useState(false);
   const itemsPerPage = 5;
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -60,6 +58,27 @@ const useCategoryList = () => {
     setCurrentPage(1);
   };
 
+  const handleSelectAll = useCallback(() => {
+    const allSelected =
+      categories.length > 0 && Object.keys(selectedRows).length === categories.length;
+    if (allSelected) {
+      setSelectedRows({});
+    } else {
+      const newSelectedRows = {};
+      categories.forEach((category) => {
+        newSelectedRows[category.categoryId] = true;
+      });
+      setSelectedRows(newSelectedRows);
+    }
+  }, [categories, selectedRows]);
+
+  const handleSelectRow = useCallback((categoryId) => {
+    setSelectedRows((prev) => ({
+      ...prev,
+      [categoryId]: !prev[categoryId],
+    }));
+  }, []);
+
   const fetchCategories = async () => {
     try {
       const params = {
@@ -85,31 +104,12 @@ const useCategoryList = () => {
       setCategories(response.data.content);
       setTotalPages(response.data.totalPages);
       setTotalElements(response.data.totalElements);
+      setSelectedRows({}); // 선택된 행 초기화
       setError(null);
     } catch (error) {
       console.error('There was an error fetching the categories!', error);
       setError('카테고리를 불러오는 중 오류가 발생했습니다.');
     }
-  };
-
-  const handleSelectAll = () => {
-    if (Object.values(selectedRows).every(Boolean)) {
-      setSelectedRows({});
-    } else {
-      const newSelectedRows = {};
-      categories.forEach((category) => {
-        newSelectedRows[category.categoryId] = true;
-      });
-      setSelectedRows(newSelectedRows);
-    }
-    setSelectAll(!selectAll);
-  };
-
-  const handleSelectRow = (categoryId) => {
-    setSelectedRows((prev) => ({
-      ...prev,
-      [categoryId]: !prev[categoryId],
-    }));
   };
 
   const handleDeleteCategories = async () => {
@@ -124,7 +124,6 @@ const useCategoryList = () => {
         await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/categories/${categoryId}`);
       }
       setSelectedRows({});
-      setSelectAll(false);
       fetchCategories();
     } catch (error) {
       console.error('Error deleting categories:', error);
@@ -139,7 +138,6 @@ const useCategoryList = () => {
   return {
     currentPage,
     selectedRows,
-    selectAll,
     categories,
     totalPages,
     totalElements,

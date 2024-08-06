@@ -27,7 +27,7 @@ export const useEventAdd = ({
   const [selectedTargetCustomerType, setSelectedTargetCustomerType] = useState();
   const [isChange, setIsChange] = useState(false);
   const [confirmType, setConfirmType] = useState('moveList');
-
+  console.log(selectedTargetCustomerType);
   // 변경 가능한 값 변경 handler
   const handleChangeInputValue = (key, value) => {
     if (key === 'totalQuantity' && !validateInputNumber(value)) return;

@@ -16,10 +16,11 @@ import useCartStore from '../store/stores/useCartStore';
 const HomeFooter = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
   const accessToken = useAuthStore((state) => state.accessToken);
-  console.log(accessToken);
   const clientName = useCompanyInfoStore((state) => state.name);
   const customerId = useUserInfoStore((state) => state.id);
+  const serviceType = useCompanyInfoStore((state) => state.serviceType); // BOTH, ONETIME, SUBSCRIPTION
   //const subscriptionCartCount = useSubscriptionCartStore((state) => state.subscriptionCart.length);
   //const onetimeCartCount = useOnetimeCartStore((state) => state.onetimeCart.length);
   const subscriptionCartCount = useCartStore((state) => state.subscriptionCart.length);
@@ -34,20 +35,24 @@ const HomeFooter = () => {
         <HomeIcon className='w-7 h-7 fill-current text-secondary stroke-secondary stroke-[10]' />
         <p className='text-secondary text-xs font-bold pt-1'>홈</p>
       </Link>
-      <Link
-        to={`/shopping/${clientName}/subscription`}
-        className='flex-1 bg-white flex flex-col justify-center items-center'
-      >
-        <SubscriptionDeliveryIcon className='w-7 h-7 fill-current text-secondary stroke-secondary stroke-[10]' />
-        <p className='text-secondary text-xs font-bold pt-1'>정기배송</p>
-      </Link>
-      <Link
-        to={`/shopping/${clientName}/onetime`}
-        className='flex-1 bg-white flex flex-col justify-center items-center'
-      >
-        <OneTimeDeliveryIcon className='w-7 h-7 fill-current text-secondary stroke-secondary stroke-[10]' />
-        <p className='text-secondary text-xs font-bold pt-1'>단건주문</p>
-      </Link>
+      {serviceType && serviceType != 'ONETIME' && (
+        <Link
+          to={`/shopping/${clientName}/subscription`}
+          className='flex-1 bg-white flex flex-col justify-center items-center'
+        >
+          <SubscriptionDeliveryIcon className='w-7 h-7 fill-current text-secondary stroke-secondary stroke-[10]' />
+          <p className='text-secondary text-xs font-bold pt-1'>정기배송</p>
+        </Link>
+      )}
+      {serviceType && serviceType != 'SUBSCRIPTION' && (
+        <Link
+          to={`/shopping/${clientName}/onetime`}
+          className='flex-1 bg-white flex flex-col justify-center items-center'
+        >
+          <OneTimeDeliveryIcon className='w-7 h-7 fill-current text-secondary stroke-secondary stroke-[10]' />
+          <p className='text-secondary text-xs font-bold pt-1'>단건주문</p>
+        </Link>
+      )}
       <Link
         to={
           accessToken === null || accessToken === ''

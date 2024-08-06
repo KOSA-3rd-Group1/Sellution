@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
 import { postChangePassword } from '@/client/utility/apis/pwInquiry/ResetApi';
 
-export const useReset = ({ queryParams, moveDefault }) => {
+export const useReset = ({
+  queryParams,
+  moveDefault,
+  openAlertModal,
+  openAutoCloseModal,
+  closeAutoCloseModal,
+}) => {
   const [data, setData] = useState({
     password: '',
     confirmPassword: '',
@@ -23,13 +29,27 @@ export const useReset = ({ queryParams, moveDefault }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (passwordMatch) {
-      console.log('비밀번호 변경 완료');
-      const updateData = { token: queryParams.get('token'), newPassword: data.password };
-      await postChangePassword(updateData);
-      moveDefault('/login');
+    try {
+      if (passwordMatch) {
+        console.log('비밀번호 변경 완료');
+        const updateData = { token: queryParams.get('token'), newPassword: data.password };
+        await postChangePassword(updateData);
+        await openAutoCloseModal('비밀번호 변경 성공', '비밀번호가 성공적으로 변경되었습니다.');
+        //   moveDefault('/login');
+      }
+    } catch (error) {
+      openAlertModal(
+        'error',
+        '오류',
+        `${error.response?.data?.message || '비밀번호 변경 중 오류가 발생했습니다. 처음 화면부터 다시 시도해 주세요'}`,
+      );
     }
   };
 
-  return { data, passwordMatch, handleChangeInputValue, handleSubmit };
+  // 비밀번호 변경 성공 시
+  const scuccessCloseAutoCloseModal = () => {
+    closeAutoCloseModal(moveDefault('/login'));
+  };
+
+  return { data, passwordMatch, handleChangeInputValue, handleSubmit, scuccessCloseAutoCloseModal };
 };

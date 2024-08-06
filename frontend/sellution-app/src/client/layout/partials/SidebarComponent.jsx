@@ -22,7 +22,7 @@ const SidebarCompoent = (props) => {
           </div>
         </div>
         <div className='space-y-2 pt-2'>
-          <SidebarBtn to='/home' Icon={HomeIcon} content={'홈'} />
+          {/* <SidebarBtn to='/home' Icon={HomeIcon} content={'홈'} /> */}
           <SidebarBtn to='/customer' Icon={CustomerIcon} content={'회원'} />
           <SidebarBtn to='/order' Icon={OrderIcon} content={'주문'} />
           <SidebarBtn to='/product' Icon={ProductIcon} content={'상품'} />

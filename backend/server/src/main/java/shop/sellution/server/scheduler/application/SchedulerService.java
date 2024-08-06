@@ -150,6 +150,9 @@ public class SchedulerService {
                 // 6. 남은 배송횟수가 0이면 배송완료 처리, 배송완료시 다음 배송일 계산할 필요가 없다.
                 if (order.getRemainingDeliveryCount() == 0) {
                     order.changeDeliveryStatus(DeliveryStatus.COMPLETE);
+                    // 오늘이 마지막 배송일인 회원에게는 문자알림을 발송한다.
+                    // smsService.sendSms(order.getCustomer().getPhoneNumber(), "오늘은 마지막 배송일입니다. 감사합니다 다음에 또 이용해주세요!");
+
                     continue;
                 }
 
@@ -171,6 +174,9 @@ public class SchedulerService {
                         order.updateNextDeliveryDate(deliveryInfo.getNextDeliveryDate());
                     }
                 }
+
+
+
             }
 
         }

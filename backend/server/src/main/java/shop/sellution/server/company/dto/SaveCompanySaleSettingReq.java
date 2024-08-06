@@ -31,12 +31,12 @@ public class SaveCompanySaleSettingReq {
 
     private SubscriptionType subscriptionType; //월단위, 횟수단위, null(단건) 가능
 
-    @Min(5)
-    @Max(30)
+    @Min(value = 5,message = "이용 횟수 최소 값은 5회, 최대 30회입니다.")
+    @Max(value = 30, message = "이용 횟수 최소 값은 5회, 최대 30회입니다.")
     private int minDeliveryCount;
 
-    @Min(5)
-    @Max(30)
+    @Min(value = 5,message = "이용 횟수 최소 값은 5회, 최대 30회입니다.")
+    @Max(value = 30, message = "이용 횟수 최소 값은 5회, 최대 30회입니다.")
     private int maxDeliveryCount;
 
     private List<String> dayOptions;

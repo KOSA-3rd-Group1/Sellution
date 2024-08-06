@@ -90,6 +90,10 @@ const CheckSmsAuthComponent = () => {
     });
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -97,40 +101,43 @@ const CheckSmsAuthComponent = () => {
   };
 
   return (
-    <>
+    <div className='flex flex-col min-h-screen'>
       <MenuHeaderNav title='간편 비밀번호 설정' />
-      <div className='w-full flex justify-center'>
-        <div className='w-[90%] bg-white p-8 rounded-lg shadow-md mt-8'>
-          <h1 className='text-xl font-bold text-center mb-6'>휴대폰 인증</h1>
-          <div className='space-y-4'>
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-1'>
-                <span className='text-brandOrange mr-1'>*</span>이름
+      <div className='flex-grow flex items-center justify-center bg-white px-4'>
+        <div className='w-full max-w-md'>
+          <div className='bg-white rounded-lg shadow-md p-8'>
+            <h2 className='text-xl font-bold mb-6 text-center'>휴대폰 인증</h2>
+            <div className='mb-4'>
+              <label htmlFor='name' className='block text-sm font-medium text-gray-700 mb-1'>
+                <span className='text-primary mr-1'>*</span>이름
               </label>
               <input
                 type='text'
+                id='name'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className='w-full p-2 border rounded focus:ring-2 shadow-sm focus:outline-none focus:ring-primary focus:border-primary'
+                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary'
+                placeholder='성명 입력'
                 disabled={step !== 1}
               />
             </div>
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-1'>
-                <span className='text-brandOrange mr-1'>*</span>휴대폰 번호
+            <div className='mb-4'>
+              <label htmlFor='phone' className='block text-sm font-medium text-gray-700 mb-1'>
+                <span className='text-primary mr-1'>*</span>휴대폰 번호
               </label>
-              <div className='flex items-center space-x-2'>
+              <div className='flex'>
                 <input
                   type='tel'
+                  id='phone'
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className='flex-grow p-2 border rounded  focus:ring-primary focus:border-transparent shadow-sm focus:outline-none focus:ring-2  focus:border-primary'
+                  className='flex-grow px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary'
                   placeholder="휴대폰 번호 입력('-'제외 11자리 입력)"
                   disabled={step !== 1}
                 />
                 <button
                   onClick={handleRequestAuth}
-                  className=' border border-primary text-primary hover:bg-primary hover:text-white px-4 py-2 rounded transition duration-300 text-sm'
+                  className='bg-primary text-white px-4 py-2 rounded-r-md hover:bg-secondary transition duration-300 text-xs'
                 >
                   {step === 1 ? '인증번호 발급' : '인증번호 재발급'}
                 </button>
@@ -138,52 +145,54 @@ const CheckSmsAuthComponent = () => {
             </div>
 
             {step >= 2 && (
-              <div>
-                <label className='block text-sm font-medium text-gray-700 mb-1'>
+              <div className='mb-6'>
+                <label htmlFor='authCode' className='block text-sm font-medium text-gray-700 mb-1'>
                   <span className='text-primary mr-1'>*</span>인증번호
                 </label>
-                <div className='flex items-center space-x-2'>
+                <div className='flex'>
                   <input
                     type='text'
+                    id='authCode'
                     value={authCode}
                     onChange={(e) => setAuthCode(e.target.value)}
-                    className='flex-grow p-2 border rounded focus:ring-2 focus:ring-primary focus:border-transparent shadow-sm focus:outline-none  focus:border-primary'
-                    placeholder='* * * * * *'
+                    className='flex-grow px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary'
+                    placeholder='인증번호 6자리 입력'
                     disabled={isVerified}
                   />
                   <button
                     onClick={handleVerify}
-                    className='border border-primary   px-4 py-2 rounded text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 ease-in-out transform hover:scale-102 text-sm'
+                    className='bg-primary text-white px-4 py-2 rounded-r-md hover:bg-secondary transition duration-300 text-xs'
                     disabled={isVerified}
                   >
                     인증
                   </button>
                 </div>
                 {isTimerRunning && !isVerified && (
-                  <p className='text-sm text-gray-500 mt-1'>남은 시간: {formatTime(timeLeft)}</p>
+                  <p className='text-sm text-red-500 mt-1'>{formatTime(timeLeft)}</p>
                 )}
               </div>
             )}
             {isVerified && (
-              <div className='flex flex-col items-center mt-4'>
-                <div className='flex items-center text-green-500 mb-4'>
-                  <svg className='w-5 h-5 mr-2' fill='currentColor' viewBox='0 0 20 20'>
-                    <path
-                      fillRule='evenodd'
-                      d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
-                      clipRule='evenodd'
-                    />
-                  </svg>
-                  인증 성공
-                </div>
-                <button
-                  onClick={handleConfirm}
-                  className='bg-primary text-white px-6 py-2 rounded hover:bg-primary transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary '
-                >
-                  확인
-                </button>
+              <div className='flex items-center text-green-500 mb-4'>
+                <svg className='w-5 h-5 mr-2' fill='currentColor' viewBox='0 0 20 20'>
+                  <path
+                    fillRule='evenodd'
+                    d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
+                    clipRule='evenodd'
+                  />
+                </svg>
+                <p className='text-green-500 text-sm mb-0'>인증이 완료되었습니다.</p>
               </div>
             )}
+
+            <div className='mt-6'>
+              <button
+                onClick={handleBack}
+                className='block w-full bg-black text-white text-center py-3 rounded-md mt-3 hover:bg-gray-800 transition duration-300'
+              >
+                취소
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -203,7 +212,7 @@ const CheckSmsAuthComponent = () => {
         buttonText='확인'
         onButtonClick={handleSuccessModalClose}
       />
-    </>
+    </div>
   );
 };
 
