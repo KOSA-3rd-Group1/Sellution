@@ -106,6 +106,9 @@ dependencies {
 	implementation 'com.github.downgoon:MarvinPlugins:1.5.5'
 	implementation 'org.springframework:spring-test'
 
+	//thumbnailator
+	implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.1'
+
 	//AOP
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation 'org.aspectj:aspectjweaver'
