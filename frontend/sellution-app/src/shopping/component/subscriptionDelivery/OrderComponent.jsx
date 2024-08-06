@@ -14,6 +14,7 @@ import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import { getMyCouponList } from '@/shopping/utility/apis/mypage/coupon/couponApi';
 import useAuthStore from '@/shopping/store/stores/useAuthStore';
+
 const OrderComponent = () => {
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -48,17 +49,15 @@ const OrderComponent = () => {
     deliveryNextDate: '',
     deliveryEndDate: '',
   });
-
+  //정기주문 - 선택 정보
   const [selectedWeek, setSelectedWeek] = useState('');
   const [selectedCount, setSelectedCount] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');
   //결제정보
   const [paymentMethods, setPaymentMethods] = useState([]);
-
   //쿠폰정보
   const [coupons, setCoupons] = useState([]);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
-
   //결제금액
   const [totalPrice, setTotalPrice] = useState(0);
   const [productDiscountTotal, setProductDiscountTotal] = useState(0); //상품 할인 금액
@@ -148,7 +147,7 @@ const OrderComponent = () => {
     return '*'.repeat(accountNumber.length - 4) + accountNumber.slice(-4);
   };
 
-  //월별 결제 >> 결제금액 계산 함수
+  //월별 결제 >> 결제금액 계산 API
   const calculateMonthlyPrice = async () => {
     try {
       const response = await axios.post(
@@ -157,7 +156,7 @@ const OrderComponent = () => {
           selectedDays: selectedDays,
           weekOptionValue: selectedWeek.value,
           monthOptionValue: selectedMonth.value,
-          perPrice: finalPrice,
+          perPrice: finalPrice, //finalPrice를 기준으로 금액 계산됨
           startDate: selectedStartDate,
         },
       );
@@ -185,12 +184,13 @@ const OrderComponent = () => {
     setTotalPrice(total);
     setProductDiscountTotal(productDiscountTotal);
     setCouponDiscountTotal(couponDiscountTotal);
-    setFinalPrice(newFinalPrice);
-    console.log('총 상품 금액: ', total);
-    console.log('상품 할인 금액: ', productDiscountTotal);
-    console.log('쿠폰 할인 금액: ', couponDiscountTotal);
-    console.log('최종 가격: ', finalPrice);
-    console.log('직접계산', newFinalPrice);
+    setFinalPrice(newFinalPrice); //이 finalPrice를 기준으로 MonthlyPrice 계산
+    //
+    // console.log('총 상품 금액: ', total);
+    // console.log('상품 할인 금액: ', productDiscountTotal);
+    // console.log('쿠폰 할인 금액: ', couponDiscountTotal);
+    // console.log('최종 가격: ', finalPrice);
+    // console.log('직접계산', newFinalPrice);
 
     if (
       subscriptionType === 'MONTH' &&
@@ -201,6 +201,7 @@ const OrderComponent = () => {
     ) {
       const monthlyPriceData = await calculateMonthlyPrice(newFinalPrice); //calculateTotalPrice를 호출할 때만 호출
       console.log('월별 결제금액: ', monthlyPriceData);
+      console.log('월별 결제금액에 들어가는 finalPrice: ', newFinalPrice);
       if (monthlyPriceData) {
         setMonthlyPriceData(monthlyPriceData);
       }
