@@ -7,13 +7,12 @@ import {
 import { validateInputNumber } from '@/client/utility/functions/validateFunction';
 import { formatPhoneNumber } from '@/client/utility/functions/formatterFunction';
 
-export const useSmsAuth = ({ moveDefault }) => {
+export const useSmsAuth = ({ moveDefault, openAlertModal }) => {
   const { companyId, setSignupInfo } = useSignupInfoStore((state) => ({
     companyId: state.companyId,
     setSignupInfo: state.setSignupInfo,
     resetSignupInfo: state.resetSignupInfo,
   }));
-  console.log(companyId);
 
   const [data, setData] = useState({ name: '', phoneNumber: '', authNumber: '' });
 
@@ -56,7 +55,12 @@ export const useSmsAuth = ({ moveDefault }) => {
         setTimeLeft(180);
         setIsTimerRunning(true);
       } catch (error) {
-        alert(`${error.response.data.message}`);
+        openAlertModal(
+          'error',
+          '오류',
+          `${error?.response?.data?.message}` || '잘못된 요청입니다. 다시 시도해주세요.',
+        );
+        // alert(`${error.response.data.message}`);
         setStep(1);
       }
     }
@@ -72,9 +76,14 @@ export const useSmsAuth = ({ moveDefault }) => {
       setSignupInfo({ name: data.name, phoneNumber: formatPhoneNumber(data.phoneNumber) });
       setIsVerified(true);
       setIsTimerRunning(false);
+      openAlertModal('success', '성공', '인증이 성공적으로 완료되었습니다.');
     } catch (error) {
       console.log(error);
-      alert('잘못된 인증번호입니다. 다시 시도해주세요.');
+      openAlertModal(
+        'error',
+        '오류',
+        `${error?.response?.data?.message}` || '잘못된 인증번호입니다. 다시 시도해주세요.',
+      );
     }
   };
 

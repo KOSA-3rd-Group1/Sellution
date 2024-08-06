@@ -27,7 +27,7 @@ const Table = ({
       {/* table 위에 */}
       <div className='h-[45px] px-5 py-2 flex justify-between items-center bg-white text-sm font-medium text-gray-700 border-b-2 border-b-[#CCCDD3]'>
         <div>
-          총 {totalDataCount} 건 / 선택 {selectedCount} 건
+          총 {totalDataCount} 건{/* / 선택 {selectedCount} 건 */}
         </div>
         {Btns}
       </div>

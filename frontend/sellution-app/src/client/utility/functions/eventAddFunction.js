@@ -11,15 +11,30 @@ export const formatOrderType = (type) => {
 
 // queryParams 변화 (useState -> 서버)
 export const transformOrderType = (type) => {
-  switch (type) {
-    case '신규':
+  switch (type.value) {
+    case '1':
       return 'NEW';
-    case '일반':
+    case '2':
       return 'NORMAL';
-    case '휴면':
+    case '3':
       return 'DORMANT';
-    case '전체':
-    default:
+    case '0':
       return 'ALL';
+    default:
+      return;
   }
 };
+
+// export const transformOrderType = (type) => {
+//   switch (type) {
+//     case '신규':
+//       return 'NEW';
+//     case '일반':
+//       return 'NORMAL';
+//     case '휴면':
+//       return 'DORMANT';
+//     case '전체':
+//     default:
+//       return 'ALL';
+//   }
+// };

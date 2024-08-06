@@ -27,11 +27,7 @@ const SaleSettingComponent = () => {
     checkResetContent,
     checkSaveContent,
     handleOnConfirm,
-  } = useShopManagementSaleSetting({
-    openAlertModal,
-    openAutoCloseModal,
-    closeAutoCloseModal,
-  });
+  } = useShopManagementSaleSetting({ openAlertModal });
 
   const accordionItems = [
     {

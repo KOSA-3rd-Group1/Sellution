@@ -1,9 +1,11 @@
+import AlertModal from '@/client/layout/common/modal/AlertModal';
 import { useMove } from '@/client/business/common/useMove';
+import { useModal } from '@/client/business/common/useModal';
 import { useSmsAuth } from '@/client/business/join/useSmsAuth';
 
 const SmsAuthComponent = () => {
   const { moveDefault } = useMove();
-
+  const { alertModalState, openAlertModal, closeAlertModal } = useModal();
   const {
     data,
     step,
@@ -16,6 +18,7 @@ const SmsAuthComponent = () => {
     moveNext,
   } = useSmsAuth({
     moveDefault,
+    openAlertModal,
   });
 
   const formatTime = (time) => {
@@ -126,6 +129,14 @@ const SmsAuthComponent = () => {
           </button>
         </div>
       </div>
+      <AlertModal
+        isOpen={alertModalState.isOpen}
+        onClose={closeAlertModal}
+        // onConfirm={handleOnConfirm}
+        type={alertModalState.type}
+        title={alertModalState.title}
+        message={alertModalState.message}
+      />
     </div>
   );
 };
