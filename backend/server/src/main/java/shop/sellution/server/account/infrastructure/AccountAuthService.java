@@ -23,7 +23,7 @@ import static shop.sellution.server.global.exception.ExceptionCode.*;
 public class AccountAuthService {
 
     private final WebClient webClient;
-    private final Duration TIMEOUT = Duration.ofSeconds(2);
+    private final Duration TIMEOUT = Duration.ofSeconds(5);
 
     public CheckAccountRes checkAccount(CheckAccountReq checkAccountReq) {
 
