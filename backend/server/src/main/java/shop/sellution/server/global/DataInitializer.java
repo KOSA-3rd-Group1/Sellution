@@ -82,6 +82,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private Category 데일리샐러드;
     private Category 테이스티샐러드;
+    private Category 더미데이터;
 
     // 단건 상품들
     private List<Product> oneTimeProducts = new ArrayList<>();
@@ -138,9 +139,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         createContractCompany();
         createCategory();
         createProduct();
-//        createProduct2();
+        //createProduct2();
         createProductImages();
-//        createProductImages2();
+        //createProductImages2();
         createCustomer();
         createAccount();
         createAddress();
@@ -232,7 +233,17 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         categoryRepository.save(데일리샐러드);
         categoryRepository.save(테이스티샐러드);
+
+        더미데이터 = Category.builder()
+                .name("더미데이터")
+                .company(포켓샐러드)
+                .build();
+
+        categoryRepository.save(더미데이터);
     }
+
+    // 상품 코드 저장을 위한 Set 추가
+    private final Set<Long> createdProductCodes = new HashSet<>();
 
 
     private void createProduct() {
@@ -256,7 +267,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         productRepository.save(닭가슴살샐러드);
         oneTimeProducts.add(닭가슴살샐러드);
         subProducts.add(닭가슴살샐러드);
-
+        // 상품 코드 저장
+        createdProductCodes.add(닭가슴살샐러드.getCode());
 
         닭가슴살비엔나샐러드 = Product.builder()
                 .company(포켓샐러드)
@@ -277,6 +289,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         oneTimeProducts.add(닭가슴살비엔나샐러드);
         subProducts.add(닭가슴살비엔나샐러드);
+        // 상품 코드 저장
+        createdProductCodes.add(닭가슴살비엔나샐러드.getCode());
 
         크래미샐러드 = Product.builder()
                 .company(포켓샐러드)
@@ -297,6 +311,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         oneTimeProducts.add(크래미샐러드);
         subProducts.add(크래미샐러드);
+        // 상품 코드 저장
+        createdProductCodes.add(크래미샐러드.getCode());
 
         치즈샐러드 = Product.builder()
                 .company(포켓샐러드)
@@ -317,6 +333,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         oneTimeProducts.add(치즈샐러드);
         subProducts.add(치즈샐러드);
+        // 상품 코드 저장
+        createdProductCodes.add(치즈샐러드.getCode());
 
         불고기샐러드 = Product.builder()
                 .company(포켓샐러드)
@@ -336,6 +354,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         productRepository.save(불고기샐러드);
 
         oneTimeProducts.add(불고기샐러드);
+        // 상품 코드 저장
+        createdProductCodes.add(불고기샐러드.getCode());
 
         닭가슴살볼숯불갈비맛샐러드 = Product.builder()
                 .company(포켓샐러드)
@@ -355,6 +375,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         productRepository.save(닭가슴살볼숯불갈비맛샐러드);
 
         subProducts.add(닭가슴살볼숯불갈비맛샐러드);
+        // 상품 코드 저장
+        createdProductCodes.add(닭가슴살볼숯불갈비맛샐러드.getCode());
 
         // 테이스티 샐러드 상품들
 
@@ -377,6 +399,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         oneTimeProducts.add(멕시칸타코샐러드);
         subProducts.add(멕시칸타코샐러드);
+        createdProductCodes.add(멕시칸타코샐러드.getCode());
 
         갈릭페퍼로스트닭다리살샐러드 = Product.builder()
                 .company(포켓샐러드)
@@ -397,7 +420,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         oneTimeProducts.add(갈릭페퍼로스트닭다리살샐러드);
         subProducts.add(갈릭페퍼로스트닭다리살샐러드);
-
+        createdProductCodes.add(갈릭페퍼로스트닭다리살샐러드.getCode());
 
         레드칠리로스트닭가슴살샐러드 = Product.builder()
                 .company(포켓샐러드)
@@ -418,6 +441,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         oneTimeProducts.add(레드칠리로스트닭가슴살샐러드);
         subProducts.add(레드칠리로스트닭가슴살샐러드);
+        createdProductCodes.add(레드칠리로스트닭가슴살샐러드.getCode());
 
         이탈리안더블햄샐러드 = Product.builder()
                 .company(포켓샐러드)
@@ -438,6 +462,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
         oneTimeProducts.add(이탈리안더블햄샐러드);
         subProducts.add(이탈리안더블햄샐러드);
+        createdProductCodes.add(이탈리안더블햄샐러드.getCode());
 
         페퍼콘닭가슴살샐러드 = Product.builder()
                 .company(포켓샐러드)
@@ -457,6 +482,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         productRepository.save(페퍼콘닭가슴살샐러드);
 
         oneTimeProducts.add(페퍼콘닭가슴살샐러드);
+        createdProductCodes.add(페퍼콘닭가슴살샐러드.getCode());
 
 
         바질페스토두부면샐러드 = Product.builder()
@@ -477,6 +503,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         productRepository.save(바질페스토두부면샐러드);
 
         subProducts.add(바질페스토두부면샐러드);
+        createdProductCodes.add(바질페스토두부면샐러드.getCode());
 
         allProducts.addAll(oneTimeProducts);
         allProducts.addAll(subProducts);
@@ -588,7 +615,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         log.info("치즈 샐러드 {}",productImageUrls.get("치즈 샐러드").toString())    ;
         for (Product product : allProducts) {
             List<String> imageUrls = productImageUrls.get(product.getName());
-//            System.out.println(imageUrls.toString());
+           System.out.println(imageUrls.toString());
             for (int i = 0; i <= 5; i++) {
                 if (i == 0) {
                     productImageRepository.save(ProductImage.builder()
@@ -620,7 +647,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         for (int i = 1; i <= 100; i++) {
             Product product = Product.builder()
                     .company(포켓샐러드)
-                    .category(random.nextBoolean() ? 데일리샐러드 : 테이스티샐러드)
+                    .category(더미데이터)
                     .code(generateProductCode())
                     .name("단건상품 " + i)
                     .stock(1000)
@@ -640,7 +667,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
             int cost = random.nextInt(5000) + 5000;
             Product product = Product.builder()
                     .company(포켓샐러드)
-                    .category(random.nextBoolean() ? 데일리샐러드 : 테이스티샐러드)
+                    .category(더미데이터)
                     .code(generateProductCode())
                     .name("할인 없는 단건상품 " + i)
                     .stock(1000)
@@ -657,7 +684,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         for (int i = 1; i <= 100; i++) {
             Product product = Product.builder()
                     .company(포켓샐러드)
-                    .category(random.nextBoolean() ? 데일리샐러드 : 테이스티샐러드)
+                    .category(더미데이터)
                     .code(generateProductCode())
                     .name("정기상품 " + i)
                     .stock(1000)
@@ -677,7 +704,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
             int cost = random.nextInt(5000) + 5000;
             Product product = Product.builder()
                     .company(포켓샐러드)
-                    .category(random.nextBoolean() ? 데일리샐러드 : 테이스티샐러드)
+                    .category(더미데이터)
                     .code(generateProductCode())
                     .name("할인 없는 정기상품 " + i)
                     .stock(1000)
@@ -696,7 +723,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
             int cost = random.nextInt(5000) + 5000;
             Product product = Product.builder()
                     .company(포켓샐러드)
-                    .category(random.nextBoolean() ? 데일리샐러드 : 테이스티샐러드)
+                    .category(더미데이터)
                     .code(generateProductCode())
                     .name("할인 없는 정기상품 " + i)
                     .stock(1000)
@@ -715,7 +742,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         for (int i = 1; i <= 30; i++) {
             Product product = Product.builder()
                     .company(포켓샐러드)
-                    .category(random.nextBoolean() ? 데일리샐러드 : 테이스티샐러드)
+                    .category(더미데이터)
                     .code(generateProductCode())
                     .name("품절상품 " + i)
                     .stock(0)
@@ -747,8 +774,8 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private void createProductImages2() {
         for (Product product : allProducts) {
-            // 이미 이미지가 있는 상품은 제외
-            if (productImageRepository.existsByProduct(product)) {
+            // 이미 이미지가 있는 상품 또는 createProduct로 생성된 상품은 제외
+            if (createdProductCodes.contains(product.getCode())) {
                 continue;
             }
 

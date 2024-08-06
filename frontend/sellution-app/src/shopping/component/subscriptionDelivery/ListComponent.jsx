@@ -119,13 +119,14 @@ const ListComponent = () => {
         setIsCategoryMenuVisible={setIsCategoryMenuVisible}
       />
       {isLoading ? (
-        <LoadingSpinner />
+        <>{/* <LoadingSpinner /> */}</>
       ) : subscriptionProductList.length === 0 ? (
         <main className={`main-box w-full`}>
           <p>등록된 상품이 없습니다</p>
         </main>
       ) : (
-        <main className={`main-box w-full h-[100%]`}
+        <main
+          className={`main-box w-full h-[100%]`}
           ref={scrollContainerRef}
           style={{ overflowY: 'auto' }}
         >

@@ -20,8 +20,8 @@ const ListComponent = () => {
     selectedCategory,
   } = useList();
   const clientName = useCompanyInfoStore((state) => state.name);
-  const observer = useRef();
-  const scrollContainerRef = useRef(null);
+  const observer = useRef(); //intersectionObserver을 사용하기 위한 참조
+  const scrollContainerRef = useRef(null); //스크롤 컨테이너를 참조하기 위한 변수
   const [scrollPosition, setScrollPosition] = useState(0);
 
   const moveToOnetimeCartPage = () => {
@@ -41,43 +41,31 @@ const ListComponent = () => {
   };
 
   const lastProductElementRef = useCallback(
+    //마지막 제품 요소를 관찰하여 무한 스크롤 구현
     (node) => {
       if (isLoading) return;
-      if (observer.current) observer.current.disconnect();
+      if (observer.current) observer.current.disconnect(); //더이상 관찰할 필요가 없을 때 옵저버 해제
       observer.current = new IntersectionObserver((entries) => {
+        //마지막 제품이 보일 때(교차 상태가 변경될 때) 추가 제품을 로드(loadMore() 호출)하는 콜백함수
         if (entries[0].isIntersecting && hasMore) {
+          //요소가 뷰포트에 들어오고 데이터가 더 있는 경우
+
           setScrollPosition(scrollContainerRef.current.scrollTop); // 스크롤 위치 저장
-          console.log('현재 스크롤 위치:', scrollContainerRef.current.scrollTop);
+          // console.log('현재 스크롤 위치:', scrollContainerRef.current.scrollTop);
           loadMore();
         }
       });
-      if (node) observer.current.observe(node);
+      if (node) observer.current.observe(node); //특정 요소를 관찰 대상으로 지정
     },
-    [isLoading, hasMore, loadMore],
+    [isLoading, hasMore, loadMore], //옵저버의 동작을 설명하는 옵션 객체
   );
 
   useEffect(() => {
+    //로딩이 끝나면 저장된 스크롤 위치로 스크롤을 이동시킴
     if (!isLoading && scrollContainerRef.current) {
       scrollContainerRef.current.scrollTo(0, scrollPosition);
     }
   }, [isLoading, scrollPosition]);
-
-  // useEffect(() => {
-  //   const handleScroll = (e) => {
-  //     console.log('스크롤 위치 (이벤트 리스너):', e.target.scrollTop);
-  //   };
-
-  //   const scrollContainer = scrollContainerRef.current;
-  //   if (scrollContainer) {
-  //     scrollContainer.addEventListener('scroll', handleScroll);
-  //   }
-
-  //   return () => {
-  //     if (scrollContainer) {
-  //       scrollContainer.removeEventListener('scroll', handleScroll);
-  //     }
-  //   };
-  // }, []);
 
   const renderProductContent = (product) => (
     <>
@@ -128,7 +116,7 @@ const ListComponent = () => {
       />
 
       {isLoading ? (
-        <LoadingSpinner />
+        <>{/* <LoadingSpinner /> */}</>
       ) : onetimeProductList.length === 0 ? (
         <main className={`main-box w-full`}>
           <p>등록된 상품이 없습니다</p>
