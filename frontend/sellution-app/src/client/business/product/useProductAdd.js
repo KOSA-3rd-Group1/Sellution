@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { generateShortFileName } from '@/client/utility/functions/formatterFunction';
+import { generateShortFileName2 } from '@/client/utility/functions/formatterFunction';
 
 const useProductAdd = () => {
   const navigate = useNavigate();
@@ -179,7 +179,7 @@ const useProductAdd = () => {
       // 단일 이미지 처리
       if (newImages && newImages.length > 0) {
         const image = newImages[0];
-        const shortFileName = generateShortFileName(type, 0);
+        const shortFileName = generateShortFileName2(type, 0);
         const newFile = new File([image.file], shortFileName, { type: image.file.type });
         setImages((prev) => ({ ...prev, [type]: { ...image, file: newFile } }));
       } else {
@@ -190,7 +190,7 @@ const useProductAdd = () => {
       const processedImages = await Promise.all(
         newImages.map(async (image, index) => {
           if (image.file instanceof File) {
-            const shortFileName = generateShortFileName(type, index);
+            const shortFileName = generateShortFileName2(type, index);
             const newFile = new File([image.file], shortFileName, { type: image.file.type });
             return { ...image, file: newFile };
           }
