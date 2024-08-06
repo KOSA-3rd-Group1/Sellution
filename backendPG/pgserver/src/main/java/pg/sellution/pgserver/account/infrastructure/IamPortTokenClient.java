@@ -32,7 +32,7 @@ public class IamPortTokenClient {
     private final Duration TIMEOUT = Duration.ofSeconds(2);
 
     public String getApiAccessToken() {
-        log.info("Fetching API access token");
+        log.info("아임포트에서 API access token 반환 시작");
 
         Map<String, String> body = Map.of(
                 "imp_key", apiKey,
@@ -62,7 +62,7 @@ public class IamPortTokenClient {
             throw new ExternalApiException(EXTERNAL_SEVER_ERROR);
         }
         String token = response.path("response").path("access_token").asText();
-        log.info("Successfully fetched API access token");
+        log.info("API 엑세스 토큰 반환 성공");
         return token;
     }
 
