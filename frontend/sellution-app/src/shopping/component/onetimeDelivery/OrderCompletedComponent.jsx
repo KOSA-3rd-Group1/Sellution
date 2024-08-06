@@ -337,15 +337,18 @@ const OrderCompletedComponent = () => {
     }, 0);
   };
 
+  const calculateCouponDiscountAmount = (totalProductPrice,totalDiscountAmount) => {
+    return Math.round((totalProductPrice-totalDiscountAmount) * (orderData.couponDiscountRate / 100));
+  };
+
   const totalProductPrice = calculateTotalProductPrice();
   const totalDiscountAmount = calculateTotalDiscountAmount();
-  const calculateCouponDiscountAmount = (totalProductPrice) => {
-    return Math.round(
-      (totalProductPrice - totalDiscountAmount) * (orderData.couponDiscountRate / 100),
-    );
-  };
-  const couponDiscountAmount = calculateCouponDiscountAmount(totalProductPrice);
+  console.log('totalProductPrice:', totalProductPrice);
+  console.log('totalDiscountAmount:', totalDiscountAmount);
+  const couponDiscountAmount = calculateCouponDiscountAmount(totalProductPrice,totalDiscountAmount);
+  console.log('couponDiscountAmount:', couponDiscountAmount);
   const finalTotalPrice = orderData.totalPrice;
+  console.log('finalTotalPrice:', finalTotalPrice);
 
   return (
     <div className='max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg'>

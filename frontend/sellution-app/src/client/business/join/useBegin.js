@@ -16,7 +16,12 @@ const permissions = [
   'SHOP_MANAGEMENT',
 ];
 
-export const useBegin = ({ moveDefault }) => {
+export const useBegin = ({
+  moveDefault,
+  openAlertModal,
+  openAutoCloseModal,
+  closeAutoCloseModal,
+}) => {
   const signupInfo = useSignupInfoStore((state) => ({
     companyId: state.companyId,
     businessRegistrationNumber: state.businessRegistrationNumber,
@@ -98,14 +103,23 @@ export const useBegin = ({ moveDefault }) => {
         permissions: permissions,
       };
       await postRegisterClient(updateData);
-      await moveDefault('/login');
+      await openAutoCloseModal('아이디 생성 성공', '아이디가 성공적으로 생성되었습니다.');
     } catch (error) {
       if (error instanceof ValidationError) {
-        alert(error.message);
+        openAlertModal('error', '오류', error.message);
       } else {
-        alert('회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        openAlertModal(
+          'error',
+          '오류',
+          `${error.response?.data?.message || '회원가입 중 오류가 발생했습니다. 처음 화면부터 다시 시도해 주세요'}`,
+        );
       }
     }
+  };
+
+  // 회원가입 성공 시
+  const scuccessCloseAutoCloseModal = () => {
+    closeAutoCloseModal(moveDefault('/login'));
   };
 
   return {
@@ -117,5 +131,6 @@ export const useBegin = ({ moveDefault }) => {
     handleChangeInputValue,
     handleCheckIdDuplicat,
     handleSubmit,
+    scuccessCloseAutoCloseModal,
   };
 };

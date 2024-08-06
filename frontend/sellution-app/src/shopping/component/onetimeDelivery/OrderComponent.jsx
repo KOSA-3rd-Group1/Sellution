@@ -120,7 +120,7 @@ const OrderComponent = () => {
       0,
     );
     const couponDiscountTotal = selectedCoupon
-      ? Math.floor(
+      ? Math.round(
           listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
             (selectedCoupon.couponDiscountRate / 100),
         )
