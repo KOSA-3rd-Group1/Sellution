@@ -28,12 +28,15 @@ const ListComponent = () => {
     navigate(`/shopping/${clientName}/onetime/cart`);
   };
 
+  const [isCategoryMenuVisible, setIsCategoryMenuVisible] = useState(false);
+
   const handleCategoryClick = (categoryId) => {
     setScrollPosition(0); // 새로운 카테고리를 클릭할 때 스크롤 위치를 초기화합니다.
     const selected = onetimeCategoryList.find((category) => category.categoryId === categoryId) || {
       name: '단건배송 상품 목록',
     };
     setSelectedCategory(selected);
+    setIsCategoryMenuVisible(false);
     fetchProducts(categoryId, true); // 페이지를 리셋하고 제품을 가져옵니다.
   };
 
@@ -120,6 +123,8 @@ const ListComponent = () => {
         categoryList={onetimeCategoryList}
         onCategoryClick={handleCategoryClick}
         selectedCategory={selectedCategory}
+        isCategoryMenuVisible={isCategoryMenuVisible}
+        setIsCategoryMenuVisible={setIsCategoryMenuVisible}
       />
 
       {isLoading ? (
