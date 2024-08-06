@@ -138,6 +138,7 @@ export const useCustomerOrderList = ({ openAlertModal }) => {
         return;
       }
     }
+    openAlertModal('error', '오류', '선택한 주문이 없습니다.');
   };
 
   // 간편 주문 승인 처리 여부 확인

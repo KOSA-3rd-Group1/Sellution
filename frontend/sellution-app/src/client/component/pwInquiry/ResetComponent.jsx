@@ -1,12 +1,27 @@
+import AlertModal from '@/client/layout/common/modal/AlertModal';
+import AutoCloseModal from '@/client/layout/common/modal/AutoCloseModal';
 import { useMove } from '@/client/business/common/useMove';
+import { useModal } from '@/client/business/common/useModal';
 import { useReset } from '@/client/business/pwInquiry/useReset';
 
 const ResetComponent = () => {
   const { queryParams, moveDefault } = useMove();
-  const { data, passwordMatch, handleChangeInputValue, handleSubmit } = useReset({
-    queryParams,
-    moveDefault,
-  });
+  const {
+    alertModalState,
+    autoCloseModalState,
+    openAlertModal,
+    closeAlertModal,
+    openAutoCloseModal,
+    closeAutoCloseModal,
+  } = useModal();
+  const { data, passwordMatch, handleChangeInputValue, handleSubmit, scuccessCloseAutoCloseModal } =
+    useReset({
+      queryParams,
+      moveDefault,
+      openAlertModal,
+      openAutoCloseModal,
+      closeAutoCloseModal,
+    });
 
   return (
     <div className='flex justify-center items-center min-h-screen bg-gray-100'>
@@ -67,6 +82,23 @@ const ResetComponent = () => {
           로그인으로 가기
         </button>
       </div>
+
+      <AlertModal
+        isOpen={alertModalState.isOpen}
+        onClose={closeAlertModal}
+        // onConfirm={handleOnConfirm}
+        type={alertModalState.type}
+        title={alertModalState.title}
+        message={alertModalState.message}
+      />
+
+      <AutoCloseModal
+        isOpen={autoCloseModalState.isOpen}
+        onClose={scuccessCloseAutoCloseModal}
+        title={autoCloseModalState.title}
+        message={autoCloseModalState.message}
+        duration={2000}
+      />
     </div>
   );
 };

@@ -109,7 +109,7 @@ public class PaymentCancelService {
                     %s
                     """,order.getCode(),payCost,jasyptEncryptionUtil.decrypt(account.getAccountNumber().substring(0, account.getAccountNumber().length() - 4))
             );
-//            smsService.sendSms(customer.getPhoneNumber(),payCancelMessage);
+           smsService.sendSms(customer.getPhoneNumber(),payCancelMessage);
             log.info("결제 취소 성공");
         } else {
             log.error("결제 취소 실패");

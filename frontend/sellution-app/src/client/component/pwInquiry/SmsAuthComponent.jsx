@@ -1,9 +1,11 @@
+import AlertModal from '@/client/layout/common/modal/AlertModal';
 import { useMove } from '@/client/business/common/useMove';
+import { useModal } from '@/client/business/common/useModal';
 import { useSmsAuth } from '@/client/business/pwInquiry/useSmsAuth';
 
 const SmsAuthComponent = () => {
   const { moveDefault, moveDefaultSearch } = useMove();
-
+  const { alertModalState, openAlertModal, closeAlertModal } = useModal();
   const {
     data,
     step,
@@ -14,7 +16,7 @@ const SmsAuthComponent = () => {
     handleRequestAuth,
     handleVerify,
     moveNext,
-  } = useSmsAuth({ moveDefaultSearch });
+  } = useSmsAuth({ moveDefaultSearch, openAlertModal });
 
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -137,6 +139,14 @@ const SmsAuthComponent = () => {
           </button>
         </div>
       </div>
+      <AlertModal
+        isOpen={alertModalState.isOpen}
+        onClose={closeAlertModal}
+        // onConfirm={handleOnConfirm}
+        type={alertModalState.type}
+        title={alertModalState.title}
+        message={alertModalState.message}
+      />
     </div>
   );
 };

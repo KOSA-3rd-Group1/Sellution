@@ -51,11 +51,7 @@ import {
 //     { value: '5', label: '동결건조' },
 //   ],
 // };
-export const useShopManagementSaleSetting = ({
-  openAlertModal,
-  //   openAutoCloseModal,
-  //   closeAutoCloseModal,
-}) => {
+export const useShopManagementSaleSetting = ({ openAlertModal }) => {
   const { accessToken, setAccessToken } = useAuthStore((state) => ({
     accessToken: state.accessToken,
     setAccessToken: state.setAccessToken,
@@ -213,29 +209,80 @@ export const useShopManagementSaleSetting = ({
       };
 
       if (updateData.sellType === 'CATEGORY') {
+        if (!sellTypeCategory.selectedOptions || sellTypeCategory.selectedOptions.length === 0) {
+          throw new ValidationError('카테고리를 하나 이상 선택해주세요.');
+        }
         updateData.categories = tranformSelectedOptions(sellTypeCategory.selectedOptions);
       } else if (updateData.sellType === 'EACH') {
+        if (!sellTypeEach.selectedOptions || sellTypeEach.selectedOptions.length === 0) {
+          throw new ValidationError('상품을 하나 이상 선택해주세요.');
+        }
         updateData.products = tranformSelectedOptions(sellTypeEach.selectedOptions);
       }
 
       if (saleTypes.serviceType !== 'ONETIME') {
+        if (saleTypes.subscriptionType === undefined) {
+          throw new ValidationError('정기 배송 유형을 선택해주세요.');
+        }
+
         // 월 단위 결제
         if (saleTypes.subscriptionType == 0) {
           updateData.subscriptionType = transformSubscriptionType(saleTypes.subscriptionType);
+
+          if (
+            !subscriptionTypeMonth.selectedMonthOptions ||
+            subscriptionTypeMonth.selectedMonthOptions.length === 0
+          ) {
+            throw new ValidationError('이용 기간을 하나 이상 선택해주세요.');
+          }
           updateData.monthOptions = tranformSelectedOptions(
             subscriptionTypeMonth.selectedMonthOptions,
           );
-          updateData.weekOptions = transformWeekValues(subscriptionTypeMonth.weekValues);
-          updateData.dayOptions = transformDayValues(subscriptionTypeMonth.dayValues);
+
+          const updateWeekOptions = transformWeekValues(subscriptionTypeMonth.weekValues);
+          if (!updateWeekOptions || updateWeekOptions.length === 0) {
+            throw new ValidationError('배송 주기 옵션을 하나 이상 선택해주세요.');
+          }
+          updateData.weekOptions = updateWeekOptions;
+
+          const updateDayOptions = transformDayValues(subscriptionTypeMonth.dayValues);
+          if (!updateDayOptions || updateDayOptions.length === 0) {
+            throw new ValidationError('배송 가능 요일 옵션을 하나 이상 선택해주세요.');
+          }
+          updateData.dayOptions = updateDayOptions;
         }
 
         // 횟수 단위 결제
         if (saleTypes.subscriptionType === 1) {
           updateData.subscriptionType = transformSubscriptionType(saleTypes.subscriptionType);
+
+          if (
+            subscriptionTypeCount.minDeliveryCount === undefined ||
+            subscriptionTypeCount.minDeliveryCount < 5
+          ) {
+            throw new ValidationError('최소 이용 횟수를 5 이상으로 입력해주세요.');
+          }
           updateData.minDeliveryCount = subscriptionTypeCount.minDeliveryCount;
+
+          if (
+            subscriptionTypeCount.maxDeliveryCount === undefined ||
+            subscriptionTypeCount.maxDeliveryCount < subscriptionTypeCount.minDeliveryCount
+          ) {
+            throw new ValidationError('최대 이용 횟수는 최소 이용 횟수보다 커야 합니다.');
+          }
           updateData.maxDeliveryCount = subscriptionTypeCount.maxDeliveryCount;
-          updateData.weekOptions = transformWeekValues(subscriptionTypeCount.weekValues);
-          updateData.dayOptions = transformDayValues(subscriptionTypeCount.dayValues);
+
+          const updateWeekOptions = transformWeekValues(subscriptionTypeCount.weekValues);
+          if (!updateWeekOptions || updateWeekOptions.length === 0) {
+            throw new ValidationError('배송 주기 옵션을 하나 이상 선택해주세요.');
+          }
+          updateData.weekOptions = updateWeekOptions;
+
+          const updateDayOptions = transformDayValues(subscriptionTypeCount.dayValues);
+          if (!updateDayOptions || updateDayOptions.length === 0) {
+            throw new ValidationError('배송 가능 요일 옵션을 하나 이상 선택해주세요.');
+          }
+          updateData.dayOptions = updateDayOptions;
         }
       }
 
@@ -257,11 +304,16 @@ export const useShopManagementSaleSetting = ({
 
       openAlertModal('success', '성공', '변경사항이 성공적으로 적용되었습니다.');
     } catch (error) {
-      openAlertModal(
-        'error',
-        '오류',
-        `${error.response?.data?.message || '알 수 없는 오류가 발생했습니다.'}`,
-      );
+      setIsLoading(false);
+      if (error instanceof ValidationError) {
+        openAlertModal('error', '입력 오류', error.message);
+      } else {
+        openAlertModal(
+          'error',
+          '오류',
+          `${error.response?.data?.message || '알 수 없는 오류가 발생했습니다.'}`,
+        );
+      }
       setRefresh(!refresh);
     }
   };

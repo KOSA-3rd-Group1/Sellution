@@ -24,7 +24,7 @@ const IndexComponent = () => {
     { icon: <Icon5 className='w-6 h-6' />, text: '가정' },
     { icon: <Icon6 className='w-6 h-6' />, text: '애완동물' },
     { icon: <Icon7 className='w-6 h-6' />, text: '도서' },
-    { icon: <Icon8 className='w-6 h-6' />, text: '식사' },
+    { icon: <Icon8 className='w-6 h-6' />, text: '유제품' },
     { icon: <Icon9 className='w-6 h-6' />, text: '전자기기' },
     { icon: <Icon10 className='w-6 h-6' />, text: '유아' },
     { icon: <Icon11 className='w-6 h-6' />, text: '취미' },
