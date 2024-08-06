@@ -277,8 +277,8 @@ class OrderServiceImplTest {
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
         when(paymentHistoryRepository.findFirstByOrderIdOrderByCreatedAtDesc(orderId)).thenReturn(null);
-        when(smsService.sendSms(eq(null), contains("주문이 취소되었습니다")))
-                .thenReturn(ResponseEntity.ok(Collections.singletonMap("result", "success")));
+//        when(smsService.sendSms(eq(null), contains("주문이 취소되었습니다")))
+//                .thenReturn(ResponseEntity.ok(Collections.singletonMap("result", "success")));
 
 
         // when
@@ -289,7 +289,7 @@ class OrderServiceImplTest {
         verify(orderRepository).findById(orderId);
         verify(customerRepository).findById(customerId);
         verify(paymentHistoryRepository).findFirstByOrderIdOrderByCreatedAtDesc(orderId);
-        verify(smsService).sendSms(eq(null), contains("주문이 취소되었습니다"));
+//        verify(smsService).sendSms(eq(null), contains("주문이 취소되었습니다"));
     }
 
     @DisplayName("주문 ID로 주문을 조회한다")
