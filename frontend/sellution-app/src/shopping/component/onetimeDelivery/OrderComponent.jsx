@@ -59,7 +59,7 @@ const OrderComponent = () => {
     navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
       state: {
         returnToOrder: true,
-        from: location.pathname // 현재 페이지의 경로를 저장
+        from: location.pathname, // 현재 페이지의 경로를 저장
       },
     });
   };

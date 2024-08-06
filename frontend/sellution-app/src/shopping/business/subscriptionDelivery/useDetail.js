@@ -65,7 +65,8 @@ const useDetail = () => {
       });
     } else if (itemCountToAdd > 0) {
       const newItem = {
-        id: productToShow.productId,
+        // id: productToShow.productId,
+        productId: productToShow.productId,
         quantity: itemCountToAdd,
         name: productToShow.name,
         cost: productToShow.cost,

@@ -119,7 +119,7 @@ const PaymentEstimation = ({
             )}
           </div>
           <span className='text-red-500 font-bold'>
-            {formatPrice(monthlyPriceData.thisMonthPrice)}
+            {formatPrice(perPrice*monthlyPriceData.thisMonthDeliveryCount)}
           </span>
         </div>
         <br />
@@ -129,7 +129,7 @@ const PaymentEstimation = ({
         </div>
         <div className='flex justify-between font-bold mt-2 pt-2 border-t'>
           <span>구독기간 결제될 총 금액</span>
-          <span className='text-red-500'>{formatPrice(monthlyPriceData.totalPrice)}</span>
+          <span className='text-red-500'>{formatPrice(perPrice * monthlyPriceData.totalDeliveryCount )}</span>
         </div>
         <br />
         <div className='flex justify-between '>
