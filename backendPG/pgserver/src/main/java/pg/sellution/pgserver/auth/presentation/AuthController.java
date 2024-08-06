@@ -29,6 +29,7 @@ public class AuthController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
+        log.info("결제용 일회용 토큰 생성 요청 시작");
 
         String clientIP = getClientIp(request);
 
@@ -39,10 +40,14 @@ public class AuthController {
                 createTokenReq.getPrice(),
                 clientIP
         );
+        log.info(" 클라이언트 이름: {} , 요청한 토큰의 권한 : {} , 결제 금액: {}",
+                createTokenReq.getName(), createTokenReq.getPermission(), createTokenReq.getPrice());
 
-        log.info("Access token created for API key: {}, IP: {}", createTokenReq.getApiKey(), clientIP);
-
+        log.info("클라이언트 API key: {} , 클라이언트 IP: {}", createTokenReq.getApiKey(), clientIP);
+        log.info("일회용 결제토큰 {}",token);
         response.addHeader(AUTH_HEADER, TOKEN_PREFIX + token);
+
+        log.info("결제용 일회용 토큰 생성 요청 종료");
 
         return ResponseEntity.ok().body("success");
     }
