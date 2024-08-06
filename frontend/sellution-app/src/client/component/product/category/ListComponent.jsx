@@ -8,7 +8,6 @@ const ListComponent = () => {
   const {
     currentPage,
     selectedRows,
-    selectAll,
     categories,
     totalPages,
     totalElements,
@@ -144,7 +143,9 @@ const ListComponent = () => {
               <th className='sticky min-w-24 w-24 max-w-24 h-full p-3 z-20 left-[0px] bg-gray-50'>
                 <input
                   type='checkbox'
-                  checked={selectAll}
+                  checked={
+                    categories.length > 0 && Object.keys(selectedRows).length === categories.length
+                  }
                   onChange={handleSelectAll}
                   className='w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'
                 />
@@ -212,8 +213,15 @@ const ListComponent = () => {
           </tbody>
         </table>
       </div>
-
-      {/* ... (이후 코드는 그대로 유지) */}
+      <div className='h-12 flex-none flex justify-end items-end'>{renderPageNumbers()}</div>
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={closeAlertModal}
+        type={alertModal.type}
+        title={alertModal.title}
+        message={alertModal.message}
+        onConfirm={handleAlertConfirm}
+      />
     </div>
   );
 };

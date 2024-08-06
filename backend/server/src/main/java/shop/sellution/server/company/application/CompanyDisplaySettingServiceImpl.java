@@ -98,6 +98,8 @@ public class CompanyDisplaySettingServiceImpl implements CompanyDisplaySettingSe
             updateLogoImage(company, logoUrl);
         } else if (saveCompanyDisplaySettingReq.getLogoImageUrl() != null) {
             updateLogoImage(company, saveCompanyDisplaySettingReq.getLogoImageUrl());
+        }else {
+            deleteLogoImage(company);
         }
 
         // Promotion Images 처리
@@ -155,6 +157,11 @@ public class CompanyDisplaySettingServiceImpl implements CompanyDisplaySettingSe
                 .collect(Collectors.toList());
 
         companyImageRepository.saveAll(newPromotionImages);
+    }
+
+    public void deleteLogoImage(Company company) {
+        Optional<CompanyImage> existingImageOpt = companyImageRepository.findByCompanyAndPurposeOfUse(company, ImagePurposeType.LOGO);
+        existingImageOpt.ifPresent(companyImageRepository::delete);
     }
 
 }
