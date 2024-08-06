@@ -142,11 +142,11 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         createProductImages();
 //        createProductImages2();
         createCustomer();
-//        createAccount();
+        createAccount();
         createAddress();
         createCompanyOptions();
-//        createCouponEvent();
-//        createOrder();
+        createCouponEvent();
+        createOrder();
 
 
         alreadySetup = true;

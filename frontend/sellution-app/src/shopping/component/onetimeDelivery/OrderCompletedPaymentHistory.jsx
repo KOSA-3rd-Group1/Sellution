@@ -63,6 +63,11 @@ const PaymentHistoryList = () => {
   return (
     <div className='p-4'>
       <MenuHeaderNav title={'결제내역'} />
+      {paymentHistoryData.content.length === 0 ? (
+        <div className='text-gray-500 py-3 text-center text-lg border-2 border-dashed border-gray-300 rounded-lg p-8'>
+          결제 내역이 없습니다.
+        </div>
+      ) : null}
       {paymentHistoryData.content.map((payment, index) => (
         <div key={payment.paymentHisoryId} className='mb-6 p-4 border rounded shadow'>
           <div className='grid grid-cols-2 gap-4 text-sm'>

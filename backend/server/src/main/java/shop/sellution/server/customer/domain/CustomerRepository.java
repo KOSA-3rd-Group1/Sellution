@@ -8,9 +8,11 @@ import shop.sellution.server.customer.domain.repository.CustomerRepositoryCustom
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import shop.sellution.server.customer.domain.type.CustomerType;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface CustomerRepository extends JpaRepository<Customer, Long>, QuerydslPredicateExecutor<Customer>,
@@ -35,5 +37,13 @@ public interface CustomerRepository extends JpaRepository<Customer, Long>, Query
             where c.latestDeliveryDate < :date
             """)
     int updateDormantCustomerType(@Param("date") LocalDateTime date);
+
+    // 전달된 CustomerType인 회원들을 조회
+
+    @Query("""
+            select c from Customer c
+            where c.type in :type
+            """)
+    List<Customer> findAllByType(List<CustomerType> type);
 
 }

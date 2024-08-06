@@ -51,9 +51,7 @@ const DetailComponent = () => {
             <DeliveryInfo data={deliveryInfoData} />
           </div>
         )}
-        <div className='flex-1 w-full'>
-          <PaymentInfo data={data} />
-        </div>
+
         <div className='flex-1 w-full'>
           <AddressInfo data={addressInfo} />
         </div>
@@ -61,8 +59,11 @@ const DetailComponent = () => {
           <OrdererInfo data={ordererInfo} />
         </div>
         <div className='flex-1 w-full'>
-          <PaymentMethod data={paymentMethod} />
+          <PaymentInfo data={paymentInfoData} />
         </div>
+        {/*<div className='flex-1 w-full'>*/}
+        {/*  <PaymentMethod data={paymentMethod} />*/}
+        {/*</div>*/}
       </section>
       <FooterComponent back={{ label: '목록으로', event: moveList }} />
     </div>
