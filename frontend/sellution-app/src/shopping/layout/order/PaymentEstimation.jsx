@@ -44,8 +44,10 @@ const PaymentEstimation = ({
   };
 
   useEffect(() => {
-    calculateTotalPrice(); // Call the function when finalPrice changes
-  }, [finalPrice]);
+    if (subscriptionType === 'MONTH' || subscriptionType === 'COUNT') {
+      calculateTotalPrice(); // Call the function when finalPrice changes
+    }
+  }, [finalPrice, subscriptionType]);
 
   const renderCommonInfo = () => (
     <>
