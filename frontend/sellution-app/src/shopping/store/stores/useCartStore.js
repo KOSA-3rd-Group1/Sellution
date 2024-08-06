@@ -147,20 +147,44 @@ const useCartStore = create((set, get) => ({
     });
   },
 
-  selectAllItems: (cartType, select) => {
+  selectAllItems: (cartType) => {
     set((state) => {
       const cartKey = cartType === 'ONETIME' ? 'onetimeCart' : 'subscriptionCart';
       const selectedItemsKey =
         cartType === 'ONETIME' ? 'selectedOnetimeItems' : 'selectedSubscriptionItems';
 
       // Filter out items that are not visible
-      const visibleItems = state[cartKey].filter((item) => item.isVisible !== 'N');
+      const currentSelectedItems = state[selectedItemsKey];
+      const visibleItems = state[cartKey].filter((item) => item.isVisible === 'Y');
+      const selectedProductIds = visibleItems.map((item) => item.productId);
+      const allSelected = selectedProductIds.every((id) => currentSelectedItems.includes(id));
 
       return {
-        [selectedItemsKey]: select ? visibleItems.map((item) => item.productId) : [],
+        [selectedItemsKey]: allSelected
+          ? currentSelectedItems.filter((id) => !selectedProductIds.includes(id))
+          : [...currentSelectedItems, ...selectedProductIds],
       };
     });
   },
+
+  // selectAllItems: (cartType, select) => {
+  //   set((state) => {
+  //     const cartKey = cartType === 'ONETIME' ? 'onetimeCart' : 'subscriptionCart';
+  //     const selectedItemsKey =
+  //       cartType === 'ONETIME' ? 'selectedOnetimeItems' : 'selectedSubscriptionItems';
+  //     const selectedItems = state[selectedItemsKey];
+  //     const visibleItems = state[cartKey].filter((item) => item.isVisible !== 'N');
+
+  //     // Toggle selection based on current state
+  //     const updatedSelectedItems = select
+  //       ? [...selectedItems, ...visibleItems.map((item) => item.productId)]
+  //       : selectedItems.filter((id) => !visibleItems.map((item) => item.productId).includes(id));
+
+  //     return {
+  //       [selectedItemsKey]: updatedSelectedItems,
+  //     };
+  //   });
+  // },
 
   removeSelectedItems: async (cartType, accessToken, setAccessToken) => {
     const selectedItemsKey =

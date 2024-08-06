@@ -1,5 +1,3 @@
-import React from 'react';
-
 const DeliverySelection = ({ addresses, selectedAddress, handleAddressChange }) => {
   const formatPhoneNumber = (value) => {
     const cleaned = ('' + value).replace(/\D/g, '');

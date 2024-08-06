@@ -100,12 +100,12 @@ export const useEventAdd = ({
       const startDate = new Date(data.eventStartDate);
       const endDate = new Date(data.eventEndDate);
 
-      if (startDate <= today) {
-        throw new ValidationError('이벤트 시작일은 다음날부터 가능합니다.');
+      if (startDate < today) {
+        throw new ValidationError('이벤트 시작일은 당일부터 가능합니다.');
       }
 
-      if (endDate <= startDate) {
-        throw new ValidationError('이벤트 종료일은 시작일 이후여야 합니다.');
+      if (endDate < startDate) {
+        throw new ValidationError('이벤트 종료일은 이벤트 시작일부터 가능합니다');
       }
 
       const addData = {

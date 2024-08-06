@@ -30,4 +30,9 @@ public interface EventService {
     void createDummyEvent(SaveEventReq saveEventReq);
 
     FindEventRes findEvent(Long eventId);
+
+    void downloadCoupon(Long eventId, Long customerId);
+
+    void downloadCoupon2(Long eventId, Long customerId);
+
 }

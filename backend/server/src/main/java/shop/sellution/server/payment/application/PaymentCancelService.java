@@ -107,6 +107,7 @@ public class PaymentCancelService {
                     %d원
                     환불된 계좌 정보
                     %s
+
                     """,order.getCode(),payCost,jasyptEncryptionUtil.decrypt(account.getAccountNumber().substring(0, account.getAccountNumber().length() - 4))
             );
            smsService.sendSms(customer.getPhoneNumber(),payCancelMessage);

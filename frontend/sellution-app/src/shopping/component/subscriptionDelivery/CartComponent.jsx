@@ -18,7 +18,7 @@ const CartComponent = () => {
   //   selectAllSubscriptionItems,
   //   removeSelectedSubscriptionItems,
   //   toggleSelectedSubscriptionItems,
-  //   increaseSubscriptionCartQuantity,
+  //   increaseSubscriptionCartQuantity,f
   //   decreaseSubscriptionCartQuantity,
   //   removeFromSubscriptionCart,
   // } = useSubscriptionCartStore();
@@ -43,16 +43,16 @@ const CartComponent = () => {
   const navigate = useNavigate();
   const clientName = useCompanyInfoStore((state) => state.name);
   const customerId = useUserInfoStore((state) => state.id);
-  const allSelected =
-    subscriptionCart.length > 0 && selectedSubscriptionItems.length === subscriptionCart.length;
   const visibleItemsCount = getVisibleItemsCount('SUBSCRIPTION');
+  const allSelected =
+    subscriptionCart.filter((item) => item.isVisible === 'Y').length > 0 &&
+    selectedSubscriptionItems.length === visibleItemsCount;
   const isOrderButtonDisabled = selectedSubscriptionItems.length === 0;
-
   const addToOrderList = () => {
     const visibleSelectedItems = selectedSubscriptionItems.filter((id) =>
       subscriptionCart.find((item) => item.productId === id && item.isVisible !== 'N'),
     );
-    updateOrderList(selectedSubscriptionItems, subscriptionCart);
+    updateOrderList(visibleSelectedItems, subscriptionCart);
     navigate(`/shopping/${clientName}/subscription/order/${customerId}`);
   };
 
@@ -91,7 +91,7 @@ const CartComponent = () => {
               <input
                 type='checkbox'
                 checked={allSelected}
-                onChange={(e) => selectAllItems('SUBSCRIPTION', e.target.checked)}
+                onChange={() => selectAllItems('SUBSCRIPTION')}
                 className='hidden-checkbox'
                 id='selectAll'
               />
