@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.event.domain.CouponEvent;
+import shop.sellution.server.event.domain.type.EventState;
 import shop.sellution.server.event.domain.type.TargetCustomerType;
+import shop.sellution.server.global.exception.BadRequestException;
+import shop.sellution.server.global.exception.ExceptionCode;
 
 import java.time.LocalDate;
 
@@ -34,6 +37,16 @@ public class SaveEventReq {
     private Integer totalQuantity;
 
     public CouponEvent toEntity(Company company) {
+        LocalDate now = LocalDate.now();
+        EventState state;
+
+        if (eventStartDate.isAfter(now)) {
+            state = EventState.UPCOMING;
+        } else if (eventStartDate.isEqual(now)) {
+            state = EventState.ONGOING;
+        } else {
+            throw new BadRequestException(ExceptionCode.INVALID_EVENT_SAVE_EVENTSTARTDATE);
+        }
         return CouponEvent.builder()
                 .company(company)
                 .couponName(couponName)
@@ -42,7 +55,9 @@ public class SaveEventReq {
                 .eventStartDate(eventStartDate)
                 .eventEndDate(eventEndDate)
                 .totalQuantity(totalQuantity)
+                .state(state)
                 .build();
     }
+
 
 }

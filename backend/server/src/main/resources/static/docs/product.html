@@ -438,13 +438,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
+<h1>Product(상품)</h1>
+<div class="details">
+<span id="revnumber">version 0.0.1-SNAPSHOT</span>
+</div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_product상품">Product(상품)</h2>
+<h2 id="_상품_목록_조회">상품 목록 조회</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_상품_목록_조회">상품 목록 조회</h3>
 <div class="paragraph">
 <p>/products</p>
 </div>
@@ -477,6 +479,21 @@ Content-Length: 843
 {
   "totalElements" : 1,
   "totalPages" : 1,
+  "numberOfElements" : 1,
+  "first" : true,
+  "last" : true,
+  "pageable" : {
+    "pageNumber" : 0,
+    "pageSize" : 10,
+    "sort" : {
+      "unsorted" : true,
+      "sorted" : false,
+      "empty" : true
+    },
+    "offset" : 0,
+    "unpaged" : false,
+    "paged" : true
+  },
   "size" : 10,
   "content" : [ {
     "productId" : 1,
@@ -495,25 +512,10 @@ Content-Length: 843
   } ],
   "number" : 0,
   "sort" : {
-    "empty" : true,
+    "unsorted" : true,
     "sorted" : false,
-    "unsorted" : true
+    "empty" : true
   },
-  "first" : true,
-  "last" : true,
-  "pageable" : {
-    "pageNumber" : 0,
-    "pageSize" : 10,
-    "sort" : {
-      "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
-    },
-    "offset" : 0,
-    "paged" : true,
-    "unpaged" : false
-  },
-  "numberOfElements" : 1,
   "empty" : false
 }</code></pre>
 </div>
@@ -719,8 +721,10 @@ Content-Length: 843
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_상품_상세_조회">상품 상세 조회</h3>
+</div>
+<div class="sect1">
+<h2 id="_상품_상세_조회">상품 상세 조회</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/products/{productId}</p>
 </div>
@@ -883,8 +887,10 @@ Content-Length: 549
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_상품_생성">상품 생성</h3>
+</div>
+<div class="sect1">
+<h2 id="_상품_생성">상품 생성</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/products</p>
 </div>
@@ -948,8 +954,10 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_상품_수정">상품 수정</h3>
+</div>
+<div class="sect1">
+<h2 id="_상품_수정">상품 수정</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/products/{productId}</p>
 </div>
@@ -1013,8 +1021,10 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_상품_삭제">상품 삭제</h3>
+</div>
+<div class="sect1">
+<h2 id="_상품_삭제">상품 삭제</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/products/{productId}</p>
 </div>
@@ -1027,7 +1037,7 @@ Content-Type: application/x-www-form-urlencoded
 Host: localhost:8080
 Content-Length: 102
 
-_csrf=QCp71Lku4CuH9S_G5-9JricjYsk-z1hJsFF8qILRR0R3j2s_eUkY5o1NhU6qwUn1gcJ9yhIXT6hf_Wpk0WJPyeDgIn1Dultd</code></pre>
+_csrf=3lTayN2ylhy3qUmnmLup0fvMRTuejGDphWRBGO2pwgY5oA4YvTXo_biGpi2an36U_JadtM30aAKr7gXEs11xL9iR-j8MkDZ7</code></pre>
 </div>
 </div>
 </div>
@@ -1051,11 +1061,10 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
-</div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-08-05 16:53:55 +0900
+Last updated 2024-08-06 22:53:00 +0900
 </div>
 </div>
 </body>

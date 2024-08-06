@@ -13,5 +13,6 @@ export const logout = async (setAccessToken) => {
     localStorage.removeItem('shop-user-storage');
     // localStorage.removeItem('shop-auth-storage');
     setAccessToken(null);
+    //장바구니 전역변수 비우기
   }
 };

@@ -470,6 +470,10 @@ Content-Length: 1693
 {
   "totalElements" : 1,
   "totalPages" : 1,
+  "numberOfElements" : 1,
+  "first" : true,
+  "last" : true,
+  "pageable" : "INSTANCE",
   "size" : 1,
   "content" : [ {
     "customer" : {
@@ -486,7 +490,7 @@ Content-Length: 1693
       "phoneNumber" : "010-1234-5678",
       "isDefaultAddress" : "Y",
       "addressName" : "집",
-      "createdAt" : "2024-08-06T22:52:15.1561103"
+      "createdAt" : "2024-08-06T23:09:49.2537351"
     },
     "orderCode" : "123456",
     "orderId" : 1,
@@ -509,7 +513,7 @@ Content-Length: 1693
       "price" : 50000,
       "productImageList" : null
     } ],
-    "orderCreatedAt" : "2024-08-06T22:52:15.1561103",
+    "orderCreatedAt" : "2024-08-06T23:09:49.2537351",
     "selectedDayList" : [ "MON", "WED" ],
     "selectedWeekOption" : 1,
     "selectedMonthOption" : 1,
@@ -522,14 +526,10 @@ Content-Length: 1693
   } ],
   "number" : 0,
   "sort" : {
-    "empty" : true,
+    "unsorted" : true,
     "sorted" : false,
-    "unsorted" : true
+    "empty" : true
   },
-  "first" : true,
-  "last" : true,
-  "pageable" : "INSTANCE",
-  "numberOfElements" : 1,
   "empty" : false
 }</code></pre>
 </div>
@@ -852,11 +852,15 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 1691
+Content-Length: 1693
 
 {
   "totalElements" : 1,
   "totalPages" : 1,
+  "numberOfElements" : 1,
+  "first" : true,
+  "last" : true,
+  "pageable" : "INSTANCE",
   "size" : 1,
   "content" : [ {
     "customer" : {
@@ -873,7 +877,7 @@ Content-Length: 1691
       "phoneNumber" : "010-1234-5678",
       "isDefaultAddress" : "Y",
       "addressName" : "집",
-      "createdAt" : "2024-08-06T22:52:15.0739198"
+      "createdAt" : "2024-08-06T23:09:49.1585317"
     },
     "orderCode" : "123456",
     "orderId" : 1,
@@ -896,7 +900,7 @@ Content-Length: 1691
       "price" : 50000,
       "productImageList" : null
     } ],
-    "orderCreatedAt" : "2024-08-06T22:52:15.07492",
+    "orderCreatedAt" : "2024-08-06T23:09:49.1595308",
     "selectedDayList" : [ "MON", "WED" ],
     "selectedWeekOption" : 1,
     "selectedMonthOption" : 1,
@@ -909,14 +913,10 @@ Content-Length: 1691
   } ],
   "number" : 0,
   "sort" : {
-    "empty" : true,
+    "unsorted" : true,
     "sorted" : false,
-    "unsorted" : true
+    "empty" : true
   },
-  "first" : true,
-  "last" : true,
-  "pageable" : "INSTANCE",
-  "numberOfElements" : 1,
   "empty" : false
 }</code></pre>
 </div>
@@ -1417,7 +1417,7 @@ Content-Length: 1313
     "phoneNumber" : "010-1234-5678",
     "isDefaultAddress" : "Y",
     "addressName" : "Home",
-    "createdAt" : "2024-08-06T22:52:15.2299012"
+    "createdAt" : "2024-08-06T23:09:49.3288212"
   },
   "orderCode" : "123456",
   "orderId" : 1,
@@ -1440,7 +1440,7 @@ Content-Length: 1313
     "price" : 50000,
     "productImageList" : null
   } ],
-  "orderCreatedAt" : "2024-08-06T22:52:15.2299012",
+  "orderCreatedAt" : "2024-08-06T23:09:49.3288212",
   "selectedDayList" : null,
   "selectedWeekOption" : null,
   "selectedMonthOption" : null,

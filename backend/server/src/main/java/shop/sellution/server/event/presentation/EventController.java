@@ -37,7 +37,7 @@ public class EventController {
         return ResponseEntity.ok(result);
     }
     @GetMapping("/{eventId}")
-    public ResponseEntity<FindEventRes> findEvent(@PathVariable Long eventId) {
+    public ResponseEntity<FindEventRes> findEvent(@PathVariable Long eventId) { //상세조회
         FindEventRes result = eventService.findEvent(eventId);
         return ResponseEntity.ok(result);
     }
