@@ -1,6 +1,6 @@
-== Order(주문)
+= Order(주문) [길재현]
 
-=== 고객의 주문 목록 조회
+== 고객의 주문 목록 조회
 /orders/customers/{customerId}
 
 ==== HTTP Request
@@ -15,7 +15,7 @@ include::{snippets}/Order/order-list-by-customer/http-response.adoc[]
 
 include::{snippets}/Order/order-list-by-customer/response-fields.adoc[]
 
-=== 회사의 주문 목록 조회
+== 회사의 주문 목록 조회
 /orders/company/{companyId}
 
 ==== HTTP Request
@@ -30,7 +30,7 @@ include::{snippets}/Order/order-list-by-company/http-response.adoc[]
 
 include::{snippets}/Order/order-list-by-company/response-fields.adoc[]
 
-=== 주문 생성
+== 주문 생성
 /orders/customers/{customerId}
 
 ==== HTTP Request
@@ -43,7 +43,7 @@ include::{snippets}/Order/create-order/http-response.adoc[]
 
 
 
-=== 주문 취소
+== 주문 취소
 /orders/{orderId}/cancel
 
 ==== HTTP Request
@@ -56,7 +56,7 @@ include::{snippets}/Order/cancel-order/http-response.adoc[]
 
 
 
-=== 주문 수동 승인
+== 주문 수동 승인
 /orders/{orderId}/approve
 
 ==== HTTP Request
@@ -69,7 +69,7 @@ include::{snippets}/Order/approve-order/http-response.adoc[]
 
 
 
-=== 주문 자동 승인 토글
+== 주문 자동 승인 토글
 /orders/auto-approve-toggle/company/{companyId}
 
 ==== HTTP Request
@@ -82,7 +82,7 @@ include::{snippets}/Order/toggle-auto-approve/http-response.adoc[]
 
 
 
-=== 주문 상세 조회
+== 주문 상세 조회
 /orders/{orderId}
 
 ==== HTTP Request
@@ -92,3 +92,60 @@ include::{snippets}/Order/find-order-by-id/http-request.adoc[]
 ==== HTTP Response
 
 include::{snippets}/Order/find-order-by-id/http-response.adoc[]
+
+
+== 정기주문(월 단위) 가격 관련 정보 조회
+/orders/month/calculate-price
+
+==== HTTP Request
+
+include::{snippets}/Order/calculate-price/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Order/calculate-price/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Order/calculate-price/response-fields.adoc[]
+
+== 정기주문(횟수 단위) 가격 관련 정보 조회
+/orders/count/info
+
+==== HTTP Request
+
+include::{snippets}/Order/count-order-info/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Order/count-order-info/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Order/count-order-info/response-fields.adoc[]
+
+== 주문한 상품들 재고 체크
+/orders/{orderId}/enough-stock
+
+==== HTTP Request
+
+include::{snippets}/Order/count-order-info/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Order/count-order-info/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Order/count-order-info/response-fields.adoc[]
+
+== 승인되지않은 주문 수 조회
+/orders/company/{companyId}/unapproved-count
+
+==== HTTP Request
+
+include::{snippets}/Order/unapproved-order-count/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Order/unapproved-order-count/http-response.adoc[]
