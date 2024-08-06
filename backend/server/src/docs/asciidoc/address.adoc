@@ -1,6 +1,6 @@
-== Address(주소)
+= Address(주소)
 
-=== 특정 회원의 주소 목록 조회
+== 특정 회원의 주소 목록 조회
 /addresses/customer/{customerId}
 
 ==== HTTP Request
@@ -15,7 +15,7 @@ include::{snippets}/Address/findAddressesByCustomerId/http-response.adoc[]
 
 include::{snippets}/Address/findAddressesByCustomerId/response-fields.adoc[]
 
-=== 주소 상세 정보 조회
+== 주소 상세 정보 조회
 /addresses/{addressId}
 
 ==== HTTP Request
@@ -30,7 +30,7 @@ include::{snippets}/Address/findAddressById/http-response.adoc[]
 
 include::{snippets}/Address/findAddressById/response-fields.adoc[]
 
-=== 새로운 주소 생성
+== 새로운 주소 생성
 /addresses
 
 ==== HTTP Request
@@ -45,7 +45,7 @@ include::{snippets}/Address/createAddress/http-response.adoc[]
 
 include::{snippets}/Address/createAddress/request-fields.adoc[]
 
-=== 주소 수정
+== 주소 수정
 /addresses/{addressId}
 
 ==== HTTP Request
@@ -60,7 +60,7 @@ include::{snippets}/Address/updateAddress/http-response.adoc[]
 
 include::{snippets}/Address/updateAddress/request-fields.adoc[]
 
-=== 주소 삭제
+== 주소 삭제
 /addresses/{addressId}
 
 ==== HTTP Request

@@ -1,0 +1,20 @@
+= AccountAuth(계좌 검증) By SellutionPG [길재현]
+
+== 실제 계좌 주인 조회
+/accounts/auth/check-account
+
+은행코드 , 계좌번호를 입력받아 Sellution-Pg 서버의 API를 이용하여 계좌주인을 조회한다.
+
+==== HTTP Request
+
+include::{snippets}/Account-Auth/checkAccount/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Account-Auth/checkAccount/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Account-Auth/checkAccount/response-fields.adoc[]
+
+

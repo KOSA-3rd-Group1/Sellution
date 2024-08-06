@@ -344,7 +344,7 @@ const OrderCompletedComponent = () => {
 
   const totalProductPrice = calculateTotalProductPrice();
   const totalDiscountAmount = calculateTotalDiscountAmount();
-  const couponDiscountAmount = calculateCouponDiscountAmount(totalProductPrice);
+  const couponDiscountAmount = calculateCouponDiscountAmount(totalProductPrice,totalDiscountAmount);
   const finalTotalPrice = orderData.totalPrice;
 
   return (

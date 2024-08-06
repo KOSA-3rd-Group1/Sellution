@@ -21,9 +21,11 @@ import shop.sellution.server.order.domain.type.DeliveryStatus;
 import shop.sellution.server.order.domain.type.OrderStatus;
 import shop.sellution.server.order.domain.type.OrderType;
 import shop.sellution.server.order.dto.OrderSearchCondition;
+import shop.sellution.server.order.dto.request.CalculateReq;
 import shop.sellution.server.order.dto.request.CancelOrderReq;
 import shop.sellution.server.order.dto.request.FindOrderedProductSimpleReq;
 import shop.sellution.server.order.dto.request.SaveOrderReq;
+import shop.sellution.server.order.dto.response.CalculateRes;
 import shop.sellution.server.order.dto.response.FindOrderRes;
 import shop.sellution.server.order.dto.response.FindOrderedProductRes;
 
@@ -567,6 +569,123 @@ class OrderControllerTest extends BaseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("false"));
     }
+    @DisplayName("정기주문(월) 가격 계산")
+    @Test
+    void calculatePrice_Success() throws Exception {
+        // Given
+        CalculateReq calculateReq = new CalculateReq();
+        calculateReq.setSelectedDays(Arrays.asList(DayValueType.MON, DayValueType.WED, DayValueType.FRI));
+        calculateReq.setWeekOptionValue(2);
+        calculateReq.setMonthOptionValue(null);
+        calculateReq.setPerPrice(10000);
+        calculateReq.setStartDate(LocalDate.now());
 
+        CalculateRes calculateRes = CalculateRes.builder()
+                .thisMonthDeliveryCount(8)
+                .thisMonthPrice(80000)
+                .totalDeliveryCount(24)
+                .totalPrice(240000)
+                .deliveryNextDate(LocalDate.now().plusDays(1))
+                .deliveryEndDate(LocalDate.now().plusMonths(2))
+                .build();
+
+        when(orderService.calculatePrice(any(CalculateReq.class))).thenReturn(calculateRes);
+
+        // When & Then
+        mockMvc.perform(post("/orders/month/calculate-price")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(calculateReq)))
+                .andExpect(status().isOk())
+                .andDo(document("Order/calculate-price",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("selectedDays").type(JsonFieldType.ARRAY).description("선택된 요일 목록"),
+                                fieldWithPath("weekOptionValue").type(JsonFieldType.NUMBER).description("주 옵션 값"),
+                                fieldWithPath("monthOptionValue").type(JsonFieldType.NUMBER).optional().description("월 옵션 값"),
+                                fieldWithPath("perPrice").type(JsonFieldType.NUMBER).description("1회 배송 가격"),
+                                fieldWithPath("startDate").type(JsonFieldType.STRING).description("시작 날짜")
+                        ),
+                        responseFields(
+                                fieldWithPath("thisMonthDeliveryCount").type(JsonFieldType.NUMBER).description("이번 달 배송 횟수"),
+                                fieldWithPath("thisMonthPrice").type(JsonFieldType.NUMBER).description("이번 달 가격"),
+                                fieldWithPath("totalDeliveryCount").type(JsonFieldType.NUMBER).description("총 배송 횟수"),
+                                fieldWithPath("totalPrice").type(JsonFieldType.NUMBER).description("총 가격"),
+                                fieldWithPath("deliveryNextDate").type(JsonFieldType.STRING).description("다음 배송일"),
+                                fieldWithPath("deliveryEndDate").type(JsonFieldType.STRING).description("배송 종료일")
+                        )
+                ));
+    }
+
+    @DisplayName("정기주문(횟수) 정보 조회")
+    @Test
+    void getCountOrderDeliveryInfo_Success() throws Exception {
+        // Given
+        CalculateReq calculateReq = new CalculateReq();
+        calculateReq.setSelectedDays(Arrays.asList(DayValueType.TUE, DayValueType.THU));
+        calculateReq.setWeekOptionValue(1);
+        calculateReq.setMonthOptionValue(null);
+        calculateReq.setPerPrice(15000);
+        calculateReq.setStartDate(LocalDate.now());
+
+        CalculateRes calculateRes = CalculateRes.builder()
+                .thisMonthDeliveryCount(6)
+                .thisMonthPrice(90000)
+                .totalDeliveryCount(18)
+                .totalPrice(270000)
+                .deliveryNextDate(LocalDate.now().plusDays(2))
+                .deliveryEndDate(LocalDate.now().plusMonths(3))
+                .build();
+
+        when(orderService.calculatePrice(any(CalculateReq.class))).thenReturn(calculateRes);
+
+        // When & Then
+        mockMvc.perform(post("/orders/count/info")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(calculateReq)))
+                .andExpect(status().isOk())
+                .andDo(document("Order/count-order-info",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("selectedDays").type(JsonFieldType.ARRAY).description("선택된 요일 목록"),
+                                fieldWithPath("weekOptionValue").type(JsonFieldType.NUMBER).description("주 옵션 값"),
+                                fieldWithPath("monthOptionValue").type(JsonFieldType.NUMBER).optional().description("월 옵션 값"),
+                                fieldWithPath("perPrice").type(JsonFieldType.NUMBER).description("1회 배송 가격"),
+                                fieldWithPath("startDate").type(JsonFieldType.STRING).description("시작 날짜")
+                        ),
+                        responseFields(
+                                fieldWithPath("thisMonthDeliveryCount").type(JsonFieldType.NUMBER).description("이번 달 배송 횟수"),
+                                fieldWithPath("thisMonthPrice").type(JsonFieldType.NUMBER).description("이번 달 가격"),
+                                fieldWithPath("totalDeliveryCount").type(JsonFieldType.NUMBER).description("총 배송 횟수"),
+                                fieldWithPath("totalPrice").type(JsonFieldType.NUMBER).description("총 가격"),
+                                fieldWithPath("deliveryNextDate").type(JsonFieldType.STRING).description("다음 배송일"),
+                                fieldWithPath("deliveryEndDate").type(JsonFieldType.STRING).description("배송 종료일")
+                        )
+                ));
+    }
+
+    @DisplayName("승인되지 않은 주문 수 조회")
+    @Test
+    void getUnapprovedOrderCount_Success() throws Exception {
+        // Given
+        Long companyId = 1L;
+        Long unapprovedCount = 5L;
+
+        when(orderService.getUnapprovedOrderCount(companyId)).thenReturn(unapprovedCount);
+
+        // When & Then
+        mockMvc.perform(get("/orders/company/{companyId}/unapproved-count", companyId))
+                .andExpect(status().isOk())
+                .andExpect(content().string(unapprovedCount.toString()))
+                .andDo(document("Order/unapproved-order-count",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("companyId").description("회사 ID")
+                        ),
+                        responseBody()
+                ));
+    }
 
 }
