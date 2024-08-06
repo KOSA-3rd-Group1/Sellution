@@ -13,6 +13,7 @@ import shop.sellution.server.account.application.AccountServiceImpl;
 import shop.sellution.server.account.domain.type.BankCode;
 import shop.sellution.server.account.dto.request.SaveAccountReq;
 import shop.sellution.server.account.dto.request.UpdateAccountReq;
+import shop.sellution.server.account.dto.response.FindAccountDetailRes;
 import shop.sellution.server.account.dto.response.FindAccountRes;
 import shop.sellution.server.common.BaseControllerTest;
 
@@ -202,6 +203,50 @@ class AccountControllerTest extends BaseControllerTest {
                                 parameterWithName("accountId").description("계좌 ID")
                         )
                 ));
+    }
+
+    @DisplayName("계좌 상세 정보를 조회한다.")
+    @Test
+    void findAccount_Success() throws Exception {
+        // given
+        Long accountId = 1L;
+        FindAccountDetailRes accountDetail = FindAccountDetailRes.builder()
+                .accountId(accountId)
+                .customerId(100L)
+                .customerName("홍길동")
+                .accountNumber("*********1234")  // 마스킹된 계좌번호
+                .bankCode("004")
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        when(accountService.findAccount(accountId)).thenReturn(accountDetail);
+
+        // when & then
+        mockMvc.perform(get("/accounts/{accountId}", accountId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accountId").value(accountId))
+                .andExpect(jsonPath("$.customerId").value(100L))
+                .andExpect(jsonPath("$.customerName").value("홍길동"))
+                .andExpect(jsonPath("$.accountNumber").value("*********1234"))
+                .andExpect(jsonPath("$.bankCode").value("004"))
+                .andDo(document("Account/findAccount",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("accountId").description("계좌 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("accountId").type(JsonFieldType.NUMBER).description("계좌 ID"),
+                                fieldWithPath("customerId").type(JsonFieldType.NUMBER).description("고객 ID"),
+                                fieldWithPath("customerName").type(JsonFieldType.STRING).description("고객 이름"),
+                                fieldWithPath("accountNumber").type(JsonFieldType.STRING).description("마스킹된 계좌 번호"),
+                                fieldWithPath("bankCode").type(JsonFieldType.STRING).description("은행 코드"),
+                                fieldWithPath("createdAt").type(JsonFieldType.STRING).description("생성 일시")
+                        )
+                ));
+
+        // verify
+        verify(accountService).findAccount(accountId);
     }
 
 
