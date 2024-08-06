@@ -465,15 +465,13 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 1693
+Content-Length: 1627
 
 {
   "totalElements" : 1,
   "totalPages" : 1,
-  "numberOfElements" : 1,
   "first" : true,
   "last" : true,
-  "pageable" : "INSTANCE",
   "size" : 1,
   "content" : [ {
     "customer" : {
@@ -490,7 +488,7 @@ Content-Length: 1693
       "phoneNumber" : "010-1234-5678",
       "isDefaultAddress" : "Y",
       "addressName" : "집",
-      "createdAt" : "2024-08-06T23:09:49.2537351"
+      "createdAt" : "2024-08-07T00:57:29.154616"
     },
     "orderCode" : "123456",
     "orderId" : 1,
@@ -500,9 +498,9 @@ Content-Length: 1693
     "deliveryStatus" : "IN_PROGRESS",
     "perPrice" : 20000,
     "totalPrice" : 100000,
-    "deliveryStartDate" : "2024-08-06",
-    "nextDeliveryDate" : "2024-08-07",
-    "deliveryEndDate" : "2024-08-13",
+    "deliveryStartDate" : "2024-08-07",
+    "nextDeliveryDate" : "2024-08-08",
+    "deliveryEndDate" : "2024-08-14",
     "totalDeliveryCount" : 5,
     "remainingDeliveryCount" : 2,
     "orderedProductList" : [ {
@@ -513,7 +511,7 @@ Content-Length: 1693
       "price" : 50000,
       "productImageList" : null
     } ],
-    "orderCreatedAt" : "2024-08-06T23:09:49.2537351",
+    "orderCreatedAt" : "2024-08-07T00:57:29.154626",
     "selectedDayList" : [ "MON", "WED" ],
     "selectedWeekOption" : 1,
     "selectedMonthOption" : 1,
@@ -526,10 +524,12 @@ Content-Length: 1693
   } ],
   "number" : 0,
   "sort" : {
-    "unsorted" : true,
+    "empty" : true,
     "sorted" : false,
-    "empty" : true
+    "unsorted" : true
   },
+  "numberOfElements" : 1,
+  "pageable" : "INSTANCE",
   "empty" : false
 }</code></pre>
 </div>
@@ -852,15 +852,13 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 1693
+Content-Length: 1627
 
 {
   "totalElements" : 1,
   "totalPages" : 1,
-  "numberOfElements" : 1,
   "first" : true,
   "last" : true,
-  "pageable" : "INSTANCE",
   "size" : 1,
   "content" : [ {
     "customer" : {
@@ -877,7 +875,7 @@ Content-Length: 1693
       "phoneNumber" : "010-1234-5678",
       "isDefaultAddress" : "Y",
       "addressName" : "집",
-      "createdAt" : "2024-08-06T23:09:49.1585317"
+      "createdAt" : "2024-08-07T00:57:29.131078"
     },
     "orderCode" : "123456",
     "orderId" : 1,
@@ -887,9 +885,9 @@ Content-Length: 1693
     "deliveryStatus" : "IN_PROGRESS",
     "perPrice" : 10000,
     "totalPrice" : 100000,
-    "deliveryStartDate" : "2024-08-06",
-    "nextDeliveryDate" : "2024-08-07",
-    "deliveryEndDate" : "2024-08-13",
+    "deliveryStartDate" : "2024-08-07",
+    "nextDeliveryDate" : "2024-08-08",
+    "deliveryEndDate" : "2024-08-14",
     "totalDeliveryCount" : 5,
     "remainingDeliveryCount" : 2,
     "orderedProductList" : [ {
@@ -900,7 +898,7 @@ Content-Length: 1693
       "price" : 50000,
       "productImageList" : null
     } ],
-    "orderCreatedAt" : "2024-08-06T23:09:49.1595308",
+    "orderCreatedAt" : "2024-08-07T00:57:29.131275",
     "selectedDayList" : [ "MON", "WED" ],
     "selectedWeekOption" : 1,
     "selectedMonthOption" : 1,
@@ -913,10 +911,12 @@ Content-Length: 1693
   } ],
   "number" : 0,
   "sort" : {
-    "unsorted" : true,
+    "empty" : true,
     "sorted" : false,
-    "empty" : true
+    "unsorted" : true
   },
+  "numberOfElements" : 1,
+  "pageable" : "INSTANCE",
   "empty" : false
 }</code></pre>
 </div>
@@ -1245,7 +1245,7 @@ Content-Length: 1693
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /orders/customers/1 HTTP/1.1
 Content-Type: application/json
-Content-Length: 390
+Content-Length: 373
 Host: localhost:8080
 
 {
@@ -1257,7 +1257,7 @@ Host: localhost:8080
   "weekOptionValue" : null,
   "orderType" : "ONETIME",
   "totalDeliveryCount" : null,
-  "deliveryStartDate" : "2024-08-09",
+  "deliveryStartDate" : "2024-08-10",
   "orderedProducts" : [ {
     "productId" : 1,
     "count" : 2,
@@ -1295,7 +1295,7 @@ success, 생성된 주문 아이디 : 1</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /orders/1/cancel HTTP/1.1
 Content-Type: application/json
-Content-Length: 44
+Content-Length: 41
 Host: localhost:8080
 
 {
@@ -1400,7 +1400,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 1313
+Content-Length: 1263
 
 {
   "customer" : {
@@ -1417,7 +1417,7 @@ Content-Length: 1313
     "phoneNumber" : "010-1234-5678",
     "isDefaultAddress" : "Y",
     "addressName" : "Home",
-    "createdAt" : "2024-08-06T23:09:49.3288212"
+    "createdAt" : "2024-08-07T00:57:29.175432"
   },
   "orderCode" : "123456",
   "orderId" : 1,
@@ -1427,9 +1427,9 @@ Content-Length: 1313
   "deliveryStatus" : "IN_PROGRESS",
   "perPrice" : 20000,
   "totalPrice" : 100000,
-  "deliveryStartDate" : "2024-08-06",
-  "nextDeliveryDate" : "2024-08-07",
-  "deliveryEndDate" : "2024-08-13",
+  "deliveryStartDate" : "2024-08-07",
+  "nextDeliveryDate" : "2024-08-08",
+  "deliveryEndDate" : "2024-08-14",
   "totalDeliveryCount" : 1,
   "remainingDeliveryCount" : 1,
   "orderedProductList" : [ {
@@ -1440,7 +1440,7 @@ Content-Length: 1313
     "price" : 50000,
     "productImageList" : null
   } ],
-  "orderCreatedAt" : "2024-08-06T23:09:49.3288212",
+  "orderCreatedAt" : "2024-08-07T00:57:29.175442",
   "selectedDayList" : null,
   "selectedWeekOption" : null,
   "selectedMonthOption" : null,
@@ -1468,7 +1468,7 @@ Content-Length: 1313
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /orders/month/calculate-price HTTP/1.1
 Content-Type: application/json
-Content-Length: 158
+Content-Length: 152
 Host: localhost:8080
 
 {
@@ -1476,7 +1476,7 @@ Host: localhost:8080
   "weekOptionValue" : 2,
   "monthOptionValue" : null,
   "perPrice" : 10000,
-  "startDate" : "2024-08-06"
+  "startDate" : "2024-08-07"
 }</code></pre>
 </div>
 </div>
@@ -1487,15 +1487,15 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 196
+Content-Length: 189
 
 {
   "thisMonthDeliveryCount" : 8,
   "thisMonthPrice" : 80000,
   "totalDeliveryCount" : 24,
   "totalPrice" : 240000,
-  "deliveryNextDate" : "2024-08-07",
-  "deliveryEndDate" : "2024-10-06"
+  "deliveryNextDate" : "2024-08-08",
+  "deliveryEndDate" : "2024-10-07"
 }</code></pre>
 </div>
 </div>
@@ -1563,7 +1563,7 @@ Content-Length: 196
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /orders/count/info HTTP/1.1
 Content-Type: application/json
-Content-Length: 151
+Content-Length: 145
 Host: localhost:8080
 
 {
@@ -1571,7 +1571,7 @@ Host: localhost:8080
   "weekOptionValue" : 1,
   "monthOptionValue" : null,
   "perPrice" : 15000,
-  "startDate" : "2024-08-06"
+  "startDate" : "2024-08-07"
 }</code></pre>
 </div>
 </div>
@@ -1582,15 +1582,15 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 196
+Content-Length: 189
 
 {
   "thisMonthDeliveryCount" : 6,
   "thisMonthPrice" : 90000,
   "totalDeliveryCount" : 18,
   "totalPrice" : 270000,
-  "deliveryNextDate" : "2024-08-08",
-  "deliveryEndDate" : "2024-11-06"
+  "deliveryNextDate" : "2024-08-09",
+  "deliveryEndDate" : "2024-11-07"
 }</code></pre>
 </div>
 </div>
@@ -1658,7 +1658,7 @@ Content-Length: 196
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /orders/count/info HTTP/1.1
 Content-Type: application/json
-Content-Length: 151
+Content-Length: 145
 Host: localhost:8080
 
 {
@@ -1666,7 +1666,7 @@ Host: localhost:8080
   "weekOptionValue" : 1,
   "monthOptionValue" : null,
   "perPrice" : 15000,
-  "startDate" : "2024-08-06"
+  "startDate" : "2024-08-07"
 }</code></pre>
 </div>
 </div>
@@ -1677,15 +1677,15 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 196
+Content-Length: 189
 
 {
   "thisMonthDeliveryCount" : 6,
   "thisMonthPrice" : 90000,
   "totalDeliveryCount" : 18,
   "totalPrice" : 270000,
-  "deliveryNextDate" : "2024-08-08",
-  "deliveryEndDate" : "2024-11-06"
+  "deliveryNextDate" : "2024-08-09",
+  "deliveryEndDate" : "2024-11-07"
 }</code></pre>
 </div>
 </div>
@@ -1774,7 +1774,7 @@ Content-Length: 1
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-08-06 22:41:38 +0900
+Last updated 2024-08-06 23:55:01 +0900
 </div>
 </div>
 </body>
