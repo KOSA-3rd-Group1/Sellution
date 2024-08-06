@@ -106,7 +106,7 @@ public class PaymentCancelService {
                     환불된 계좌 정보
                     %s
                     """,order.getCode(),payCost,account.getAccountNumber());
-            smsService.sendSms(customer.getPhoneNumber(),payCancelMessage);
+//            smsService.sendSms(customer.getPhoneNumber(),payCancelMessage);
             log.info("결제 취소 성공");
         } else {
             log.error("결제 취소 실패");

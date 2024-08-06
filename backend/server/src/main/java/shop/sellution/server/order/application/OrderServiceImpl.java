@@ -237,7 +237,7 @@ public class OrderServiceImpl implements OrderService {
             if(order.getCouponEvent()!=null){
                 couponEvent = eventRepository.findById(order.getCouponEvent().getId()).
                         orElseThrow( ()-> new BadRequestException(NOT_FOUND_EVENT) );
-                CouponBox couponBox = couponBoxRepository.findByCouponEventAndCustomerId(couponEvent, customer)
+                CouponBox couponBox = couponBoxRepository.findByCouponEventAndCustomerId(couponEvent.getId(), customer.getId())
                         .orElseThrow(() -> new BadRequestException(NOT_FOUND_COUPON));
                 couponBox.unUseCoupon(); // 쿠폰 미사용처리
             }
@@ -266,7 +266,7 @@ public class OrderServiceImpl implements OrderService {
                     취소된 주문번호
                     %d
                     """, order.getId(), order.getTotalPrice());
-            smsService.sendSms(customer.getPhoneNumber(), cancelMessage);
+//            smsService.sendSms(customer.getPhoneNumber(), cancelMessage);
         }
 
         log.info("주문 취소 완료");

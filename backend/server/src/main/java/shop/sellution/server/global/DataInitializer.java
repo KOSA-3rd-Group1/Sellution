@@ -142,11 +142,11 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         createProductImages();
 //        createProductImages2();
         createCustomer();
-//        createAccount();
+        createAccount();
         createAddress();
         createCompanyOptions();
-//        createCouponEvent();
-//        createOrder();
+        createCouponEvent();
+        createOrder();
 
 
         alreadySetup = true;
@@ -929,7 +929,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
 
     private void createOrder() {
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 10; i++) {
             Customer customer = customers.get(random.nextInt(customers.size()));
             OrderType orderType = OrderType.values()[random.nextInt(OrderType.values().length)];
 

@@ -16,9 +16,9 @@ public interface CouponBoxRepository extends JpaRepository<CouponBox, CouponBoxI
     // 쿠폰 이벤트와 사용자아이디를 통해 쿠폰박스를 조회한다.
     @Query("""
             select cb from CouponBox cb
-            where cb.couponEvent = :couponEvent
-            and cb.customer = :customer
+            where cb.couponEvent.id = :couponEventId
+            and cb.customer.id = :customerId
             """)
-    Optional<CouponBox> findByCouponEventAndCustomerId(CouponEvent couponEvent, Customer customer);
+    Optional<CouponBox> findByCouponEventAndCustomerId(Long couponEventId, Long customerId);
 
 }

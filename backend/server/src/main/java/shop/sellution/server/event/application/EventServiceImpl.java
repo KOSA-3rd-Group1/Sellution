@@ -198,6 +198,7 @@ public class EventServiceImpl implements EventService {
         //5. 트랜잭션 commit (rdb)
     }
 
+    //테스트 위한 메서드
     public void downloadCoupon(Long eventId, Long customerId) {//Transactional으로 묶어서 RDB연산 보장
         //1. rdb 트랜잭션 시작
         CouponEvent event = getEventById(eventId);
@@ -229,7 +230,7 @@ public class EventServiceImpl implements EventService {
 
         //5. 트랜잭션 commit (rdb)
     }
-
+    //테스트 위한 메서드
     public void downloadCoupon2(Long eventId, Long customerId) {//Transactional으로 묶어서 RDB연산 보장
         //1. rdb 트랜잭션 시작
         CouponEvent event = getEventById(eventId);

@@ -110,9 +110,9 @@ public class OrderCreationService {
 
         CouponEvent couponEvent=null;
         if(saveOrderReq.getEventId()!=null){
-            couponEvent = eventRepository.findById(saveOrderReq.getEventId()).
+            couponEvent = eventRepository.findByEventId(saveOrderReq.getEventId()).
                     orElseThrow( ()-> new BadRequestException(NOT_FOUND_EVENT) );
-            CouponBox couponBox = couponBoxRepository.findByCouponEventAndCustomerId(couponEvent, customer)
+            CouponBox couponBox = couponBoxRepository.findByCouponEventAndCustomerId(couponEvent.getId(), customer.getId())
                     .orElseThrow(() -> new BadRequestException(NOT_FOUND_COUPON));
             if(couponBox.getIsUsed() == DisplayStatus.Y){
                 throw new BadRequestException(ALREADY_USED_COUPON);
@@ -220,7 +220,7 @@ public class OrderCreationService {
                     적용된 쿠폰 -> [ 쿠폰명 : %s , 할인율 : %d%% ]
                     """,couponEvent.getCouponName(),couponEvent.getCouponDiscountRate());
         }
-        smsService.sendSms(customer.getPhoneNumber(),message);
+//        smsService.sendSms(customer.getPhoneNumber(),message);
 
         if(order.getStatus()==OrderStatus.APPROVED){
             // 해당 주문 상품들의 isVisible이 Y인지 확인
@@ -231,7 +231,7 @@ public class OrderCreationService {
                     승인된 주문번호
                     %s
                     """,order.getCode());
-            smsService.sendSms(customer.getPhoneNumber(),approveMessage);
+//            smsService.sendSms(customer.getPhoneNumber(),approveMessage);
             paymentService.pay(
                     PaymentReq.builder()
                             .accountId(order.getAccount().getId())
