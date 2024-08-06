@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { formatPrice } from '../../../client/utility/functions/formatterFunction';
 const PaymentEstimation = ({
   totalPrice = 0,
@@ -17,6 +17,7 @@ const PaymentEstimation = ({
   selectedCount = 0,
   perPrice = 0,
   selectedStartDate = '',
+  calculateTotalPrice,
   // urlOrderType,
 }) => {
   const formatDate = (dateString) => {
@@ -41,6 +42,10 @@ const PaymentEstimation = ({
   const formatCount = (count) => {
     return count && count !== 0 ? `${count.toLocaleString()}회` : '-';
   };
+
+  useEffect(() => {
+    calculateTotalPrice(); // Call the function when finalPrice changes
+  }, [finalPrice]);
 
   const renderCommonInfo = () => (
     <>
@@ -119,7 +124,7 @@ const PaymentEstimation = ({
             )}
           </div>
           <span className='text-red-500 font-bold'>
-            {formatPrice(perPrice*monthlyPriceData.thisMonthDeliveryCount)}
+            {formatPrice(monthlyPriceData.thisMonthPrice)}
           </span>
         </div>
         <br />
@@ -129,7 +134,7 @@ const PaymentEstimation = ({
         </div>
         <div className='flex justify-between font-bold mt-2 pt-2 border-t'>
           <span>구독기간 결제될 총 금액</span>
-          <span className='text-red-500'>{formatPrice(perPrice * monthlyPriceData.totalDeliveryCount )}</span>
+          <span className='text-red-500'>{formatPrice(monthlyPriceData.totalPrice)}</span>
         </div>
         <br />
         <div className='flex justify-between '>

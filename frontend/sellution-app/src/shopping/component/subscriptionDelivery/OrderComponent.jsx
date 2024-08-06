@@ -85,7 +85,7 @@ const OrderComponent = () => {
     navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
       state: {
         returnToOrder: true,
-        from: location.pathname // 현재 페이지의 경로를 저장
+        from: location.pathname, // 현재 페이지의 경로를 저장
       },
     });
   };
@@ -110,7 +110,7 @@ const OrderComponent = () => {
     const selected = coupons.find((coupon) => coupon.id === e.target.value);
     console.log('쿠폰: ', selected);
     setSelectedCoupon(selected);
-    calculateTotalPrice();
+    // calculateTotalPrice();
   };
 
   const handleAddPaymentMethod = () => {
@@ -181,16 +181,16 @@ const OrderComponent = () => {
             (selectedCoupon.couponDiscountRate / 100),
         )
       : 0;
-
+    const newFinalPrice = total - productDiscountTotal - couponDiscountTotal;
     setTotalPrice(total);
     setProductDiscountTotal(productDiscountTotal);
     setCouponDiscountTotal(couponDiscountTotal);
-    setFinalPrice(total - productDiscountTotal - couponDiscountTotal);
+    setFinalPrice(newFinalPrice);
     console.log('총 상품 금액: ', total);
     console.log('상품 할인 금액: ', productDiscountTotal);
     console.log('쿠폰 할인 금액: ', couponDiscountTotal);
     console.log('최종 가격: ', finalPrice);
-    console.log('직접계산',total - productDiscountTotal - couponDiscountTotal);
+    console.log('직접계산', newFinalPrice);
 
     if (
       subscriptionType === 'MONTH' &&
@@ -199,7 +199,7 @@ const OrderComponent = () => {
       selectedMonth &&
       selectedDays.length > 0
     ) {
-      const monthlyPriceData = await calculateMonthlyPrice();
+      const monthlyPriceData = await calculateMonthlyPrice(newFinalPrice); //calculateTotalPrice를 호출할 때만 호출
       console.log('월별 결제금액: ', monthlyPriceData);
       if (monthlyPriceData) {
         setMonthlyPriceData(monthlyPriceData);
@@ -373,7 +373,15 @@ const OrderComponent = () => {
   useEffect(() => {
     calculateTotalPrice();
     console.log('계산 변경: ', selectedCoupon);
-  }, [selectedCoupon, orderList, selectedStartDate, selectedWeek, selectedMonth, selectedDays]);
+  }, [
+    selectedCoupon,
+    orderList,
+    selectedStartDate,
+    selectedWeek,
+    selectedMonth,
+    selectedDays,
+    finalPrice,
+  ]);
 
   // 상태 로컬스토리지에 저장하는 함수
   const saveState = () => {
@@ -463,6 +471,8 @@ const OrderComponent = () => {
           subscriptionType={subscriptionType}
           selectedCount={selectedCount}
           perPrice={finalPrice}
+          selectedStartDate={selectedStartDate}
+          calculateTotalPrice={calculateTotalPrice}
         />
         <div className='seperator w-full h-4 bg-gray-100'></div>
         {/* 결제 정보 */}
