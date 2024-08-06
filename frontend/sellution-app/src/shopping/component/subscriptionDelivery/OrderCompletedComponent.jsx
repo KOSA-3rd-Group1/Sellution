@@ -338,8 +338,10 @@ const OrderCompletedComponent = () => {
     }, 0);
   };
 
-  const calculateCouponDiscountAmount = (totalProductPrice,totalDiscountAmount) => {
-    return Math.round((totalProductPrice-totalDiscountAmount) * (orderData.couponDiscountRate / 100));
+  const calculateCouponDiscountAmount = (totalProductPrice, totalDiscountAmount) => {
+    return Math.round(
+      (totalProductPrice - totalDiscountAmount) * (orderData.couponDiscountRate / 100),
+    );
   };
 
   const totalProductPrice = calculateTotalProductPrice();

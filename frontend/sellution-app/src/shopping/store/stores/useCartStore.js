@@ -69,21 +69,27 @@ const useCartStore = create((set, get) => ({
     //get.findCart(cartType, accessToken, setAccessToken);
     set((state) => {
       const cartKey = cartType === 'ONETIME' ? 'onetimeCart' : 'subscriptionCart';
+      const selectedItemsKey =
+        cartType === 'ONETIME' ? 'selectedOnetimeItems' : 'selectedSubscriptionItems';
       return {
         [cartKey]: state[cartKey].filter((item) => item.productId !== productId),
+        [selectedItemsKey]: state[selectedItemsKey].filter((id) => id !== productId),
       };
     });
   },
 
-  //여러개 한번에 삭제
+  //여러개 한번에 삭제 (주문상품 장바구니에서 삭제하기)
   removeItemsFromCart: async (cartType, productIds, accessToken, setAccessToken) => {
     for (let productId of productIds) {
       await removeFromCart(cartType, productId, accessToken, setAccessToken);
     }
     set((state) => {
       const cartKey = cartType === 'ONETIME' ? 'onetimeCart' : 'subscriptionCart';
+      const selectedItemsKey =
+        cartType === 'ONETIME' ? 'selectedOnetimeItems' : 'selectedSubscriptionItems';
       return {
         [cartKey]: state[cartKey].filter((item) => !productIds.includes(item.productId)),
+        [selectedItemsKey]: state[selectedItemsKey].filter((id) => !productIds.includes(id)),
       };
     });
   },
