@@ -110,9 +110,9 @@ public class OrderCreationService {
 
         CouponEvent couponEvent=null;
         if(saveOrderReq.getEventId()!=null){
-            couponEvent = eventRepository.findById(saveOrderReq.getEventId()).
+            couponEvent = eventRepository.findByEventId(saveOrderReq.getEventId()).
                     orElseThrow( ()-> new BadRequestException(NOT_FOUND_EVENT) );
-            CouponBox couponBox = couponBoxRepository.findByCouponEventAndCustomerId(couponEvent, customer)
+            CouponBox couponBox = couponBoxRepository.findByCouponEventAndCustomerId(couponEvent.getId(), customer.getId())
                     .orElseThrow(() -> new BadRequestException(NOT_FOUND_COUPON));
             if(couponBox.getIsUsed() == DisplayStatus.Y){
                 throw new BadRequestException(ALREADY_USED_COUPON);

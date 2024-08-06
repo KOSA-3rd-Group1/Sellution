@@ -36,15 +36,19 @@ const CartComponent = () => {
     toggleSelectedItems,
     selectAllItems,
     removeSelectedItems,
-    getVisibleItemsCount
+    getVisibleItemsCount,
   } = useCartStore();
   const { updateOrderList } = useOrderListStore();
 
   const navigate = useNavigate();
   const clientName = useCompanyInfoStore((state) => state.name);
   const customerId = useUserInfoStore((state) => state.id);
-  const allSelected = onetimeCart.length > 0 && selectedOnetimeItems.length === onetimeCart.length;
+
   const visibleItemsCount = getVisibleItemsCount('ONETIME');
+  const allSelected =
+    onetimeCart.filter((item) => item.isVisible === 'Y').length > 0 &&
+    selectedOnetimeItems.length === visibleItemsCount;
+
   const isOrderButtonDisabled = selectedOnetimeItems.length === 0;
 
   const addToOrderList = () => {
@@ -90,7 +94,7 @@ const CartComponent = () => {
               <input
                 type='checkbox'
                 checked={allSelected}
-                onChange={(e) => selectAllItems('ONETIME', e.target.checked)}
+                onChange={() => selectAllItems('ONETIME')}
                 className='hidden-checkbox'
                 id='selectAll'
               />

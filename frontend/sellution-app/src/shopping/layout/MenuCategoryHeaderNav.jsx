@@ -4,16 +4,18 @@ import Category from '../layout/partials/Category';
 import { Link, useNavigate } from 'react-router-dom';
 import { HomeIcon, LeftArrowIcon, MenuIcon } from '../utility/assets/Icons';
 
-const MenuCategoryHeaderNav = ({ title, categoryList, onCategoryClick, selectedCategory }) => {
+const MenuCategoryHeaderNav = ({ title, categoryList, onCategoryClick, selectedCategory, isCategoryMenuVisible, setIsCategoryMenuVisible }) => {
   const clientName = useCompanyInfoStore((state) => state.name);
   const navigate = useNavigate();
   const handleBack = () => {
     navigate(-1);
   };
-  const [isCategoryMenuVisible, setIsCategoryMenuVisible] = useState(false);
+
   const toggleCategoryMenu = () => {
     setIsCategoryMenuVisible((prev) => !prev);
   };
+
+  
 
   return (
     <header className='w-full fixed top-0 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-lg h-14 flex justify-between items-center bg-white px-2 shadow-md'>

@@ -55,6 +55,7 @@ public enum ExceptionCode {
     INVALID_DOWNLOAD_EVENT_DELETED(3008, "중단된 이벤트는 쿠폰을 다운로드할 수 없습니다."),
     INVALID_DOWNLOAD_COUPON_ALREADY_DOWNLOADED(3009, "이미 쿠폰을 다운로드하셨습니다."),
     INVALID_DOWNLOAD_EVENT_TARGET_CUSTOMER(3010, "이벤트 대상 고객이 아닙니다."),
+    NOT_FOUND_CART_ITEM(3011, "장바구니에 해당 상품이 존재하지 않습니다."),
     // ---------------------------- Account, Order, Pay , EasyPwd 5001 ~ 5500 ---------------------------------------
 
     NOT_FOUND_CUSTOMER(5001,"요청한 ID에 해당하는 회원을 찾을 수 없습니다."),
