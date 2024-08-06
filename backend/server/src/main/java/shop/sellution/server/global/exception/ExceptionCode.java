@@ -95,6 +95,8 @@ public enum ExceptionCode {
 
     NOT_FOUND_COMPANY(6601, "요청한 ID에 해당하는 회사를 찾을 수 없습니다."),
     FAIL_TO_GENERATE_QR_CODE(6602, "QR 코드 생성에 실패했습니다."),
+    INVALID_SUBSCRIPTION_MONTH_OPTIONS(6603, "MONTH 구독 유형에는 dayOptions, weekOptions, monthOptions가 모두 필요합니다."),
+    INVALID_SUBSCRIPTION_COUNT_OPTIONS(6604, "COUNT 구독 유형에는 dayOptions와 weekOptions가 모두 필요합니다."),
 
     NOT_FOUND_CATEGORY(6701, "요청한 ID에 해당하는 카테고리를 찾을 수 없습니다."),
 

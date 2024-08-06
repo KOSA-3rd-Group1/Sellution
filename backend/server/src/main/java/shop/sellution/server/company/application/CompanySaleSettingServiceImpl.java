@@ -91,6 +91,8 @@ public class CompanySaleSettingServiceImpl implements CompanySaleSettingService 
     @Override
     @Transactional
     public void createCompanySaleSetting(SaveCompanySaleSettingReq saveCompanySaleSettingReq) {
+        validateSubscriptionTypeOptions(saveCompanySaleSettingReq);
+
         Company company = companyRepository.findById(saveCompanySaleSettingReq.getCompanyId())
                 .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_COMPANY));
         saveCompanySaleSettingReq.toEntity(company);
@@ -102,15 +104,35 @@ public class CompanySaleSettingServiceImpl implements CompanySaleSettingService 
 
     @Override
     @Transactional
-    public void updateCompanySaleSetting(SaveCompanySaleSettingReq requestDTO) {
-        Company existingCompany = companyRepository.findById(requestDTO.getCompanyId())
+    public void updateCompanySaleSetting(SaveCompanySaleSettingReq saveCompanySaleSettingReq) {
+        validateSubscriptionTypeOptions(saveCompanySaleSettingReq);
+        Company existingCompany = companyRepository.findById(saveCompanySaleSettingReq.getCompanyId())
                 .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_COMPANY));
 
-        Company updatedCompany = requestDTO.toEntity(existingCompany);
+        Company updatedCompany = saveCompanySaleSettingReq.toEntity(existingCompany);
         companyRepository.save(updatedCompany);
 
-        updateOptions(requestDTO, updatedCompany);
-        handleSellType(requestDTO, updatedCompany);
+        updateOptions(saveCompanySaleSettingReq, updatedCompany);
+        handleSellType(saveCompanySaleSettingReq, updatedCompany);
+    }
+
+    private void validateSubscriptionTypeOptions(SaveCompanySaleSettingReq saveCompanySaleSettingReq) {
+        if (SubscriptionType.MONTH.equals(saveCompanySaleSettingReq.getSubscriptionType())) {
+            if (isNullOrEmpty(saveCompanySaleSettingReq.getDayOptions()) ||
+                    isNullOrEmpty(saveCompanySaleSettingReq.getWeekOptions()) ||
+                    isNullOrEmpty(saveCompanySaleSettingReq.getMonthOptions())) {
+                throw new BadRequestException(ExceptionCode.INVALID_SUBSCRIPTION_MONTH_OPTIONS);
+            }
+        } else if (SubscriptionType.COUNT.equals(saveCompanySaleSettingReq.getSubscriptionType())) {
+            if (isNullOrEmpty(saveCompanySaleSettingReq.getDayOptions()) ||
+                    isNullOrEmpty(saveCompanySaleSettingReq.getWeekOptions())) {
+                throw new BadRequestException(ExceptionCode.INVALID_SUBSCRIPTION_COUNT_OPTIONS);
+            }
+        }
+    }
+
+    private boolean isNullOrEmpty(List<?> list) {
+        return list == null || list.isEmpty();
     }
 
     public void saveOptions(SaveCompanySaleSettingReq requestDTO, Company company) {
