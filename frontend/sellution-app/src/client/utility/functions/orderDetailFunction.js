@@ -1,4 +1,6 @@
 // 전화 번호 변환함수 (클라이언트 -> 서버)
+import { addMonths, format, isValid, parse } from "date-fns";
+
 export const phoneNumberInServerFormat = (number) => {
   return number.replace(/-/g, '');
 };
@@ -56,6 +58,45 @@ export const formatOrderStatus = (type) => {
   };
   return types[type] || type;
 };
+
+export function calculateFutureDate(selectedStartDate, paymentCount) {
+  let startDate;
+
+  // selectedStartDate가 문자열인 경우 처리
+  if (typeof selectedStartDate === 'string') {
+    // 'YYYY-MM-DD' 형식으로 파싱 시도
+    startDate = parse(selectedStartDate, 'yyyy-MM-dd', new Date());
+
+    // 파싱 실패 시 ISO 형식(YYYY-MM-DDTHH:mm:ss.sssZ)으로 파싱 시도
+    if (!isValid(startDate)) {
+      startDate = new Date(selectedStartDate);
+    }
+  } else if (selectedStartDate instanceof Date) {
+    // 이미 Date 객체인 경우 그대로 사용
+    startDate = selectedStartDate;
+  } else {
+    // 유효하지 않은 입력인 경우 현재 날짜 사용
+    console.warn('Invalid date input. Using current date.');
+    startDate = new Date();
+  }
+
+  // 날짜가 여전히 유효하지 않은 경우 에러 throw
+  if (!isValid(startDate)) {
+    throw new Error('Invalid date input: ' + selectedStartDate);
+  }
+
+  // paymentCount가 숫자가 아닌 경우 처리
+  const months = Number(paymentCount);
+  if (isNaN(months)) {
+    throw new Error('Invalid paymentCount: ' + paymentCount);
+  }
+
+  // 날짜 계산
+  const futureDate = addMonths(startDate, months);
+
+  // 결과를 'YYYY-MM-DD' 형식의 문자열로 변환
+  return format(futureDate, 'yyyy-MM-dd');
+}
 
 // 요일 변환 함수
 export const convertAndSortDays = (selectedDayList) => {

@@ -16,6 +16,7 @@ import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExternalApiException;
+import shop.sellution.server.global.util.JasyptEncryptionUtil;
 import shop.sellution.server.order.domain.Order;
 import shop.sellution.server.order.domain.repository.OrderRepository;
 import shop.sellution.server.order.domain.type.DeliveryStatus;
@@ -50,6 +51,7 @@ public class PaymentCancelService {
     private final SmsService smsService;
     private final CustomerRepository customerRepository;
     private final AccountServiceImpl accountService;
+    private final JasyptEncryptionUtil jasyptEncryptionUtil;
     private final Duration TIMEOUT = Duration.ofSeconds(2);
 
 
@@ -105,7 +107,9 @@ public class PaymentCancelService {
                     %d원
                     환불된 계좌 정보
                     %s
-                    """,order.getCode(),payCost,account.getAccountNumber());
+
+                    """,order.getCode(),payCost,jasyptEncryptionUtil.decrypt(account.getAccountNumber().substring(0, account.getAccountNumber().length() - 4))
+            );
 //            smsService.sendSms(customer.getPhoneNumber(),payCancelMessage);
             log.info("결제 취소 성공");
         } else {

@@ -91,6 +91,11 @@ const ListComponent = () => {
     <div className='p-4'>
       <MenuHeaderNav title={'주문 목록'} />
       {/*<h1 className='text-2xl font-bold mb-4'>주문 목록</h1>*/}
+      {orders.length === 0 ? (
+        <div className='text-gray-500 py-3 text-center text-lg border-2 border-dashed border-gray-300 rounded-lg p-8'>
+          주문 내역이 없습니다.
+        </div>
+      ) : null}
       {orders.map((order) => (
         <div key={order.orderId} className='mb-6 p-4 border rounded shadow'>
           <div className='flex justify-between items-center gap-8 mb-2'>

@@ -155,7 +155,7 @@ const SimplePasswordComponent = () => {
     } catch (error) {
       console.error('Error creating order:', error);
       alert('주문 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
-      navigate(`/shopping/${clientName}/onetime/order/${customerId}`);
+      navigate(`/shopping/${clientName}/home`);
     }
   };
 

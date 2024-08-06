@@ -15,6 +15,7 @@ import shop.sellution.server.company.domain.Company;
 import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.customer.domain.Customer;
 import shop.sellution.server.customer.domain.CustomerRepository;
+import shop.sellution.server.customer.domain.type.CustomerType;
 import shop.sellution.server.event.domain.*;
 import shop.sellution.server.event.domain.type.EventState;
 import shop.sellution.server.event.domain.type.TargetCustomerType;
@@ -24,9 +25,11 @@ import shop.sellution.server.event.dto.response.FindEventRes;
 import shop.sellution.server.global.exception.AuthException;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
+import shop.sellution.server.sms.application.SmsService;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static shop.sellution.server.global.exception.ExceptionCode.NOT_FOUND_USER;
@@ -42,6 +45,7 @@ public class EventServiceImpl implements EventService {
     private final CouponBoxRepository couponBoxRepository;
     private final CustomerRepository customerRepository;
     private final RedisTemplate<String, String> redisTemplate;
+    private final SmsService smsService;
 
     @Transactional(readOnly = true)
     @Override
@@ -92,11 +96,37 @@ public class EventServiceImpl implements EventService {
             redisTemplate.delete(key);  // 기존 키 삭제 (다시 create 할 때 중복 방지)
             redisTemplate.opsForSet().add(key, "INIT");  // 빈 set 생성 + TTL 설정 위한 더미데이터 추가
             redisTemplate.expireAt(key, Date.valueOf(event.getEventEndDate().plusDays(1))); // 종료일 자정으로 TTL 설정
+
+            // 해당 이벤트에 적용대상인 회원에게 문자발송
+            TargetCustomerType targetCustomerType = event.getTargetCustomerType();
+            List<CustomerType> findCustomerType = new ArrayList<>();
+
+            if(targetCustomerType == TargetCustomerType.ALL) {
+                findCustomerType.add(CustomerType.NEW);
+                findCustomerType.add(CustomerType.NORMAL);
+                findCustomerType.add(CustomerType.DORMANT);
+            }
+            switch (targetCustomerType) {
+                case NEW -> findCustomerType.add(CustomerType.NEW);
+                case NORMAL -> findCustomerType.add(CustomerType.NORMAL);
+                case DORMANT -> findCustomerType.add(CustomerType.DORMANT);
+            }
+            List<Customer> customerList = customerRepository.findAllByType(findCustomerType);
+
+            customerList.forEach(customer -> {
+                String message = "안녕하세요. " + customer.getName() + "님! \n" +customer.getType()+"을 위한 " +
+                        event.getCouponDiscountRate() + "% 선착순 할인 쿠폰을 지급합니다. \n" +
+                        "이벤트 기간: " + event.getEventStartDate() + " ~ " + event.getEventEndDate() + "입니다. \n" +
+                        "많은 참여 부탁드립니다.";
+//                smsService.sendSms(customer.getPhoneNumber(), message);
+            });
+
         } catch (Exception e) {
             // Redis 설정 중 예외 발생 시 RDB 트랜잭션 롤백
             eventRepository.delete(event);
             throw new RuntimeException("Redis 설정 중 오류가 발생했습니다. 이벤트 생성이 취소되었습니다.", e);
         }
+
     }
 
     @Override

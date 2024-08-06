@@ -9,7 +9,8 @@ import {
   formatPhoneNumber,
   convertAndSortDays,
   formatLocalDateTime,
-} from '@/client/utility/functions/orderDetailFunction';
+  calculateFutureDate ,
+} from "@/client/utility/functions/orderDetailFunction";
 
 export const useOrderDetail = ({ moveToPathname }) => {
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -61,21 +62,72 @@ export const useOrderDetail = ({ moveToPathname }) => {
     [],
   );
 
-  //   // 결제 정보 데이터 format (재현이에게)
-  //   const formatPaymentInfoData = useCallback(
-  //     (item) => ({
-  //       totalPrice, // 총 주문 금액
-  //       // 총 상품 금액
-  //       // 총 배송비
-  //       // 기본 배송비
-  //       // 총 할인 금액
-  //       // 쿠폰 할인 금액 없으면 -
-  //       // 상품 할인 금액 없으면 -
-  //       // 결제 금액 (총 주문 금액 - 총 할인 금액)
-  //       // 결제 방식 CMS
-  //     }),
-  //     [],
-  //   );
+  // 총 상품 금액 계산 함수
+  const calculateTotalProductPrice = (products) => {
+    return products.reduce((sum, product) => {
+      return sum + product.price * product.count;
+    }, 0);
+  };
+
+  // 총 상품 할인 금액 계산 함수
+  const calculateTotalProductDiscountPrice = (products) => {
+    return products.reduce((sum, product) => {
+      const discountAmount = product.price * (product.discountRate / 100) * product.count;
+      return sum + discountAmount;
+    }, 0);
+  };
+
+  // 쿠폰 할인 금액 계산 함수
+  const calculateTotalCouponDiscountPrice = (
+    totalProductPrice,
+    totalProductDiscountPrice,
+    couponDiscountRate,
+  ) => {
+    return couponDiscountRate
+      ? (totalProductPrice - totalProductDiscountPrice) * (couponDiscountRate / 100)
+      : 0;
+  };
+
+  // 결제 정보 데이터 format (재현이에게)
+  const formatPaymentInfoData = useCallback((item) => {
+    if (!item || !item.orderedProductList) {
+      console.error('Invalid data structure for formatPaymentInfoData');
+      return null;
+    }
+    const totalProductPrice = calculateTotalProductPrice(item.orderedProductList);
+    const totalProductDiscountPrice = calculateTotalProductDiscountPrice(item.orderedProductList);
+    const totalCouponDiscountPrice = calculateTotalCouponDiscountPrice(
+      totalProductPrice,
+      totalProductDiscountPrice,
+      item.couponDiscountRate,
+    );
+    const oneDeliveryPrice = totalProductPrice - totalProductDiscountPrice -totalCouponDiscountPrice;
+    const totalDeliveryCount =item.totalDeliveryCount;
+    const monthPrice = item.thisMonthDeliveryCount * item.perPrice;
+
+    const startDate = calculateFutureDate(item.selectedStartDate, item.paymentCount);
+    const endDate = calculateFutureDate(item.selectedStartDate, item.paymentCount + 1);
+
+    return {
+      monthStartDate: startDate,
+      monthEndDate: endDate,
+      monthPrice: formatPrice(monthPrice),
+      paymentCount: item.paymentCount,
+      selectedStartDate: item.selectedStartDate,
+      thisMonthDeliveryCount: item.thisMonthDeliveryCount,
+      totalDeliveryCount: item.totalDeliveryCount,
+      nextDeliveryDate: item.nextDeliveryDate,
+      type:  item.type,
+      perPrice: formatPrice(item.perPrice),
+      monthExTotalPrice: formatPrice(item.perPrice*totalDeliveryCount),
+      totalDeliveryCount: item.totalDeliveryCount,
+      totalPrice: formatPrice(item.totalPrice),
+      totalProductPrice: formatPrice(totalProductPrice),
+      totalProductDiscountPrice: formatPrice(totalProductDiscountPrice),
+      totalCouponDiscountPrice: formatPrice(totalCouponDiscountPrice),
+      oneDeliveryPrice: formatPrice(oneDeliveryPrice),
+    };
+  }, []);
 
   // 배송지 정보 데이터 format
   const formatAddressInfo = useCallback(
@@ -113,6 +165,7 @@ export const useOrderDetail = ({ moveToPathname }) => {
   // 서버에 데이터 요청
   useEffect(() => {
     const fetch = async (orderId, setAccessToken, accessToken) => {
+      console.log('orderId >>>>>>>>>>>', orderId);
       const response = await getOrderDetail(orderId, setAccessToken, accessToken);
 
       console.log('response >>>>>>>>>>>', response.data);
@@ -150,6 +203,11 @@ export const useOrderDetail = ({ moveToPathname }) => {
       // 결제 방법 정보 데이터
       const formattedPaymentMethod = formatPaymentMethod(response.data, response.data.type);
       setPaymentMethod(formattedPaymentMethod);
+
+      // 결제 금액 정보 데이터
+      console.log('response.data >>>>>>>>>>>', response.data);
+      const formattedPaymentInfoData = formatPaymentInfoData(response.data);
+      setPaymentInfoData(formattedPaymentInfoData);
     };
 
     fetch(orderId, setAccessToken, accessToken);

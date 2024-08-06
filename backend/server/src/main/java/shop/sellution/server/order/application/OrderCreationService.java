@@ -158,7 +158,7 @@ public class OrderCreationService {
                 .couponEvent(couponEvent)
                 .monthOptionValue(monthOption == null ? null : monthOption.getMonthValue())
                 .weekOptionValue(weekOption == null ? null : weekOption.getWeekValue())
-                .code(orderCodeMaker())
+//                .code(orderCodeMaker())
                 .type(saveOrderReq.getOrderType())
                 .status(company.getIsAutoApproved().name().equals("Y")? OrderStatus.APPROVED : OrderStatus.HOLD)
                 .perPrice(totalPrice(saveOrderReq.getOrderedProducts(),couponEvent))
