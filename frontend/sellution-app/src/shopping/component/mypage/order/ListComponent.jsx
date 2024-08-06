@@ -29,9 +29,9 @@ const ListComponent = () => {
   const handleOrderDetailClick = (order) => {
     let url;
     if (order.type === 'ONETIME') {
-      url = `/shopping/${clientName}/onetime/order-completed/${order.orderId}`;
+      url = `${order.orderId}`;
     } else if (order.type === 'MONTH_SUBSCRIPTION' || order.type === 'COUNT_SUBSCRIPTION') {
-      url = `/shopping/${clientName}/subscription/order-completed/${order.orderId}`;
+      url = `${order.orderId}`;
     } else {
       console.error('알 수 없는 주문 타입:', order.type);
       return;

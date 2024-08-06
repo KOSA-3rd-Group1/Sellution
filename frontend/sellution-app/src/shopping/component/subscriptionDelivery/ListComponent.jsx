@@ -28,6 +28,8 @@ const ListComponent = () => {
     navigate(`/shopping/${clientName}/subscription/cart`);
   };
 
+  const [isCategoryMenuVisible, setIsCategoryMenuVisible] = useState(false);
+
   const handleCategoryClick = (categoryId) => {
     const selected = subscriptionCategoryList.find(
       (category) => category.categoryId === categoryId,
@@ -35,6 +37,7 @@ const ListComponent = () => {
       name: '정기배송 상품 목록',
     };
     setSelectedCategory(selected);
+    setIsCategoryMenuVisible(false);
     fetchProducts(categoryId, true); // 페이지를 리셋하고 제품을 가져옵니다.
   };
 
@@ -112,15 +115,18 @@ const ListComponent = () => {
         categoryList={subscriptionCategoryList}
         onCategoryClick={handleCategoryClick}
         selectedCategory={selectedCategory}
+        isCategoryMenuVisible={isCategoryMenuVisible}
+        setIsCategoryMenuVisible={setIsCategoryMenuVisible}
       />
       {isLoading ? (
-        <LoadingSpinner />
+        <>{/* <LoadingSpinner /> */}</>
       ) : subscriptionProductList.length === 0 ? (
         <main className={`main-box w-full`}>
           <p>등록된 상품이 없습니다</p>
         </main>
       ) : (
-        <main className={`main-box w-full h-[100%]`}
+        <main
+          className={`main-box w-full h-[100%]`}
           ref={scrollContainerRef}
           style={{ overflowY: 'auto' }}
         >

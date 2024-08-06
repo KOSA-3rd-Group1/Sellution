@@ -7,7 +7,9 @@ const useOrderListStore = create(
       orderList: [],
 
       updateOrderList: (selectedItemsIndexList, cart) => {
-        const selectedProducts = cart.filter((item) => selectedItemsIndexList.includes(item.productId));
+        const selectedProducts = cart.filter((item) =>
+          selectedItemsIndexList.includes(item.productId),
+        );
         set({ orderList: selectedProducts });
       },
 
@@ -18,8 +20,8 @@ const useOrderListStore = create(
     {
       name: 'order-list-storage',
       getStorage: () => localStorage,
-    }
-  )
+    },
+  ),
 );
 
 export default useOrderListStore;

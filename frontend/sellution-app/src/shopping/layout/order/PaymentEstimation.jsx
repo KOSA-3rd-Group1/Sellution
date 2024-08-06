@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { formatPrice } from '../../../client/utility/functions/formatterFunction';
 const PaymentEstimation = ({
   totalPrice = 0,
@@ -17,6 +17,7 @@ const PaymentEstimation = ({
   selectedCount = 0,
   perPrice = 0,
   selectedStartDate = '',
+  calculateTotalPrice,
   // urlOrderType,
 }) => {
   const formatDate = (dateString) => {
@@ -41,6 +42,10 @@ const PaymentEstimation = ({
   const formatCount = (count) => {
     return count && count !== 0 ? `${count.toLocaleString()}회` : '-';
   };
+
+  useEffect(() => {
+    calculateTotalPrice(); // Call the function when finalPrice changes
+  }, [finalPrice]);
 
   const renderCommonInfo = () => (
     <>

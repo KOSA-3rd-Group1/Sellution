@@ -14,6 +14,7 @@ import useUserInfoStore from '@/shopping/store/stores/useUserInfoStore';
 import useCompanyInfoStore from '@/shopping/store/stores/useCompanyInfoStore';
 import { getMyCouponList } from '@/shopping/utility/apis/mypage/coupon/couponApi';
 import useAuthStore from '@/shopping/store/stores/useAuthStore';
+
 const OrderComponent = () => {
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -48,17 +49,15 @@ const OrderComponent = () => {
     deliveryNextDate: '',
     deliveryEndDate: '',
   });
-
+  //정기주문 - 선택 정보
   const [selectedWeek, setSelectedWeek] = useState('');
   const [selectedCount, setSelectedCount] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');
   //결제정보
   const [paymentMethods, setPaymentMethods] = useState([]);
-
   //쿠폰정보
   const [coupons, setCoupons] = useState([]);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
-
   //결제금액
   const [totalPrice, setTotalPrice] = useState(0);
   const [productDiscountTotal, setProductDiscountTotal] = useState(0); //상품 할인 금액
@@ -81,10 +80,11 @@ const OrderComponent = () => {
   };
 
   const handleAddressChange = () => {
+    saveState(); // 현재 상태 저장
     navigate(`/shopping/${clientName}/ordersheet/setting/address/${customerId}`, {
       state: {
         returnToOrder: true,
-        from: location.pathname // 현재 페이지의 경로를 저장
+        from: location.pathname, // 현재 페이지의 경로를 저장
       },
     });
   };
@@ -109,7 +109,7 @@ const OrderComponent = () => {
     const selected = coupons.find((coupon) => coupon.id === e.target.value);
     console.log('쿠폰: ', selected);
     setSelectedCoupon(selected);
-    calculateTotalPrice();
+    // calculateTotalPrice();
   };
 
   const handleAddPaymentMethod = () => {
@@ -147,7 +147,7 @@ const OrderComponent = () => {
     return '*'.repeat(accountNumber.length - 4) + accountNumber.slice(-4);
   };
 
-  //월별 결제 >> 결제금액 계산 함수
+  //월별 결제 >> 결제금액 계산 API
   const calculateMonthlyPrice = async () => {
     try {
       const response = await axios.post(
@@ -156,7 +156,7 @@ const OrderComponent = () => {
           selectedDays: selectedDays,
           weekOptionValue: selectedWeek.value,
           monthOptionValue: selectedMonth.value,
-          perPrice: finalPrice,
+          perPrice: finalPrice, //finalPrice를 기준으로 금액 계산됨
           startDate: selectedStartDate,
         },
       );
@@ -180,16 +180,17 @@ const OrderComponent = () => {
             (selectedCoupon.couponDiscountRate / 100),
         )
       : 0;
-
+    const newFinalPrice = total - productDiscountTotal - couponDiscountTotal;
     setTotalPrice(total);
     setProductDiscountTotal(productDiscountTotal);
     setCouponDiscountTotal(couponDiscountTotal);
-    setFinalPrice(total - productDiscountTotal - couponDiscountTotal);
-    console.log('총 상품 금액: ', total);
-    console.log('상품 할인 금액: ', productDiscountTotal);
-    console.log('쿠폰 할인 금액: ', couponDiscountTotal);
-    console.log('최종 가격: ', finalPrice);
-    console.log('직접계산',total - productDiscountTotal - couponDiscountTotal);
+    setFinalPrice(newFinalPrice); //이 finalPrice를 기준으로 MonthlyPrice 계산
+    //
+    // console.log('총 상품 금액: ', total);
+    // console.log('상품 할인 금액: ', productDiscountTotal);
+    // console.log('쿠폰 할인 금액: ', couponDiscountTotal);
+    // console.log('최종 가격: ', finalPrice);
+    // console.log('직접계산', newFinalPrice);
 
     if (
       subscriptionType === 'MONTH' &&
@@ -198,8 +199,9 @@ const OrderComponent = () => {
       selectedMonth &&
       selectedDays.length > 0
     ) {
-      const monthlyPriceData = await calculateMonthlyPrice();
+      const monthlyPriceData = await calculateMonthlyPrice(newFinalPrice); //calculateTotalPrice를 호출할 때만 호출
       console.log('월별 결제금액: ', monthlyPriceData);
+      console.log('월별 결제금액에 들어가는 finalPrice: ', newFinalPrice);
       if (monthlyPriceData) {
         setMonthlyPriceData(monthlyPriceData);
       }
@@ -241,7 +243,7 @@ const OrderComponent = () => {
     if (isOrderButtonDisabled) return;
 
     const orderedProducts = listToShow.map((item) => ({
-      productId: item.id,
+      productId: item.productId,
       count: item.quantity,
       price: item.cost,
       discountRate: item.discountRate || 0,
@@ -372,12 +374,20 @@ const OrderComponent = () => {
   useEffect(() => {
     calculateTotalPrice();
     console.log('계산 변경: ', selectedCoupon);
-  }, [selectedCoupon, orderList, selectedStartDate, selectedWeek, selectedMonth, selectedDays]);
+  }, [
+    selectedCoupon,
+    orderList,
+    selectedStartDate,
+    selectedWeek,
+    selectedMonth,
+    selectedDays,
+    finalPrice,
+  ]);
 
-  // 상태 저장 함수
+  // 상태 로컬스토리지에 저장하는 함수
   const saveState = () => {
     const stateToSave = {
-      // selectedAddress,
+      //selectedAddress,
       selectedCoupon,
       selectedStartDate,
       subscriptionType,
@@ -462,6 +472,8 @@ const OrderComponent = () => {
           subscriptionType={subscriptionType}
           selectedCount={selectedCount}
           perPrice={finalPrice}
+          selectedStartDate={selectedStartDate}
+          calculateTotalPrice={calculateTotalPrice}
         />
         <div className='seperator w-full h-4 bg-gray-100'></div>
         {/* 결제 정보 */}

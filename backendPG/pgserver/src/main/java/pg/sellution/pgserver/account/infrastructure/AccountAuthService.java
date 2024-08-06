@@ -24,11 +24,12 @@ public class AccountAuthService {
     private final WebClient webClient;
 
     public CheckAccountRes checkAccount(CheckAccountReq checkAccountReq) {
+        log.info("---------- 계좌 확인 시작 ----------");
         log.info("입력된값  bank code: {} , bank num: {}",
                 checkAccountReq.getBankCode(), checkAccountReq.getAccountNumber());
 
         String apiAccessToken = iamPortTokenClient.getApiAccessToken();
-        log.debug("API access token 반환");
+        log.info("API access token 반환");
 
 
         JsonNode response = webClient.get()
@@ -55,7 +56,7 @@ public class AccountAuthService {
             throw new ExternalApiException(EXTERNAL_SEVER_ERROR);
         }
         String bankHolderName = response.path("response").path("bank_holder").asText();
-        log.info("Successfully checked account, bankHolder: {}", bankHolderName);
+        log.info("계좌 인증 성공, 계좌주인 이름 : {}", bankHolderName);
         return new CheckAccountRes(bankHolderName);
 
     }

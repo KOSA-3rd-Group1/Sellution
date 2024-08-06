@@ -237,7 +237,7 @@ public class OrderServiceImpl implements OrderService {
             if(order.getCouponEvent()!=null){
                 couponEvent = eventRepository.findById(order.getCouponEvent().getId()).
                         orElseThrow( ()-> new BadRequestException(NOT_FOUND_EVENT) );
-                CouponBox couponBox = couponBoxRepository.findByCouponEventAndCustomerId(couponEvent, customer)
+                CouponBox couponBox = couponBoxRepository.findByCouponEventAndCustomerId(couponEvent.getId(), customer.getId())
                         .orElseThrow(() -> new BadRequestException(NOT_FOUND_COUPON));
                 couponBox.unUseCoupon(); // 쿠폰 미사용처리
             }
