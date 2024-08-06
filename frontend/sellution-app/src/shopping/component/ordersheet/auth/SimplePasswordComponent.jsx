@@ -131,6 +131,9 @@ const SimplePasswordComponent = () => {
           const productIds = orderData.orderedProducts.map((product) => product.productId);
           removeItemsFromCart('ONETIME', productIds, accessToken, setAccessToken);
 
+        // 주문 완료 후 로컬 스토리지 상태 삭제
+        localStorage.removeItem('orderState');
+
           navigate(`/shopping/${clientName}/onetime/order-completed/${savedOrderId}`);
         } else if (
           orderData.orderType === 'COUNT_SUBSCRIPTION' ||
@@ -140,6 +143,9 @@ const SimplePasswordComponent = () => {
           console.log('장바구니에서 제거하기 전', orderData.orderedProducts);
           const productIds = orderData.orderedProducts.map((product) => product.productId);
           removeItemsFromCart('SUBSCRIPTION', productIds, accessToken, setAccessToken);
+
+        // 주문 완료 후 로컬 스토리지 상태 삭제
+        localStorage.removeItem('orderState');
 
           navigate(`/shopping/${clientName}/subscription/order-completed/${savedOrderId}`);
         } else {
