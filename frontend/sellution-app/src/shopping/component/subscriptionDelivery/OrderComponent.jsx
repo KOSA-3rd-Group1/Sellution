@@ -175,7 +175,7 @@ const OrderComponent = () => {
       0,
     );
     const couponDiscountTotal = selectedCoupon
-      ? Math.floor(
+      ? Math.round(
           listToShow.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0) *
             (selectedCoupon.couponDiscountRate / 100),
         )
@@ -185,6 +185,11 @@ const OrderComponent = () => {
     setProductDiscountTotal(productDiscountTotal);
     setCouponDiscountTotal(couponDiscountTotal);
     setFinalPrice(total - productDiscountTotal - couponDiscountTotal);
+    console.log('총 상품 금액: ', total);
+    console.log('상품 할인 금액: ', productDiscountTotal);
+    console.log('쿠폰 할인 금액: ', couponDiscountTotal);
+    console.log('최종 가격: ', finalPrice);
+    console.log('직접계산',total - productDiscountTotal - couponDiscountTotal);
 
     if (
       subscriptionType === 'MONTH' &&
@@ -194,6 +199,7 @@ const OrderComponent = () => {
       selectedDays.length > 0
     ) {
       const monthlyPriceData = await calculateMonthlyPrice();
+      console.log('월별 결제금액: ', monthlyPriceData);
       if (monthlyPriceData) {
         setMonthlyPriceData(monthlyPriceData);
       }

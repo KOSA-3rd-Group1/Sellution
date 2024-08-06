@@ -338,13 +338,13 @@ const OrderCompletedComponent = () => {
     }, 0);
   };
 
-  const calculateCouponDiscountAmount = (totalProductPrice) => {
-    return Math.round(totalProductPrice * (orderData.couponDiscountRate / 100));
+  const calculateCouponDiscountAmount = (totalProductPrice,totalDiscountAmount) => {
+    return Math.round((totalProductPrice-totalDiscountAmount) * (orderData.couponDiscountRate / 100));
   };
 
   const totalProductPrice = calculateTotalProductPrice();
   const totalDiscountAmount = calculateTotalDiscountAmount();
-  const couponDiscountAmount = calculateCouponDiscountAmount(totalProductPrice);
+  const couponDiscountAmount = calculateCouponDiscountAmount(totalProductPrice,totalDiscountAmount);
   const finalTotalPrice = orderData.totalPrice;
 
   return (

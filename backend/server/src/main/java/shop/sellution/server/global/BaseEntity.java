@@ -20,11 +20,11 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
-    @CreationTimestamp
+    @CreatedDate
     @Column(name = "created_at", updatable = false)
     public LocalDateTime createdAt;
 
-    @UpdateTimestamp
+    @LastModifiedDate
     @Column(name = "updated_at")
     public LocalDateTime updatedAt;
 
