@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import LogoHeaderNav from '@/shopping/layout/LogoHeaderNav.jsx';
+import MenuHeaderNav from "@/shopping/layout/MenuHeaderNav.jsx";
 
 const OrderCompletedComponent = () => {
   const [orderData, setOrderData] = useState(null);
@@ -348,7 +349,7 @@ const OrderCompletedComponent = () => {
 
   return (
     <div className='max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg'>
-      <LogoHeaderNav title={'주문 완료'} />
+      <MenuHeaderNav title={'주문 완료'} />
       <h1 className='text-xl font-bold text-center mb-8 text-primary'>
         고객님의 주문이 완료되었습니다
       </h1>

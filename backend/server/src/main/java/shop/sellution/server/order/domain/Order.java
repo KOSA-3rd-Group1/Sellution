@@ -15,6 +15,8 @@ import shop.sellution.server.order.domain.type.DeliveryStatus;
 import shop.sellution.server.product.domain.Product;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
@@ -27,7 +29,8 @@ import java.util.List;
 public class Order extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_seq")
+    @SequenceGenerator(name = "order_seq", sequenceName = "order_sequence", allocationSize = 1)
     @Column(name = "order_id")
     private Long id;
 
@@ -187,6 +190,21 @@ public class Order extends BaseEntity {
     // 이번달 배송횟수 갱신 [단건,횟수 정기주문은 null로 값이 들어온다.]
     public void updateThisMonthDeliveryCount(Integer thisMonthDeliveryCount) {
         this.thisMonthDeliveryCount = thisMonthDeliveryCount;
+    }
+
+    // 주문코드 동시 생성을 위한 코드
+    @PrePersist
+    public void prePersist() {
+        if (this.code == null) {
+            this.code = generateOrderCode();
+        }
+    }
+
+    private String generateOrderCode() {
+        LocalDateTime now = LocalDateTime.now();
+        String datePart = now.format(DateTimeFormatter.BASIC_ISO_DATE);
+        String sequencePart = String.format("%06d", this.id);
+        return datePart + sequencePart;
     }
 
 
