@@ -447,7 +447,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_account계좌결제수단">Account(계좌,결제수단)</a>
+<li><a href="#_account계좌결제수단_길재현">Account(계좌,결제수단)  [길재현]</a>
 <ul class="sectlevel2">
 <li><a href="#_특정_회원의_결제수단_목록_조회">특정 회원의 결제수단 목록 조회</a>
 <ul class="sectlevel3">
@@ -512,7 +512,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_address주소">Address(주소)</a>
-<ul class="sectlevel2">
+<ul class="sectlevel1">
 <li><a href="#_특정_회원의_주소_목록_조회">특정 회원의 주소 목록 조회</a>
 <ul class="sectlevel3">
 <li><a href="#_http_request_10">HTTP Request</a></li>
@@ -550,7 +550,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_company회사">Company(회사)</a>
-<ul class="sectlevel2">
+<ul class="sectlevel1">
 <li><a href="#_회사_url_설정_조회">회사 URL 설정 조회</a>
 <ul class="sectlevel3">
 <li><a href="#_http_request_15">HTTP Request</a></li>
@@ -592,8 +592,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
-<li><a href="#_order주문">Order(주문)</a>
-<ul class="sectlevel2">
+<li><a href="#_order주문_길재현">Order(주문) [길재현]</a>
+<ul class="sectlevel1">
 <li><a href="#_고객의_주문_목록_조회">고객의 주문 목록 조회</a>
 <ul class="sectlevel3">
 <li><a href="#_http_request_21">HTTP Request</a></li>
@@ -638,16 +638,53 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_http_response_27">HTTP Response</a></li>
 </ul>
 </li>
+<li><a href="#_정기주문월_단위_가격_관련_정보_조회">정기주문(월 단위) 가격 관련 정보 조회</a>
+<ul class="sectlevel3">
+<li><a href="#_http_request_28">HTTP Request</a></li>
+<li><a href="#_http_response_28">HTTP Response</a></li>
+<li><a href="#_response_fields_11">Response Fields</a></li>
 </ul>
 </li>
-<li><a href="#_payment결제내역">Payment(결제내역)</a>
-<ul class="sectlevel1">
-<li><a href="#_회사_결제내역_조회">회사 결제내역 조회</a>
-<ul class="sectlevel2">
-<li><a href="#_http_request_28">HTTP Request</a></li>
-<li><a href="#_http_response_28">HTTP Response</a>
+<li><a href="#_정기주문횟수_단위_가격_관련_정보_조회">정기주문(횟수 단위) 가격 관련 정보 조회</a>
 <ul class="sectlevel3">
-<li><a href="#_response_fields_11">Response Fields</a></li>
+<li><a href="#_http_request_29">HTTP Request</a></li>
+<li><a href="#_http_response_29">HTTP Response</a></li>
+<li><a href="#_response_fields_12">Response Fields</a></li>
+</ul>
+</li>
+<li><a href="#_주문한_상품들_재고_체크">주문한 상품들 재고 체크</a>
+<ul class="sectlevel3">
+<li><a href="#_http_request_30">HTTP Request</a></li>
+<li><a href="#_http_response_30">HTTP Response</a></li>
+<li><a href="#_response_fields_13">Response Fields</a></li>
+</ul>
+</li>
+<li><a href="#_승인되지않은_주문_수_조회">승인되지않은 주문 수 조회</a>
+<ul class="sectlevel3">
+<li><a href="#_http_request_31">HTTP Request</a></li>
+<li><a href="#_http_response_31">HTTP Response</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_payment결제내역_길재현">Payment(결제내역) [길재현]</a>
+<ul class="sectlevel1">
+<li><a href="#_해당_회사_결제내역_조회">해당 회사 결제내역 조회</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_32">HTTP Request</a></li>
+<li><a href="#_http_response_32">HTTP Response</a>
+<ul class="sectlevel3">
+<li><a href="#_response_fields_14">Response Fields</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_해당_주문_결제내역_조회">해당 주문 결제내역 조회</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_33">HTTP Request</a></li>
+<li><a href="#_http_response_33">HTTP Response</a>
+<ul class="sectlevel3">
+<li><a href="#_response_fields_15">Response Fields</a></li>
 </ul>
 </li>
 </ul>
@@ -659,7 +696,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_account계좌결제수단"><a class="link" href="#_account계좌결제수단">Account(계좌,결제수단)</a></h2>
+<h2 id="_account계좌결제수단_길재현"><a class="link" href="#_account계좌결제수단_길재현">Account(계좌,결제수단)  [길재현]</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_특정_회원의_결제수단_목록_조회"><a class="link" href="#_특정_회원의_결제수단_목록_조회">특정 회원의 결제수단 목록 조회</a></h3>
@@ -687,43 +724,43 @@ Content-Type: application/json
 Content-Length: 838
 
 {
-  "totalPages" : 1,
   "totalElements" : 2,
+  "totalPages" : 1,
   "size" : 10,
   "content" : [ {
     "accountId" : 1,
     "customerId" : 1,
     "accountNumber" : "42750204039102",
     "bankCode" : "004",
-    "createdAt" : "2024-08-06T18:19:22.0460204"
+    "createdAt" : "2024-08-06T22:52:00.0232465"
   }, {
     "accountId" : 2,
     "customerId" : 1,
     "accountNumber" : "42750204039103",
     "bankCode" : "090",
-    "createdAt" : "2024-08-06T18:19:22.0460204"
+    "createdAt" : "2024-08-06T22:52:00.0232465"
   } ],
   "number" : 0,
   "sort" : {
     "empty" : false,
-    "unsorted" : false,
-    "sorted" : true
+    "sorted" : true,
+    "unsorted" : false
   },
-  "numberOfElements" : 2,
+  "first" : true,
+  "last" : true,
   "pageable" : {
     "pageNumber" : 0,
     "pageSize" : 10,
     "sort" : {
       "empty" : false,
-      "unsorted" : false,
-      "sorted" : true
+      "sorted" : true,
+      "unsorted" : false
     },
     "offset" : 0,
-    "unpaged" : false,
-    "paged" : true
+    "paged" : true,
+    "unpaged" : false
   },
-  "first" : true,
-  "last" : true,
+  "numberOfElements" : 2,
   "empty" : false
 }</code></pre>
 </div>
@@ -1021,8 +1058,8 @@ X-Frame-Options: DENY
 Content-Length: 843
 
 {
-  "totalPages" : 1,
   "totalElements" : 1,
+  "totalPages" : 1,
   "size" : 10,
   "content" : [ {
     "productId" : 1,
@@ -1042,24 +1079,24 @@ Content-Length: 843
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "unsorted" : true,
-    "sorted" : false
+    "sorted" : false,
+    "unsorted" : true
   },
-  "numberOfElements" : 1,
+  "first" : true,
+  "last" : true,
   "pageable" : {
     "pageNumber" : 0,
     "pageSize" : 10,
     "sort" : {
       "empty" : true,
-      "unsorted" : true,
-      "sorted" : false
+      "sorted" : false,
+      "unsorted" : true
     },
     "offset" : 0,
-    "unpaged" : false,
-    "paged" : true
+    "paged" : true,
+    "unpaged" : false
   },
-  "first" : true,
-  "last" : true,
+  "numberOfElements" : 1,
   "empty" : false
 }</code></pre>
 </div>
@@ -1573,7 +1610,7 @@ Content-Type: application/x-www-form-urlencoded
 Host: localhost:8080
 Content-Length: 102
 
-_csrf=A85AIq85Z2JY9a8edImLTgQqRnU6beFbl9ZyrDGlVUZTe0dnZax4QZZcUgF1w8suFqS_fTwdaxRbXdJ2orcUlAPDbSdiT35f</code></pre>
+_csrf=QCp71Lku4CuH9S_G5-9JricjYsk-z1hJsFF8qILRR0R3j2s_eUkY5o1NhU6qwUn1gcJ9yhIXT6hf_Wpk0WJPyeDgIn1Dultd</code></pre>
 </div>
 </div>
 </div>
@@ -1597,11 +1634,10 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
+<h1 id="_address주소" class="sect0"><a class="link" href="#_address주소">Address(주소)</a></h1>
 <div class="sect1">
-<h2 id="_address주소"><a class="link" href="#_address주소">Address(주소)</a></h2>
+<h2 id="_특정_회원의_주소_목록_조회"><a class="link" href="#_특정_회원의_주소_목록_조회">특정 회원의 주소 목록 조회</a></h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_특정_회원의_주소_목록_조회"><a class="link" href="#_특정_회원의_주소_목록_조회">특정 회원의 주소 목록 조회</a></h3>
 <div class="paragraph">
 <p>/addresses/customer/{customerId}</p>
 </div>
@@ -1709,8 +1745,10 @@ Content-Length: 483
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_주소_상세_정보_조회"><a class="link" href="#_주소_상세_정보_조회">주소 상세 정보 조회</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_주소_상세_정보_조회"><a class="link" href="#_주소_상세_정보_조회">주소 상세 정보 조회</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/addresses/{addressId}</p>
 </div>
@@ -1804,8 +1842,10 @@ Content-Length: 238
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_새로운_주소_생성"><a class="link" href="#_새로운_주소_생성">새로운 주소 생성</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_새로운_주소_생성"><a class="link" href="#_새로운_주소_생성">새로운 주소 생성</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/addresses</p>
 </div>
@@ -1903,8 +1943,10 @@ Content-Length: 1
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_주소_수정"><a class="link" href="#_주소_수정">주소 수정</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_주소_수정"><a class="link" href="#_주소_수정">주소 수정</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/addresses/{addressId}</p>
 </div>
@@ -1998,8 +2040,10 @@ Host: localhost:8080
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_주소_삭제"><a class="link" href="#_주소_삭제">주소 삭제</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_주소_삭제"><a class="link" href="#_주소_삭제">주소 삭제</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/addresses/{addressId}</p>
 </div>
@@ -2022,12 +2066,10 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
-</div>
+<h1 id="_company회사" class="sect0"><a class="link" href="#_company회사">Company(회사)</a></h1>
 <div class="sect1">
-<h2 id="_company회사"><a class="link" href="#_company회사">Company(회사)</a></h2>
+<h2 id="_회사_url_설정_조회"><a class="link" href="#_회사_url_설정_조회">회사 URL 설정 조회</a></h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_회사_url_설정_조회"><a class="link" href="#_회사_url_설정_조회">회사 URL 설정 조회</a></h3>
 <div class="paragraph">
 <p>/url-setting/{companyId}</p>
 </div>
@@ -2053,8 +2095,10 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_회사_url_설정_업데이트"><a class="link" href="#_회사_url_설정_업데이트">회사 URL 설정 업데이트</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_회사_url_설정_업데이트"><a class="link" href="#_회사_url_설정_업데이트">회사 URL 설정 업데이트</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/url-setting</p>
 </div>
@@ -2065,7 +2109,7 @@ Host: localhost:8080</code></pre>
 <h4 id="_http_request_16"><a class="link" href="#_http_request_16">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /url-setting?_csrf=j7_kbufF9tJtyN0aefNUpJEMwFZVz4x0uBNs1JTQdt37lc7QvYqGX97wkuNArr4pH95glKVu7Tcw9upZiSpUsfDhQe7P9vbk HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /url-setting?_csrf=kw2szsr0i42a49f90pz6ZuoyzjaJifoTDZgAXUQ8si3mx5FkqjnO-a7B6rq3gO_F5bHOUYkK41fq68w-aag5b3UMgh2CpKhS HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 79
 Host: localhost:8080
@@ -2096,8 +2140,10 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_회사_디스플레이_설정_조회"><a class="link" href="#_회사_디스플레이_설정_조회">회사 디스플레이 설정 조회</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_회사_디스플레이_설정_조회"><a class="link" href="#_회사_디스플레이_설정_조회">회사 디스플레이 설정 조회</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/display-setting/{companyId}</p>
 </div>
@@ -2123,8 +2169,10 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_회사_디스플레이_설정_업데이트"><a class="link" href="#_회사_디스플레이_설정_업데이트">회사 디스플레이 설정 업데이트</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_회사_디스플레이_설정_업데이트"><a class="link" href="#_회사_디스플레이_설정_업데이트">회사 디스플레이 설정 업데이트</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/display-setting</p>
 </div>
@@ -2176,8 +2224,10 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_회사_판매_설정_조회"><a class="link" href="#_회사_판매_설정_조회">회사 판매 설정 조회</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_회사_판매_설정_조회"><a class="link" href="#_회사_판매_설정_조회">회사 판매 설정 조회</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/sale-setting/{companyId}</p>
 </div>
@@ -2203,8 +2253,10 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_회사_판매_설정_업데이트"><a class="link" href="#_회사_판매_설정_업데이트">회사 판매 설정 업데이트</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_회사_판매_설정_업데이트"><a class="link" href="#_회사_판매_설정_업데이트">회사 판매 설정 업데이트</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/sale-setting</p>
 </div>
@@ -2215,7 +2267,7 @@ X-Frame-Options: DENY</code></pre>
 <h4 id="_http_request_20"><a class="link" href="#_http_request_20">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /sale-setting?_csrf=gS4NiPDCiUbqsiVHIw40l4g_UAanOGXxh6In6PrdOTwT2HKM4hZsvMigv37Hh0NyEiMA8u4KfT_EWVXc4cYV28zpAVhyvUW7 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /sale-setting?_csrf=lDN6iv9m87JiyHUENbuODzr-1pIx6gXtCBfYFdwrYjkAb6YOrAVN6ZlXxoRP_BNgDJa6P16b-_BS2jfAPHK6dr8fWw0wW5Y6 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 305
 Host: localhost:8080
@@ -2255,12 +2307,10 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
-</div>
+<h1 id="_order주문_길재현" class="sect0"><a class="link" href="#_order주문_길재현">Order(주문) [길재현]</a></h1>
 <div class="sect1">
-<h2 id="_order주문"><a class="link" href="#_order주문">Order(주문)</a></h2>
+<h2 id="_고객의_주문_목록_조회"><a class="link" href="#_고객의_주문_목록_조회">고객의 주문 목록 조회</a></h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_고객의_주문_목록_조회"><a class="link" href="#_고객의_주문_목록_조회">고객의 주문 목록 조회</a></h3>
 <div class="paragraph">
 <p>/orders/customers/{customerId}</p>
 </div>
@@ -2282,8 +2332,8 @@ Content-Type: application/json
 Content-Length: 1693
 
 {
-  "totalPages" : 1,
   "totalElements" : 1,
+  "totalPages" : 1,
   "size" : 1,
   "content" : [ {
     "customer" : {
@@ -2300,7 +2350,7 @@ Content-Length: 1693
       "phoneNumber" : "010-1234-5678",
       "isDefaultAddress" : "Y",
       "addressName" : "집",
-      "createdAt" : "2024-08-06T18:19:38.7001739"
+      "createdAt" : "2024-08-06T22:52:15.1561103"
     },
     "orderCode" : "123456",
     "orderId" : 1,
@@ -2323,7 +2373,7 @@ Content-Length: 1693
       "price" : 50000,
       "productImageList" : null
     } ],
-    "orderCreatedAt" : "2024-08-06T18:19:38.7001739",
+    "orderCreatedAt" : "2024-08-06T22:52:15.1561103",
     "selectedDayList" : [ "MON", "WED" ],
     "selectedWeekOption" : 1,
     "selectedMonthOption" : 1,
@@ -2337,13 +2387,13 @@ Content-Length: 1693
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "unsorted" : true,
-    "sorted" : false
+    "sorted" : false,
+    "unsorted" : true
   },
-  "numberOfElements" : 1,
-  "pageable" : "INSTANCE",
   "first" : true,
   "last" : true,
+  "pageable" : "INSTANCE",
+  "numberOfElements" : 1,
   "empty" : false
 }</code></pre>
 </div>
@@ -2644,8 +2694,10 @@ Content-Length: 1693
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_회사의_주문_목록_조회"><a class="link" href="#_회사의_주문_목록_조회">회사의 주문 목록 조회</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_회사의_주문_목록_조회"><a class="link" href="#_회사의_주문_목록_조회">회사의 주문 목록 조회</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/orders/company/{companyId}</p>
 </div>
@@ -2664,11 +2716,11 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 1692
+Content-Length: 1691
 
 {
-  "totalPages" : 1,
   "totalElements" : 1,
+  "totalPages" : 1,
   "size" : 1,
   "content" : [ {
     "customer" : {
@@ -2685,7 +2737,7 @@ Content-Length: 1692
       "phoneNumber" : "010-1234-5678",
       "isDefaultAddress" : "Y",
       "addressName" : "집",
-      "createdAt" : "2024-08-06T18:19:38.586296"
+      "createdAt" : "2024-08-06T22:52:15.0739198"
     },
     "orderCode" : "123456",
     "orderId" : 1,
@@ -2708,7 +2760,7 @@ Content-Length: 1692
       "price" : 50000,
       "productImageList" : null
     } ],
-    "orderCreatedAt" : "2024-08-06T18:19:38.5872955",
+    "orderCreatedAt" : "2024-08-06T22:52:15.07492",
     "selectedDayList" : [ "MON", "WED" ],
     "selectedWeekOption" : 1,
     "selectedMonthOption" : 1,
@@ -2722,13 +2774,13 @@ Content-Length: 1692
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "unsorted" : true,
-    "sorted" : false
+    "sorted" : false,
+    "unsorted" : true
   },
-  "numberOfElements" : 1,
-  "pageable" : "INSTANCE",
   "first" : true,
   "last" : true,
+  "pageable" : "INSTANCE",
+  "numberOfElements" : 1,
   "empty" : false
 }</code></pre>
 </div>
@@ -3044,8 +3096,10 @@ Content-Length: 1692
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_주문_생성"><a class="link" href="#_주문_생성">주문 생성</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_주문_생성"><a class="link" href="#_주문_생성">주문 생성</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/orders/customers/{customerId}</p>
 </div>
@@ -3092,8 +3146,10 @@ success, 생성된 주문 아이디 : 1</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_주문_취소"><a class="link" href="#_주문_취소">주문 취소</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_주문_취소"><a class="link" href="#_주문_취소">주문 취소</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/orders/{orderId}/cancel</p>
 </div>
@@ -3126,8 +3182,10 @@ success</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_주문_수동_승인"><a class="link" href="#_주문_수동_승인">주문 수동 승인</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_주문_수동_승인"><a class="link" href="#_주문_수동_승인">주문 수동 승인</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/orders/{orderId}/approve</p>
 </div>
@@ -3154,8 +3212,10 @@ success</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_주문_자동_승인_토글"><a class="link" href="#_주문_자동_승인_토글">주문 자동 승인 토글</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_주문_자동_승인_토글"><a class="link" href="#_주문_자동_승인_토글">주문 자동 승인 토글</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/orders/auto-approve-toggle/company/{companyId}</p>
 </div>
@@ -3182,8 +3242,10 @@ success</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_주문_상세_조회"><a class="link" href="#_주문_상세_조회">주문 상세 조회</a></h3>
+</div>
+<div class="sect1">
+<h2 id="_주문_상세_조회"><a class="link" href="#_주문_상세_조회">주문 상세 조회</a></h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>/orders/{orderId}</p>
 </div>
@@ -3219,7 +3281,7 @@ Content-Length: 1313
     "phoneNumber" : "010-1234-5678",
     "isDefaultAddress" : "Y",
     "addressName" : "Home",
-    "createdAt" : "2024-08-06T18:19:38.8057871"
+    "createdAt" : "2024-08-06T22:52:15.2299012"
   },
   "orderCode" : "123456",
   "orderId" : 1,
@@ -3242,7 +3304,7 @@ Content-Length: 1313
     "price" : 50000,
     "productImageList" : null
   } ],
-  "orderCreatedAt" : "2024-08-06T18:19:38.8057871",
+  "orderCreatedAt" : "2024-08-06T22:52:15.2299012",
   "selectedDayList" : null,
   "selectedWeekOption" : null,
   "selectedMonthOption" : null,
@@ -3258,16 +3320,329 @@ Content-Length: 1313
 </div>
 </div>
 </div>
-</div>
-<h1 id="_payment결제내역" class="sect0"><a class="link" href="#_payment결제내역">Payment(결제내역)</a></h1>
 <div class="sect1">
-<h2 id="_회사_결제내역_조회"><a class="link" href="#_회사_결제내역_조회">회사 결제내역 조회</a></h2>
+<h2 id="_정기주문월_단위_가격_관련_정보_조회"><a class="link" href="#_정기주문월_단위_가격_관련_정보_조회">정기주문(월 단위) 가격 관련 정보 조회</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>/orders/month/calculate-price</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_28"><a class="link" href="#_http_request_28">HTTP Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /orders/month/calculate-price HTTP/1.1
+Content-Type: application/json
+Content-Length: 158
+Host: localhost:8080
+
+{
+  "selectedDays" : [ "MON", "WED", "FRI" ],
+  "weekOptionValue" : 2,
+  "monthOptionValue" : null,
+  "perPrice" : 10000,
+  "startDate" : "2024-08-06"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response_28"><a class="link" href="#_http_response_28">HTTP Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 196
+
+{
+  "thisMonthDeliveryCount" : 8,
+  "thisMonthPrice" : 80000,
+  "totalDeliveryCount" : 24,
+  "totalPrice" : 240000,
+  "deliveryNextDate" : "2024-08-07",
+  "deliveryEndDate" : "2024-10-06"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_fields_11"><a class="link" href="#_response_fields_11">Response Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>thisMonthDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이번 달 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>thisMonthPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이번 달 가격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>totalDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">총 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>totalPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">총 가격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deliveryNextDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">다음 배송일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deliveryEndDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">배송 종료일</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_정기주문횟수_단위_가격_관련_정보_조회"><a class="link" href="#_정기주문횟수_단위_가격_관련_정보_조회">정기주문(횟수 단위) 가격 관련 정보 조회</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>/orders/count/info</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_29"><a class="link" href="#_http_request_29">HTTP Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /orders/count/info HTTP/1.1
+Content-Type: application/json
+Content-Length: 151
+Host: localhost:8080
+
+{
+  "selectedDays" : [ "TUE", "THU" ],
+  "weekOptionValue" : 1,
+  "monthOptionValue" : null,
+  "perPrice" : 15000,
+  "startDate" : "2024-08-06"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response_29"><a class="link" href="#_http_response_29">HTTP Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 196
+
+{
+  "thisMonthDeliveryCount" : 6,
+  "thisMonthPrice" : 90000,
+  "totalDeliveryCount" : 18,
+  "totalPrice" : 270000,
+  "deliveryNextDate" : "2024-08-08",
+  "deliveryEndDate" : "2024-11-06"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_fields_12"><a class="link" href="#_response_fields_12">Response Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>thisMonthDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이번 달 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>thisMonthPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이번 달 가격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>totalDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">총 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>totalPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">총 가격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deliveryNextDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">다음 배송일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deliveryEndDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">배송 종료일</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_주문한_상품들_재고_체크"><a class="link" href="#_주문한_상품들_재고_체크">주문한 상품들 재고 체크</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>/orders/{orderId}/enough-stock</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_30"><a class="link" href="#_http_request_30">HTTP Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /orders/count/info HTTP/1.1
+Content-Type: application/json
+Content-Length: 151
+Host: localhost:8080
+
+{
+  "selectedDays" : [ "TUE", "THU" ],
+  "weekOptionValue" : 1,
+  "monthOptionValue" : null,
+  "perPrice" : 15000,
+  "startDate" : "2024-08-06"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response_30"><a class="link" href="#_http_response_30">HTTP Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 196
+
+{
+  "thisMonthDeliveryCount" : 6,
+  "thisMonthPrice" : 90000,
+  "totalDeliveryCount" : 18,
+  "totalPrice" : 270000,
+  "deliveryNextDate" : "2024-08-08",
+  "deliveryEndDate" : "2024-11-06"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_fields_13"><a class="link" href="#_response_fields_13">Response Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>thisMonthDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이번 달 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>thisMonthPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이번 달 가격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>totalDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">총 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>totalPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">총 가격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deliveryNextDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">다음 배송일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deliveryEndDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">배송 종료일</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_승인되지않은_주문_수_조회"><a class="link" href="#_승인되지않은_주문_수_조회">승인되지않은 주문 수 조회</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>/orders/company/{companyId}/unapproved-count</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_31"><a class="link" href="#_http_request_31">HTTP Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /orders/company/1/unapproved-count HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response_31"><a class="link" href="#_http_response_31">HTTP Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 1
+
+5</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h1 id="_payment결제내역_길재현" class="sect0"><a class="link" href="#_payment결제내역_길재현">Payment(결제내역) [길재현]</a></h1>
+<div class="sect1">
+<h2 id="_해당_회사_결제내역_조회"><a class="link" href="#_해당_회사_결제내역_조회">해당 회사 결제내역 조회</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>/payment-histories/company/{companyId}</p>
 </div>
 <div class="sect2">
-<h3 id="_http_request_28"><a class="link" href="#_http_request_28">HTTP Request</a></h3>
+<h3 id="_http_request_32"><a class="link" href="#_http_request_32">HTTP Request</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /payment-histories/company/1?page=0&amp;size=10&amp;orderCode=ORDER123&amp;userName=John&amp;startDate=2023-01-01&amp;endDate=2023-12-31&amp;status=COMPLETE HTTP/1.1
@@ -3277,7 +3652,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_http_response_28"><a class="link" href="#_http_response_28">HTTP Response</a></h3>
+<h3 id="_http_response_32"><a class="link" href="#_http_response_32">HTTP Response</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -3285,8 +3660,8 @@ Content-Type: application/json
 Content-Length: 585
 
 {
-  "totalPages" : 1,
   "totalElements" : 1,
+  "totalPages" : 1,
   "size" : 1,
   "content" : [ {
     "paymentHistoryId" : 1,
@@ -3296,25 +3671,25 @@ Content-Length: 585
     "price" : 10000,
     "remainingPayCount" : 3,
     "totalCountForPayment" : 5,
-    "paymentDate" : "2024-08-06T18:19:40.4861737",
+    "paymentDate" : "2024-08-06T22:52:16.5862015",
     "status" : "COMPLETE"
   } ],
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "unsorted" : true,
-    "sorted" : false
+    "sorted" : false,
+    "unsorted" : true
   },
-  "numberOfElements" : 1,
-  "pageable" : "INSTANCE",
   "first" : true,
   "last" : true,
+  "pageable" : "INSTANCE",
+  "numberOfElements" : 1,
   "empty" : false
 }</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_response_fields_11"><a class="link" href="#_response_fields_11">Response Fields</a></h4>
+<h4 id="_response_fields_14"><a class="link" href="#_response_fields_14">Response Fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -3443,6 +3818,214 @@ Content-Length: 585
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>empty</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">결제 내역이 비어있는지 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_해당_주문_결제내역_조회"><a class="link" href="#_해당_주문_결제내역_조회">해당 주문 결제내역 조회</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>/payment-histories/orders/{orderId}</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_33"><a class="link" href="#_http_request_33">HTTP Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /payment-histories/orders/1?page=0&amp;size=10 HTTP/1.1
+Content-Type: application/json
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_33"><a class="link" href="#_http_response_33">HTTP Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 730
+
+{
+  "totalElements" : 1,
+  "totalPages" : 1,
+  "size" : 1,
+  "content" : [ {
+    "paymentHistoryId" : 1,
+    "price" : 10000,
+    "remainingPayCount" : 3,
+    "totalCountForPayment" : 5,
+    "paymentDate" : "2024-08-06T22:52:16.6492012",
+    "status" : "COMPLETE",
+    "accountNumber" : "1234-5678-9012-3456",
+    "orderType" : "ONETIME",
+    "thisSubMonthStartDate" : "2024-08-06",
+    "thisSubMonthEndDate" : "2024-09-06",
+    "deliveryPerPrice" : 2000,
+    "thisMonthDeliveryCount" : 4
+  } ],
+  "number" : 0,
+  "sort" : {
+    "empty" : true,
+    "sorted" : false,
+    "unsorted" : true
+  },
+  "first" : true,
+  "last" : true,
+  "pageable" : "INSTANCE",
+  "numberOfElements" : 1,
+  "empty" : false
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_fields_15"><a class="link" href="#_response_fields_15">Response Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결제 내역 상세 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].paymentHistoryId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결제 내역 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].price</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결제 금액</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].remainingPayCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">남은 결제 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].totalCountForPayment</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">총 결제해야 하는 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].paymentDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결제 일시</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결제 상태</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].accountNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">계좌 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].orderType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">주문 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].thisSubMonthStartDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이번 구독 월 시작일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].thisSubMonthEndDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이번 구독 월 종료일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].deliveryPerPrice</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">배송당 가격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].thisMonthDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이번 달 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageable</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>totalElements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">총 결제 내역 상세 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>totalPages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">총 페이지 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>last</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">마지막 페이지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 크기</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sort</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sort.empty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬이 비어 있는지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sort.sorted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬되었는지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sort.unsorted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬되지 않았는지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>numberOfElements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지의 결제 내역 상세 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>first</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">첫 페이지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>empty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결제 내역 상세가 비어있는지 여부</p></td>
 </tr>
 </tbody>
 </table>

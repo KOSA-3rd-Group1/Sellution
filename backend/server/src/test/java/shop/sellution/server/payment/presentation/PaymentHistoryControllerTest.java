@@ -71,7 +71,7 @@ class PaymentHistoryControllerTest extends BaseControllerTest {
                         .param("status", "COMPLETE")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("Payment/payment-history-list",
+                .andDo(document("Payment/company-payment-history-list",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
@@ -144,7 +144,7 @@ class PaymentHistoryControllerTest extends BaseControllerTest {
                         .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("Payment/payment-history-detail-list",
+                .andDo(document("Payment/order-payment-history-list",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(

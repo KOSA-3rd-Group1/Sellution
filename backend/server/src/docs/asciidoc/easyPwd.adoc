@@ -1,0 +1,42 @@
+= 간편비밀번호 [길재현]
+
+== 간편비밀번호 등록,재등록
+/easy-pwd/customer/{customerId}
+
+
+==== HTTP Request
+
+include::{snippets}/Easy-pwd/register/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Easy-pwd/register/http-response.adoc[]
+
+== 간편비밀번호 검증
+/customer/{customerId}/verify
+
+==== HTTP Request
+
+include::{snippets}/Easy-pwd/verify/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Easy-pwd/verify/http-response.adoc[]
+
+
+
+
+==  해당 회원이 간편비밀번호 있는지 확인
+/customer/{customerId}/check
+
+==== HTTP Request
+
+include::{snippets}/Easy-pwd/check/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Easy-pwd/check/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Easy-pwd/check/response-fields.adoc[]

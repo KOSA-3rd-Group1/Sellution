@@ -1,6 +1,6 @@
-== Company(회사)
+= Company(회사)
 
-=== 회사 URL 설정 조회
+== 회사 URL 설정 조회
 /url-setting/{companyId}
 
 회사 URL 설정을 조회한다.
@@ -18,7 +18,7 @@ include::{snippets}/Company/findCompanyUrlSetting/http-response.adoc[]
 include::{snippets}/Company/findCompanyUrlSetting/response-fields.adoc[]
 
 
-=== 회사 URL 설정 업데이트
+== 회사 URL 설정 업데이트
 /url-setting
 
 회사 URL 설정을 업데이트한다.
@@ -32,7 +32,7 @@ include::{snippets}/Company/updateCompanyUrlSetting/http-request.adoc[]
 include::{snippets}/Company/updateCompanyUrlSetting/http-response.adoc[]
 
 
-=== 회사 디스플레이 설정 조회
+== 회사 디스플레이 설정 조회
 /display-setting/{companyId}
 
 회사 디스플레이 설정을 조회한다.
@@ -50,7 +50,7 @@ include::{snippets}/Company/findCompanyDisplaySetting/http-response.adoc[]
 include::{snippets}/Company/findCompanyDisplaySetting/response-fields.adoc[]
 
 
-=== 회사 디스플레이 설정 업데이트
+== 회사 디스플레이 설정 업데이트
 /display-setting
 
 회사 디스플레이 설정을 업데이트한다.
@@ -64,7 +64,7 @@ include::{snippets}/Company/updateCompanyDisplaySetting/http-request.adoc[]
 include::{snippets}/Company/updateCompanyDisplaySetting/http-response.adoc[]
 
 
-=== 회사 판매 설정 조회
+== 회사 판매 설정 조회
 /sale-setting/{companyId}
 
 회사 판매 설정을 조회한다.
@@ -82,7 +82,7 @@ include::{snippets}/Company/findCompanySaleSetting/http-response.adoc[]
 include::{snippets}/Company/findCompanySaleSetting/response-fields.adoc[]
 
 
-=== 회사 판매 설정 업데이트
+== 회사 판매 설정 업데이트
 /sale-setting
 
 회사 판매 설정을 업데이트한다.
