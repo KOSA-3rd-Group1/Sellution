@@ -85,7 +85,7 @@ const SubscriptionTypeCount = () => {
               { label: '2주마다', selectData: '2' },
               { label: '3주마다', selectData: '3' },
               { label: '4주마다', selectData: '4' },
-              { label: '5주마다', selectData: '5' },
+              //   { label: '5주마다', selectData: '5' },
             ]}
             name='weekValues'
             onChange={handleChangeCheckboxValue}
