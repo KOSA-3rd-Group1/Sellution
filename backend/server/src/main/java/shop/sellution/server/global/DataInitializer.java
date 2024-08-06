@@ -48,7 +48,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
-@Profile("prod")
+@Profile("data")
 @Component
 @RequiredArgsConstructor
 @Slf4j
