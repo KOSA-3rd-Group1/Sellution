@@ -9,14 +9,7 @@ import { useShopManagementDisplaySetting } from '@/client/business/shopManagemen
 import ImageBox from '@/client/layout/common/ImageBox';
 
 const DisplaySettingComponent = () => {
-  const {
-    alertModalState,
-    // autoCloseModalState,
-    openAlertModal,
-    closeAlertModal,
-    openAutoCloseModal,
-    closeAutoCloseModal,
-  } = useModal();
+  const { alertModalState, openAlertModal, closeAlertModal } = useModal();
   const {
     data,
     logoImg,
@@ -37,7 +30,7 @@ const DisplaySettingComponent = () => {
     checkResetContent,
     checkSaveContent,
     handleOnConfirm,
-  } = useShopManagementDisplaySetting({ openAlertModal, openAutoCloseModal, closeAutoCloseModal });
+  } = useShopManagementDisplaySetting({ openAlertModal });
 
   return (
     <div

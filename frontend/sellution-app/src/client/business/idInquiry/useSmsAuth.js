@@ -5,7 +5,7 @@ import {
   postVerifyFindIdSmsAuthNumber,
 } from '@/client/utility/apis/idInquiry/SmsAuthApi';
 
-export const useSmsAuth = ({ moveDefaultSendState }) => {
+export const useSmsAuth = ({ moveDefaultSendState, openAlertModal }) => {
   const [data, setData] = useState({ name: '', phoneNumber: '', authNumber: '' });
   const [nextData, setNextData] = useState({});
 
@@ -42,7 +42,12 @@ export const useSmsAuth = ({ moveDefaultSendState }) => {
         setTimeLeft(180);
         setIsTimerRunning(true);
       } catch (error) {
-        alert(`${error.response.data.message}`);
+        openAlertModal(
+          'error',
+          '오류',
+          `${error?.response?.data?.message}` || '잘못된 요청입니다. 다시 시도해주세요.',
+        );
+        // alert(`${error.response.data.message}`);
         setStep(1);
       }
     }
@@ -58,9 +63,14 @@ export const useSmsAuth = ({ moveDefaultSendState }) => {
       console.log(response);
       setIsVerified(true);
       setIsTimerRunning(false);
+      openAlertModal('success', '성공', '인증이 성공적으로 완료되었습니다.');
     } catch (error) {
       console.log(error);
-      alert('잘못된 인증번호입니다. 다시 시도해주세요.');
+      openAlertModal(
+        'error',
+        '오류',
+        `${error?.response?.data?.message}` || '잘못된 인증번호입니다. 다시 시도해주세요.',
+      );
     }
   };
 

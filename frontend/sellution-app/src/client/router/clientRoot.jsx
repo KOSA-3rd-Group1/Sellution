@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom';
 
 import BasicLayout from '@/client/layout/BasicLayout';
 
-import homeRouter from '@/client/router/home/homeRouter';
+// import homeRouter from '@/client/router/home/homeRouter';
 import customerRouter from '@/client/router/customer/customerRouter';
 import orderRouter from '@/client/router/order/orderRouter';
 import productRouter from './product/productRouter';
@@ -35,9 +35,13 @@ const clientRoot = () => [
     path: '/',
     element: <BasicLayout />, //기본 레이아웃
     children: [
+      //   {
+      //     path: 'home',
+      //     children: homeRouter(),
+      //   },
       {
         path: 'home',
-        children: homeRouter(),
+        element: <Navigate replace to='/customer' />,
       },
       {
         path: 'customer',

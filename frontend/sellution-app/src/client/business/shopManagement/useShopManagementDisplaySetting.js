@@ -6,35 +6,12 @@ import {
   putDisplaySetting,
 } from '@/client/utility/apis/shopManagement/shopManagementDisplaySettingApi';
 import {
-  generateShortFileName,
+  //   generateShortFileName,
   generateShortFileName2,
 } from '@/client/utility/functions/formatterFunction';
 import { ValidationError } from '@/client/utility/error/ValidationError';
 
-// const DUMMY = {
-//   displayName: '테스트 회사명',
-//   logoImg: '로고 이미지',
-//   promotionImg: ['프로모션 이미지1', '프로모션 이미지1', '프로모션 이미지1'],
-//   mainPromotion1Title: '함께, 건강하고 단건하게',
-//   mainPromotion1Content: '최고의 퀄리티를 위해 아끼지 않고 가득 담았습니다',
-//   mainPromotion2Title: '가정배송 서비스',
-//   mainPromotion2Content: '지금 로그인 해주세요!',
-//   //   themeColor: {
-//   //     name: 'orange',
-//   //     textColor: 'text-orange-700',
-//   //     darkBgColor: 'bg-orange-900',
-//   //     midBgColor: 'bg-orange-300',
-//   //     lightBgColor: 'bg-orange-100',
-//   //   },
-//   themeColor: { name: 'Blue' },
-//   serviceType: 'ONETIME',
-// };
-
-export const useShopManagementDisplaySetting = ({
-  openAlertModal,
-  openAutoCloseModal,
-  closeAutoCloseModal,
-}) => {
+export const useShopManagementDisplaySetting = ({ openAlertModal }) => {
   const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const companyId = useUserInfoStore((state) => state.companyId);
@@ -50,30 +27,6 @@ export const useShopManagementDisplaySetting = ({
   const [confirmType, setConfirmType] = useState('resetContent');
 
   const [isLoading, setIsLoading] = useState(false);
-
-  // const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
-  //   try {
-  //     // S3 버킷 URL을 프록시 URL로 변경
-  //     const proxyUrl = `/s3-bucket${imageUrl}`;
-  //     //   const proxyUrl = `${imageUrl}`;
-  //     const response = await fetch(proxyUrl);
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-
-  //     const blob = await response.blob();
-  //     const fileName = imageUrl.split('/').pop() || 'image.png';
-  //     const newImages = {
-  //       file: new File([blob], fileName, { type: blob.type }),
-  //       preview: URL.createObjectURL(blob),
-  //       id: Date.now() + Math.random(),
-  //     };
-  //     return newImages;
-  //   } catch (error) {
-  //     //   console.error('Error converting image:', error);
-  //     return null;
-  //   }
-  // }, []);
 
   const convertImageUrlToFileAndBlob = useCallback(async (imageUrl) => {
     try {
@@ -110,19 +63,35 @@ export const useShopManagementDisplaySetting = ({
     }
   }, []);
 
+  const formatData = useCallback(
+    (item) => ({
+      companyId: item.companyId,
+      displayName: item.displayName,
+      mainPromotion1Content: item.mainPromotion1Content,
+      mainPromotion1Title: item.mainPromotion1Title,
+      mainPromotion2Content: item.mainPromotion2Content,
+      mainPromotion2Title: item.mainPromotion2Title,
+      serviceType: item.serviceType,
+      themeColor: item.themeColor,
+    }),
+    [],
+  );
+
   // 서버에 데이터 요청
   useEffect(() => {
     const fetch = async (companyId, setAccessToken, accessToken) => {
       const response = await getDisplaySetting(companyId, setAccessToken, accessToken);
+      const updateData = formatData(response?.data);
+      setData(() => updateData);
+      //   setData(() => ({ ...response.data }));
 
-      setData(() => ({ ...response.data }));
-      if (response.data.logoImageUrl) {
+      if (response?.data?.logoImageUrl) {
         const newImages = await convertImageUrlToFileAndBlob(response.data.logoImageUrl);
         setLogoImg(() => [newImages]);
         setSelectedLogoImg(() => ({ ...newImages }));
       }
 
-      if (response.data.promotionImageUrls && response.data.promotionImageUrls.length !== 0) {
+      if (response?.data?.promotionImageUrls && response?.data?.promotionImageUrls.length !== 0) {
         const formattedContent = await Promise.all(
           response.data.promotionImageUrls.map((item) => convertImageUrlToFileAndBlob(item)),
         );
@@ -215,6 +184,8 @@ export const useShopManagementDisplaySetting = ({
         const shortLogoName = generateShortFileName2('logo', 0, logoImg[0].file);
         // const shortLogoName = generateShortFileName('logo', 0);
         formData.append('logoFile', logoImg[0].file, shortLogoName);
+      } else {
+        formData.append('logoFile', null);
       }
 
       // 프로모션 파일들 추가
@@ -226,7 +197,7 @@ export const useShopManagementDisplaySetting = ({
         }
       });
 
-      // FormData 내용 로깅 (디버깅 목적)
+      //   //   FormData 내용 로깅 (디버깅 목적)
       //   for (let [key, value] of formData.entries()) {
       //     console.log(`${key}: ${value instanceof File ? value.name : value}`);
       //   }

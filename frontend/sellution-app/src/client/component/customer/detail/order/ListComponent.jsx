@@ -6,7 +6,11 @@ import LoadingModal from '@/client/layout/common/modal/LodingModal';
 import { useMove } from '@/client/business/common/useMove';
 import { useModal } from '@/client/business/common/useModal';
 import { useCustomerOrderList } from '@/client/business/customer/detail/order/useCustomerOrderList';
-import { SimpleOrderIcon, OrderCancelAllIcon } from '@/client/utility/assets/Icons';
+import {
+  SimpleOrderIcon,
+  OrderApproveAllIcon,
+  OrderCancelAllIcon,
+} from '@/client/utility/assets/Icons';
 import {
   SUBSCRIPTION_HEADERS,
   SUBSCRIPTION_ROW_HEIGHT,
@@ -46,7 +50,7 @@ const ListComponent = () => {
             Btns={
               <div className='flex justify-center items-center gap-4'>
                 <EventBtn
-                  Icon={SimpleOrderIcon}
+                  Icon={OrderApproveAllIcon}
                   label={'간편 주문 승인'}
                   onClick={() => checkAppoveOrderAll('subscription')}
                 />
@@ -75,7 +79,7 @@ const ListComponent = () => {
             Btns={
               <div className='flex justify-center items-center gap-4'>
                 <EventBtn
-                  Icon={SimpleOrderIcon}
+                  Icon={OrderApproveAllIcon}
                   label={'간편 주문 승인'}
                   onClick={() => checkAppoveOrderAll('onetime')}
                 />
