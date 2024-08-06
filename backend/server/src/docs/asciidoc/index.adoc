@@ -7,9 +7,11 @@
 :sectlinks:
 
 include::account.adoc[]
-include::product.adoc[]
+include::accountAuth.adoc[]
 include::address.adoc[]
 include::company.adoc[]
+include::easyPwd.adoc[]
 include::order.adoc[]
 include::payment.adoc[]
+include::product.adoc[]
 
