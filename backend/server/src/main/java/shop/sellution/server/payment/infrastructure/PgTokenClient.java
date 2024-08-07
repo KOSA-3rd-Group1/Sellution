@@ -41,7 +41,7 @@ public class PgTokenClient {
                 "permission", tokenType.getPermission()
         );
 
-        log.info("API access Token 발급 시작");
+        log.info("일회용 결제 토큰 발급 시작");
         try {
             ResponseEntity<Void> response = webClient.post()
                     .uri(uriBuilder -> uriBuilder

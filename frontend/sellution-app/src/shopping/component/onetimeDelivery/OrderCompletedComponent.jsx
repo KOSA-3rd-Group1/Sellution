@@ -88,7 +88,7 @@ const OrderCompletedComponent = () => {
     if (orderData.type === 'ONETIME') {
       return (
         <div>
-          <p className='text-sm font-semibold text-black'>배송 예정일</p>
+          <p className='text-sm font-semibold text-primary'>배송 예정일</p>
           <p className='text-base font-semibold'>{formatDate(orderData.deliveryEndDate)}</p>
         </div>
       );
@@ -353,7 +353,7 @@ const OrderCompletedComponent = () => {
   return (
     <div className='max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg'>
       <NoBackMenuHeaderNav title={'주문 완료'} />
-      <h1 className='text-xl font-bold text-center mb-8 text-black'>
+      <h1 className='text-xl font-bold text-center mb-8 text-primary'>
         고객님의 주문이 완료되었습니다
       </h1>
 
@@ -377,11 +377,11 @@ const OrderCompletedComponent = () => {
             <p className='text-base'>{formatPhoneNumber(orderData.customer.phoneNumber)}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold text-black'>주문타입</p>
+            <p className='text-sm font-semibold text-primary'>주문타입</p>
             <p className='text-base font-semibold'>{getOrderTypeText(orderData.type)}</p>
           </div>
           <div>
-            <p className='text-sm font-semibold text-black'>주문 상태</p>
+            <p className='text-sm font-semibold text-primary'>주문 상태</p>
             <p className='text-base font-semibold'>{getOrderStatusText(orderData.status)}</p>
           </div>
         </div>
@@ -406,7 +406,7 @@ const OrderCompletedComponent = () => {
             <p className='text-base '>{formatPhoneNumber(orderData.address.phoneNumber)}</p>
           </div>
           <div className='col-span-2'>
-            <p className='text-sm font-semibold text-black'>배송 상태</p>
+            <p className='text-sm font-semibold text-primary'>배송 상태</p>
             <p className='text-base font-semibold'>
               {getDeliveryStatusText(orderData.deliveryStatus)}
             </p>
