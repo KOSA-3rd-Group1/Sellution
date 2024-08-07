@@ -1,0 +1,77 @@
+
+= Category(카테고리) [이재아]
+
+== 카테고리 목록 조회
+/categories
+
+==== HTTP Request
+
+include::{snippets}/Category/getAllCategories/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Category/getAllCategories/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Category/getAllCategories/response-fields.adoc[]
+
+== 카테고리 상세 조회
+/categories/{categoryId}
+
+==== HTTP Request
+
+include::{snippets}/Category/getCategoryById/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Category/getCategoryById/http-response.adoc[]
+
+===== Response Fields
+
+include::{snippets}/Category/getCategoryById/response-fields.adoc[]
+
+== 카테고리 이름 중복 확인
+/categories/check
+
+==== HTTP Request
+
+include::{snippets}/Category/checkCategoryNameDuplicate/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Category/checkCategoryNameDuplicate/http-response.adoc[]
+
+== 카테고리 생성
+/categories
+
+==== HTTP Request
+
+include::{snippets}/Category/createCategory/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Category/createCategory/http-response.adoc[]
+
+== 카테고리 수정
+/categories/{categoryId}
+
+==== HTTP Request
+
+include::{snippets}/Category/updateCategory/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Category/updateCategory/http-response.adoc[]
+
+== 카테고리 삭제
+/categories/{categoryId}
+
+==== HTTP Request
+
+include::{snippets}/Category/deleteCategory/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Category/deleteCategory/http-response.adoc[]
+

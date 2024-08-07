@@ -187,13 +187,10 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BadRequestException(ExceptionCode.NOT_FOUND_PRODUCT));
 
-        // Delete all images associated with the product from S3
         List<ProductImage> images = productImageRepository.findByProductProductId(productId);
         for (ProductImage image : images) {
             s3Service.deleteFile(image.getImageUrl());
         }
-
-        // Delete all images associated with the product from the database
         productImageRepository.deleteAll(images);
 
         // Delete the product
@@ -251,28 +248,6 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-
-//    private void saveProductImages(Product product, List<MultipartFile> imageFiles, ProductImageType type) throws IOException {
-//        if (imageFiles != null && !imageFiles.isEmpty()) {
-//            List<ProductImage> existingImages = productImageRepository.findAllByProductAndPurposeOfUse(product, type);
-//            for (ProductImage existingImage : existingImages) {
-//                s3Service.deleteFile(existingImage.getImageUrl());
-//            }
-//            productImageRepository.deleteAll(existingImages);
-//
-//            List<ProductImage> newImages = new ArrayList<>();
-//            for (MultipartFile imageFile : imageFiles) {
-//                String imageUrl = s3Service.uploadFile(imageFile, product.getCompany().getCompanyId(), "product");
-//                ProductImage newImage = ProductImage.builder()
-//                        .product(product)
-//                        .imageUrl(imageUrl)
-//                        .purposeOfUse(type)
-//                        .build();
-//                newImages.add(newImage);
-//            }
-//            productImageRepository.saveAll(newImages);
-//        }
-//    }
 
     private long generateProductCode() {
         String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
