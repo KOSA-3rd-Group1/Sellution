@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import shop.sellution.server.global.util.JasyptEncryptionUtil;
 import shop.sellution.server.payment.application.PaymentHistoryService;
@@ -24,7 +26,7 @@ public class PaymentHistoryController {
     public Page<FindPaymentHistoryRes> findPaymentHistoryByCompanyId(
             @PathVariable Long companyId,
             FindPaymentHistoryCond findPaymentHistoryCond,
-            Pageable pageable) {
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         log.info("companyId: {}", companyId);
         log.info("findPaymentHistoryCond: {}", findPaymentHistoryCond);
         return paymentHistoryService.findPaymentHistoryByCompanyId(companyId, findPaymentHistoryCond, pageable);
@@ -33,7 +35,7 @@ public class PaymentHistoryController {
     @GetMapping("/orders/{orderId}")
     public Page<FindPaymentHistoryDetailRes> findPaymentHistoryByOrderId(
             @PathVariable Long orderId,
-            Pageable pageable) {
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return paymentHistoryService.findPaymentHistoryByOrderId(orderId, pageable);
     }
 

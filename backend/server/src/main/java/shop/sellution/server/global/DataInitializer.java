@@ -143,11 +143,11 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
         createProductImages();
         //createProductImages2();
         createCustomer();
-//        createAccount();
-//        createAddress();
+        createAccount();
+        createAddress();
         createCompanyOptions();
 //        createCouponEvent();
-//        createOrder();
+        createOrder();
 
 
         alreadySetup = true;
@@ -933,7 +933,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
             monthOptionRepository.save(monthOption);
         }
 
-        for (int i = 1; i <= 5; i++) { // 1~5주
+        for (int i = 1; i <= 4; i++) { // 1~5주
             WeekOption weekOption = WeekOption.builder()
                     .company(포켓샐러드)
                     .weekValue(i)

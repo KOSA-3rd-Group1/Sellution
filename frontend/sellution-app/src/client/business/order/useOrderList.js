@@ -50,7 +50,7 @@ export const useOrderList = ({
   const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수
   const [totalDataCount, setTotalDataCount] = useState(0); // 데이터 총 개수
   const [orderInfo, setOrderInfo] = useState({}); // 주문 취소를 위한 주문 데이터
-    const [holdCount, setHoldCount] = useState(0);
+  const [holdCount, setHoldCount] = useState(0);
   const [isDataChange, setIsDataChange] = useState(false);
   const [confirmType, setConfirmType] = useState('approveOrder');
 
@@ -170,7 +170,7 @@ export const useOrderList = ({
       const responseData = await getOrderList(companyId, pageParam, setAccessToken, accessToken); // API 요청
 
       const { content, empty, pageable, totalElements, totalPages } = responseData.data;
-
+      console.log(content);
       // 필터링 시 현재 페이지에 데이터가 없는 경우 1page로 이동
       if (empty && page > 1) {
         updateQueryParameter(pageParam, 1);

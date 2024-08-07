@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import shop.sellution.server.order.application.OrderCreationService;
@@ -26,7 +28,9 @@ public class OrderController {
 
     // 특정 회원의 주문 목록 조회
     @GetMapping("/customers/{customerId}")
-    public ResponseEntity<Page<FindOrderRes>> findAllOrderByCustomerId(@PathVariable Long customerId, Pageable pageable) {
+    public ResponseEntity<Page<FindOrderRes>> findAllOrderByCustomerId(
+            @PathVariable Long customerId,
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return ResponseEntity.ok(orderService.findAllOrderByCustomerId(customerId,pageable));
 
@@ -36,7 +40,7 @@ public class OrderController {
     public ResponseEntity<Page<FindOrderRes>> findAllOrderByCompanyId(
             @PathVariable Long companyId,
             OrderSearchCondition condition,
-            Pageable pageable
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         return ResponseEntity.ok(orderService.findAllOrderByCompanyId(companyId,condition,pageable));
     }

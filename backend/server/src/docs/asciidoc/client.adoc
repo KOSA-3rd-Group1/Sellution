@@ -1,0 +1,199 @@
+= Client(고객) [김준석]
+
+== 고객 회원가입
+`POST /clients/signup`
+
+고객 회원가입을 수행합니다.
+
+=== HTTP Request
+
+include::{snippets}/client/register/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/client/register/http-response.adoc[]
+
+=== Request Fields
+
+include::{snippets}/client/register/request-fields.adoc[]
+
+=== Response Fields
+
+include::{snippets}/client/register/response-fields.adoc[]
+
+== 고객 아이디 중복 확인
+`POST /clients/duplicate-check-id`
+
+고객 아이디의 중복 여부를 확인합니다.
+
+=== HTTP Request
+
+include::{snippets}/client/check-username/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/client/check-username/http-response.adoc[]
+
+=== Request Fields
+
+include::{snippets}/client/check-username/request-fields.adoc[]
+
+=== Response Fields
+
+include::{snippets}/client/check-username/response-fields.adoc[]
+
+== 회원가입 SMS 인증번호 전송
+`POST /clients/signup/verify-code/send`
+
+회원가입을 위한 SMS 인증번호를 전송합니다.
+
+=== HTTP Request
+
+include::{snippets}/client/send-signup-sms/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/client/send-signup-sms/http-response.adoc[]
+
+=== Request Fields
+
+include::{snippets}/client/send-signup-sms/request-fields.adoc[]
+
+== 회원가입 SMS 인증번호 확인
+`POST /clients/signup/verify-code`
+
+회원가입을 위해 전송된 SMS 인증번호를 확인합니다.
+
+=== HTTP Request
+
+include::{snippets}/client/verify-signup-sms/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/client/verify-signup-sms/http-response.adoc[]
+
+=== Request Fields
+
+include::{snippets}/client/verify-signup-sms/request-fields.adoc[]
+
+== 현재 고객 정보 조회
+`GET /clients/me`
+
+현재 로그인한 고객의 정보를 조회합니다.
+
+=== HTTP Request
+
+include::{snippets}/client/get-current-user/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/client/get-current-user/http-response.adoc[]
+
+=== Response Fields
+
+include::{snippets}/client/get-current-user/response-fields.adoc[]
+
+== 고객 아이디 찾기
+`POST /clients/find-id`
+
+고객의 아이디를 찾습니다.
+
+=== HTTP Request
+
+include::{snippets}/client/find-id/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/client/find-id/http-response.adoc[]
+
+=== Request Fields
+
+include::{snippets}/client/find-id/request-fields.adoc[]
+
+=== Response Fields
+
+include::{snippets}/client/find-id/response-fields.adoc[]
+
+== 고객 아이디 찾기 SMS 인증번호 요청
+`POST /clients/find-id/send`
+
+고객 아이디 찾기를 위한 SMS 인증번호를 요청합니다.
+
+=== HTTP Request
+
+include::{snippets}/client/find-id-send-sms/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/client/find-id-send-sms/http-response.adoc[]
+
+=== Request Fields
+
+include::{snippets}/client/find-id-send-sms/request-fields.adoc[]
+
+=== Response Fields
+
+include::{snippets}/client/find-id-send-sms/response-fields.adoc[]
+
+== 고객 비밀번호 찾기
+`POST /clients/find-password`
+
+고객의 비밀번호를 찾습니다.
+
+=== HTTP Request
+
+include::{snippets}/client/find-password/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/client/find-password/http-response.adoc[]
+
+=== Request Fields
+
+include::{snippets}/client/find-password/request-fields.adoc[]
+
+=== Response Fields
+
+include::{snippets}/client/find-password/response-fields.adoc[]
+
+== 고객 비밀번호 찾기 SMS 인증번호 요청
+`POST /clients/find-password/send`
+
+고객 비밀번호 찾기를 위한 SMS 인증번호를 요청합니다.
+
+=== HTTP Request
+
+include::{snippets}/client/find-password-send-sms/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/client/find-password-send-sms/http-response.adoc[]
+
+=== Request Fields
+
+include::{snippets}/client/find-password-send-sms/request-fields.adoc[]
+
+=== Response Fields
+
+include::{snippets}/client/find-password-send-sms/response-fields.adoc[]
+
+== 고객 비밀번호 변경
+`POST /clients/change-password`
+
+고객의 비밀번호를 변경합니다.
+
+=== HTTP Request
+
+include::{snippets}/client/change-password/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/client/change-password/http-response.adoc[]
+
+=== Request Fields
+
+include::{snippets}/client/change-password/request-fields.adoc[]
+
+=== Response Fields
+
+include::{snippets}/client/change-password/response-fields.adoc[]
