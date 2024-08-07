@@ -14,4 +14,7 @@ include::easyPwd.adoc[]
 include::order.adoc[]
 include::payment.adoc[]
 include::product.adoc[]
+include::category.adoc[]
+include::cart.adoc[]
+include::event.adoc[]
 
