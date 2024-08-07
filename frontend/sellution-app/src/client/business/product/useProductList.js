@@ -119,6 +119,14 @@ export const useProductList = () => {
 
   const [tableState, setTableState] = useState(initialTableState);
 
+  const handleFilterReset = () => {
+    setTableState((prevState) => ({
+      ...initialTableState,
+      currentPage: prevState.currentPage,
+      itemsPerPage: prevState.itemsPerPage,
+    }));
+  };
+
   const debouncedTableState = useDebounce(tableState, 300);
 
   useEffect(() => {
@@ -310,5 +318,6 @@ export const useProductList = () => {
     updatePage,
     selectedCount: Object.values(selectedRows).filter(Boolean).length,
     fetchProducts,
+    handleFilterReset,
   };
 };

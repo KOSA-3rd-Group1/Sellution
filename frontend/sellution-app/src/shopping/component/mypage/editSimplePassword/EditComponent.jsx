@@ -169,14 +169,14 @@ const EditComponent = () => {
                     if (item === '지움') handleClear();
                     else handleNumberClick(item);
                   }}
-                  className='text-white text-2xl font-bold py-4 rounded-lg h-20 transition duration-150 ease-in-out hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+                  className='text-white text-2xl font-bold py-4 rounded-lg h-20 transition duration-150 ease-in-out '
                 >
                   {item}
                 </button>
               ))}
               <button
                 onClick={handleDelete}
-                className='text-white text-2xl font-bold py-4 rounded-lg h-20 transition duration-150 ease-in-out hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+                className='text-white text-2xl font-bold py-4 rounded-lg h-20 transition duration-150 ease-in-out '
               >
                 ⌫
               </button>
