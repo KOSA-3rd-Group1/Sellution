@@ -721,6 +721,107 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
+<li><a href="#_contractcompany계약_회사_김준석">ContractCompany(계약 회사) [김준석]</a>
+<ul class="sectlevel1">
+<li><a href="#_계약_사업체_등록">계약 사업체 등록</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_38">HTTP Request</a></li>
+<li><a href="#_http_response_38">HTTP Response</a></li>
+<li><a href="#_request_fields_3">Request Fields</a></li>
+<li><a href="#_response_fields_18">Response Fields</a></li>
+</ul>
+</li>
+<li><a href="#_계약_사업체_인증">계약 사업체 인증</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_39">HTTP Request</a></li>
+<li><a href="#_http_response_39">HTTP Response</a></li>
+<li><a href="#_request_fields_4">Request Fields</a></li>
+<li><a href="#_response_fields_19">Response Fields</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_client고객_김준석">Client(고객) [김준석]</a>
+<ul class="sectlevel1">
+<li><a href="#_고객_회원가입">고객 회원가입</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_40">HTTP Request</a></li>
+<li><a href="#_http_response_40">HTTP Response</a></li>
+<li><a href="#_request_fields_5">Request Fields</a></li>
+<li><a href="#_response_fields_20">Response Fields</a></li>
+</ul>
+</li>
+<li><a href="#_고객_아이디_중복_확인">고객 아이디 중복 확인</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_41">HTTP Request</a></li>
+<li><a href="#_http_response_41">HTTP Response</a></li>
+<li><a href="#_request_fields_6">Request Fields</a></li>
+<li><a href="#_response_fields_21">Response Fields</a></li>
+</ul>
+</li>
+<li><a href="#_회원가입_sms_인증번호_전송">회원가입 SMS 인증번호 전송</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_42">HTTP Request</a></li>
+<li><a href="#_http_response_42">HTTP Response</a></li>
+<li><a href="#_request_fields_7">Request Fields</a></li>
+</ul>
+</li>
+<li><a href="#_회원가입_sms_인증번호_확인">회원가입 SMS 인증번호 확인</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_43">HTTP Request</a></li>
+<li><a href="#_http_response_43">HTTP Response</a></li>
+<li><a href="#_request_fields_8">Request Fields</a></li>
+</ul>
+</li>
+<li><a href="#_현재_고객_정보_조회">현재 고객 정보 조회</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_44">HTTP Request</a></li>
+<li><a href="#_http_response_44">HTTP Response</a></li>
+<li><a href="#_response_fields_22">Response Fields</a></li>
+</ul>
+</li>
+<li><a href="#_고객_아이디_찾기">고객 아이디 찾기</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_45">HTTP Request</a></li>
+<li><a href="#_http_response_45">HTTP Response</a></li>
+<li><a href="#_request_fields_9">Request Fields</a></li>
+<li><a href="#_response_fields_23">Response Fields</a></li>
+</ul>
+</li>
+<li><a href="#_고객_아이디_찾기_sms_인증번호_요청">고객 아이디 찾기 SMS 인증번호 요청</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_46">HTTP Request</a></li>
+<li><a href="#_http_response_46">HTTP Response</a></li>
+<li><a href="#_request_fields_10">Request Fields</a></li>
+<li><a href="#_response_fields_24">Response Fields</a></li>
+</ul>
+</li>
+<li><a href="#_고객_비밀번호_찾기">고객 비밀번호 찾기</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_47">HTTP Request</a></li>
+<li><a href="#_http_response_47">HTTP Response</a></li>
+<li><a href="#_request_fields_11">Request Fields</a></li>
+<li><a href="#_response_fields_25">Response Fields</a></li>
+</ul>
+</li>
+<li><a href="#_고객_비밀번호_찾기_sms_인증번호_요청">고객 비밀번호 찾기 SMS 인증번호 요청</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_48">HTTP Request</a></li>
+<li><a href="#_http_response_48">HTTP Response</a></li>
+<li><a href="#_request_fields_12">Request Fields</a></li>
+<li><a href="#_response_fields_26">Response Fields</a></li>
+</ul>
+</li>
+<li><a href="#_고객_비밀번호_변경">고객 비밀번호 변경</a>
+<ul class="sectlevel2">
+<li><a href="#_http_request_49">HTTP Request</a></li>
+<li><a href="#_http_response_49">HTTP Response</a></li>
+<li><a href="#_request_fields_13">Request Fields</a></li>
+<li><a href="#_response_fields_27">Response Fields</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -756,41 +857,41 @@ Content-Length: 838
 {
   "totalElements" : 2,
   "totalPages" : 1,
-  "numberOfElements" : 2,
-  "first" : true,
-  "last" : true,
-  "pageable" : {
-    "pageNumber" : 0,
-    "pageSize" : 10,
-    "sort" : {
-      "unsorted" : false,
-      "sorted" : true,
-      "empty" : false
-    },
-    "offset" : 0,
-    "unpaged" : false,
-    "paged" : true
-  },
   "size" : 10,
   "content" : [ {
     "accountId" : 1,
     "customerId" : 1,
     "accountNumber" : "42750204039102",
     "bankCode" : "004",
-    "createdAt" : "2024-08-06T23:09:35.1898108"
+    "createdAt" : "2024-08-07T17:34:24.5878954"
   }, {
     "accountId" : 2,
     "customerId" : 1,
     "accountNumber" : "42750204039103",
     "bankCode" : "090",
-    "createdAt" : "2024-08-06T23:09:35.1898108"
+    "createdAt" : "2024-08-07T17:34:24.5878954"
   } ],
   "number" : 0,
   "sort" : {
-    "unsorted" : false,
+    "empty" : false,
     "sorted" : true,
-    "empty" : false
+    "unsorted" : false
   },
+  "numberOfElements" : 2,
+  "pageable" : {
+    "pageNumber" : 0,
+    "pageSize" : 10,
+    "sort" : {
+      "empty" : false,
+      "sorted" : true,
+      "unsorted" : false
+    },
+    "offset" : 0,
+    "paged" : true,
+    "unpaged" : false
+  },
+  "first" : true,
+  "last" : true,
   "empty" : false
 }</code></pre>
 </div>
@@ -1067,7 +1168,7 @@ success</code></pre>
 <h4 id="_http_request_5"><a class="link" href="#_http_request_5">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /accounts/auth/check-account?_csrf=MOnAAeRQy0fHExgSvWyl-ob47nqNpw8xP87nHAbDd05e_MtoCNvwYtwxryPqIiEnikGRm7_BwxjowzscXfqDej_wRHY4zfNe HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /accounts/auth/check-account?_csrf=7xnCoLlbtHyYostF-bCKLO5ZE1wKO2-WmRWTZ1GfEaDzfeUAin_xmYxjgEi1kvlwwZ2-FY1uPj0_DFi7_3fyVTesI5HGToFm HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 61
 Host: localhost:8080
@@ -1573,19 +1674,19 @@ Host: localhost:8080</code></pre>
 <div class="sect3">
 <h4 id="_http_request_11"><a class="link" href="#_http_request_11">HTTP Request</a></h4>
 <div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyUrlSetting/http-request.adoc[]</p>
+<p>Unresolved directive in company.adoc - include::C:\Users\KOSA\Desktop\3rd_PJT\PJT\version2\Sellution\backend\server\build\generated-snippets/Company/findCompanyUrlSetting/http-request.adoc[]</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_http_response_11"><a class="link" href="#_http_response_11">HTTP Response</a></h4>
 <div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyUrlSetting/http-response.adoc[]</p>
+<p>Unresolved directive in company.adoc - include::C:\Users\KOSA\Desktop\3rd_PJT\PJT\version2\Sellution\backend\server\build\generated-snippets/Company/findCompanyUrlSetting/http-response.adoc[]</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_response_fields_5"><a class="link" href="#_response_fields_5">Response Fields</a></h4>
 <div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyUrlSetting/response-fields.adoc[]</p>
+<p>Unresolved directive in company.adoc - include::C:\Users\KOSA\Desktop\3rd_PJT\PJT\version2\Sellution\backend\server\build\generated-snippets/Company/findCompanyUrlSetting/response-fields.adoc[]</p>
 </div>
 </div>
 </div>
@@ -1603,7 +1704,7 @@ Host: localhost:8080</code></pre>
 <h4 id="_http_request_12"><a class="link" href="#_http_request_12">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /url-setting?_csrf=IwXGo5So1N_e9l1Wt-XefJvv9Fgiq4rmOJmWfRxcmIRCHGFVGzyim63J47zzxjg1g8jqSv6L2WAVmbnLDqymSixoobx6fgUw HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /url-setting?_csrf=f_ElBPQBwwKq5OoJopeHRuYV9f9MvSsaqDTCfVip67VTYjtaSZAQN5Zn9jqH0t1qk7qzJNJ02MZ5jBM3mlXyHzuR2NRkUAhu HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 79
 Host: localhost:8080
@@ -1647,19 +1748,19 @@ X-Frame-Options: DENY</code></pre>
 <div class="sect3">
 <h4 id="_http_request_13"><a class="link" href="#_http_request_13">HTTP Request</a></h4>
 <div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyDisplaySetting/http-request.adoc[]</p>
+<p>Unresolved directive in company.adoc - include::C:\Users\KOSA\Desktop\3rd_PJT\PJT\version2\Sellution\backend\server\build\generated-snippets/Company/findCompanyDisplaySetting/http-request.adoc[]</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_http_response_13"><a class="link" href="#_http_response_13">HTTP Response</a></h4>
 <div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyDisplaySetting/http-response.adoc[]</p>
+<p>Unresolved directive in company.adoc - include::C:\Users\KOSA\Desktop\3rd_PJT\PJT\version2\Sellution\backend\server\build\generated-snippets/Company/findCompanyDisplaySetting/http-response.adoc[]</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_response_fields_6"><a class="link" href="#_response_fields_6">Response Fields</a></h4>
 <div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyDisplaySetting/response-fields.adoc[]</p>
+<p>Unresolved directive in company.adoc - include::C:\Users\KOSA\Desktop\3rd_PJT\PJT\version2\Sellution\backend\server\build\generated-snippets/Company/findCompanyDisplaySetting/response-fields.adoc[]</p>
 </div>
 </div>
 </div>
@@ -1731,19 +1832,19 @@ X-Frame-Options: DENY</code></pre>
 <div class="sect3">
 <h4 id="_http_request_15"><a class="link" href="#_http_request_15">HTTP Request</a></h4>
 <div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanySaleSetting/http-request.adoc[]</p>
+<p>Unresolved directive in company.adoc - include::C:\Users\KOSA\Desktop\3rd_PJT\PJT\version2\Sellution\backend\server\build\generated-snippets/Company/findCompanySaleSetting/http-request.adoc[]</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_http_response_15"><a class="link" href="#_http_response_15">HTTP Response</a></h4>
 <div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanySaleSetting/http-response.adoc[]</p>
+<p>Unresolved directive in company.adoc - include::C:\Users\KOSA\Desktop\3rd_PJT\PJT\version2\Sellution\backend\server\build\generated-snippets/Company/findCompanySaleSetting/http-response.adoc[]</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_response_fields_7"><a class="link" href="#_response_fields_7">Response Fields</a></h4>
 <div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanySaleSetting/response-fields.adoc[]</p>
+<p>Unresolved directive in company.adoc - include::C:\Users\KOSA\Desktop\3rd_PJT\PJT\version2\Sellution\backend\server\build\generated-snippets/Company/findCompanySaleSetting/response-fields.adoc[]</p>
 </div>
 </div>
 </div>
@@ -1761,7 +1862,7 @@ X-Frame-Options: DENY</code></pre>
 <h4 id="_http_request_16"><a class="link" href="#_http_request_16">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /sale-setting?_csrf=YsNxm3UaOP5bZhskzQogHOZy4KjzV-8Swlu68p8C9VCkaKWLBKcX_0B7Cs92VH9CrCcUeIQWzZDEMd8_o27exPs7x2mQWca4 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /sale-setting?_csrf=1exfjqDa5mOWUUm18EYLrJi0aIWFkEwZQ9oEGUzrA57vutDhtIk875DpggK7M3iBxms_zvzRReewpXw0e74yeH2NYana2ODX HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 305
 Host: localhost:8080
@@ -1812,7 +1913,7 @@ X-Frame-Options: DENY</code></pre>
 <h4 id="_http_request_17"><a class="link" href="#_http_request_17">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /easy-pwd/customer/1?_csrf=qlRnHS7SWkLOhevwr0u32YdHZcmbkgymBZsC6WQUCtgFZvRizzAEfE_jOSHj5orIzGaDveZySPD_oGiLYKo031UkOO89AJdV HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /easy-pwd/customer/1?_csrf=tmAVYuVy_uKQr6hjOgdPtPHdzVzI7WH3IW5e5bNWKn4JgSDajlUsAdVKn4G9mJgGWCp7gsS44GStiQTaRw06htFmGk88sEG- HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 29
 Host: localhost:8080
@@ -1856,7 +1957,7 @@ success</code></pre>
 <h4 id="_http_request_18"><a class="link" href="#_http_request_18">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /easy-pwd/customer/1/verify?_csrf=NuYnDa_GpTvFnEcuiKKBbdTpeeQSRF8BY3ve0gLCnUARGn6cA4IRbs6jlAnorXMc7o-1DOzYVNwiIG0sUU7s4mTyqSUjLUao HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /easy-pwd/customer/1/verify?_csrf=e7trzYH3wjTX96UMGD1xCth_S5xkLXKXxuusAPjTq-UtUf9KHt8J-OLP9FD6k5FtLBBFa-5HZqVVGha68Y-eZc_jmNAYaM14 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 29
 Host: localhost:8080
@@ -1900,7 +2001,7 @@ success</code></pre>
 <h4 id="_http_request_19"><a class="link" href="#_http_request_19">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /easy-pwd/customer/1/check?_csrf=i9zv2Y6-8WnXmclgomxMx_aYsT-trNTfDi-xQvMec2THtgp1uerbu7rdwln6-K9RlUF4_sKhnAeYyLXyaxuCc8QtRgXy0G5F HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /easy-pwd/customer/1/check?_csrf=zbh9hcY7BXQxBY8rsJNNzHZIkxYEByA0VwHbSYJaggwvSf7U-N4b5qRZNEUcZ78Tib55qRQpvi8xNRIZMWLqfbQ8sG1Keczl HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1929,7 +2030,7 @@ true</code></pre>
 <div class="sect3">
 <h4 id="_response_fields_8"><a class="link" href="#_response_fields_8">Response Fields</a></h4>
 <div class="paragraph">
-<p>Unresolved directive in easyPwd.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Easy-pwd/check/response-fields.adoc[]
+<p>Unresolved directive in easyPwd.adoc - include::C:\Users\KOSA\Desktop\3rd_PJT\PJT\version2\Sellution\backend\server\build\generated-snippets/Easy-pwd/check/response-fields.adoc[]
 = Order(주문) [길재현]</p>
 </div>
 </div>
@@ -1956,15 +2057,11 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 1693
+Content-Length: 1691
 
 {
   "totalElements" : 1,
   "totalPages" : 1,
-  "numberOfElements" : 1,
-  "first" : true,
-  "last" : true,
-  "pageable" : "INSTANCE",
   "size" : 1,
   "content" : [ {
     "customer" : {
@@ -1981,7 +2078,7 @@ Content-Length: 1693
       "phoneNumber" : "010-1234-5678",
       "isDefaultAddress" : "Y",
       "addressName" : "집",
-      "createdAt" : "2024-08-06T23:09:49.2537351"
+      "createdAt" : "2024-08-07T17:35:02.729356"
     },
     "orderCode" : "123456",
     "orderId" : 1,
@@ -1991,9 +2088,9 @@ Content-Length: 1693
     "deliveryStatus" : "IN_PROGRESS",
     "perPrice" : 20000,
     "totalPrice" : 100000,
-    "deliveryStartDate" : "2024-08-06",
-    "nextDeliveryDate" : "2024-08-07",
-    "deliveryEndDate" : "2024-08-13",
+    "deliveryStartDate" : "2024-08-07",
+    "nextDeliveryDate" : "2024-08-08",
+    "deliveryEndDate" : "2024-08-14",
     "totalDeliveryCount" : 5,
     "remainingDeliveryCount" : 2,
     "orderedProductList" : [ {
@@ -2004,7 +2101,7 @@ Content-Length: 1693
       "price" : 50000,
       "productImageList" : null
     } ],
-    "orderCreatedAt" : "2024-08-06T23:09:49.2537351",
+    "orderCreatedAt" : "2024-08-07T17:35:02.729356",
     "selectedDayList" : [ "MON", "WED" ],
     "selectedWeekOption" : 1,
     "selectedMonthOption" : 1,
@@ -2017,10 +2114,14 @@ Content-Length: 1693
   } ],
   "number" : 0,
   "sort" : {
-    "unsorted" : true,
+    "empty" : true,
     "sorted" : false,
-    "empty" : true
+    "unsorted" : true
   },
+  "numberOfElements" : 1,
+  "pageable" : "INSTANCE",
+  "first" : true,
+  "last" : true,
   "empty" : false
 }</code></pre>
 </div>
@@ -2348,10 +2449,6 @@ Content-Length: 1693
 {
   "totalElements" : 1,
   "totalPages" : 1,
-  "numberOfElements" : 1,
-  "first" : true,
-  "last" : true,
-  "pageable" : "INSTANCE",
   "size" : 1,
   "content" : [ {
     "customer" : {
@@ -2368,7 +2465,7 @@ Content-Length: 1693
       "phoneNumber" : "010-1234-5678",
       "isDefaultAddress" : "Y",
       "addressName" : "집",
-      "createdAt" : "2024-08-06T23:09:49.1585317"
+      "createdAt" : "2024-08-07T17:35:02.5303612"
     },
     "orderCode" : "123456",
     "orderId" : 1,
@@ -2378,9 +2475,9 @@ Content-Length: 1693
     "deliveryStatus" : "IN_PROGRESS",
     "perPrice" : 10000,
     "totalPrice" : 100000,
-    "deliveryStartDate" : "2024-08-06",
-    "nextDeliveryDate" : "2024-08-07",
-    "deliveryEndDate" : "2024-08-13",
+    "deliveryStartDate" : "2024-08-07",
+    "nextDeliveryDate" : "2024-08-08",
+    "deliveryEndDate" : "2024-08-14",
     "totalDeliveryCount" : 5,
     "remainingDeliveryCount" : 2,
     "orderedProductList" : [ {
@@ -2391,7 +2488,7 @@ Content-Length: 1693
       "price" : 50000,
       "productImageList" : null
     } ],
-    "orderCreatedAt" : "2024-08-06T23:09:49.1595308",
+    "orderCreatedAt" : "2024-08-07T17:35:02.5316202",
     "selectedDayList" : [ "MON", "WED" ],
     "selectedWeekOption" : 1,
     "selectedMonthOption" : 1,
@@ -2404,10 +2501,14 @@ Content-Length: 1693
   } ],
   "number" : 0,
   "sort" : {
-    "unsorted" : true,
+    "empty" : true,
     "sorted" : false,
-    "empty" : true
+    "unsorted" : true
   },
+  "numberOfElements" : 1,
+  "pageable" : "INSTANCE",
+  "first" : true,
+  "last" : true,
   "empty" : false
 }</code></pre>
 </div>
@@ -2748,7 +2849,7 @@ Host: localhost:8080
   "weekOptionValue" : null,
   "orderType" : "ONETIME",
   "totalDeliveryCount" : null,
-  "deliveryStartDate" : "2024-08-09",
+  "deliveryStartDate" : "2024-08-10",
   "orderedProducts" : [ {
     "productId" : 1,
     "count" : 2,
@@ -2908,7 +3009,7 @@ Content-Length: 1313
     "phoneNumber" : "010-1234-5678",
     "isDefaultAddress" : "Y",
     "addressName" : "Home",
-    "createdAt" : "2024-08-06T23:09:49.3288212"
+    "createdAt" : "2024-08-07T17:35:02.8888744"
   },
   "orderCode" : "123456",
   "orderId" : 1,
@@ -2918,9 +3019,9 @@ Content-Length: 1313
   "deliveryStatus" : "IN_PROGRESS",
   "perPrice" : 20000,
   "totalPrice" : 100000,
-  "deliveryStartDate" : "2024-08-06",
-  "nextDeliveryDate" : "2024-08-07",
-  "deliveryEndDate" : "2024-08-13",
+  "deliveryStartDate" : "2024-08-07",
+  "nextDeliveryDate" : "2024-08-08",
+  "deliveryEndDate" : "2024-08-14",
   "totalDeliveryCount" : 1,
   "remainingDeliveryCount" : 1,
   "orderedProductList" : [ {
@@ -2931,7 +3032,7 @@ Content-Length: 1313
     "price" : 50000,
     "productImageList" : null
   } ],
-  "orderCreatedAt" : "2024-08-06T23:09:49.3288212",
+  "orderCreatedAt" : "2024-08-07T17:35:02.8888744",
   "selectedDayList" : null,
   "selectedWeekOption" : null,
   "selectedMonthOption" : null,
@@ -2967,7 +3068,7 @@ Host: localhost:8080
   "weekOptionValue" : 2,
   "monthOptionValue" : null,
   "perPrice" : 10000,
-  "startDate" : "2024-08-06"
+  "startDate" : "2024-08-07"
 }</code></pre>
 </div>
 </div>
@@ -2985,8 +3086,8 @@ Content-Length: 196
   "thisMonthPrice" : 80000,
   "totalDeliveryCount" : 24,
   "totalPrice" : 240000,
-  "deliveryNextDate" : "2024-08-07",
-  "deliveryEndDate" : "2024-10-06"
+  "deliveryNextDate" : "2024-08-08",
+  "deliveryEndDate" : "2024-10-07"
 }</code></pre>
 </div>
 </div>
@@ -3062,7 +3163,7 @@ Host: localhost:8080
   "weekOptionValue" : 1,
   "monthOptionValue" : null,
   "perPrice" : 15000,
-  "startDate" : "2024-08-06"
+  "startDate" : "2024-08-07"
 }</code></pre>
 </div>
 </div>
@@ -3080,8 +3181,8 @@ Content-Length: 196
   "thisMonthPrice" : 90000,
   "totalDeliveryCount" : 18,
   "totalPrice" : 270000,
-  "deliveryNextDate" : "2024-08-08",
-  "deliveryEndDate" : "2024-11-06"
+  "deliveryNextDate" : "2024-08-09",
+  "deliveryEndDate" : "2024-11-07"
 }</code></pre>
 </div>
 </div>
@@ -3157,7 +3258,7 @@ Host: localhost:8080
   "weekOptionValue" : 1,
   "monthOptionValue" : null,
   "perPrice" : 15000,
-  "startDate" : "2024-08-06"
+  "startDate" : "2024-08-07"
 }</code></pre>
 </div>
 </div>
@@ -3175,8 +3276,8 @@ Content-Length: 196
   "thisMonthPrice" : 90000,
   "totalDeliveryCount" : 18,
   "totalPrice" : 270000,
-  "deliveryNextDate" : "2024-08-08",
-  "deliveryEndDate" : "2024-11-06"
+  "deliveryNextDate" : "2024-08-09",
+  "deliveryEndDate" : "2024-11-07"
 }</code></pre>
 </div>
 </div>
@@ -3289,10 +3390,6 @@ Content-Length: 585
 {
   "totalElements" : 1,
   "totalPages" : 1,
-  "numberOfElements" : 1,
-  "first" : true,
-  "last" : true,
-  "pageable" : "INSTANCE",
   "size" : 1,
   "content" : [ {
     "paymentHistoryId" : 1,
@@ -3302,15 +3399,19 @@ Content-Length: 585
     "price" : 10000,
     "remainingPayCount" : 3,
     "totalCountForPayment" : 5,
-    "paymentDate" : "2024-08-06T23:09:50.6637258",
+    "paymentDate" : "2024-08-07T17:35:05.1977122",
     "status" : "COMPLETE"
   } ],
   "number" : 0,
   "sort" : {
-    "unsorted" : true,
+    "empty" : true,
     "sorted" : false,
-    "empty" : true
+    "unsorted" : true
   },
+  "numberOfElements" : 1,
+  "pageable" : "INSTANCE",
+  "first" : true,
+  "last" : true,
   "empty" : false
 }</code></pre>
 </div>
@@ -3479,31 +3580,31 @@ Content-Length: 730
 {
   "totalElements" : 1,
   "totalPages" : 1,
-  "numberOfElements" : 1,
-  "first" : true,
-  "last" : true,
-  "pageable" : "INSTANCE",
   "size" : 1,
   "content" : [ {
     "paymentHistoryId" : 1,
     "price" : 10000,
     "remainingPayCount" : 3,
     "totalCountForPayment" : 5,
-    "paymentDate" : "2024-08-06T23:09:50.7237242",
+    "paymentDate" : "2024-08-07T17:35:05.2959294",
     "status" : "COMPLETE",
     "accountNumber" : "1234-5678-9012-3456",
     "orderType" : "ONETIME",
-    "thisSubMonthStartDate" : "2024-08-06",
-    "thisSubMonthEndDate" : "2024-09-06",
+    "thisSubMonthStartDate" : "2024-08-07",
+    "thisSubMonthEndDate" : "2024-09-07",
     "deliveryPerPrice" : 2000,
     "thisMonthDeliveryCount" : 4
   } ],
   "number" : 0,
   "sort" : {
-    "unsorted" : true,
+    "empty" : true,
     "sorted" : false,
-    "empty" : true
+    "unsorted" : true
   },
+  "numberOfElements" : 1,
+  "pageable" : "INSTANCE",
+  "first" : true,
+  "last" : true,
   "empty" : false
 }</code></pre>
 </div>
@@ -3696,21 +3797,6 @@ Content-Length: 843
 {
   "totalElements" : 1,
   "totalPages" : 1,
-  "numberOfElements" : 1,
-  "first" : true,
-  "last" : true,
-  "pageable" : {
-    "pageNumber" : 0,
-    "pageSize" : 10,
-    "sort" : {
-      "unsorted" : true,
-      "sorted" : false,
-      "empty" : true
-    },
-    "offset" : 0,
-    "unpaged" : false,
-    "paged" : true
-  },
   "size" : 10,
   "content" : [ {
     "productId" : 1,
@@ -3729,10 +3815,25 @@ Content-Length: 843
   } ],
   "number" : 0,
   "sort" : {
-    "unsorted" : true,
+    "empty" : true,
     "sorted" : false,
-    "empty" : true
+    "unsorted" : true
   },
+  "numberOfElements" : 1,
+  "pageable" : {
+    "pageNumber" : 0,
+    "pageSize" : 10,
+    "sort" : {
+      "empty" : true,
+      "sorted" : false,
+      "unsorted" : true
+    },
+    "offset" : 0,
+    "paged" : true,
+    "unpaged" : false
+  },
+  "first" : true,
+  "last" : true,
   "empty" : false
 }</code></pre>
 </div>
@@ -4254,7 +4355,7 @@ Content-Type: application/x-www-form-urlencoded
 Host: localhost:8080
 Content-Length: 102
 
-_csrf=3lTayN2ylhy3qUmnmLup0fvMRTuejGDphWRBGO2pwgY5oA4YvTXo_biGpi2an36U_JadtM30aAKr7gXEs11xL9iR-j8MkDZ7</code></pre>
+_csrf=qlQdg9kvRBk1N4Z08g2fLIrYSpWfY8VMd8-cA91q9EeUB6jAzDd8te5McnoYUrQXxyCrSe7sZ6z8B6NhRfylMu9ZwiHyYsr3</code></pre>
 </div>
 </div>
 </div>
@@ -4277,11 +4378,1271 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
+<h1 id="_contractcompany계약_회사_김준석" class="sect0"><a class="link" href="#_contractcompany계약_회사_김준석">ContractCompany(계약 회사) [김준석]</a></h1>
+<div class="sect1">
+<h2 id="_계약_사업체_등록"><a class="link" href="#_계약_사업체_등록">계약 사업체 등록</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>/contract-company/register</p>
+</div>
+<div class="paragraph">
+<p>계약 사업체를 등록한다.</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_38"><a class="link" href="#_http_request_38">HTTP Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /contract-company/register?_csrf=l89bCEs7mqrtVGcUnSPwOakrVBb_Eg25trzaNeWZyOUybKutov1vaXgLopPAYVAmrQ7EC5tNeS-bKjyUhoq-UNX8rYYBDpKf HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 174
+Host: localhost:8080
+
+{
+  "contractCompanyName" : "Test Company",
+  "businessRegistrationNumber" : "123-45-67890",
+  "contractAuthId" : "testauth",
+  "contractAuthPassword" : "Password123!"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_38"><a class="link" href="#_http_response_38">HTTP Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 16
+
+{
+  "id" : 1
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_fields_3"><a class="link" href="#_request_fields_3">Request Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>contractCompanyName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">계약 사업체 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessRegistrationNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사업자 등록 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>contractAuthId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">계약 인증 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>contractAuthPassword</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">계약 인증 비밀번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_18"><a class="link" href="#_response_fields_18">Response Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성된 계약 사업체 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_계약_사업체_인증"><a class="link" href="#_계약_사업체_인증">계약 사업체 인증</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>/contract-company/authenticate</p>
+</div>
+<div class="paragraph">
+<p>계약 사업체를 인증한다.</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_39"><a class="link" href="#_http_request_39">HTTP Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /contract-company/authenticate?_csrf=D_najdwI6YxjF7dWGXk-GPcwvyUpYHzRsuxVzbHcw2SqE3hAPJvtvOtuj-5OIoZkIFQKKpNUkkRMBR_8gI80-IK481ycIkl5 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 81
+Host: localhost:8080
+
+{
+  "contractAuthId" : "testauth",
+  "contractAuthPassword" : "Password123!"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_39"><a class="link" href="#_http_response_39">HTTP Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 116
+
+{
+  "companyId" : 1,
+  "contractCompanyName" : "Test Company",
+  "businessRegistrationNumber" : "123-45-67890"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_fields_4"><a class="link" href="#_request_fields_4">Request Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>contractAuthId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">계약 인증 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>contractAuthPassword</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">계약 인증 비밀번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_19"><a class="link" href="#_response_fields_19">Response Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>contractCompanyName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">계약 사업체 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>businessRegistrationNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사업자 등록 번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h1 id="_client고객_김준석" class="sect0"><a class="link" href="#_client고객_김준석">Client(고객) [김준석]</a></h1>
+<div class="sect1">
+<h2 id="_고객_회원가입"><a class="link" href="#_고객_회원가입">고객 회원가입</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>POST /clients/signup</code></p>
+</div>
+<div class="paragraph">
+<p>고객 회원가입을 수행합니다.</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_40"><a class="link" href="#_http_request_40">HTTP Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /clients/signup?_csrf=ear-O-2YeCWjDS6GwDZBf5qYSAq_QYojl5eGYZ0BlHvE7gY2SM_PWtisS0SOPR-39Rt1SP6vZTKMdrsOoKPjV_hnpEqm2mQG HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 166
+Host: localhost:8080
+
+{
+  "companyId" : 1,
+  "username" : "testuser",
+  "password" : "Password123!",
+  "name" : "Test User",
+  "phoneNumber" : "01012345678",
+  "permissions" : [ ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_40"><a class="link" href="#_http_response_40">HTTP Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 16
+
+{
+  "id" : 1
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_fields_5"><a class="link" href="#_request_fields_5">Request Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사용자명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">비밀번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>phoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전화번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>permissions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">권한 목록</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_20"><a class="link" href="#_response_fields_20">Response Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성된 고객 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_고객_아이디_중복_확인"><a class="link" href="#_고객_아이디_중복_확인">고객 아이디 중복 확인</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>POST /clients/duplicate-check-id</code></p>
+</div>
+<div class="paragraph">
+<p>고객 아이디의 중복 여부를 확인합니다.</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_41"><a class="link" href="#_http_request_41">HTTP Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /clients/duplicate-check-id?_csrf=Wh6ej3Jp0scKe8Kqx8iDTrl8t6Q5Jx3btr4DiSN8fhRN-4kAbCepvBFdtqEnS6TMo-W3L4tLmp0IHy32go9hvEdLHCR9w-xh HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 31
+Host: localhost:8080
+
+{
+  "username" : "testuser"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_41"><a class="link" href="#_http_response_41">HTTP Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 26
+
+{
+  "available" : true
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_fields_6"><a class="link" href="#_request_fields_6">Request Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">확인할 사용자명</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_21"><a class="link" href="#_response_fields_21">Response Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>available</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사용 가능 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_회원가입_sms_인증번호_전송"><a class="link" href="#_회원가입_sms_인증번호_전송">회원가입 SMS 인증번호 전송</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>POST /clients/signup/verify-code/send</code></p>
+</div>
+<div class="paragraph">
+<p>회원가입을 위한 SMS 인증번호를 전송합니다.</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_42"><a class="link" href="#_http_request_42">HTTP Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /clients/signup/verify-code/send?_csrf=T_hJ-I-fhDuKybVczhpPXBp8wWKdhRGTTOS_vUr97XS-fbnZd5sozruuvQOn_4A49zd7OH5L7AD4tSC-KtyGiHifjEzbT4q7 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 57
+Host: localhost:8080
+
+{
+  "companyId" : 1,
+  "phoneNumber" : "01012345678"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_42"><a class="link" href="#_http_response_42">HTTP Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 4
+
+true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_fields_7"><a class="link" href="#_request_fields_7">Request Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>phoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전화번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_회원가입_sms_인증번호_확인"><a class="link" href="#_회원가입_sms_인증번호_확인">회원가입 SMS 인증번호 확인</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>POST /clients/signup/verify-code</code></p>
+</div>
+<div class="paragraph">
+<p>회원가입을 위해 전송된 SMS 인증번호를 확인합니다.</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_43"><a class="link" href="#_http_request_43">HTTP Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /clients/signup/verify-code?_csrf=gv46Jgv5eNp8hHVQcuy9VRClCCmT_8WHSzn4MCIqV2AmqA9Zs8pYQGrNSOtR4EY0RMGJbCOcJUihm_aqLw_IAUMaYQYSnm1t HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 110
+Host: localhost:8080
+
+{
+  "companyId" : 1,
+  "name" : "Test User",
+  "phoneNumber" : "01012345678",
+  "authNumber" : "123456"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_43"><a class="link" href="#_http_response_43">HTTP Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 4
+
+true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_fields_8"><a class="link" href="#_request_fields_8">Request Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>phoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전화번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>authNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">인증번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_현재_고객_정보_조회"><a class="link" href="#_현재_고객_정보_조회">현재 고객 정보 조회</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>GET /clients/me</code></p>
+</div>
+<div class="paragraph">
+<p>현재 로그인한 고객의 정보를 조회합니다.</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_44"><a class="link" href="#_http_request_44">HTTP Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /clients/me?_csrf=Hb1RQ-fI_EHM0wW610nHxFcF0aqwdIjFOOJemnGt31PLPvIsJd81INH8n3XhsmCDtWTzpmEy_JLRTb3oCNE9oxOcvmutC5FJ HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_44"><a class="link" href="#_http_response_44">HTTP Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 193
+
+{
+  "data" : {
+    "id" : 1,
+    "companyId" : 1,
+    "name" : "Test User",
+    "userRole" : "ROLE_CLIENT",
+    "contractCompanyName" : "Test Company",
+    "isAutoApproved" : "Y"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_22"><a class="link" href="#_response_fields_22">Response Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">고객 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.userRole</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사용자 역할</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.contractCompanyName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">계약 회사명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.isAutoApproved</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">자동 승인 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_고객_아이디_찾기"><a class="link" href="#_고객_아이디_찾기">고객 아이디 찾기</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>POST /clients/find-id</code></p>
+</div>
+<div class="paragraph">
+<p>고객의 아이디를 찾습니다.</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_45"><a class="link" href="#_http_request_45">HTTP Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /clients/find-id?_csrf=LM2qTHfA0M_BcgjUeaXAew8wfFYI1heSCgoD0FvP1G2CO9olGPXJeUHx6fnsRGnnHIj0T20EUTc_4nO_OGhhtWn95l-yWr4c HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 90
+Host: localhost:8080
+
+{
+  "name" : "Test User",
+  "phoneNumber" : "01012345678",
+  "authNumber" : "123456"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_45"><a class="link" href="#_http_response_45">HTTP Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 31
+
+{
+  "username" : "testuser"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_fields_9"><a class="link" href="#_request_fields_9">Request Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>phoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전화번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>authNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">인증번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_23"><a class="link" href="#_response_fields_23">Response Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">찾은 사용자명</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_고객_아이디_찾기_sms_인증번호_요청"><a class="link" href="#_고객_아이디_찾기_sms_인증번호_요청">고객 아이디 찾기 SMS 인증번호 요청</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>POST /clients/find-id/send</code></p>
+</div>
+<div class="paragraph">
+<p>고객 아이디 찾기를 위한 SMS 인증번호를 요청합니다.</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_46"><a class="link" href="#_http_request_46">HTTP Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /clients/find-id/send?_csrf=zvtrzQHPzaKZ7tjvywfzUVkKhHKvEfcnMJxyM1ztabuoIR0X_s9armCtqZC03--L_CrHNGwyqRPNJMUKU6tKA2zdXYKeQ3wg HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 62
+Host: localhost:8080
+
+{
+  "name" : "Test User",
+  "phoneNumber" : "01012345678"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_46"><a class="link" href="#_http_response_46">HTTP Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 77
+
+{
+  "success" : "인증 번호가 성공적으로 발송되었습니다."
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_fields_10"><a class="link" href="#_request_fields_10">Request Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>phoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전화번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_24"><a class="link" href="#_response_fields_24">Response Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>success</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성공 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_고객_비밀번호_찾기"><a class="link" href="#_고객_비밀번호_찾기">고객 비밀번호 찾기</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>POST /clients/find-password</code></p>
+</div>
+<div class="paragraph">
+<p>고객의 비밀번호를 찾습니다.</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_47"><a class="link" href="#_http_request_47">HTTP Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /clients/find-password?_csrf=AY0S4WN7wFsoS4g3FlzZNS4Jxvynae8aOZerjcpf2kvw97nINbUkhFRO92gFLewHI3HtBxZr68SWCNw3XfHK6Ppn63KRz4rx HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 118
+Host: localhost:8080
+
+{
+  "username" : "testuser",
+  "name" : "Test User",
+  "phoneNumber" : "01012345678",
+  "authNumber" : "123456"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_47"><a class="link" href="#_http_response_47">HTTP Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 30
+
+{
+  "token" : "resetToken"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_fields_11"><a class="link" href="#_request_fields_11">Request Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사용자명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>phoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전화번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>authNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">인증번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_25"><a class="link" href="#_response_fields_25">Response Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>token</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">비밀번호 재설정 토큰</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_고객_비밀번호_찾기_sms_인증번호_요청"><a class="link" href="#_고객_비밀번호_찾기_sms_인증번호_요청">고객 비밀번호 찾기 SMS 인증번호 요청</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>POST /clients/find-password/send</code></p>
+</div>
+<div class="paragraph">
+<p>고객 비밀번호 찾기를 위한 SMS 인증번호를 요청합니다.</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_48"><a class="link" href="#_http_request_48">HTTP Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /clients/find-password/send?_csrf=Bx0CVmV6zJloOQqpd4tAmNRoyCL_wkJxKou4eUzXn-IZ1umZPnhjMlYc_f1FCDOZFKZ0reUO5UCepidcG7_aSi7uroQt4tv8 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 90
+Host: localhost:8080
+
+{
+  "username" : "testuser",
+  "name" : "Test User",
+  "phoneNumber" : "01012345678"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_48"><a class="link" href="#_http_response_48">HTTP Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 77
+
+{
+  "success" : "인증 번호가 성공적으로 발송되었습니다."
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_fields_12"><a class="link" href="#_request_fields_12">Request Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사용자명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>phoneNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전화번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_26"><a class="link" href="#_response_fields_26">Response Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>success</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성공 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_고객_비밀번호_변경"><a class="link" href="#_고객_비밀번호_변경">고객 비밀번호 변경</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>POST /clients/change-password</code></p>
+</div>
+<div class="paragraph">
+<p>고객의 비밀번호를 변경합니다.</p>
+</div>
+<div class="sect2">
+<h3 id="_http_request_49"><a class="link" href="#_http_request_49">HTTP Request</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /clients/change-password?_csrf=pO9SOSmekropfLE5RmYc6FxGmlVZx15TYaiMHniQlYtifqF7l9kxDhH6pdwES9MKdEso2GxxtzRp9jx-BJ67KRylp7xWSJhI HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 68
+Host: localhost:8080
+
+{
+  "token" : "resetToken",
+  "newPassword" : "NewPassword123!"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_http_response_49"><a class="link" href="#_http_response_49">HTTP Response</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 76
+
+{
+  "success" : "비밀번호가 성공적으로 변경되었습니다."
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_request_fields_13"><a class="link" href="#_request_fields_13">Request Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>token</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">비밀번호 재설정 토큰</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>newPassword</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">새 비밀번호</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_response_fields_27"><a class="link" href="#_response_fields_27">Response Fields</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>success</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성공 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-08-06 23:09:01 +0900
+Last updated 2024-08-07 02:08:05 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
