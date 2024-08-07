@@ -10,7 +10,6 @@ import shop.sellution.server.company.domain.repository.CompanyRepository;
 import shop.sellution.server.company.domain.type.ImagePurposeType;
 import shop.sellution.server.company.dto.FindCompanyDisplaySettingRes;
 import shop.sellution.server.company.dto.SaveCompanyDisplaySettingReq;
-import shop.sellution.server.company.dto.SaveCompanySaleSettingReq;
 import shop.sellution.server.global.exception.BadRequestException;
 import shop.sellution.server.global.exception.ExceptionCode;
 import shop.sellution.server.product.S3Service;

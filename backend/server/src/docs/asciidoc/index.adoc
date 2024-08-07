@@ -10,14 +10,21 @@ include::account.adoc[]
 include::accountAuth.adoc[]
 include::address.adoc[]
 include::company.adoc[]
+include::category.adoc[]
 include::easyPwd.adoc[]
 include::order.adoc[]
 include::payment.adoc[]
 include::product.adoc[]
+<<<<<<< HEAD
 include::contractCompany.adoc[]
 include::client.adoc[]
 include::customer.adoc[]
 
 
 
+=======
+include::category.adoc[]
+include::cart.adoc[]
+include::event.adoc[]
+>>>>>>> 17ece66694366d3cda0ffedc3a3e4c2124c147c5
 

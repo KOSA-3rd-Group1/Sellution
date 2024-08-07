@@ -158,7 +158,6 @@ public class OrderCreationService {
                 .couponEvent(couponEvent)
                 .monthOptionValue(monthOption == null ? null : monthOption.getMonthValue())
                 .weekOptionValue(weekOption == null ? null : weekOption.getWeekValue())
-//                .code(orderCodeMaker())
                 .type(saveOrderReq.getOrderType())
                 .status(company.getIsAutoApproved().name().equals("Y")? OrderStatus.APPROVED : OrderStatus.HOLD)
                 .perPrice(totalPrice(saveOrderReq.getOrderedProducts(),couponEvent))
@@ -168,7 +167,6 @@ public class OrderCreationService {
                 .totalDeliveryCount(deliveryInfo.getTotalDeliveryCount())
                 .remainingDeliveryCount(deliveryInfo.getTotalDeliveryCount())
                 .build();
-//        order.setNextPaymentDate(getNextPaymentDate(order));
         order.setTotalPrice(order.getPerPrice()*order.getTotalDeliveryCount());
         log.info("생성된 주문 배송시작일: {}", order.getDeliveryStartDate());
         Order savedOrder = orderRepository.save(order);
@@ -372,9 +370,6 @@ public class OrderCreationService {
         // 구독 종료일 계산 (deliveryStartDate 기준)
         LocalDate subscriptionEndDate = deliveryStartDate.plusMonths(months);
 
-//         다음 주 월요일 계산
-//        LocalDate nextMonday = deliveryStartDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
-
         return calculateDeliveryInfo(deliveryStartDate, subscriptionEndDate, weekly, deliveryDays,-1);
     }
 
@@ -384,17 +379,13 @@ private DeliveryInfo calculateCountSubscription(
         int weekly,
         List<DayOfWeek> deliveryDays
 ) {
-//     1. 다음 주의 월요일을 찾습니다.
-//    LocalDate nextMonday = deliveryStartDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
-
     return calculateDeliveryInfo(deliveryStartDate, null, weekly, deliveryDays, totalDeliveryCount);
 }
 
 private LocalDate getNextPaymentDate(Order order) {
-    if (order.getType().isOnetime() || order.getType().isCountSubscription()) { // 단건주문, 횟수주문에는 다음 결제가없다.
+    if (order.getType().isOnetime() || order.getType().isCountSubscription()) {
         return null;
-    } else  { // 월정기 주문이라면
-//        log.info("다음 결제일 : {}",order.getDeliveryStartDate().plusMonths(1).minusDays(7));
+    } else  {
         return order.getDeliveryStartDate().plusMonths(1).minusDays(7);
     }
 }

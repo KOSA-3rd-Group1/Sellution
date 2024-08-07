@@ -25,7 +25,7 @@ public class AccountAuthService {
 
     public CheckAccountRes checkAccount(CheckAccountReq checkAccountReq) {
         log.info("---------- 계좌 확인 시작 ----------");
-        log.info("입력된값  bank code: {} , bank num: {}",
+        log.info("입력된값  은행코드 : {} , 계좌번호 : {}",
                 checkAccountReq.getBankCode(), checkAccountReq.getAccountNumber());
 
         String apiAccessToken = iamPortTokenClient.getApiAccessToken();

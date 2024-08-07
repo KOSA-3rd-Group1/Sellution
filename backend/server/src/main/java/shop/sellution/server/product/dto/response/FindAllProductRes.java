@@ -38,7 +38,7 @@ public class FindAllProductRes {
                 .productId(product.getProductId())
                 .code(product.getCode())
                 .name(product.getName())
-                .categoryName(product.getCategory().getName())  // Assuming getCategory() returns a Category object with a getName() method
+                .categoryName(product.getCategory().getName())
                 .productInformation(product.getProductInformation())
                 .detailImages(detailImages)
                 .cost(product.getCost())
