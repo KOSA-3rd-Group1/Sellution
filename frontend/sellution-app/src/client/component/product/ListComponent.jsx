@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useProductList } from '@/client/business/product/useProductList';
 import TableProduct from '@/client/layout/common/table/TableProduct';
-import { EventBtn } from '@/client/layout/common/Button';
+import { EventBtn, ResetBtn } from '@/client/layout/common/Button';
 import AlertModal from '@/client/layout/common/modal/AlertModal';
 
 const ListComponent = () => {
@@ -25,6 +25,7 @@ const ListComponent = () => {
     selectedCount,
     fetchProducts,
     updatePage,
+    handleFilterReset,
   } = useProductList();
 
   const [alertModal, setAlertModal] = useState({ isOpen: false, type: '', title: '', message: '' });
@@ -152,6 +153,7 @@ const ListComponent = () => {
                 />
               </div>
             }
+            ResetBtn={<ResetBtn label={'초기화'} onClick={handleFilterReset} />}
             onRowClick={handleRowClick}
           />
         </div>

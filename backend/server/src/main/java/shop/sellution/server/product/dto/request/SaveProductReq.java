@@ -92,9 +92,6 @@ public class SaveProductReq {
         product.setDiscountRate(discountRate);
         product.setDeliveryType(deliveryType);
         product.setStock(stock);
-//        product.setDiscountedPrice(discountedPrice);
-//        product.setUpdatedAt(LocalDateTime.now());
-        //product.setPreviousMonthSales(product.getPreviousMonthSales()); //얜 고치면 안되자나?
 
     }
 

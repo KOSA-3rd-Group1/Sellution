@@ -55,9 +55,12 @@ const AddComponent = () => {
   // }, []);
 
   const validateProductInfo = () => {
+    console.log('Validating product info:', productInfo);
+    console.log('Images:', images);
+
     const requiredFields = [
       'name',
-      'categoryName',
+      // 'categoryName',
       'productInformation',
       'cost',
       'deliveryType',
@@ -66,14 +69,23 @@ const AddComponent = () => {
 
     for (const field of requiredFields) {
       if (!productInfo[field]) {
+        console.log(`Missing required field: ${field}`);
         return false;
       }
     }
 
-    if (!images.thumbnail || images.product.length === 0 || images.detail.length === 0) {
+    if (!images.thumbnail) {
+      console.log('Missing thumbnail image');
       return false;
     }
-
+    if (images.product.length === 0) {
+      console.log('Missing product images');
+      return false;
+    }
+    if (images.detail.length === 0) {
+      console.log('Missing detail images');
+      return false;
+    }
     if (productInfo.isDiscount === DisplayStatus.VISIBLE) {
       if (
         !productInfo.discountRate ||
@@ -83,7 +95,7 @@ const AddComponent = () => {
         return false;
       }
     }
-
+    console.log(productInfo);
     return true;
   };
 
