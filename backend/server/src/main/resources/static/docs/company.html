@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Company(회사)</title>
+<title>Company(회사) API [이재아]</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -438,7 +438,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Company(회사)</h1>
+<h1>Company(회사) API [이재아]</h1>
 <div class="details">
 <span id="revnumber">version 0.0.1-SNAPSHOT</span>
 </div>
@@ -447,28 +447,112 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect1">
 <h2 id="_회사_url_설정_조회">회사 URL 설정 조회</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_get_url_settingcompanyid">GET /url-setting/{companyId}</h3>
 <div class="paragraph">
-<p>/url-setting/{companyId}</p>
+<p>회사 URL 설정을 조회합니다.</p>
 </div>
-<div class="paragraph">
-<p>회사 URL 설정을 조회한다.</p>
+<div class="sect3">
+<h4 id="_path_parameters">Path Parameters</h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /url-setting/{companyId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_http_request">HTTP Request</h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyUrlSetting/http-request.adoc[]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /url-setting/1?_csrf=6oWjYEP1_iJ_vNP7Pry31tYWgqLmwN-rlqcXg07dajBHMguNjrXFWHLFmBRS2LXDWJGD7uQmr8PQorqG85Fx4H_rCQciUWq7 HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_http_response">HTTP Response</h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyUrlSetting/http-response.adoc[]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 187
+
+{
+  "companyId" : 1,
+  "name" : "TestCompany",
+  "shopUrl" : "https://www.sellution.com/shopping/TestCompany",
+  "isShopVisible" : "Y",
+  "qrCodeUrl" : "https://example.com/qr-code.png"
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_response_fields">Response Fields</h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyUrlSetting/response-fields.adoc[]</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shopUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">쇼핑몰 URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isShopVisible</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">쇼핑몰 공개 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>qrCodeUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">QR 코드 URL</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -476,19 +560,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect1">
 <h2 id="_회사_url_설정_업데이트">회사 URL 설정 업데이트</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_put_url_setting">PUT /url-setting</h3>
 <div class="paragraph">
-<p>/url-setting</p>
-</div>
-<div class="paragraph">
-<p>회사 URL 설정을 업데이트한다.</p>
+<p>회사 URL 설정을 업데이트합니다.</p>
 </div>
 <div class="sect3">
 <h4 id="_http_request_2">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /url-setting?_csrf=IwXGo5So1N_e9l1Wt-XefJvv9Fgiq4rmOJmWfRxcmIRCHGFVGzyim63J47zzxjg1g8jqSv6L2WAVmbnLDqymSixoobx6fgUw HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /url-setting?_csrf=ED_-9B2CWlUSVTa8M2PQkMM7eKlZl56UZjH_UWx-oz5AKmf2cVqaliS6OzE_YQ_YAE7koPICVchvof-5VVfIZFsdlAl3G1LO HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 79
+Content-Length: 75
 Host: localhost:8080
 
 {
@@ -498,6 +581,40 @@ Host: localhost:8080
 }</code></pre>
 </div>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_request_fields">Request Fields</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isShopVisible</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">쇼핑몰 공개 여부</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_http_response_2">HTTP Response</h4>
@@ -518,31 +635,294 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
+</div>
 <div class="sect1">
 <h2 id="_회사_디스플레이_설정_조회">회사 디스플레이 설정 조회</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_get_display_settingcompanyid">GET /display-setting/{companyId}</h3>
 <div class="paragraph">
-<p>/display-setting/{companyId}</p>
+<p>회사 디스플레이 설정을 조회합니다.</p>
 </div>
-<div class="paragraph">
-<p>회사 디스플레이 설정을 조회한다.</p>
+<div class="sect3">
+<h4 id="_path_parameters_2">Path Parameters</h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. /display-setting/{companyId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_http_request_3">HTTP Request</h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyDisplaySetting/http-request.adoc[]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /display-setting/1?_csrf=DSA22oIpzYPpFvo8_MXF2dEiqcL4kpPJ4WiEBo3tZ8WfgQyva0RSu7Af-7XEdMgFmejx7rUUhKDKo6fkh1u2ZLqLUaT9tTrM HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_http_response_3">HTTP Response</h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyDisplaySetting/http-response.adoc[]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 352
+
+{
+  "companyId" : 1,
+  "displayName" : "TestDisplay",
+  "logoImageUrl" : "logo.jpg",
+  "promotionImageUrls" : [ "promo1.jpg", "promo2.jpg" ],
+  "serviceType" : "BOTH",
+  "themeColor" : "#FFFFFF",
+  "mainPromotion1Title" : "Promo 1",
+  "mainPromotion1Content" : "Content 1",
+  "mainPromotion2Title" : "Promo 2",
+  "mainPromotion2Content" : "Content 2"
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_response_fields_2">Response Fields</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">디스플레이 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logoImageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로고 이미지 URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>promotionImageUrls</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로모션 이미지 URL 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serviceType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">서비스 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>themeColor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">테마 색상</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion1Title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 1 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion1Content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 1 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion2Title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 2 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion2Content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 2 내용</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_회사_디스플레이_설정_생성">회사 디스플레이 설정 생성</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_post_display_setting">POST /display-setting</h3>
 <div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyDisplaySetting/response-fields.adoc[]</p>
+<p>회사 디스플레이 설정을 생성합니다.</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_4">HTTP Request</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /display-setting HTTP/1.1
+Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Host: localhost:8080
+
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=logoFile; filename=logo.jpg
+Content-Type: image/jpeg
+
+logo content
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=promotionFiles; filename=promo1.jpg
+Content-Type: image/jpeg
+
+promo1 content
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=request
+Content-Type: application/json
+
+{"companyId":1,"displayName":"NewDisplay","logoImageUrl":null,"promotionImageUrls":null,"themeColor":"#FFFFFF","mainPromotion1Title":"Promo1","mainPromotion1Content":"Content1","mainPromotion2Title":"Promo2","mainPromotion2Content":"Content2"}
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_request_parts">Request Parts</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Part</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logoFile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로고 파일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>promotionFiles</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로모션 이미지 파일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>request</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 디스플레이 설정 정보</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_request_part_fields">Request Part Fields</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">디스플레이 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logoImageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로고 이미지 URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>promotionImageUrls</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로모션 이미지 URL 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>themeColor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">테마 색상</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion1Title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 1 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion1Content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 1 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion2Title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 2 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion2Content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 2 내용</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_http_response_4">HTTP Response</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -550,14 +930,13 @@ X-Frame-Options: DENY</code></pre>
 <div class="sect1">
 <h2 id="_회사_디스플레이_설정_업데이트">회사 디스플레이 설정 업데이트</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_put_display_setting">PUT /display-setting</h3>
 <div class="paragraph">
-<p>/display-setting</p>
-</div>
-<div class="paragraph">
-<p>회사 디스플레이 설정을 업데이트한다.</p>
+<p>회사 디스플레이 설정을 업데이트합니다.</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_4">HTTP Request</h4>
+<h4 id="_http_request_5">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /display-setting HTTP/1.1
@@ -584,7 +963,36 @@ promo1 content
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_4">HTTP Response</h4>
+<h4 id="_request_parts_2">Request Parts</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Part</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>request</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">업데이트 요청 DTO</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logoFile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로고 파일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>promotionFiles</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로모션 이미지 파일</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_http_response_5">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -602,51 +1010,97 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
+</div>
 <div class="sect1">
 <h2 id="_회사_판매_설정_조회">회사 판매 설정 조회</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_get_sale_settingcompanyid">GET /sale-setting/{companyId}</h3>
 <div class="paragraph">
-<p>/sale-setting/{companyId}</p>
-</div>
-<div class="paragraph">
-<p>회사 판매 설정을 조회한다.</p>
+<p>회사 판매 설정을 조회합니다.</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_5">HTTP Request</h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanySaleSetting/http-request.adoc[]</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_http_response_5">HTTP Response</h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanySaleSetting/http-response.adoc[]</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_fields_3">Response Fields</h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanySaleSetting/response-fields.adoc[]</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_회사_판매_설정_업데이트">회사 판매 설정 업데이트</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>/sale-setting</p>
-</div>
-<div class="paragraph">
-<p>회사 판매 설정을 업데이트한다.</p>
+<h4 id="_path_parameters_3">Path Parameters</h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. /sale-setting/{companyId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_http_request_6">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /sale-setting?_csrf=YsNxm3UaOP5bZhskzQogHOZy4KjzV-8Swlu68p8C9VCkaKWLBKcX_0B7Cs92VH9CrCcUeIQWzZDEMd8_o27exPs7x2mQWca4 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /sale-setting/1?_csrf=iAhJ9rbRqeCgOmCpFHe9_B60eFG2DohNtnKKz5KpbskHoyuv6ml9x4DinIKNClbNcFqJmSyAVTOBaLxg1xborvORC_hhlEmd HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response_6">HTTP Response</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 305
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 275
+
+{
+  "companyId" : 1,
+  "serviceType" : "BOTH",
+  "sellType" : "ALL",
+  "subscriptionType" : "MONTH",
+  "categoryIds" : null,
+  "productIds" : null,
+  "minDeliveryCount" : null,
+  "maxDeliveryCount" : null,
+  "monthValues" : null,
+  "weekValues" : null,
+  "dayValues" : null
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_회사_판매_설정_생성">회사 판매 설정 생성</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_post_sale_setting">POST /sale-setting</h3>
+<div class="paragraph">
+<p>회사 판매 설정을 생성합니다.</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_7">HTTP Request</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /sale-setting?_csrf=iMXRIvr8AmR0Ivi3zRiUyl0qbWW8Stfs5o__Z52HUhiRLy7HufezE5ueZAdZQ5zV_jWg_TkZQFyNK7PB1-zHBfnjMX2iTU2h HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 293
 Host: localhost:8080
 
 {
@@ -666,7 +1120,208 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_6">HTTP Response</h4>
+<h4 id="_request_fields_2">Request Fields</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serviceType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">서비스 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sellType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">판매 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>subscriptionType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구독 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>minDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최소 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>monthOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">월 옵션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>weekOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">주 옵션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dayOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요일 옵션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>categories</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">카테고리 ID 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>products</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 ID 목록</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_http_response_7">HTTP Response</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_회사_판매_설정_업데이트">회사 판매 설정 업데이트</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_put_sale_setting">PUT /sale-setting</h3>
+<div class="paragraph">
+<p>회사 판매 설정을 업데이트합니다.</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_8">HTTP Request</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /sale-setting?_csrf=UPNbeIlPursaTThlFz7kDpnREzztsB0gOwC3CCvY6A6exqK6M5c4Te1-3943dQ4DcRPQO6m1Pl7Yhn8NAzfUOxPt32ivopGJ HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 293
+Host: localhost:8080
+
+{
+  "companyId" : 1,
+  "serviceType" : "BOTH",
+  "sellType" : "ALL",
+  "categories" : null,
+  "products" : null,
+  "subscriptionType" : "MONTH",
+  "minDeliveryCount" : 5,
+  "maxDeliveryCount" : 10,
+  "dayOptions" : [ "MON", "TUE" ],
+  "weekOptions" : [ 1, 2 ],
+  "monthOptions" : [ 1, 2, 3 ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_request_fields_3">Request Fields</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serviceType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">서비스 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sellType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">판매 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>subscriptionType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구독 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>minDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최소 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>monthOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">월 옵션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>weekOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">주 옵션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dayOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요일 옵션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>categories</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">카테고리 ID 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>products</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 ID 목록</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_http_response_8">HTTP Response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -685,10 +1340,180 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_회사_정보_조회">회사 정보 조회</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_get_shopping_find_companyidcompanyname">GET /shopping-find-companyId/{companyName}</h3>
+<div class="paragraph">
+<p>회사 정보를 조회합니다.</p>
+</div>
+<div class="sect3">
+<h4 id="_path_parameters_4">Path Parameters</h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. /shopping-find-companyId/{companyName}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사명</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_http_request_9">HTTP Request</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /shopping-find-companyId/TestCompany?_csrf=7frl-Ir6p9h3qmgudmlMPL4ZQP0KgRQuWVATKRdEBWV2JrhA2p-Am7ufk71amAkaEER4Xo0hbZ9ssCUDYTInGXYmM10QFNwm HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response_9">HTTP Response</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 508
+
+{
+  "data" : {
+    "companyId" : 1,
+    "displayName" : "TestDisplay",
+    "name" : "TestCompany",
+    "logoImageUrl" : "logo.jpg",
+    "promotionImageUrls" : [ "promo1.jpg", "promo2.jpg" ],
+    "serviceType" : "BOTH",
+    "subscriptionType" : "MONTH",
+    "minDeliveryCount" : 5,
+    "maxDeliveryCount" : 30,
+    "themeColor" : "#FFFFFF",
+    "mainPromotion1Title" : "Promo 1",
+    "mainPromotion1Content" : "Content 1",
+    "mainPromotion2Title" : "Promo 2",
+    "mainPromotion2Content" : "Content 2"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_fields_3">Response Fields</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">디스플레이 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.logoImageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로고 이미지 URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.promotionImageUrls</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로모션 이미지 URL 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.serviceType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">서비스 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.subscriptionType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구독 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.minDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최소 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.maxDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.themeColor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">테마 색상</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.mainPromotion1Title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 1 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.mainPromotion1Content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 1 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.mainPromotion2Title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 2 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.mainPromotion2Content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 2 내용</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-08-06 22:31:03 +0900
+Last updated 2024-08-07 00:09:19 +0900
 </div>
 </div>
 </body>

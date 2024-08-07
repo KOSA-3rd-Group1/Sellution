@@ -1,0 +1,105 @@
+= Event(이벤트)
+
+== 이벤트 목록 조회
+/events
+
+==== HTTP Request
+
+include::{snippets}/Event/findAllEvents/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Event/findAllEvents/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Event/findAllEvents/response-fields.adoc[]
+
+== 이벤트 상세 조회
+/events/{eventId}
+
+==== HTTP Request
+
+include::{snippets}/Event/findEvent/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Event/findEvent/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Event/findEvent/response-fields.adoc[]
+
+== 이벤트 생성
+/events
+
+==== HTTP Request
+
+include::{snippets}/Event/saveEvent/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Event/saveEvent/http-response.adoc[]
+
+== 이벤트 수정
+/events/{eventId}
+
+==== HTTP Request
+
+include::{snippets}/Event/updateEvent/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Event/updateEvent/http-response.adoc[]
+
+== 이벤트 삭제
+/events/{eventId}
+
+==== HTTP Request
+
+include::{snippets}/Event/deleteEvent/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Event/deleteEvent/http-response.adoc[]
+
+== 진행 중인 이벤트 조회
+/events/company/{companyId}
+
+==== HTTP Request
+
+include::{snippets}/Event/findAllOngoingEvents/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Event/findAllOngoingEvents/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Event/findAllOngoingEvents/response-fields.adoc[]
+
+== 회원 쿠폰 목록 조회
+/events/coupons
+
+==== HTTP Request
+
+include::{snippets}/Event/findCoupons/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Event/findCoupons/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/Event/findCoupons/response-fields.adoc[]
+
+== 쿠폰 다운로드
+/events/{eventId}/coupons
+
+==== HTTP Request
+
+include::{snippets}/Event/saveCoupon/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Event/saveCoupon/http-response.adoc[]

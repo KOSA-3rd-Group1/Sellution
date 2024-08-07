@@ -487,7 +487,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
-<li><a href="#_address주소">Address(주소)</a>
+<li><a href="#_address주소_이재아">Address(주소) [이재아]</a>
 <ul class="sectlevel1">
 <li><a href="#_특정_회원의_주소_목록_조회">특정 회원의 주소 목록 조회</a>
 <ul class="sectlevel3">
@@ -525,45 +525,109 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
-<li><a href="#_company회사">Company(회사)</a>
+<li><a href="#_company회사_api_이재아">Company(회사) API [이재아]</a>
 <ul class="sectlevel1">
 <li><a href="#_회사_url_설정_조회">회사 URL 설정 조회</a>
+<ul class="sectlevel2">
+<li><a href="#_get_url_settingcompanyid">GET /url-setting/{companyId}</a>
 <ul class="sectlevel3">
+<li><a href="#_path_parameters">Path Parameters</a></li>
 <li><a href="#_http_request_11">HTTP Request</a></li>
 <li><a href="#_http_response_11">HTTP Response</a></li>
 <li><a href="#_response_fields_5">Response Fields</a></li>
 </ul>
 </li>
+</ul>
+</li>
 <li><a href="#_회사_url_설정_업데이트">회사 URL 설정 업데이트</a>
+<ul class="sectlevel2">
+<li><a href="#_put_url_setting">PUT /url-setting</a>
 <ul class="sectlevel3">
 <li><a href="#_http_request_12">HTTP Request</a></li>
+<li><a href="#_request_fields_3">Request Fields</a></li>
 <li><a href="#_http_response_12">HTTP Response</a></li>
 </ul>
 </li>
+</ul>
+</li>
 <li><a href="#_회사_디스플레이_설정_조회">회사 디스플레이 설정 조회</a>
+<ul class="sectlevel2">
+<li><a href="#_get_display_settingcompanyid">GET /display-setting/{companyId}</a>
 <ul class="sectlevel3">
+<li><a href="#_path_parameters_2">Path Parameters</a></li>
 <li><a href="#_http_request_13">HTTP Request</a></li>
 <li><a href="#_http_response_13">HTTP Response</a></li>
 <li><a href="#_response_fields_6">Response Fields</a></li>
 </ul>
 </li>
-<li><a href="#_회사_디스플레이_설정_업데이트">회사 디스플레이 설정 업데이트</a>
+</ul>
+</li>
+<li><a href="#_회사_디스플레이_설정_생성">회사 디스플레이 설정 생성</a>
+<ul class="sectlevel2">
+<li><a href="#_post_display_setting">POST /display-setting</a>
 <ul class="sectlevel3">
 <li><a href="#_http_request_14">HTTP Request</a></li>
+<li><a href="#_request_parts">Request Parts</a></li>
+<li><a href="#_request_part_fields">Request Part Fields</a></li>
 <li><a href="#_http_response_14">HTTP Response</a></li>
 </ul>
 </li>
-<li><a href="#_회사_판매_설정_조회">회사 판매 설정 조회</a>
+</ul>
+</li>
+<li><a href="#_회사_디스플레이_설정_업데이트">회사 디스플레이 설정 업데이트</a>
+<ul class="sectlevel2">
+<li><a href="#_put_display_setting">PUT /display-setting</a>
 <ul class="sectlevel3">
 <li><a href="#_http_request_15">HTTP Request</a></li>
+<li><a href="#_request_parts_2">Request Parts</a></li>
 <li><a href="#_http_response_15">HTTP Response</a></li>
-<li><a href="#_response_fields_7">Response Fields</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_회사_판매_설정_조회">회사 판매 설정 조회</a>
+<ul class="sectlevel2">
+<li><a href="#_get_sale_settingcompanyid">GET /sale-setting/{companyId}</a>
+<ul class="sectlevel3">
+<li><a href="#_path_parameters_3">Path Parameters</a></li>
+<li><a href="#_http_request_16">HTTP Request</a></li>
+<li><a href="#_http_response_16">HTTP Response</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_회사_판매_설정_생성">회사 판매 설정 생성</a>
+<ul class="sectlevel2">
+<li><a href="#_post_sale_setting">POST /sale-setting</a>
+<ul class="sectlevel3">
+<li><a href="#_http_request_17">HTTP Request</a></li>
+<li><a href="#_request_fields_4">Request Fields</a></li>
+<li><a href="#_http_response_17">HTTP Response</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_회사_판매_설정_업데이트">회사 판매 설정 업데이트</a>
+<ul class="sectlevel2">
+<li><a href="#_put_sale_setting">PUT /sale-setting</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_16">HTTP Request</a></li>
-<li><a href="#_http_response_16">HTTP Response</a></li>
+<li><a href="#_http_request_18">HTTP Request</a></li>
+<li><a href="#_request_fields_5">Request Fields</a></li>
+<li><a href="#_http_response_18">HTTP Response</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_회사_정보_조회">회사 정보 조회</a>
+<ul class="sectlevel2">
+<li><a href="#_get_shopping_find_companyidcompanyname">GET /shopping-find-companyId/{companyName}</a>
+<ul class="sectlevel3">
+<li><a href="#_path_parameters_4">Path Parameters</a></li>
+<li><a href="#_http_request_19">HTTP Request</a></li>
+<li><a href="#_http_response_19">HTTP Response</a></li>
+<li><a href="#_response_fields_7">Response Fields</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -572,92 +636,92 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="#_간편비밀번호_등록재등록">간편비밀번호 등록,재등록</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_17">HTTP Request</a></li>
-<li><a href="#_http_response_17">HTTP Response</a></li>
+<li><a href="#_http_request_20">HTTP Request</a></li>
+<li><a href="#_http_response_20">HTTP Response</a></li>
 </ul>
 </li>
 <li><a href="#_간편비밀번호_검증">간편비밀번호 검증</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_18">HTTP Request</a></li>
-<li><a href="#_http_response_18">HTTP Response</a></li>
+<li><a href="#_http_request_21">HTTP Request</a></li>
+<li><a href="#_http_response_21">HTTP Response</a></li>
 </ul>
 </li>
 <li><a href="#_해당_회원이_간편비밀번호_있는지_확인">해당 회원이 간편비밀번호 있는지 확인</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_19">HTTP Request</a></li>
-<li><a href="#_http_response_19">HTTP Response</a></li>
+<li><a href="#_http_request_22">HTTP Request</a></li>
+<li><a href="#_http_response_22">HTTP Response</a></li>
 <li><a href="#_response_fields_8">Response Fields</a></li>
 </ul>
 </li>
 <li><a href="#_고객의_주문_목록_조회">고객의 주문 목록 조회</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_20">HTTP Request</a></li>
-<li><a href="#_http_response_20">HTTP Response</a></li>
+<li><a href="#_http_request_23">HTTP Request</a></li>
+<li><a href="#_http_response_23">HTTP Response</a></li>
 <li><a href="#_response_fields_9">Response Fields</a></li>
 </ul>
 </li>
 <li><a href="#_회사의_주문_목록_조회">회사의 주문 목록 조회</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_21">HTTP Request</a></li>
-<li><a href="#_http_response_21">HTTP Response</a></li>
+<li><a href="#_http_request_24">HTTP Request</a></li>
+<li><a href="#_http_response_24">HTTP Response</a></li>
 <li><a href="#_response_fields_10">Response Fields</a></li>
 </ul>
 </li>
 <li><a href="#_주문_생성">주문 생성</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_22">HTTP Request</a></li>
-<li><a href="#_http_response_22">HTTP Response</a></li>
-</ul>
-</li>
-<li><a href="#_주문_취소">주문 취소</a>
-<ul class="sectlevel3">
-<li><a href="#_http_request_23">HTTP Request</a></li>
-<li><a href="#_http_response_23">HTTP Response</a></li>
-</ul>
-</li>
-<li><a href="#_주문_수동_승인">주문 수동 승인</a>
-<ul class="sectlevel3">
-<li><a href="#_http_request_24">HTTP Request</a></li>
-<li><a href="#_http_response_24">HTTP Response</a></li>
-</ul>
-</li>
-<li><a href="#_주문_자동_승인_토글">주문 자동 승인 토글</a>
-<ul class="sectlevel3">
 <li><a href="#_http_request_25">HTTP Request</a></li>
 <li><a href="#_http_response_25">HTTP Response</a></li>
 </ul>
 </li>
-<li><a href="#_주문_상세_조회">주문 상세 조회</a>
+<li><a href="#_주문_취소">주문 취소</a>
 <ul class="sectlevel3">
 <li><a href="#_http_request_26">HTTP Request</a></li>
 <li><a href="#_http_response_26">HTTP Response</a></li>
 </ul>
 </li>
-<li><a href="#_정기주문월_단위_가격_관련_정보_조회">정기주문(월 단위) 가격 관련 정보 조회</a>
+<li><a href="#_주문_수동_승인">주문 수동 승인</a>
 <ul class="sectlevel3">
 <li><a href="#_http_request_27">HTTP Request</a></li>
 <li><a href="#_http_response_27">HTTP Response</a></li>
+</ul>
+</li>
+<li><a href="#_주문_자동_승인_토글">주문 자동 승인 토글</a>
+<ul class="sectlevel3">
+<li><a href="#_http_request_28">HTTP Request</a></li>
+<li><a href="#_http_response_28">HTTP Response</a></li>
+</ul>
+</li>
+<li><a href="#_주문_상세_조회">주문 상세 조회</a>
+<ul class="sectlevel3">
+<li><a href="#_http_request_29">HTTP Request</a></li>
+<li><a href="#_http_response_29">HTTP Response</a></li>
+</ul>
+</li>
+<li><a href="#_정기주문월_단위_가격_관련_정보_조회">정기주문(월 단위) 가격 관련 정보 조회</a>
+<ul class="sectlevel3">
+<li><a href="#_http_request_30">HTTP Request</a></li>
+<li><a href="#_http_response_30">HTTP Response</a></li>
 <li><a href="#_response_fields_11">Response Fields</a></li>
 </ul>
 </li>
 <li><a href="#_정기주문횟수_단위_가격_관련_정보_조회">정기주문(횟수 단위) 가격 관련 정보 조회</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_28">HTTP Request</a></li>
-<li><a href="#_http_response_28">HTTP Response</a></li>
+<li><a href="#_http_request_31">HTTP Request</a></li>
+<li><a href="#_http_response_31">HTTP Response</a></li>
 <li><a href="#_response_fields_12">Response Fields</a></li>
 </ul>
 </li>
 <li><a href="#_주문한_상품들_재고_체크">주문한 상품들 재고 체크</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_29">HTTP Request</a></li>
-<li><a href="#_http_response_29">HTTP Response</a></li>
+<li><a href="#_http_request_32">HTTP Request</a></li>
+<li><a href="#_http_response_32">HTTP Response</a></li>
 <li><a href="#_response_fields_13">Response Fields</a></li>
 </ul>
 </li>
 <li><a href="#_승인되지않은_주문_수_조회">승인되지않은 주문 수 조회</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_30">HTTP Request</a></li>
-<li><a href="#_http_response_30">HTTP Response</a></li>
+<li><a href="#_http_request_33">HTTP Request</a></li>
+<li><a href="#_http_response_33">HTTP Response</a></li>
 </ul>
 </li>
 </ul>
@@ -666,8 +730,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="#_해당_회사_결제내역_조회">해당 회사 결제내역 조회</a>
 <ul class="sectlevel2">
-<li><a href="#_http_request_31">HTTP Request</a></li>
-<li><a href="#_http_response_31">HTTP Response</a>
+<li><a href="#_http_request_34">HTTP Request</a></li>
+<li><a href="#_http_response_34">HTTP Response</a>
 <ul class="sectlevel3">
 <li><a href="#_response_fields_14">Response Fields</a></li>
 </ul>
@@ -676,8 +740,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_해당_주문_결제내역_조회">해당 주문 결제내역 조회</a>
 <ul class="sectlevel2">
-<li><a href="#_http_request_32">HTTP Request</a></li>
-<li><a href="#_http_response_32">HTTP Response</a>
+<li><a href="#_http_request_35">HTTP Request</a></li>
+<li><a href="#_http_response_35">HTTP Response</a>
 <ul class="sectlevel3">
 <li><a href="#_response_fields_15">Response Fields</a></li>
 </ul>
@@ -686,37 +750,37 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
-<li><a href="#_product상품">Product(상품)</a>
+<li><a href="#_product상품_이재아">Product(상품) [이재아]</a>
 <ul class="sectlevel1">
 <li><a href="#_상품_목록_조회">상품 목록 조회</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_33">HTTP Request</a></li>
-<li><a href="#_http_response_33">HTTP Response</a></li>
+<li><a href="#_http_request_36">HTTP Request</a></li>
+<li><a href="#_http_response_36">HTTP Response</a></li>
 <li><a href="#_response_fields_16">Response Fields</a></li>
 </ul>
 </li>
 <li><a href="#_상품_상세_조회">상품 상세 조회</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_34">HTTP Request</a></li>
-<li><a href="#_http_response_34">HTTP Response</a></li>
+<li><a href="#_http_request_37">HTTP Request</a></li>
+<li><a href="#_http_response_37">HTTP Response</a></li>
 </ul>
 </li>
 <li><a href="#_상품_생성">상품 생성</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_35">HTTP Request</a></li>
-<li><a href="#_http_response_35">HTTP Response</a></li>
+<li><a href="#_http_request_38">HTTP Request</a></li>
+<li><a href="#_http_response_38">HTTP Response</a></li>
 </ul>
 </li>
 <li><a href="#_상품_수정">상품 수정</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_36">HTTP Request</a></li>
-<li><a href="#_http_response_36">HTTP Response</a></li>
+<li><a href="#_http_request_39">HTTP Request</a></li>
+<li><a href="#_http_response_39">HTTP Response</a></li>
 </ul>
 </li>
 <li><a href="#_상품_삭제">상품 삭제</a>
 <ul class="sectlevel3">
-<li><a href="#_http_request_37">HTTP Request</a></li>
-<li><a href="#_http_response_37">HTTP Response</a></li>
+<li><a href="#_http_request_40">HTTP Request</a></li>
+<li><a href="#_http_response_40">HTTP Response</a></li>
 </ul>
 </li>
 </ul>
@@ -751,45 +815,45 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 838
+Content-Length: 797
 
 {
   "totalElements" : 2,
   "totalPages" : 1,
-  "numberOfElements" : 2,
   "first" : true,
   "last" : true,
-  "pageable" : {
-    "pageNumber" : 0,
-    "pageSize" : 10,
-    "sort" : {
-      "unsorted" : false,
-      "sorted" : true,
-      "empty" : false
-    },
-    "offset" : 0,
-    "unpaged" : false,
-    "paged" : true
-  },
   "size" : 10,
   "content" : [ {
     "accountId" : 1,
     "customerId" : 1,
     "accountNumber" : "42750204039102",
     "bankCode" : "004",
-    "createdAt" : "2024-08-06T23:09:35.1898108"
+    "createdAt" : "2024-08-07T00:57:21.196666"
   }, {
     "accountId" : 2,
     "customerId" : 1,
     "accountNumber" : "42750204039103",
     "bankCode" : "090",
-    "createdAt" : "2024-08-06T23:09:35.1898108"
+    "createdAt" : "2024-08-07T00:57:21.196671"
   } ],
   "number" : 0,
   "sort" : {
-    "unsorted" : false,
+    "empty" : false,
     "sorted" : true,
-    "empty" : false
+    "unsorted" : false
+  },
+  "numberOfElements" : 2,
+  "pageable" : {
+    "pageNumber" : 0,
+    "pageSize" : 10,
+    "sort" : {
+      "empty" : false,
+      "sorted" : true,
+      "unsorted" : false
+    },
+    "offset" : 0,
+    "paged" : true,
+    "unpaged" : false
   },
   "empty" : false
 }</code></pre>
@@ -967,7 +1031,7 @@ Content-Length: 838
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /accounts/customers/1 HTTP/1.1
 Content-Type: application/json
-Content-Length: 65
+Content-Length: 62
 Host: localhost:8080
 
 {
@@ -1001,7 +1065,7 @@ success id : 100</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /accounts/1 HTTP/1.1
 Content-Type: application/json
-Content-Length: 61
+Content-Length: 58
 Host: localhost:8080
 
 {
@@ -1067,9 +1131,9 @@ success</code></pre>
 <h4 id="_http_request_5"><a class="link" href="#_http_request_5">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /accounts/auth/check-account?_csrf=MOnAAeRQy0fHExgSvWyl-ob47nqNpw8xP87nHAbDd05e_MtoCNvwYtwxryPqIiEnikGRm7_BwxjowzscXfqDej_wRHY4zfNe HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /accounts/auth/check-account?_csrf=xpXmZCOE_SDkE6Yqo7ELRABXtNlzjnX4049Mp87N-ALdH_V4_qXXVUfnmxTJI5Aakpw_JTNnmeFGtkLV4u19xfb1zDrpLcYZ HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 61
+Content-Length: 58
 Host: localhost:8080
 
 {
@@ -1094,7 +1158,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 38
+Content-Length: 36
 
 {
   "bankHolderName" : "홍길동"
@@ -1128,7 +1192,7 @@ Content-Length: 38
 </div>
 </div>
 </div>
-<h1 id="_address주소" class="sect0"><a class="link" href="#_address주소">Address(주소)</a></h1>
+<h1 id="_address주소_이재아" class="sect0"><a class="link" href="#_address주소_이재아">Address(주소) [이재아]</a></h1>
 <div class="sect1">
 <h2 id="_특정_회원의_주소_목록_조회"><a class="link" href="#_특정_회원의_주소_목록_조회">특정 회원의 주소 목록 조회</a></h2>
 <div class="sectionbody">
@@ -1150,7 +1214,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 483
+Content-Length: 465
 
 [ {
   "addressId" : 1,
@@ -1261,7 +1325,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 238
+Content-Length: 229
 
 {
   "customerId" : 1,
@@ -1349,7 +1413,7 @@ Content-Length: 238
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /addresses HTTP/1.1
 Content-Type: application/json
-Content-Length: 245
+Content-Length: 236
 Host: localhost:8080
 
 {
@@ -1450,7 +1514,7 @@ Content-Length: 1
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /addresses/1 HTTP/1.1
 Content-Type: application/json
-Content-Length: 251
+Content-Length: 242
 Host: localhost:8080
 
 {
@@ -1560,32 +1624,116 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
-<h1 id="_company회사" class="sect0"><a class="link" href="#_company회사">Company(회사)</a></h1>
+<h1 id="_company회사_api_이재아" class="sect0"><a class="link" href="#_company회사_api_이재아">Company(회사) API [이재아]</a></h1>
 <div class="sect1">
 <h2 id="_회사_url_설정_조회"><a class="link" href="#_회사_url_설정_조회">회사 URL 설정 조회</a></h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_get_url_settingcompanyid"><a class="link" href="#_get_url_settingcompanyid">GET /url-setting/{companyId}</a></h3>
 <div class="paragraph">
-<p>/url-setting/{companyId}</p>
+<p>회사 URL 설정을 조회합니다.</p>
 </div>
-<div class="paragraph">
-<p>회사 URL 설정을 조회한다.</p>
+<div class="sect3">
+<h4 id="_path_parameters"><a class="link" href="#_path_parameters">Path Parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /url-setting/{companyId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_http_request_11"><a class="link" href="#_http_request_11">HTTP Request</a></h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyUrlSetting/http-request.adoc[]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /url-setting/1?_csrf=6oWjYEP1_iJ_vNP7Pry31tYWgqLmwN-rlqcXg07dajBHMguNjrXFWHLFmBRS2LXDWJGD7uQmr8PQorqG85Fx4H_rCQciUWq7 HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_http_response_11"><a class="link" href="#_http_response_11">HTTP Response</a></h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyUrlSetting/http-response.adoc[]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 187
+
+{
+  "companyId" : 1,
+  "name" : "TestCompany",
+  "shopUrl" : "https://www.sellution.com/shopping/TestCompany",
+  "isShopVisible" : "Y",
+  "qrCodeUrl" : "https://example.com/qr-code.png"
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_response_fields_5"><a class="link" href="#_response_fields_5">Response Fields</a></h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyUrlSetting/response-fields.adoc[]</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shopUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">쇼핑몰 URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isShopVisible</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">쇼핑몰 공개 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>qrCodeUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">QR 코드 URL</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -1593,19 +1741,18 @@ Host: localhost:8080</code></pre>
 <div class="sect1">
 <h2 id="_회사_url_설정_업데이트"><a class="link" href="#_회사_url_설정_업데이트">회사 URL 설정 업데이트</a></h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_put_url_setting"><a class="link" href="#_put_url_setting">PUT /url-setting</a></h3>
 <div class="paragraph">
-<p>/url-setting</p>
-</div>
-<div class="paragraph">
-<p>회사 URL 설정을 업데이트한다.</p>
+<p>회사 URL 설정을 업데이트합니다.</p>
 </div>
 <div class="sect3">
 <h4 id="_http_request_12"><a class="link" href="#_http_request_12">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /url-setting?_csrf=IwXGo5So1N_e9l1Wt-XefJvv9Fgiq4rmOJmWfRxcmIRCHGFVGzyim63J47zzxjg1g8jqSv6L2WAVmbnLDqymSixoobx6fgUw HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /url-setting?_csrf=ED_-9B2CWlUSVTa8M2PQkMM7eKlZl56UZjH_UWx-oz5AKmf2cVqaliS6OzE_YQ_YAE7koPICVchvof-5VVfIZFsdlAl3G1LO HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 79
+Content-Length: 75
 Host: localhost:8080
 
 {
@@ -1615,6 +1762,40 @@ Host: localhost:8080
 }</code></pre>
 </div>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_request_fields_3"><a class="link" href="#_request_fields_3">Request Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isShopVisible</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">쇼핑몰 공개 여부</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_http_response_12"><a class="link" href="#_http_response_12">HTTP Response</a></h4>
@@ -1635,31 +1816,294 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
+</div>
 <div class="sect1">
 <h2 id="_회사_디스플레이_설정_조회"><a class="link" href="#_회사_디스플레이_설정_조회">회사 디스플레이 설정 조회</a></h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_get_display_settingcompanyid"><a class="link" href="#_get_display_settingcompanyid">GET /display-setting/{companyId}</a></h3>
 <div class="paragraph">
-<p>/display-setting/{companyId}</p>
+<p>회사 디스플레이 설정을 조회합니다.</p>
 </div>
-<div class="paragraph">
-<p>회사 디스플레이 설정을 조회한다.</p>
+<div class="sect3">
+<h4 id="_path_parameters_2"><a class="link" href="#_path_parameters_2">Path Parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. /display-setting/{companyId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_http_request_13"><a class="link" href="#_http_request_13">HTTP Request</a></h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyDisplaySetting/http-request.adoc[]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /display-setting/1?_csrf=DSA22oIpzYPpFvo8_MXF2dEiqcL4kpPJ4WiEBo3tZ8WfgQyva0RSu7Af-7XEdMgFmejx7rUUhKDKo6fkh1u2ZLqLUaT9tTrM HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_http_response_13"><a class="link" href="#_http_response_13">HTTP Response</a></h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyDisplaySetting/http-response.adoc[]</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 352
+
+{
+  "companyId" : 1,
+  "displayName" : "TestDisplay",
+  "logoImageUrl" : "logo.jpg",
+  "promotionImageUrls" : [ "promo1.jpg", "promo2.jpg" ],
+  "serviceType" : "BOTH",
+  "themeColor" : "#FFFFFF",
+  "mainPromotion1Title" : "Promo 1",
+  "mainPromotion1Content" : "Content 1",
+  "mainPromotion2Title" : "Promo 2",
+  "mainPromotion2Content" : "Content 2"
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_response_fields_6"><a class="link" href="#_response_fields_6">Response Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">디스플레이 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logoImageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로고 이미지 URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>promotionImageUrls</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로모션 이미지 URL 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serviceType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">서비스 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>themeColor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">테마 색상</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion1Title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 1 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion1Content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 1 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion2Title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 2 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion2Content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 2 내용</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_회사_디스플레이_설정_생성"><a class="link" href="#_회사_디스플레이_설정_생성">회사 디스플레이 설정 생성</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_post_display_setting"><a class="link" href="#_post_display_setting">POST /display-setting</a></h3>
 <div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanyDisplaySetting/response-fields.adoc[]</p>
+<p>회사 디스플레이 설정을 생성합니다.</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_14"><a class="link" href="#_http_request_14">HTTP Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /display-setting HTTP/1.1
+Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Host: localhost:8080
+
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=logoFile; filename=logo.jpg
+Content-Type: image/jpeg
+
+logo content
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=promotionFiles; filename=promo1.jpg
+Content-Type: image/jpeg
+
+promo1 content
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=request
+Content-Type: application/json
+
+{"companyId":1,"displayName":"NewDisplay","logoImageUrl":null,"promotionImageUrls":null,"themeColor":"#FFFFFF","mainPromotion1Title":"Promo1","mainPromotion1Content":"Content1","mainPromotion2Title":"Promo2","mainPromotion2Content":"Content2"}
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_request_parts"><a class="link" href="#_request_parts">Request Parts</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Part</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logoFile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로고 파일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>promotionFiles</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로모션 이미지 파일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>request</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 디스플레이 설정 정보</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_request_part_fields"><a class="link" href="#_request_part_fields">Request Part Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">디스플레이 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logoImageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로고 이미지 URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>promotionImageUrls</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로모션 이미지 URL 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>themeColor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">테마 색상</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion1Title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 1 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion1Content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 1 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion2Title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 2 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainPromotion2Content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 2 내용</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_http_response_14"><a class="link" href="#_http_response_14">HTTP Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1667,14 +2111,13 @@ X-Frame-Options: DENY</code></pre>
 <div class="sect1">
 <h2 id="_회사_디스플레이_설정_업데이트"><a class="link" href="#_회사_디스플레이_설정_업데이트">회사 디스플레이 설정 업데이트</a></h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_put_display_setting"><a class="link" href="#_put_display_setting">PUT /display-setting</a></h3>
 <div class="paragraph">
-<p>/display-setting</p>
-</div>
-<div class="paragraph">
-<p>회사 디스플레이 설정을 업데이트한다.</p>
+<p>회사 디스플레이 설정을 업데이트합니다.</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_14"><a class="link" href="#_http_request_14">HTTP Request</a></h4>
+<h4 id="_http_request_15"><a class="link" href="#_http_request_15">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /display-setting HTTP/1.1
@@ -1701,7 +2144,36 @@ promo1 content
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_14"><a class="link" href="#_http_response_14">HTTP Response</a></h4>
+<h4 id="_request_parts_2"><a class="link" href="#_request_parts_2">Request Parts</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Part</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>request</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">업데이트 요청 DTO</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logoFile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로고 파일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>promotionFiles</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로모션 이미지 파일</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_http_response_15"><a class="link" href="#_http_response_15">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1719,51 +2191,97 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
+</div>
 <div class="sect1">
 <h2 id="_회사_판매_설정_조회"><a class="link" href="#_회사_판매_설정_조회">회사 판매 설정 조회</a></h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_get_sale_settingcompanyid"><a class="link" href="#_get_sale_settingcompanyid">GET /sale-setting/{companyId}</a></h3>
 <div class="paragraph">
-<p>/sale-setting/{companyId}</p>
-</div>
-<div class="paragraph">
-<p>회사 판매 설정을 조회한다.</p>
+<p>회사 판매 설정을 조회합니다.</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_15"><a class="link" href="#_http_request_15">HTTP Request</a></h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanySaleSetting/http-request.adoc[]</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_http_response_15"><a class="link" href="#_http_response_15">HTTP Response</a></h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanySaleSetting/http-response.adoc[]</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_response_fields_7"><a class="link" href="#_response_fields_7">Response Fields</a></h4>
-<div class="paragraph">
-<p>Unresolved directive in company.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Company/findCompanySaleSetting/response-fields.adoc[]</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_회사_판매_설정_업데이트"><a class="link" href="#_회사_판매_설정_업데이트">회사 판매 설정 업데이트</a></h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>/sale-setting</p>
-</div>
-<div class="paragraph">
-<p>회사 판매 설정을 업데이트한다.</p>
+<h4 id="_path_parameters_3"><a class="link" href="#_path_parameters_3">Path Parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. /sale-setting/{companyId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_http_request_16"><a class="link" href="#_http_request_16">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /sale-setting?_csrf=YsNxm3UaOP5bZhskzQogHOZy4KjzV-8Swlu68p8C9VCkaKWLBKcX_0B7Cs92VH9CrCcUeIQWzZDEMd8_o27exPs7x2mQWca4 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /sale-setting/1?_csrf=iAhJ9rbRqeCgOmCpFHe9_B60eFG2DohNtnKKz5KpbskHoyuv6ml9x4DinIKNClbNcFqJmSyAVTOBaLxg1xborvORC_hhlEmd HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response_16"><a class="link" href="#_http_response_16">HTTP Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 305
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 275
+
+{
+  "companyId" : 1,
+  "serviceType" : "BOTH",
+  "sellType" : "ALL",
+  "subscriptionType" : "MONTH",
+  "categoryIds" : null,
+  "productIds" : null,
+  "minDeliveryCount" : null,
+  "maxDeliveryCount" : null,
+  "monthValues" : null,
+  "weekValues" : null,
+  "dayValues" : null
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_회사_판매_설정_생성"><a class="link" href="#_회사_판매_설정_생성">회사 판매 설정 생성</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_post_sale_setting"><a class="link" href="#_post_sale_setting">POST /sale-setting</a></h3>
+<div class="paragraph">
+<p>회사 판매 설정을 생성합니다.</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_17"><a class="link" href="#_http_request_17">HTTP Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /sale-setting?_csrf=iMXRIvr8AmR0Ivi3zRiUyl0qbWW8Stfs5o__Z52HUhiRLy7HufezE5ueZAdZQ5zV_jWg_TkZQFyNK7PB1-zHBfnjMX2iTU2h HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 293
 Host: localhost:8080
 
 {
@@ -1783,7 +2301,208 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_16"><a class="link" href="#_http_response_16">HTTP Response</a></h4>
+<h4 id="_request_fields_4"><a class="link" href="#_request_fields_4">Request Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serviceType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">서비스 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sellType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">판매 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>subscriptionType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구독 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>minDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최소 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>monthOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">월 옵션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>weekOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">주 옵션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dayOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요일 옵션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>categories</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">카테고리 ID 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>products</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 ID 목록</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_http_response_17"><a class="link" href="#_http_response_17">HTTP Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 201 Created
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_회사_판매_설정_업데이트"><a class="link" href="#_회사_판매_설정_업데이트">회사 판매 설정 업데이트</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_put_sale_setting"><a class="link" href="#_put_sale_setting">PUT /sale-setting</a></h3>
+<div class="paragraph">
+<p>회사 판매 설정을 업데이트합니다.</p>
+</div>
+<div class="sect3">
+<h4 id="_http_request_18"><a class="link" href="#_http_request_18">HTTP Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /sale-setting?_csrf=UPNbeIlPursaTThlFz7kDpnREzztsB0gOwC3CCvY6A6exqK6M5c4Te1-3943dQ4DcRPQO6m1Pl7Yhn8NAzfUOxPt32ivopGJ HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 293
+Host: localhost:8080
+
+{
+  "companyId" : 1,
+  "serviceType" : "BOTH",
+  "sellType" : "ALL",
+  "categories" : null,
+  "products" : null,
+  "subscriptionType" : "MONTH",
+  "minDeliveryCount" : 5,
+  "maxDeliveryCount" : 10,
+  "dayOptions" : [ "MON", "TUE" ],
+  "weekOptions" : [ 1, 2 ],
+  "monthOptions" : [ 1, 2, 3 ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_request_fields_5"><a class="link" href="#_request_fields_5">Request Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>serviceType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">서비스 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sellType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">판매 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>subscriptionType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구독 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>minDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최소 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>monthOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">월 옵션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>weekOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">주 옵션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dayOptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요일 옵션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>categories</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">카테고리 ID 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>products</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">상품 ID 목록</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_http_response_18"><a class="link" href="#_http_response_18">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1801,6 +2520,176 @@ X-Frame-Options: DENY</code></pre>
 </div>
 </div>
 </div>
+</div>
+<div class="sect1">
+<h2 id="_회사_정보_조회"><a class="link" href="#_회사_정보_조회">회사 정보 조회</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_get_shopping_find_companyidcompanyname"><a class="link" href="#_get_shopping_find_companyidcompanyname">GET /shopping-find-companyId/{companyName}</a></h3>
+<div class="paragraph">
+<p>회사 정보를 조회합니다.</p>
+</div>
+<div class="sect3">
+<h4 id="_path_parameters_4"><a class="link" href="#_path_parameters_4">Path Parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. /shopping-find-companyId/{companyName}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>companyName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사명</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_http_request_19"><a class="link" href="#_http_request_19">HTTP Request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /shopping-find-companyId/TestCompany?_csrf=7frl-Ir6p9h3qmgudmlMPL4ZQP0KgRQuWVATKRdEBWV2JrhA2p-Am7ufk71amAkaEER4Xo0hbZ9ssCUDYTInGXYmM10QFNwm HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_http_response_19"><a class="link" href="#_http_response_19">HTTP Response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 508
+
+{
+  "data" : {
+    "companyId" : 1,
+    "displayName" : "TestDisplay",
+    "name" : "TestCompany",
+    "logoImageUrl" : "logo.jpg",
+    "promotionImageUrls" : [ "promo1.jpg", "promo2.jpg" ],
+    "serviceType" : "BOTH",
+    "subscriptionType" : "MONTH",
+    "minDeliveryCount" : 5,
+    "maxDeliveryCount" : 30,
+    "themeColor" : "#FFFFFF",
+    "mainPromotion1Title" : "Promo 1",
+    "mainPromotion1Content" : "Content 1",
+    "mainPromotion2Title" : "Promo 2",
+    "mainPromotion2Content" : "Content 2"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_response_fields_7"><a class="link" href="#_response_fields_7">Response Fields</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.companyId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회사명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.displayName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">디스플레이 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.logoImageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로고 이미지 URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.promotionImageUrls</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로모션 이미지 URL 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.serviceType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">서비스 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.subscriptionType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">구독 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.minDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최소 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.maxDeliveryCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">최대 배송 횟수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.themeColor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">테마 색상</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.mainPromotion1Title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 1 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.mainPromotion1Content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 1 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.mainPromotion2Title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 2 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.mainPromotion2Content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메인 프로모션 2 내용</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
 <h1 id="_간편비밀번호_길재현" class="sect0"><a class="link" href="#_간편비밀번호_길재현">간편비밀번호 [길재현]</a></h1>
 <div class="sect1">
 <h2 id="_간편비밀번호_등록재등록"><a class="link" href="#_간편비밀번호_등록재등록">간편비밀번호 등록,재등록</a></h2>
@@ -1809,12 +2698,12 @@ X-Frame-Options: DENY</code></pre>
 <p>/easy-pwd/customer/{customerId}</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_17"><a class="link" href="#_http_request_17">HTTP Request</a></h4>
+<h4 id="_http_request_20"><a class="link" href="#_http_request_20">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /easy-pwd/customer/1?_csrf=qlRnHS7SWkLOhevwr0u32YdHZcmbkgymBZsC6WQUCtgFZvRizzAEfE_jOSHj5orIzGaDveZySPD_oGiLYKo031UkOO89AJdV HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /easy-pwd/customer/1?_csrf=pONjiyK_0VYpychXKF93_J0yMZ71G0UqtcQyXKEmktqqjg20kNtavhbdtGcE8ak1TXJDyKQHHKeTKHIHgv1XapBEo7nMujrX HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 29
+Content-Length: 27
 Host: localhost:8080
 
 {
@@ -1824,7 +2713,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_17"><a class="link" href="#_http_response_17">HTTP Response</a></h4>
+<h4 id="_http_response_20"><a class="link" href="#_http_response_20">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1853,12 +2742,12 @@ success</code></pre>
 <p>/customer/{customerId}/verify</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_18"><a class="link" href="#_http_request_18">HTTP Request</a></h4>
+<h4 id="_http_request_21"><a class="link" href="#_http_request_21">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /easy-pwd/customer/1/verify?_csrf=NuYnDa_GpTvFnEcuiKKBbdTpeeQSRF8BY3ve0gLCnUARGn6cA4IRbs6jlAnorXMc7o-1DOzYVNwiIG0sUU7s4mTyqSUjLUao HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /easy-pwd/customer/1/verify?_csrf=mG6ytqCW4d3lZPqMA_pStErhYd5TQHBc0Vm21HNRRAx9lnDgrV-H18Ku2b7IB5voMtdm1XmDTOZiJkhx6W3V4xVhcm4Y90LV HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 29
+Content-Length: 27
 Host: localhost:8080
 
 {
@@ -1868,7 +2757,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_18"><a class="link" href="#_http_response_18">HTTP Response</a></h4>
+<h4 id="_http_response_21"><a class="link" href="#_http_response_21">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1897,16 +2786,16 @@ success</code></pre>
 <p>/customer/{customerId}/check</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_19"><a class="link" href="#_http_request_19">HTTP Request</a></h4>
+<h4 id="_http_request_22"><a class="link" href="#_http_request_22">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /easy-pwd/customer/1/check?_csrf=i9zv2Y6-8WnXmclgomxMx_aYsT-trNTfDi-xQvMec2THtgp1uerbu7rdwln6-K9RlUF4_sKhnAeYyLXyaxuCc8QtRgXy0G5F HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /easy-pwd/customer/1/check?_csrf=foqn6GjOrbM6HH06tUTWSpeBz94jdT7rPSancnuAbx9gtj85R-ue0FGvnooXLB5bgWniL66y4ucWQQvGCBOQQU64XH5Zj1pf HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_19"><a class="link" href="#_http_response_19">HTTP Response</a></h4>
+<h4 id="_http_response_22"><a class="link" href="#_http_response_22">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1929,7 +2818,7 @@ true</code></pre>
 <div class="sect3">
 <h4 id="_response_fields_8"><a class="link" href="#_response_fields_8">Response Fields</a></h4>
 <div class="paragraph">
-<p>Unresolved directive in easyPwd.adoc - include::C:\kosa_final_project\Sellution\backend\server\build\generated-snippets/Easy-pwd/check/response-fields.adoc[]
+<p>Unresolved directive in easyPwd.adoc - include::/Users/jaeah/Desktop/hyosungedu/finalproject/jjae/Sellution/backend/server/build/generated-snippets/Easy-pwd/check/response-fields.adoc[]
 = Order(주문) [길재현]</p>
 </div>
 </div>
@@ -1942,7 +2831,7 @@ true</code></pre>
 <p>/orders/customers/{customerId}</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_20"><a class="link" href="#_http_request_20">HTTP Request</a></h4>
+<h4 id="_http_request_23"><a class="link" href="#_http_request_23">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /orders/customers/1?page=0&amp;size=10 HTTP/1.1
@@ -1951,20 +2840,18 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_20"><a class="link" href="#_http_response_20">HTTP Response</a></h4>
+<h4 id="_http_response_23"><a class="link" href="#_http_response_23">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 1693
+Content-Length: 1627
 
 {
   "totalElements" : 1,
   "totalPages" : 1,
-  "numberOfElements" : 1,
   "first" : true,
   "last" : true,
-  "pageable" : "INSTANCE",
   "size" : 1,
   "content" : [ {
     "customer" : {
@@ -1981,7 +2868,7 @@ Content-Length: 1693
       "phoneNumber" : "010-1234-5678",
       "isDefaultAddress" : "Y",
       "addressName" : "집",
-      "createdAt" : "2024-08-06T23:09:49.2537351"
+      "createdAt" : "2024-08-07T00:57:29.154616"
     },
     "orderCode" : "123456",
     "orderId" : 1,
@@ -1991,9 +2878,9 @@ Content-Length: 1693
     "deliveryStatus" : "IN_PROGRESS",
     "perPrice" : 20000,
     "totalPrice" : 100000,
-    "deliveryStartDate" : "2024-08-06",
-    "nextDeliveryDate" : "2024-08-07",
-    "deliveryEndDate" : "2024-08-13",
+    "deliveryStartDate" : "2024-08-07",
+    "nextDeliveryDate" : "2024-08-08",
+    "deliveryEndDate" : "2024-08-14",
     "totalDeliveryCount" : 5,
     "remainingDeliveryCount" : 2,
     "orderedProductList" : [ {
@@ -2004,7 +2891,7 @@ Content-Length: 1693
       "price" : 50000,
       "productImageList" : null
     } ],
-    "orderCreatedAt" : "2024-08-06T23:09:49.2537351",
+    "orderCreatedAt" : "2024-08-07T00:57:29.154626",
     "selectedDayList" : [ "MON", "WED" ],
     "selectedWeekOption" : 1,
     "selectedMonthOption" : 1,
@@ -2017,10 +2904,12 @@ Content-Length: 1693
   } ],
   "number" : 0,
   "sort" : {
-    "unsorted" : true,
+    "empty" : true,
     "sorted" : false,
-    "empty" : true
+    "unsorted" : true
   },
+  "numberOfElements" : 1,
+  "pageable" : "INSTANCE",
   "empty" : false
 }</code></pre>
 </div>
@@ -2329,7 +3218,7 @@ Content-Length: 1693
 <p>/orders/company/{companyId}</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_21"><a class="link" href="#_http_request_21">HTTP Request</a></h4>
+<h4 id="_http_request_24"><a class="link" href="#_http_request_24">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /orders/company/1?page=0&amp;size=10 HTTP/1.1
@@ -2338,20 +3227,18 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_21"><a class="link" href="#_http_response_21">HTTP Response</a></h4>
+<h4 id="_http_response_24"><a class="link" href="#_http_response_24">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 1693
+Content-Length: 1627
 
 {
   "totalElements" : 1,
   "totalPages" : 1,
-  "numberOfElements" : 1,
   "first" : true,
   "last" : true,
-  "pageable" : "INSTANCE",
   "size" : 1,
   "content" : [ {
     "customer" : {
@@ -2368,7 +3255,7 @@ Content-Length: 1693
       "phoneNumber" : "010-1234-5678",
       "isDefaultAddress" : "Y",
       "addressName" : "집",
-      "createdAt" : "2024-08-06T23:09:49.1585317"
+      "createdAt" : "2024-08-07T00:57:29.131078"
     },
     "orderCode" : "123456",
     "orderId" : 1,
@@ -2378,9 +3265,9 @@ Content-Length: 1693
     "deliveryStatus" : "IN_PROGRESS",
     "perPrice" : 10000,
     "totalPrice" : 100000,
-    "deliveryStartDate" : "2024-08-06",
-    "nextDeliveryDate" : "2024-08-07",
-    "deliveryEndDate" : "2024-08-13",
+    "deliveryStartDate" : "2024-08-07",
+    "nextDeliveryDate" : "2024-08-08",
+    "deliveryEndDate" : "2024-08-14",
     "totalDeliveryCount" : 5,
     "remainingDeliveryCount" : 2,
     "orderedProductList" : [ {
@@ -2391,7 +3278,7 @@ Content-Length: 1693
       "price" : 50000,
       "productImageList" : null
     } ],
-    "orderCreatedAt" : "2024-08-06T23:09:49.1595308",
+    "orderCreatedAt" : "2024-08-07T00:57:29.131275",
     "selectedDayList" : [ "MON", "WED" ],
     "selectedWeekOption" : 1,
     "selectedMonthOption" : 1,
@@ -2404,10 +3291,12 @@ Content-Length: 1693
   } ],
   "number" : 0,
   "sort" : {
-    "unsorted" : true,
+    "empty" : true,
     "sorted" : false,
-    "empty" : true
+    "unsorted" : true
   },
+  "numberOfElements" : 1,
+  "pageable" : "INSTANCE",
   "empty" : false
 }</code></pre>
 </div>
@@ -2731,12 +3620,12 @@ Content-Length: 1693
 <p>/orders/customers/{customerId}</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_22"><a class="link" href="#_http_request_22">HTTP Request</a></h4>
+<h4 id="_http_request_25"><a class="link" href="#_http_request_25">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /orders/customers/1 HTTP/1.1
 Content-Type: application/json
-Content-Length: 390
+Content-Length: 373
 Host: localhost:8080
 
 {
@@ -2748,7 +3637,7 @@ Host: localhost:8080
   "weekOptionValue" : null,
   "orderType" : "ONETIME",
   "totalDeliveryCount" : null,
-  "deliveryStartDate" : "2024-08-09",
+  "deliveryStartDate" : "2024-08-10",
   "orderedProducts" : [ {
     "productId" : 1,
     "count" : 2,
@@ -2761,7 +3650,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_22"><a class="link" href="#_http_response_22">HTTP Response</a></h4>
+<h4 id="_http_response_25"><a class="link" href="#_http_response_25">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -2781,12 +3670,12 @@ success, 생성된 주문 아이디 : 1</code></pre>
 <p>/orders/{orderId}/cancel</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_23"><a class="link" href="#_http_request_23">HTTP Request</a></h4>
+<h4 id="_http_request_26"><a class="link" href="#_http_request_26">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /orders/1/cancel HTTP/1.1
 Content-Type: application/json
-Content-Length: 44
+Content-Length: 41
 Host: localhost:8080
 
 {
@@ -2797,7 +3686,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_23"><a class="link" href="#_http_response_23">HTTP Response</a></h4>
+<h4 id="_http_response_26"><a class="link" href="#_http_response_26">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -2817,7 +3706,7 @@ success</code></pre>
 <p>/orders/{orderId}/approve</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_24"><a class="link" href="#_http_request_24">HTTP Request</a></h4>
+<h4 id="_http_request_27"><a class="link" href="#_http_request_27">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /orders/1/approve HTTP/1.1
@@ -2827,7 +3716,7 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_24"><a class="link" href="#_http_response_24">HTTP Response</a></h4>
+<h4 id="_http_response_27"><a class="link" href="#_http_response_27">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -2847,7 +3736,7 @@ success</code></pre>
 <p>/orders/auto-approve-toggle/company/{companyId}</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_25"><a class="link" href="#_http_request_25">HTTP Request</a></h4>
+<h4 id="_http_request_28"><a class="link" href="#_http_request_28">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /orders/auto-approve-toggle/company/1 HTTP/1.1
@@ -2857,7 +3746,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_25"><a class="link" href="#_http_response_25">HTTP Response</a></h4>
+<h4 id="_http_response_28"><a class="link" href="#_http_response_28">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -2877,7 +3766,7 @@ success</code></pre>
 <p>/orders/{orderId}</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_26"><a class="link" href="#_http_request_26">HTTP Request</a></h4>
+<h4 id="_http_request_29"><a class="link" href="#_http_request_29">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /orders/1 HTTP/1.1
@@ -2886,12 +3775,12 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_26"><a class="link" href="#_http_response_26">HTTP Response</a></h4>
+<h4 id="_http_response_29"><a class="link" href="#_http_response_29">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 1313
+Content-Length: 1263
 
 {
   "customer" : {
@@ -2908,7 +3797,7 @@ Content-Length: 1313
     "phoneNumber" : "010-1234-5678",
     "isDefaultAddress" : "Y",
     "addressName" : "Home",
-    "createdAt" : "2024-08-06T23:09:49.3288212"
+    "createdAt" : "2024-08-07T00:57:29.175432"
   },
   "orderCode" : "123456",
   "orderId" : 1,
@@ -2918,9 +3807,9 @@ Content-Length: 1313
   "deliveryStatus" : "IN_PROGRESS",
   "perPrice" : 20000,
   "totalPrice" : 100000,
-  "deliveryStartDate" : "2024-08-06",
-  "nextDeliveryDate" : "2024-08-07",
-  "deliveryEndDate" : "2024-08-13",
+  "deliveryStartDate" : "2024-08-07",
+  "nextDeliveryDate" : "2024-08-08",
+  "deliveryEndDate" : "2024-08-14",
   "totalDeliveryCount" : 1,
   "remainingDeliveryCount" : 1,
   "orderedProductList" : [ {
@@ -2931,7 +3820,7 @@ Content-Length: 1313
     "price" : 50000,
     "productImageList" : null
   } ],
-  "orderCreatedAt" : "2024-08-06T23:09:49.3288212",
+  "orderCreatedAt" : "2024-08-07T00:57:29.175442",
   "selectedDayList" : null,
   "selectedWeekOption" : null,
   "selectedMonthOption" : null,
@@ -2954,12 +3843,12 @@ Content-Length: 1313
 <p>/orders/month/calculate-price</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_27"><a class="link" href="#_http_request_27">HTTP Request</a></h4>
+<h4 id="_http_request_30"><a class="link" href="#_http_request_30">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /orders/month/calculate-price HTTP/1.1
 Content-Type: application/json
-Content-Length: 158
+Content-Length: 152
 Host: localhost:8080
 
 {
@@ -2967,26 +3856,26 @@ Host: localhost:8080
   "weekOptionValue" : 2,
   "monthOptionValue" : null,
   "perPrice" : 10000,
-  "startDate" : "2024-08-06"
+  "startDate" : "2024-08-07"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_27"><a class="link" href="#_http_response_27">HTTP Response</a></h4>
+<h4 id="_http_response_30"><a class="link" href="#_http_response_30">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 196
+Content-Length: 189
 
 {
   "thisMonthDeliveryCount" : 8,
   "thisMonthPrice" : 80000,
   "totalDeliveryCount" : 24,
   "totalPrice" : 240000,
-  "deliveryNextDate" : "2024-08-07",
-  "deliveryEndDate" : "2024-10-06"
+  "deliveryNextDate" : "2024-08-08",
+  "deliveryEndDate" : "2024-10-07"
 }</code></pre>
 </div>
 </div>
@@ -3049,12 +3938,12 @@ Content-Length: 196
 <p>/orders/count/info</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_28"><a class="link" href="#_http_request_28">HTTP Request</a></h4>
+<h4 id="_http_request_31"><a class="link" href="#_http_request_31">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /orders/count/info HTTP/1.1
 Content-Type: application/json
-Content-Length: 151
+Content-Length: 145
 Host: localhost:8080
 
 {
@@ -3062,26 +3951,26 @@ Host: localhost:8080
   "weekOptionValue" : 1,
   "monthOptionValue" : null,
   "perPrice" : 15000,
-  "startDate" : "2024-08-06"
+  "startDate" : "2024-08-07"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_28"><a class="link" href="#_http_response_28">HTTP Response</a></h4>
+<h4 id="_http_response_31"><a class="link" href="#_http_response_31">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 196
+Content-Length: 189
 
 {
   "thisMonthDeliveryCount" : 6,
   "thisMonthPrice" : 90000,
   "totalDeliveryCount" : 18,
   "totalPrice" : 270000,
-  "deliveryNextDate" : "2024-08-08",
-  "deliveryEndDate" : "2024-11-06"
+  "deliveryNextDate" : "2024-08-09",
+  "deliveryEndDate" : "2024-11-07"
 }</code></pre>
 </div>
 </div>
@@ -3144,12 +4033,12 @@ Content-Length: 196
 <p>/orders/{orderId}/enough-stock</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_29"><a class="link" href="#_http_request_29">HTTP Request</a></h4>
+<h4 id="_http_request_32"><a class="link" href="#_http_request_32">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /orders/count/info HTTP/1.1
 Content-Type: application/json
-Content-Length: 151
+Content-Length: 145
 Host: localhost:8080
 
 {
@@ -3157,26 +4046,26 @@ Host: localhost:8080
   "weekOptionValue" : 1,
   "monthOptionValue" : null,
   "perPrice" : 15000,
-  "startDate" : "2024-08-06"
+  "startDate" : "2024-08-07"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_29"><a class="link" href="#_http_response_29">HTTP Response</a></h4>
+<h4 id="_http_response_32"><a class="link" href="#_http_response_32">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 196
+Content-Length: 189
 
 {
   "thisMonthDeliveryCount" : 6,
   "thisMonthPrice" : 90000,
   "totalDeliveryCount" : 18,
   "totalPrice" : 270000,
-  "deliveryNextDate" : "2024-08-08",
-  "deliveryEndDate" : "2024-11-06"
+  "deliveryNextDate" : "2024-08-09",
+  "deliveryEndDate" : "2024-11-07"
 }</code></pre>
 </div>
 </div>
@@ -3239,7 +4128,7 @@ Content-Length: 196
 <p>/orders/company/{companyId}/unapproved-count</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_30"><a class="link" href="#_http_request_30">HTTP Request</a></h4>
+<h4 id="_http_request_33"><a class="link" href="#_http_request_33">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /orders/company/1/unapproved-count HTTP/1.1
@@ -3248,7 +4137,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_30"><a class="link" href="#_http_response_30">HTTP Response</a></h4>
+<h4 id="_http_response_33"><a class="link" href="#_http_response_33">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -3269,7 +4158,7 @@ Content-Length: 1
 <p>/payment-histories/company/{companyId}</p>
 </div>
 <div class="sect2">
-<h3 id="_http_request_31"><a class="link" href="#_http_request_31">HTTP Request</a></h3>
+<h3 id="_http_request_34"><a class="link" href="#_http_request_34">HTTP Request</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /payment-histories/company/1?page=0&amp;size=10&amp;orderCode=ORDER123&amp;userName=John&amp;startDate=2023-01-01&amp;endDate=2023-12-31&amp;status=COMPLETE HTTP/1.1
@@ -3279,20 +4168,18 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_http_response_31"><a class="link" href="#_http_response_31">HTTP Response</a></h3>
+<h3 id="_http_response_34"><a class="link" href="#_http_response_34">HTTP Response</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 585
+Content-Length: 558
 
 {
   "totalElements" : 1,
   "totalPages" : 1,
-  "numberOfElements" : 1,
   "first" : true,
   "last" : true,
-  "pageable" : "INSTANCE",
   "size" : 1,
   "content" : [ {
     "paymentHistoryId" : 1,
@@ -3302,15 +4189,17 @@ Content-Length: 585
     "price" : 10000,
     "remainingPayCount" : 3,
     "totalCountForPayment" : 5,
-    "paymentDate" : "2024-08-06T23:09:50.6637258",
+    "paymentDate" : "2024-08-07T00:57:30.017597",
     "status" : "COMPLETE"
   } ],
   "number" : 0,
   "sort" : {
-    "unsorted" : true,
+    "empty" : true,
     "sorted" : false,
-    "empty" : true
+    "unsorted" : true
   },
+  "numberOfElements" : 1,
+  "pageable" : "INSTANCE",
   "empty" : false
 }</code></pre>
 </div>
@@ -3459,7 +4348,7 @@ Content-Length: 585
 <p>/payment-histories/orders/{orderId}</p>
 </div>
 <div class="sect2">
-<h3 id="_http_request_32"><a class="link" href="#_http_request_32">HTTP Request</a></h3>
+<h3 id="_http_request_35"><a class="link" href="#_http_request_35">HTTP Request</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /payment-histories/orders/1?page=0&amp;size=10 HTTP/1.1
@@ -3469,41 +4358,41 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_http_response_32"><a class="link" href="#_http_response_32">HTTP Response</a></h3>
+<h3 id="_http_response_35"><a class="link" href="#_http_response_35">HTTP Response</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 730
+Content-Length: 700
 
 {
   "totalElements" : 1,
   "totalPages" : 1,
-  "numberOfElements" : 1,
   "first" : true,
   "last" : true,
-  "pageable" : "INSTANCE",
   "size" : 1,
   "content" : [ {
     "paymentHistoryId" : 1,
     "price" : 10000,
     "remainingPayCount" : 3,
     "totalCountForPayment" : 5,
-    "paymentDate" : "2024-08-06T23:09:50.7237242",
+    "paymentDate" : "2024-08-07T00:57:30.033304",
     "status" : "COMPLETE",
     "accountNumber" : "1234-5678-9012-3456",
     "orderType" : "ONETIME",
-    "thisSubMonthStartDate" : "2024-08-06",
-    "thisSubMonthEndDate" : "2024-09-06",
+    "thisSubMonthStartDate" : "2024-08-07",
+    "thisSubMonthEndDate" : "2024-09-07",
     "deliveryPerPrice" : 2000,
     "thisMonthDeliveryCount" : 4
   } ],
   "number" : 0,
   "sort" : {
-    "unsorted" : true,
+    "empty" : true,
     "sorted" : false,
-    "empty" : true
+    "unsorted" : true
   },
+  "numberOfElements" : 1,
+  "pageable" : "INSTANCE",
   "empty" : false
 }</code></pre>
 </div>
@@ -3660,7 +4549,7 @@ Content-Length: 730
 </div>
 </div>
 </div>
-<h1 id="_product상품" class="sect0"><a class="link" href="#_product상품">Product(상품)</a></h1>
+<h1 id="_product상품_이재아" class="sect0"><a class="link" href="#_product상품_이재아">Product(상품) [이재아]</a></h1>
 <div class="sect1">
 <h2 id="_상품_목록_조회"><a class="link" href="#_상품_목록_조회">상품 목록 조회</a></h2>
 <div class="sectionbody">
@@ -3668,7 +4557,7 @@ Content-Length: 730
 <p>/products</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_33"><a class="link" href="#_http_request_33">HTTP Request</a></h4>
+<h4 id="_http_request_36"><a class="link" href="#_http_request_36">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /products?companyId=1&amp;page=0&amp;size=10&amp;deliveryType=%EC%A0%84%EC%B2%B4&amp;isDiscount=%EC%A0%84%EC%B2%B4&amp;categoryName=%EC%A0%84%EC%B2%B4&amp;isVisible=%EC%A0%84%EC%B2%B4&amp;productName= HTTP/1.1
@@ -3677,7 +4566,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_33"><a class="link" href="#_http_response_33">HTTP Response</a></h4>
+<h4 id="_http_response_36"><a class="link" href="#_http_response_36">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -3691,26 +4580,13 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 843
+Content-Length: 802
 
 {
   "totalElements" : 1,
   "totalPages" : 1,
-  "numberOfElements" : 1,
   "first" : true,
   "last" : true,
-  "pageable" : {
-    "pageNumber" : 0,
-    "pageSize" : 10,
-    "sort" : {
-      "unsorted" : true,
-      "sorted" : false,
-      "empty" : true
-    },
-    "offset" : 0,
-    "unpaged" : false,
-    "paged" : true
-  },
   "size" : 10,
   "content" : [ {
     "productId" : 1,
@@ -3729,9 +4605,22 @@ Content-Length: 843
   } ],
   "number" : 0,
   "sort" : {
-    "unsorted" : true,
+    "empty" : true,
     "sorted" : false,
-    "empty" : true
+    "unsorted" : true
+  },
+  "numberOfElements" : 1,
+  "pageable" : {
+    "pageNumber" : 0,
+    "pageSize" : 10,
+    "sort" : {
+      "empty" : true,
+      "sorted" : false,
+      "unsorted" : true
+    },
+    "offset" : 0,
+    "paged" : true,
+    "unpaged" : false
   },
   "empty" : false
 }</code></pre>
@@ -3946,7 +4835,7 @@ Content-Length: 843
 <p>/products/{productId}</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_34"><a class="link" href="#_http_request_34">HTTP Request</a></h4>
+<h4 id="_http_request_37"><a class="link" href="#_http_request_37">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /products/1?companyId=1 HTTP/1.1
@@ -3955,7 +4844,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_34"><a class="link" href="#_http_response_34">HTTP Response</a></h4>
+<h4 id="_http_response_37"><a class="link" href="#_http_response_37">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -3969,7 +4858,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 549
+Content-Length: 530
 
 {
   "productId" : 0,
@@ -4112,7 +5001,7 @@ Content-Length: 549
 <p>/products</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_35"><a class="link" href="#_http_request_35">HTTP Request</a></h4>
+<h4 id="_http_request_38"><a class="link" href="#_http_request_38">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /products HTTP/1.1
@@ -4154,7 +5043,7 @@ image content
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_35"><a class="link" href="#_http_response_35">HTTP Response</a></h4>
+<h4 id="_http_response_38"><a class="link" href="#_http_response_38">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -4179,7 +5068,7 @@ X-Frame-Options: DENY</code></pre>
 <p>/products/{productId}</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_36"><a class="link" href="#_http_request_36">HTTP Request</a></h4>
+<h4 id="_http_request_39"><a class="link" href="#_http_request_39">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">PUT /products/1 HTTP/1.1
@@ -4221,7 +5110,7 @@ image content
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_36"><a class="link" href="#_http_response_36">HTTP Response</a></h4>
+<h4 id="_http_response_39"><a class="link" href="#_http_response_39">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -4246,7 +5135,7 @@ X-Frame-Options: DENY</code></pre>
 <p>/products/{productId}</p>
 </div>
 <div class="sect3">
-<h4 id="_http_request_37"><a class="link" href="#_http_request_37">HTTP Request</a></h4>
+<h4 id="_http_request_40"><a class="link" href="#_http_request_40">HTTP Request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /products/1 HTTP/1.1
@@ -4254,12 +5143,12 @@ Content-Type: application/x-www-form-urlencoded
 Host: localhost:8080
 Content-Length: 102
 
-_csrf=3lTayN2ylhy3qUmnmLup0fvMRTuejGDphWRBGO2pwgY5oA4YvTXo_biGpi2an36U_JadtM30aAKr7gXEs11xL9iR-j8MkDZ7</code></pre>
+_csrf=v2mD255rCKmP8aTtb42Ws5O3i5DEUPaSN0pfThpfbtnvYlhA3V6wv_1cOMqix5KPVqCihqOPpvGgNMW_UX9tfnhsX-3bVml0</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_response_37"><a class="link" href="#_http_response_37">HTTP Response</a></h4>
+<h4 id="_http_response_40"><a class="link" href="#_http_response_40">HTTP Response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -4281,7 +5170,7 @@ X-Frame-Options: DENY</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-08-06 23:09:01 +0900
+Last updated 2024-08-06 23:55:01 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

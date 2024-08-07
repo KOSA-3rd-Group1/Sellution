@@ -1,96 +1,139 @@
-= Company(회사)
+= Company(회사) API [이재아]
 
 == 회사 URL 설정 조회
-/url-setting/{companyId}
+=== GET /url-setting/{companyId}
 
-회사 URL 설정을 조회한다.
+회사 URL 설정을 조회합니다.
+
+==== Path Parameters
+include::{snippets}/Company/getCompanyUrlSetting/path-parameters.adoc[]
 
 ==== HTTP Request
-
-include::{snippets}/Company/findCompanyUrlSetting/http-request.adoc[]
+include::{snippets}/Company/getCompanyUrlSetting/http-request.adoc[]
 
 ==== HTTP Response
-
-include::{snippets}/Company/findCompanyUrlSetting/http-response.adoc[]
+include::{snippets}/Company/getCompanyUrlSetting/http-response.adoc[]
 
 ==== Response Fields
-
-include::{snippets}/Company/findCompanyUrlSetting/response-fields.adoc[]
-
+include::{snippets}/Company/getCompanyUrlSetting/response-fields.adoc[]
 
 == 회사 URL 설정 업데이트
-/url-setting
+=== PUT /url-setting
 
-회사 URL 설정을 업데이트한다.
+회사 URL 설정을 업데이트합니다.
 
 ==== HTTP Request
-
 include::{snippets}/Company/updateCompanyUrlSetting/http-request.adoc[]
 
-==== HTTP Response
+==== Request Fields
+include::{snippets}/Company/updateCompanyUrlSetting/request-fields.adoc[]
 
+==== HTTP Response
 include::{snippets}/Company/updateCompanyUrlSetting/http-response.adoc[]
 
-
 == 회사 디스플레이 설정 조회
-/display-setting/{companyId}
+=== GET /display-setting/{companyId}
 
-회사 디스플레이 설정을 조회한다.
+회사 디스플레이 설정을 조회합니다.
+
+==== Path Parameters
+include::{snippets}/Company/getCompanyDisplaySetting/path-parameters.adoc[]
 
 ==== HTTP Request
-
-include::{snippets}/Company/findCompanyDisplaySetting/http-request.adoc[]
+include::{snippets}/Company/getCompanyDisplaySetting/http-request.adoc[]
 
 ==== HTTP Response
-
-include::{snippets}/Company/findCompanyDisplaySetting/http-response.adoc[]
+include::{snippets}/Company/getCompanyDisplaySetting/http-response.adoc[]
 
 ==== Response Fields
+include::{snippets}/Company/getCompanyDisplaySetting/response-fields.adoc[]
 
-include::{snippets}/Company/findCompanyDisplaySetting/response-fields.adoc[]
+== 회사 디스플레이 설정 생성
+=== POST /display-setting
 
+회사 디스플레이 설정을 생성합니다.
+
+==== HTTP Request
+include::{snippets}/Company/createCompanyDisplaySetting/http-request.adoc[]
+
+==== Request Parts
+include::{snippets}/Company/createCompanyDisplaySetting/request-parts.adoc[]
+
+==== Request Part Fields
+include::{snippets}/Company/createCompanyDisplaySetting/request-part-request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/Company/createCompanyDisplaySetting/http-response.adoc[]
 
 == 회사 디스플레이 설정 업데이트
-/display-setting
+=== PUT /display-setting
 
-회사 디스플레이 설정을 업데이트한다.
+회사 디스플레이 설정을 업데이트합니다.
 
 ==== HTTP Request
-
 include::{snippets}/Company/updateCompanyDisplaySetting/http-request.adoc[]
 
-==== HTTP Response
+==== Request Parts
+include::{snippets}/Company/updateCompanyDisplaySetting/request-parts.adoc[]
 
+==== HTTP Response
 include::{snippets}/Company/updateCompanyDisplaySetting/http-response.adoc[]
 
-
 == 회사 판매 설정 조회
-/sale-setting/{companyId}
+=== GET /sale-setting/{companyId}
 
-회사 판매 설정을 조회한다.
+회사 판매 설정을 조회합니다.
+
+==== Path Parameters
+include::{snippets}/Company/getCompanySaleSetting-Success/path-parameters.adoc[]
 
 ==== HTTP Request
-
-include::{snippets}/Company/findCompanySaleSetting/http-request.adoc[]
+include::{snippets}/Company/getCompanySaleSetting-Success/http-request.adoc[]
 
 ==== HTTP Response
+include::{snippets}/Company/getCompanySaleSetting-Success/http-response.adoc[]
 
-include::{snippets}/Company/findCompanySaleSetting/http-response.adoc[]
+== 회사 판매 설정 생성
+=== POST /sale-setting
 
-==== Response Fields
+회사 판매 설정을 생성합니다.
 
-include::{snippets}/Company/findCompanySaleSetting/response-fields.adoc[]
+==== HTTP Request
+include::{snippets}/Company/createCompanySaleSetting/http-request.adoc[]
 
+==== Request Fields
+include::{snippets}/Company/createCompanySaleSetting/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/Company/createCompanySaleSetting/http-response.adoc[]
 
 == 회사 판매 설정 업데이트
-/sale-setting
+=== PUT /sale-setting
 
-회사 판매 설정을 업데이트한다.
+회사 판매 설정을 업데이트합니다.
 
 ==== HTTP Request
-
 include::{snippets}/Company/updateCompanySaleSetting/http-request.adoc[]
 
-==== HTTP Response
+==== Request Fields
+include::{snippets}/Company/updateCompanySaleSetting/request-fields.adoc[]
 
+==== HTTP Response
 include::{snippets}/Company/updateCompanySaleSetting/http-response.adoc[]
+
+== 회사 정보 조회
+=== GET /shopping-find-companyId/{companyName}
+
+회사 정보를 조회합니다.
+
+==== Path Parameters
+include::{snippets}/Company/getCompanyInfo/path-parameters.adoc[]
+
+==== HTTP Request
+include::{snippets}/Company/getCompanyInfo/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/Company/getCompanyInfo/http-response.adoc[]
+
+==== Response Fields
+include::{snippets}/Company/getCompanyInfo/response-fields.adoc[]

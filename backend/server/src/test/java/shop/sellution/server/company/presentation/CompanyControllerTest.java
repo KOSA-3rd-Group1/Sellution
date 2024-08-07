@@ -77,7 +77,7 @@ class CompanyControllerTest extends BaseControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("TestCompany"))
-                .andDo(document("Company/getCompanyUrlSetting",
+                .andDo(document("Company/findCompanyUrlSetting",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
@@ -144,7 +144,7 @@ class CompanyControllerTest extends BaseControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.displayName").value("TestDisplay"))
-                .andDo(document("Company/getCompanyDisplaySetting",
+                .andDo(document("Company/findCompanyDisplaySetting",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
@@ -252,7 +252,6 @@ class CompanyControllerTest extends BaseControllerTest {
                         )
                 ));
     }
-
     @DisplayName("회사의 판매 설정을 조회한다")
     @Test
     @WithMockUser(username = "user", roles = {"USER"})
@@ -262,6 +261,13 @@ class CompanyControllerTest extends BaseControllerTest {
                 .serviceType(DeliveryType.BOTH)
                 .sellType(SellType.ALL)
                 .subscriptionType(SubscriptionType.MONTH)
+                .categoryIds(null)
+                .productIds(null)
+                .minDeliveryCount(null)
+                .maxDeliveryCount(null)
+                .monthValues(null)
+                .weekValues(null)
+                .dayValues(null)
                 .build();
 
         when(companySaleSettingService.getCompanySaleSetting(anyLong())).thenReturn(response);
@@ -269,7 +275,27 @@ class CompanyControllerTest extends BaseControllerTest {
         mockMvc.perform(get("/sale-setting/{companyId}", 1L)
                         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.serviceType").value("BOTH"));
+                .andExpect(jsonPath("$.serviceType").value("BOTH"))
+                .andDo(document("Company/getCompanySaleSetting-Success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("companyId").description("회사 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("companyId").type(JsonFieldType.NUMBER).description("회사 ID"),
+                                fieldWithPath("serviceType").type(JsonFieldType.STRING).description("서비스 타입"),
+                                fieldWithPath("sellType").type(JsonFieldType.STRING).description("판매 타입"),
+                                fieldWithPath("subscriptionType").type(JsonFieldType.STRING).description("구독 타입"),
+                                fieldWithPath("categoryIds").type(JsonFieldType.ARRAY).optional().description("카테고리 ID 목록"),
+                                fieldWithPath("productIds").type(JsonFieldType.ARRAY).optional().description("상품 ID 목록"),
+                                fieldWithPath("minDeliveryCount").type(JsonFieldType.NUMBER).optional().description("최소 배송 횟수"),
+                                fieldWithPath("maxDeliveryCount").type(JsonFieldType.NUMBER).optional().description("최대 배송 횟수"),
+                                fieldWithPath("monthValues").type(JsonFieldType.ARRAY).optional().description("월 옵션"),
+                                fieldWithPath("weekValues").type(JsonFieldType.ARRAY).optional().description("주 옵션"),
+                                fieldWithPath("dayValues").type(JsonFieldType.ARRAY).optional().description("요일 옵션")
+                        )
+                ));
     }
 
     @DisplayName("회사의 판매 설정을 생성한다")
@@ -383,7 +409,7 @@ class CompanyControllerTest extends BaseControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.name").value("TestCompany"))
-                .andDo(document("Company/getCompanyInfo",
+                .andDo(document("Company/findCompanyInfo",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
