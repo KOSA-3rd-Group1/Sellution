@@ -1,0 +1,44 @@
+= ContractCompany(계약 회사) [김준석]
+
+== 계약 사업체 등록
+/contract-company/register
+
+계약 사업체를 등록한다.
+
+=== HTTP Request
+
+include::{snippets}/ContractCompany/saveContractCompany/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/ContractCompany/saveContractCompany/http-response.adoc[]
+
+=== Request Fields
+
+include::{snippets}/ContractCompany/saveContractCompany/request-fields.adoc[]
+
+=== Response Fields
+
+include::{snippets}/ContractCompany/saveContractCompany/response-fields.adoc[]
+
+
+== 계약 사업체 인증
+/contract-company/authenticate
+
+계약 사업체를 인증한다.
+
+=== HTTP Request
+
+include::{snippets}/ContractCompany/findContractCompany/http-request.adoc[]
+
+=== HTTP Response
+
+include::{snippets}/ContractCompany/findContractCompany/http-response.adoc[]
+
+=== Request Fields
+
+include::{snippets}/ContractCompany/findContractCompany/request-fields.adoc[]
+
+=== Response Fields
+
+include::{snippets}/ContractCompany/findContractCompany/response-fields.adoc[]
