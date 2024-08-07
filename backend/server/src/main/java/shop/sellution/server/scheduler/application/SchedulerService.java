@@ -2,6 +2,7 @@ package shop.sellution.server.scheduler.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.sellution.server.customer.domain.CustomerRepository;
@@ -38,7 +39,7 @@ public class SchedulerService {
     private final ProductRepository productRepository;
 
 
-    //    @Scheduled(cron = "0 0 19 * * *", zone = "Asia/Seoul")
+//        @Scheduled(cron = "0 0 19 * * *", zone = "Asia/Seoul")
     @Transactional
     public void regularProcessAt19() {
         log.info("*************** 19시 스케줄러 시작 *************** ");
@@ -66,6 +67,8 @@ public class SchedulerService {
         log.info("*************** 자정 스케줄러 종료 *************** ");
     }
 
+    @Scheduled(cron = "0 0 19 * * *", zone = "Asia/Seoul")
+    @Transactional
     public void regularPayment() {
         log.info("*************** 정기결제 시작 *************** ");
         int paymentCount = 0;
