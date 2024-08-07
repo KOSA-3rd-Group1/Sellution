@@ -44,7 +44,7 @@ public class CartServiceImpl implements CartService {
     private String getCartKey(CartType cartType){
         CustomUserDetails userDetails = getCustomUserDetailsFromSecurityContext();
         Long customerId = userDetails.getUserId();
-//        Long customerId = 35L;
+//      Long customerId = 35L;
         String keyPrefix = cartType.equals(CartType.ONETIME) ? ONETIME_CART_KEY_PREFIX : SUBSCRIPTION_CART_KEY_PREFIX;
         return keyPrefix + customerId; // cart:onetime:1, cart:subscription:1
     }
@@ -81,6 +81,7 @@ public class CartServiceImpl implements CartService {
 //        return hashOperations.entries(cartKey);
 //    }
 
+
     @Override
     public void addToCart(CartType cartType, Long productId, int quantity) {    //장바구니에 있는 상품이면 개수만 증가
         String cartKey = getCartKey(cartType);
@@ -97,13 +98,15 @@ public class CartServiceImpl implements CartService {
     @Override
     public void removeFromCart(CartType cartType, Long productId) { //장바구니에 없는 상품이면 에러
         String cartKey = getCartKey(cartType);
-        if (hashOperations.hasKey(cartKey, productId)) {
-            hashOperations.delete(cartKey, productId);
-            log.info("Removed from cart: {} - {}", cartKey, productId);
-        } else {
-            log.error("Product not found in cart: {} - {}", cartKey, productId);
-            throw new BadRequestException(NOT_FOUND_CART_ITEM);
-        }
+        hashOperations.delete(cartKey, productId);
+        log.info("Removed from cart: {} - {}", cartKey, productId);
+//        if (hashOperations.hasKey(cartKey, productId)) {
+//            hashOperations.delete(cartKey, productId);
+//            log.info("Removed from cart: {} - {}", cartKey, productId);
+//        } else {
+//            log.error("Product not found in cart: {} - {}", cartKey, productId);
+//            throw new BadRequestException(NOT_FOUND_CART_ITEM);
+//        }
     }
 
     @Override

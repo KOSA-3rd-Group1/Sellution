@@ -82,11 +82,12 @@ public class EventServiceImpl implements EventService {
             throw new BadRequestException(ExceptionCode.INVALID_EVENT_SAVE_EVENTSTARTDATE);
             //throw new IllegalArgumentException("이벤트 시작일은 다음날부터 설정 가능합니다.");
         }
-        if(saveEventReq.getEventEndDate().isBefore(tomorrow)){
+        if(saveEventReq.getEventEndDate().isBefore(saveEventReq.getEventStartDate())){
             //throw new IllegalArgumentException("이벤트 종료일 설정이 잘못되었습니다.");
             throw new BadRequestException(ExceptionCode.INVALID_EVENT_SAVE_EVENTENDDATE);
         }
         Company company = getCompanyById(companyId);
+
         CouponEvent event = saveEventReq.toEntity(company);
         eventRepository.save(event);
         //redis

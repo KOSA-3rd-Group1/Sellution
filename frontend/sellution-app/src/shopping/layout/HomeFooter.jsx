@@ -79,7 +79,7 @@ const HomeFooter = () => {
       >
         <div className='relative inline-block'>
           <CartIcon className='w-7 h-7 fill-current text-secondary stroke-secondary stroke-[10]' />
-          {totalCount > 0 && (
+          {accessToken !== null && accessToken !== '' && totalCount > 0 && (
             <span className='absolute -top-1 -right-2 bg-red-500 text-white rounded-full px-[6px] py-[2px] text-xs min-w-[20px] h-[20px] flex items-center justify-center'>
               {totalCount}
             </span>
