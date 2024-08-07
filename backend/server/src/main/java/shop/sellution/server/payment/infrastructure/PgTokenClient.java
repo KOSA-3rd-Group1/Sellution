@@ -41,7 +41,7 @@ public class PgTokenClient {
                 "permission", tokenType.getPermission()
         );
 
-        log.info("API access Token 발급 시작");
+        log.info("일회용 결제 토큰 발급 시작");
         try {
             ResponseEntity<Void> response = webClient.post()
                     .uri(uriBuilder -> uriBuilder
@@ -75,39 +75,5 @@ public class PgTokenClient {
             throw new ExternalApiException(EXTERNAL_SEVER_ERROR);
         }
     }
-
-
-
-
-//    public Mono<String> getApiAccessToken(int price, TokenType tokenType) {
-//
-//        Map<String, String> body = Map.of(
-//                "name", clientName,
-//                "apiKey", apiKey,
-//                "price",Integer.toString(price),
-//                "permission",tokenType.getPermission()
-//        );
-//
-//        log.info(" API access Token 발급 시작");
-//        return webClient.post()
-//                .uri(uriBuilder -> uriBuilder
-//                        .path("/get-token")
-//                        .build()
-//                )
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .bodyValue(body)
-//                .retrieve()
-//                .onStatus( // 상태코드가 4xx 일경우 예외 발생
-//                        HttpStatusCode::is4xxClientError,
-//                        response -> Mono.error(new ExternalApiException(INTERNAL_SEVER_ERROR)))
-//                .onStatus( // 상태코드가 5xx 일경우 예외발생
-//                        HttpStatusCode::is5xxServerError,
-//                        response -> Mono.error(new ExternalApiException(EXTERNAL_SEVER_ERROR)))
-//                .toEntity(ResponseEntity.class)
-//                .timeout(TIMEOUT) // 네트워크로 인한 무한대기를 막기위해 2초 타임아웃 설정
-//                .mapNotNull(responseEntity -> responseEntity.getHeaders().getFirst("Authorization"))
-//                .doOnSuccess(token -> log.info("API access Token 발급 성공"))
-//                .doOnError(error -> log.error("API access Token 발급 실패", error));
-//    }
 
 }

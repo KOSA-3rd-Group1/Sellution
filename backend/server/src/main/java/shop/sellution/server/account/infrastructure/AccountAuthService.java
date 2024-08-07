@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 import shop.sellution.server.account.dto.request.CheckAccountReq;
 import shop.sellution.server.account.dto.response.CheckAccountRes;
 import shop.sellution.server.global.exception.BadRequestException;
@@ -27,16 +26,15 @@ public class AccountAuthService {
 
     public CheckAccountRes checkAccount(CheckAccountReq checkAccountReq) {
 
-        log.info("계좌인증 시작 - bank code: {} , bank num: {}",
+        log.info("계좌인증 시작 - 은행 코드: {} , 계좌번호: {}",
                 checkAccountReq.getBankCode(), checkAccountReq.getAccountNumber());
         Map<String, String> body = Map.of(
                 "bankCode", checkAccountReq.getBankCode(),
                 "accountNumber", checkAccountReq.getAccountNumber()
         );
 
-
         JsonNode jsonNode = webClient.post()
-                .uri(uriBuilder -> uriBuilder // URI를 동적으로 구성합니다.
+                .uri(uriBuilder -> uriBuilder
                         .path("/accounts/auth/check-account")
                         .build()
                 )

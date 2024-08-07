@@ -21,7 +21,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
                                                       @Param("isVisible") DisplayStatus isVisible,
                                                       Pageable pageable);
     List<Category> findAllById(Iterable<Long> ids);
-    Page<Category> findByCompanyCompanyId(Long companyId, Pageable pageable);
+    //Page<Category> findByCompanyCompanyId(Long companyId, Pageable pageable);
     Optional<Category> findByName(String name);
     List<Category> findByCompanyAndIsVisible(Company company, DisplayStatus isVisible);
 

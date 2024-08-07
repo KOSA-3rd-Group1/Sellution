@@ -1,0 +1,260 @@
+= Customer(회원) [김준석]
+
+== 회원 회원가입
+POST /api/customers/signup
+회원 회원가입을 수행합니다.
+
+=== HTTP Request
+include::{snippets}/customer/signup/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/signup/http-response.adoc[]
+
+=== Request Fields
+include::{snippets}/customer/signup/request-fields.adoc[]
+
+=== Response Fields
+include::{snippets}/customer/signup/response-fields.adoc[]
+
+== 회원 아이디 중복 확인
+POST /api/customers/duplicate-check-id
+회원 아이디의 중복 여부를 확인합니다.
+
+=== HTTP Request
+include::{snippets}/customer/check-username/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/check-username/http-response.adoc[]
+
+=== Request Fields
+include::{snippets}/customer/check-username/request-fields.adoc[]
+
+=== Response Fields
+include::{snippets}/customer/check-username/response-fields.adoc[]
+
+== 회원가입 SMS 인증번호 전송
+POST /api/customers/signup/verify-code/send
+
+회원가입을 위한 SMS 인증번호를 전송합니다.
+
+=== HTTP Request
+include::{snippets}/customer/send-signup-sms/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/send-signup-sms/http-response.adoc[]
+
+=== Request Fields
+include::{snippets}/customer/send-signup-sms/request-fields.adoc[]
+
+== 회원가입 SMS 인증번호 확인
+POST /api/customers/signup/verify-code
+
+회원가입을 위해 전송된 SMS 인증번호를 확인합니다.
+
+=== HTTP Request
+include::{snippets}/customer/verify-signup-sms/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/verify-signup-sms/http-response.adoc[]
+
+=== Request Fields
+include::{snippets}/customer/verify-signup-sms/request-fields.adoc[]
+
+== 현재 회원 정보 조회
+GET /api/customers/me
+현재 로그인한 회원의 정보를 조회합니다.
+
+=== HTTP Request
+include::{snippets}/customer/get-current-user/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/get-current-user/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/customer/get-current-user/response-fields.adoc[]
+
+== 회원 아이디 찾기
+POST /api/customers/find-id
+
+회원의 아이디를 찾습니다.
+
+=== HTTP Request
+include::{snippets}/customer/find-id/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/find-id/http-response.adoc[]
+
+=== Request Fields
+include::{snippets}/customer/find-id/request-fields.adoc[]
+
+=== Response Fields
+include::{snippets}/customer/find-id/response-fields.adoc[]
+
+== 회원 아이디 찾기 SMS 인증번호 요청
+POST /api/customers/find-id/send
+
+회원 아이디 찾기를 위한 SMS 인증번호를 요청합니다.
+
+=== HTTP Request
+include::{snippets}/customer/find-id-send-sms/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/find-id-send-sms/http-response.adoc[]
+
+=== Request Fields
+include::{snippets}/customer/find-id-send-sms/request-fields.adoc[]
+
+=== Response Fields
+include::{snippets}/customer/find-id-send-sms/response-fields.adoc[]
+
+== 회원 비밀번호 찾기
+POST /api/customers/find-password
+
+회원의 비밀번호를 찾습니다.
+
+=== HTTP Request
+include::{snippets}/customer/find-password/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/find-password/http-response.adoc[]
+
+=== Request Fields
+include::{snippets}/customer/find-password/request-fields.adoc[]
+
+=== Response Fields
+include::{snippets}/customer/find-password/response-fields.adoc[]
+
+== 회원 비밀번호 찾기 SMS 인증번호 요청
+POST /api/customers/find-password/send
+
+회원 비밀번호 찾기를 위한 SMS 인증번호를 요청합니다.
+
+=== HTTP Request
+include::{snippets}/customer/find-password-send-sms/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/find-password-send-sms/http-response.adoc[]
+
+=== Request Fields
+include::{snippets}/customer/find-password-send-sms/request-fields.adoc[]
+
+=== Response Fields
+include::{snippets}/customer/find-password-send-sms/response-fields.adoc[]
+
+== 회원 비밀번호 변경
+POST /api/customers/change-password
+
+회원의 비밀번호를 변경합니다.
+
+=== HTTP Request
+include::{snippets}/customer/change-password/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/change-password/http-response.adoc[]
+
+=== Request Fields
+include::{snippets}/customer/change-password/request-fields.adoc[]
+
+=== Response Fields
+include::{snippets}/customer/change-password/response-fields.adoc[]
+
+== 회원 등록
+POST /api/customers/self
+
+회원을 등록합니다.
+
+=== HTTP Request
+include::{snippets}/customer/register-from-client/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/register-from-client/http-response.adoc[]
+
+=== Request Fields
+include::{snippets}/customer/register-from-client/request-fields.adoc[]
+
+=== Response Fields
+include::{snippets}/customer/register-from-client/response-fields.adoc[]
+
+== 회원 정보 조회
+GET /api/customers/{id}
+
+특정 회원의 정보를 조회합니다.
+
+=== HTTP Request
+include::{snippets}/customer/find-by-id/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/find-by-id/http-response.adoc[]
+
+=== Path Parameters
+include::{snippets}/customer/find-by-id/path-parameters.adoc[]
+
+=== Response Fields
+include::{snippets}/customer/find-by-id/response-fields.adoc[]
+
+== 회원 정보 수정
+PUT /api/customers/{id}
+
+특정 회원의 정보를 수정합니다.
+=== HTTP Request
+include::{snippets}/customer/update/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/update/http-response.adoc[]
+
+=== Path Parameters
+include::{snippets}/customer/update/path-parameters.adoc[]
+
+=== Request Fields
+include::{snippets}/customer/update/request-fields.adoc[]
+
+== 마이페이지 회원 정보 조회
+GET /api/customers/mypage/{id}
+
+마이페이지에서 회원의 정보를 조회합니다.
+
+=== HTTP Request
+include::{snippets}/customer/get-info/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/get-info/http-response.adoc[]
+
+=== Path Parameters
+include::{snippets}/customer/get-info/path-parameters.adoc[]
+
+=== Response Fields
+include::{snippets}/customer/get-info/response-fields.adoc[]
+
+== 인증 코드 전송
+POST /api/customers/{id}/send-auth-code
+
+특정 회원에게 인증 코드를 전송합니다.
+
+=== HTTP Request
+include::{snippets}/customer/send-auth-code/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/send-auth-code/http-response.adoc[]
+
+=== Path Parameters
+include::{snippets}/customer/send-auth-code/path-parameters.adoc[]
+
+=== Request Fields
+include::{snippets}/customer/send-auth-code/request-fields.adoc[]
+
+== 인증 코드 확인
+POST /api/customers/{id}/verify-auth-code
+
+특정 회원의 인증 코드를 확인합니다.
+
+=== HTTP Request
+include::{snippets}/customer/verify-auth-code/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/customer/verify-auth-code/http-response.adoc[]
+
+=== Path Parameters
+include::{snippets}/customer/verify-auth-code/path-parameters.adoc[]
+
+=== Request Fields
+include::{snippets}/customer/verify-auth-code/request-fields.adoc[]

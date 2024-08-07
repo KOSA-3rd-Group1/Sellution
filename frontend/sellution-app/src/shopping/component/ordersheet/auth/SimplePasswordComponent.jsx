@@ -131,8 +131,8 @@ const SimplePasswordComponent = () => {
           const productIds = orderData.orderedProducts.map((product) => product.productId);
           removeItemsFromCart('ONETIME', productIds, accessToken, setAccessToken);
 
-        // 주문 완료 후 로컬 스토리지 상태 삭제
-        localStorage.removeItem('orderState');
+          // 주문 완료 후 로컬 스토리지 상태 삭제
+          localStorage.removeItem('orderState');
 
           navigate(`/shopping/${clientName}/onetime/order-completed/${savedOrderId}`);
         } else if (
@@ -144,8 +144,8 @@ const SimplePasswordComponent = () => {
           const productIds = orderData.orderedProducts.map((product) => product.productId);
           removeItemsFromCart('SUBSCRIPTION', productIds, accessToken, setAccessToken);
 
-        // 주문 완료 후 로컬 스토리지 상태 삭제
-        localStorage.removeItem('orderState');
+          // 주문 완료 후 로컬 스토리지 상태 삭제
+          localStorage.removeItem('orderState');
 
           navigate(`/shopping/${clientName}/subscription/order-completed/${savedOrderId}`);
         } else {
@@ -197,14 +197,14 @@ const SimplePasswordComponent = () => {
                   if (item === '지움') handleClear();
                   else handleNumberClick(item);
                 }}
-                className='text-white text-2xl font-bold py-4 rounded-lg h-20 transition duration-150 ease-in-out hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+                className='text-white text-2xl font-bold py-4 rounded-lg h-20 transition duration-150 ease-in-out '
               >
                 {item}
               </button>
             ))}
             <button
               onClick={handleDelete}
-              className='text-white text-2xl font-bold py-4 rounded-lg h-20 transition duration-150 ease-in-out hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+              className='text-white text-2xl font-bold py-4 rounded-lg h-20 transition duration-150 ease-in-out '
             >
               ⌫
             </button>
