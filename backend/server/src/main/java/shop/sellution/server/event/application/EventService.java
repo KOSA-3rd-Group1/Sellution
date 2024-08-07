@@ -35,4 +35,6 @@ public interface EventService {
 
     void downloadCoupon2(Long eventId, Long customerId);
 
+    void downloadCoupon3(Long eventId, Long customerID);
+
 }

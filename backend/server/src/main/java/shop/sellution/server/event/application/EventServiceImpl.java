@@ -228,6 +228,35 @@ public class EventServiceImpl implements EventService {
 
         //5. 트랜잭션 commit (rdb)
     }
+    //redis 1차 메서드
+    public void downloadCoupon3(Long eventId, Long customerId){
+        CouponEvent event = getEventById(eventId);
+
+        //3. redis 증가
+        String key = "event:" + eventId;
+        Long currentCount = redisTemplate.opsForValue().increment(key);
+
+        if (currentCount > event.getTotalQuantity()) {
+            redisTemplate.opsForValue().decrement(key);
+            return; //쿠폰 소진
+        }
+        //4. 발급 가능한 경우 쿠폰 생성(rdb save)
+        try{
+            CouponBox couponBox = CouponBox.builder()
+                    .id(new CouponBoxId(customerId, eventId))
+                    .couponEvent(event)
+                    .customer(getCustomerById(customerId))
+                    .build();
+            couponBoxRepository.save(couponBox);
+        }catch(Exception e){
+            //redis 롤백
+            rollbackCouponCount(eventId, customerId);
+            throw new RuntimeException("쿠폰 발급 중 오류가 발생했습니다. 트랜잭션이 롤백됩니다.", e);
+        }
+
+        //5. 트랜잭션 commit (rdb)
+    }
+
 
     //테스트 위한 메서드
     public void downloadCoupon(Long eventId, Long customerId) {//Transactional으로 묶어서 RDB연산 보장
