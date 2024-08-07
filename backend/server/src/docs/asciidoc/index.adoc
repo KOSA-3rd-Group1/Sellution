@@ -15,16 +15,9 @@ include::easyPwd.adoc[]
 include::order.adoc[]
 include::payment.adoc[]
 include::product.adoc[]
-<<<<<<< HEAD
 include::contractCompany.adoc[]
 include::client.adoc[]
 include::customer.adoc[]
-
-
-
-=======
-include::category.adoc[]
 include::cart.adoc[]
 include::event.adoc[]
->>>>>>> 17ece66694366d3cda0ffedc3a3e4c2124c147c5
 
