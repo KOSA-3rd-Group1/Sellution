@@ -22,6 +22,7 @@ const CartComponent = () => {
   //     decreaseOnetimeCartQuantity,
   //     removeFromOnetimeCart,
   //   } = useOnetimeCartStore();
+  const serviceType = useCompanyInfoStore((state) => state.serviceType); // serviceType 가져오기
   const accessToken = useAuthStore((state) => state.accessToken);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const {
@@ -70,22 +71,23 @@ const CartComponent = () => {
       <MenuHeaderNav title={'장바구니'} />
       <div className='flex flex-col items-center w-full'>
         <section className='page-label flex justify-start items-center w-full pt-4'>
-          <div
-            className={`font-bold py-2 px-3 text-sm cursor-pointer 'text-gray-500'}`}
-            onClick={() => {
-              navigate(`/shopping/${clientName}/subscription/cart`, { replace: true });
-            }}
-          >
-            정기 배송
-          </div>
-          <div
-            className={`font-bold py-2 px-3 text-sm cursor-pointer bg-primary text-white`}
-            onClick={() => {
-              navigate(`/shopping/${clientName}/onetime/cart`, { replace: true });
-            }}
-          >
-            단건 배송
-          </div>
+        {serviceType === 'BOTH' && (
+          <><div
+              className={`font-bold py-2 px-3 text-sm cursor-pointer 'text-gray-500'}`}
+              onClick={() => {
+                navigate(`/shopping/${clientName}/subscription/cart`, { replace: true });
+              } }
+            >
+              정기 배송
+            </div><div
+              className={`font-bold py-2 px-3 text-sm cursor-pointer bg-primary text-white`}
+              onClick={() => {
+                navigate(`/shopping/${clientName}/onetime/cart`, { replace: true });
+              } }
+            >
+                단건 배송
+              </div></>
+                    )}
         </section>
         <div className='seperator w-full h-[2px] bg-primary'></div>
         <section className='w-[92%] h-full mx-auto mt-2 '>
