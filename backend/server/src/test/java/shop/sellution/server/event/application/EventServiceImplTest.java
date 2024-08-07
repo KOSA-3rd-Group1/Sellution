@@ -22,6 +22,7 @@
 //import shop.sellution.server.event.domain.CouponBoxRepository;
 //import shop.sellution.server.event.domain.CouponEvent;
 //import shop.sellution.server.event.domain.EventRepository;
+//import shop.sellution.server.event.domain.type.EventState;
 //import shop.sellution.server.event.domain.type.TargetCustomerType;
 //import shop.sellution.server.global.type.DeliveryType;
 //import shop.sellution.server.global.type.DisplayStatus;
@@ -82,6 +83,7 @@
 //                .eventEndDate(LocalDate.now().plusDays(10))
 //                .totalQuantity(100)
 //                .isDeleted(false)
+//                .state(EventState.ONGOING) // 명시적으로 상태 설정
 //                .build();
 //        ReflectionTestUtils.setField(couponEvent, "id", 1L);
 //        eventRepository.save(couponEvent); // 저장
@@ -110,6 +112,9 @@
 //
 //            customerRepository.save(customer); // 저장
 //        }
+//
+//        // Redis 카운터 초기화
+//        redisTemplate.delete("event:" + couponEvent.getId());
 //    }
 //
 //    @DisplayName("쿠폰 다운로드 한번 성공 테스트")
@@ -144,7 +149,7 @@
 //        Company company = companyRepository.findById(1L).get();
 //
 //        int threadCount = 1000;
-//        ExecutorService executorService = Executors.newFixedThreadPool(32);
+//        ExecutorService executorService = Executors.newFixedThreadPool(100);
 //        CountDownLatch countDownLatch = new CountDownLatch(threadCount);    //다른 스레드에서 사용하는 작업 기다리게 해줌
 //
 //        for(int i = 1; i <= threadCount; i++){
@@ -189,6 +194,32 @@
 //                }
 //            });
 //        }
+//        countDownLatch.await();
+//        //모든 요청이 완료되면 생성된 쿠폰의 개수 확인
+//        int count = (int) couponBoxRepository.countByCouponEvent_Id(1L);
+//        System.out.println("couponEvent 발급 수량: " + count);
+//        assertThat(count).isEqualTo(eventRepository.findById(1L).get().getTotalQuantity());
+//    }
+//
+//    @Test
+//    void downloadCoupon3() throws InterruptedException {
+//        int threadCount = 1000;
+//        ExecutorService executorService = Executors.newFixedThreadPool(100);
+//        CountDownLatch countDownLatch = new CountDownLatch(threadCount);
+//
+//        for (int i = 1; i <= threadCount ; i++) {
+//            long customerId = i;
+//            executorService.submit(() -> {
+//                try {
+//                    eventServiceImpl.downloadCoupon3(1L, customerId);
+//                } catch (Exception e) {
+//                    System.err.println("Exception occurred for customer ID " + customerId + ": " + 1L);
+//                } finally {
+//                    countDownLatch.countDown();
+//                }
+//            });
+//        }
+//
 //        countDownLatch.await();
 //        //모든 요청이 완료되면 생성된 쿠폰의 개수 확인
 //        int count = (int) couponBoxRepository.countByCouponEvent_Id(1L);
