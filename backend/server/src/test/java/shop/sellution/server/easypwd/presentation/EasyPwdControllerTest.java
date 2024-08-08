@@ -55,7 +55,7 @@ class EasyPwdControllerTest extends BaseControllerTest {
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("success"))
-                .andDo(document("Easy-pwd/register",
+                .andDo(document("easy-pwd/register",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
@@ -85,7 +85,7 @@ class EasyPwdControllerTest extends BaseControllerTest {
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("success"))
-                .andDo(document("Easy-pwd/verify",
+                .andDo(document("easy-pwd/verify",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
@@ -112,7 +112,7 @@ class EasyPwdControllerTest extends BaseControllerTest {
                 .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"))
-                .andDo(document("Easy-pwd/check",
+                .andDo(document("easy-pwd/check",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(

@@ -1,0 +1,18 @@
+
+= Category (카테고리) - 회원화면 [김현주]
+
+== 사업체 Id로 isVisble이 Y인 카테고리 조회
+/categories/company/{companyId}
+
+==== HTTP Request
+
+include::{snippets}/CategoryCustomer/findAllCategories/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/CategoryCustomer/findAllCategories/http-response.adoc[]
+
+==== Response Fields
+
+include::{snippets}/CategoryCustomer/findAllCategories/response-fields.adoc[]
+
