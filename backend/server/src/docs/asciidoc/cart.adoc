@@ -1,4 +1,4 @@
-= Cart(장바구니)
+= Cart(장바구니) [ 김현주 ]
 
 == 장바구니 목록 조회
 /api/cart/{cartType}
