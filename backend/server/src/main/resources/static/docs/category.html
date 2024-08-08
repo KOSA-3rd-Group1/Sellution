@@ -454,7 +454,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h4 id="_http_request">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /categories?companyId=1&amp;isVisible=Y&amp;page=0&amp;size=10&amp;_csrf=Xa_G8uDct6vrq9L3szaLMcA3T4vm6hZFl9qETcVA5WijV0_Ebpb_xtXk1ZPGzevPhhu_BfNRYrOAiSZoprm1KfAm3FvCbnz2 HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /categories?companyId=1&amp;isVisible=Y&amp;page=0&amp;size=10&amp;_csrf=nu6bBE950KszithZYiktAXQ_ZLQ9h4a4jFL6yMnjjTQcSMWd-9mpZXoctZwevb5uBAQZOEAJSY0O5bGVvWTL-_rTtFZ4LPak HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -474,13 +474,11 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 387
+Content-Length: 408
 
 {
   "totalElements" : 1,
   "totalPages" : 1,
-  "first" : true,
-  "last" : true,
   "size" : 1,
   "content" : [ {
     "categoryId" : 1,
@@ -491,11 +489,13 @@ Content-Length: 387
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "sorted" : false,
-    "unsorted" : true
+    "unsorted" : true,
+    "sorted" : false
   },
-  "numberOfElements" : 1,
   "pageable" : "INSTANCE",
+  "first" : true,
+  "last" : true,
+  "numberOfElements" : 1,
   "empty" : false
 }</code></pre>
 </div>
@@ -617,7 +617,7 @@ Content-Length: 387
 <h4 id="_http_request_2">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /categories/1?_csrf=lFeidrFtrGndPvQZrk_uyAeibrtFjpn_-3JA4Zq4cMBFrq5grWWTFYdfnAvwDswszWLaqjHHQ9kn6KjSz0Jx1K6OQPgkz51U HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /categories/1?_csrf=n2Bjj_XK_5NJ047vSHitBg_c_lF1y_998nKaYzVJUJSlDm2L-llVusz5mqJktbzccVWZMD_v02hD-sxQl0upBlEqYqedb1m5 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -637,7 +637,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 93
+Content-Length: 98
 
 {
   "categoryId" : 1,
@@ -699,7 +699,7 @@ Content-Length: 93
 <h4 id="_http_request_3">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /categories/check?name=Test+Category&amp;_csrf=gw7eRVu2cmybslTuoCu1c3lfwYMRgBnZSaErM1GFWeqZ6cZxtWvucTnQRVq2123exgaBF0087LtzsC70ecVPAGWzO9OgjfYU HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /categories/check?name=Test+Category&amp;_csrf=z2ajQxQUGcaGX3lwPEMCSa5rnI_kFSTQENCNJB8MoV-3xMCS_lObc3Ilf6erZkhEX242fplTsbbUIhH9KOLsQSlolm3Uoveh HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -737,9 +737,9 @@ true</code></pre>
 <h4 id="_http_request_4">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /categories?_csrf=4SoA-2-nh9n8Yf1RM1_9kxtzTmO0h87rtHO79CPbxtUMOX6k00wyzF3GtuHRVslpA3LJpX8RYwKMt_bG1hfdkBPto7dqXEmS HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /categories?_csrf=LQkb6xgsHpgWzsdUbHfkpcGXhGZmA2qrq-FK4QoHBUcz_2gLTz8v23sUfK079qFjWlrQkqSvqV8EMFqGztMp1TwzNX4Cmwpt HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 48
+Content-Length: 51
 Host: localhost:8080
 
 {
@@ -778,9 +778,9 @@ X-Frame-Options: DENY</code></pre>
 <h4 id="_http_request_5">HTTP Request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /categories/1?_csrf=fdm_-KyIHncPqJ6VfXwP3PWxakq0GG-0WF65o4DmYGWvivnGT7jcwM29J0QimKagTlE75cGCR3KCeVyZaWuMleTRU1bO75ug HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /categories/1?_csrf=x7chYuLMGkzUotYkITR175ztBTyCbNu9FZLOYrjMu3gr_DJioYIWW9CueSr5keYSRxlBiqrcKAW6W7iQIKOqUN743ksdmlED HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 48
+Content-Length: 51
 Host: localhost:8080
 
 {
@@ -824,7 +824,7 @@ Content-Type: application/x-www-form-urlencoded
 Host: localhost:8080
 Content-Length: 102
 
-_csrf=7GJsgoWtJlAsTiM2gRyelixfY3Cm_7w7PCyiLGj8b446oQqo3VVYsL2ZQ2YBLUcCsTGqph49ThKQxtkWWBvDSl_LWe0LkTvM</code></pre>
+_csrf=nga73n89fprhN_jiDTbNHgZUEzGCVB0JXaMZZ8QSFMc8k-Ugpmfdv0oLS_jMAM_WORv5LWNjPgnnY34ka5EhUqBzdfQE9oQW</code></pre>
 </div>
 </div>
 </div>
@@ -851,7 +851,7 @@ X-Frame-Options: DENY</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-08-07 00:57:25 +0900
+Last updated 2024-08-07 20:34:05 +0900
 </div>
 </div>
 </body>

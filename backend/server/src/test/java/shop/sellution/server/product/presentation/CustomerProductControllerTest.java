@@ -96,7 +96,7 @@ class CustomerProductControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("$.content[1].discountedPrice").value(1800))
                 .andExpect(jsonPath("$.content[1].thumbnailImage").value("thumbnail2"))
                 .andExpect(jsonPath("$.content[1].stock").value(200))
-                .andDo(document("Product/findAllCustomerProducts",
+                .andDo(document("ProductCustomer/findAllCustomerProducts",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         RequestDocumentation.pathParameters(
@@ -207,7 +207,7 @@ class CustomerProductControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("$.content[1].discountedPrice").value(1800))
                 .andExpect(jsonPath("$.content[1].thumbnailImage").value("thumbnail2"))
                 .andExpect(jsonPath("$.content[1].stock").value(200))
-                .andDo(document("Product/findAllCustomerProductsWithCategory",
+                .andDo(document("ProductCustomer/findAllCustomerProductsWithCategory",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         RequestDocumentation.pathParameters(

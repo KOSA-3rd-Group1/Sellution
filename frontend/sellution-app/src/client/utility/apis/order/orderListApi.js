@@ -6,8 +6,7 @@ const API_URL = '/orders';
 // 주문 목록 조회
 export const getOrderList = async (companyId, pageParam, setAccessToken, accessToken) => {
   let response = null;
-  const url = `${API_URL}/company/${companyId}`;
-
+  const url = `${API_URL}/company/${companyId}?sort=createdAt,desc`;
   let instance = await BaseInstance();
   instance = await addAuthInterceptor(instance, setAccessToken, accessToken);
 

@@ -50,7 +50,7 @@ class CustomerCategoryControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("$[0].name").value("category1"))
                 .andExpect(jsonPath("$[1].categoryId").value(2L))
                 .andExpect(jsonPath("$[1].name").value("category2"))
-                .andDo(document("Category/findAllCategories",
+                .andDo(document("CategoryCustomer/findAllCategories",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         RequestDocumentation.pathParameters(
@@ -79,7 +79,7 @@ class CustomerCategoryControllerTest extends BaseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isEmpty())
-                .andDo(document("Category/findAllCategoriesNoCategories",
+                .andDo(document("CategoryCustomer/findAllCategoriesNoCategories",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         RequestDocumentation.pathParameters(
@@ -104,7 +104,7 @@ class CustomerCategoryControllerTest extends BaseControllerTest {
         mockMvc.perform(get("/categories/company/{companyId}", companyId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andDo(document("Category/findAllCategoriesBadRequest",
+                .andDo(document("CategoryCustomer/findAllCategoriesBadRequest",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         RequestDocumentation.pathParameters(

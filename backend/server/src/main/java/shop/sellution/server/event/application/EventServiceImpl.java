@@ -375,7 +375,7 @@ public class EventServiceImpl implements EventService {
             throw new BadRequestException(ExceptionCode.INVALID_DOWNLOAD_EVENT_DELETED);
         }
         Customer customer = getCustomerById(customerId);
-        if(event.getTargetCustomerType() != TargetCustomerType.ALL && !event.getTargetCustomerType().name().equals(customer.getType().name())){
+        if(!event.getTargetCustomerType().name().equals(TargetCustomerType.ALL.name()) && !event.getTargetCustomerType().name().equals(customer.getType().name())){
             //throw new IllegalArgumentException("해당 이벤트는 타겟 고객이 아닙니다.");
             throw new BadRequestException(ExceptionCode.INVALID_DOWNLOAD_EVENT_TARGET_CUSTOMER);
         }
