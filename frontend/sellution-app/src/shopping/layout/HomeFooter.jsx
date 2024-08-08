@@ -25,7 +25,12 @@ const HomeFooter = () => {
   //const onetimeCartCount = useOnetimeCartStore((state) => state.onetimeCart.length);
   const subscriptionCartCount = useCartStore((state) => state.subscriptionCart.length);
   const onetimeCartCount = useCartStore((state) => state.onetimeCart.length);
-  const totalCount = subscriptionCartCount + onetimeCartCount;
+  const totalCount =
+    serviceType === 'BOTH'
+      ? subscriptionCartCount + onetimeCartCount
+      : serviceType === 'SUBSCRIPTION'
+        ? subscriptionCartCount
+        : onetimeCartCount;
   return (
     <nav className='fixed bottom-0 left-1/2 transform -translate-x-1/2 z-10 w-full max-w-lg h-16 bg-white flex shadow-footer p-1.5'>
       <Link
@@ -72,7 +77,9 @@ const HomeFooter = () => {
           const targetPath =
             accessToken === null || accessToken === ''
               ? `/shopping/${clientName}/login`
-              : `/shopping/${clientName}/subscription/cart`;
+              : serviceType === 'ONETIME'
+                ? `/shopping/${clientName}/onetime/cart`
+                : `/shopping/${clientName}/subscription/cart`;
 
           navigate(targetPath, { state: { from: location.pathname } });
         }}
