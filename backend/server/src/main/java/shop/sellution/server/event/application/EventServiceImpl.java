@@ -119,7 +119,7 @@ public class EventServiceImpl implements EventService {
                         event.getCouponDiscountRate() + "% 선착순 할인 쿠폰을 지급합니다. \n" +
                         "이벤트 기간: " + event.getEventStartDate() + " ~ " + event.getEventEndDate() + "입니다. \n" +
                         "많은 참여 부탁드립니다.";
-                smsService.sendSms(customer.getPhoneNumber(), message);
+//                smsService.sendSms(customer.getPhoneNumber(), message);
             });
 
         } catch (Exception e) {
