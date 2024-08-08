@@ -266,7 +266,7 @@ public class OrderServiceImpl implements OrderService {
                     취소된 주문번호
                     %d
                     """, order.getId(), order.getTotalPrice());
-//            smsService.sendSms(customer.getPhoneNumber(), cancelMessage);
+            smsService.sendSms(customer.getPhoneNumber(), cancelMessage);
         }
 
         log.info("주문 취소 완료");
