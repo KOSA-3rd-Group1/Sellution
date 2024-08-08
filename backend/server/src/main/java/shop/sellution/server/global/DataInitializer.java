@@ -623,17 +623,17 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
                             .imageUrl(imageUrls.get(i))
                             .purposeOfUse(ProductImageType.THUMBNAIL)
                             .build());
-                } else if (i >= 4) {
+                } else if (i <=3) {
                     productImageRepository.save(ProductImage.builder()
                             .product(product)
                             .imageUrl(imageUrls.get(i))
-                            .purposeOfUse(ProductImageType.DETAILS)
+                            .purposeOfUse(ProductImageType.LIST)
                             .build());
                 } else {
                     productImageRepository.save(ProductImage.builder()
                             .product(product)
                             .imageUrl(imageUrls.get(i))
-                            .purposeOfUse(ProductImageType.LIST)
+                            .purposeOfUse(ProductImageType.DETAILS)
                             .build());
                 }
             }

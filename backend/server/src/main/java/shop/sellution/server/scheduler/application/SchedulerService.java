@@ -39,7 +39,7 @@ public class SchedulerService {
     private final ProductRepository productRepository;
 
 
-//        @Scheduled(cron = "0 0 19 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 19 * * *", zone = "Asia/Seoul") // 19시에 실행
     @Transactional
     public void regularProcessAt19() {
         log.info("*************** 19시 스케줄러 시작 *************** ");
@@ -52,7 +52,7 @@ public class SchedulerService {
         log.info("*************** 19시 스케줄러 종료 *************** ");
     }
 
-    //    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul") // 자정이여야함
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul") // 자정이여야함
     @Transactional
     public void regularProcessAt0() {
         log.info("*************** 자정 스케줄러 시작 *************** ");
