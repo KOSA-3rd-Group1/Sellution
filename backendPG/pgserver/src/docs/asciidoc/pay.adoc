@@ -1,0 +1,28 @@
+= Pay(결제) [ 길재현 ]
+
+== 결제 요청 처리
+/pg/pay
+
+
+==== HTTP Request
+
+include::{snippets}/Pay/payment-pay/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Pay/payment-pay/http-response.adoc[]
+
+
+
+== 결제 취소 처리
+/pg/pay/cancel
+
+
+==== HTTP Request
+
+include::{snippets}/Pay/payment-cancel/http-request.adoc[]
+
+==== HTTP Response
+
+include::{snippets}/Pay/payment-cancel/http-response.adoc[]
+
