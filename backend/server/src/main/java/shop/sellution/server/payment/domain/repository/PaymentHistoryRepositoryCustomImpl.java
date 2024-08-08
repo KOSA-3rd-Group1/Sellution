@@ -70,6 +70,7 @@ public class PaymentHistoryRepositoryCustomImpl implements PaymentHistoryReposit
                 ).fetchOne();
 
         List<FindPaymentHistoryRes> content = query
+                .orderBy(paymentHistory.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

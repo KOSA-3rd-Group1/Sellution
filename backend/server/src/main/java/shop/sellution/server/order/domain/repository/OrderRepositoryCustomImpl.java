@@ -1,11 +1,14 @@
 package shop.sellution.server.order.domain.repository;
 
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.DateTimePath;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import shop.sellution.server.order.domain.Order;
 import shop.sellution.server.order.domain.type.DeliveryStatus;
@@ -16,6 +19,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static shop.sellution.server.order.domain.QOrder.order;
@@ -45,6 +49,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(order.createdAt.desc())
                 .fetch();
 
         Long total = queryFactory
@@ -102,5 +107,6 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         }
         return null;
     }
+
 
 }
