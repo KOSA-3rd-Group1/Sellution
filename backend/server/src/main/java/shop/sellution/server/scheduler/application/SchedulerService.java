@@ -20,6 +20,7 @@ import shop.sellution.server.payment.dto.request.PaymentReq;
 import shop.sellution.server.payment.util.PaymentUtil;
 import shop.sellution.server.product.domain.Product;
 import shop.sellution.server.product.domain.ProductRepository;
+import shop.sellution.server.sms.application.SmsService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,6 +38,7 @@ public class SchedulerService {
     private final CustomerRepository customerRepository;
     private final EventRepository eventRepository;
     private final ProductRepository productRepository;
+    private final SmsService smsService;
 
 
     @Scheduled(cron = "0 0 19 * * *", zone = "Asia/Seoul") // 19시에 실행
@@ -154,7 +156,7 @@ public class SchedulerService {
                 if (order.getRemainingDeliveryCount() == 0) {
                     order.changeDeliveryStatus(DeliveryStatus.COMPLETE);
                     // 오늘이 마지막 배송일인 회원에게는 문자알림을 발송한다.
-                    // smsService.sendSms(order.getCustomer().getPhoneNumber(), "오늘은 마지막 배송일입니다. 감사합니다 다음에 또 이용해주세요!");
+                     smsService.sendSms(order.getCustomer().getPhoneNumber(), "오늘은 마지막 배송일입니다. 감사합니다 다음에 또 이용해주세요!");
 
                     continue;
                 }
