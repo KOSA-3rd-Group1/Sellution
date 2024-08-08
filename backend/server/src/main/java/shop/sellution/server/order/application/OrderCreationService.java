@@ -218,7 +218,7 @@ public class OrderCreationService {
                     적용된 쿠폰 -> [ 쿠폰명 : %s , 할인율 : %d%% ]
                     """,couponEvent.getCouponName(),couponEvent.getCouponDiscountRate());
         }
-//        smsService.sendSms(customer.getPhoneNumber(),message);
+        smsService.sendSms(customer.getPhoneNumber(),message);
 
         if(order.getStatus()==OrderStatus.APPROVED){
             // 해당 주문 상품들의 isVisible이 Y인지 확인
@@ -229,7 +229,7 @@ public class OrderCreationService {
                     승인된 주문번호
                     %s
                     """,order.getCode());
-//            smsService.sendSms(customer.getPhoneNumber(),approveMessage);
+            smsService.sendSms(customer.getPhoneNumber(),approveMessage);
             paymentService.pay(
                     PaymentReq.builder()
                             .accountId(order.getAccount().getId())
