@@ -56,7 +56,7 @@ class PaymentControllerTest extends BaseControllerTest {
                         .content(objectMapper.writeValueAsString(paymentReq)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("success"))
-                .andDo(document("payment-pay",
+                .andDo(document("Pay/payment-pay",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestHeaders(
@@ -90,7 +90,7 @@ class PaymentControllerTest extends BaseControllerTest {
                         .content(objectMapper.writeValueAsString(paymentReq)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("success"))
-                .andDo(document("payment-cancel",
+                .andDo(document("Pay/payment-cancel",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestHeaders(
